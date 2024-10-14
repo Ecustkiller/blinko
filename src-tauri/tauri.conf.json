@@ -26,6 +26,11 @@
         "all": true,
         "scope": ["**"]
       },
+      "http": {
+        "all": true,
+        "request": true,
+        "scope": ["https://sm.ms/api/v2/*"]
+      },
       "dialog": {
         "all": false,
         "ask": false,

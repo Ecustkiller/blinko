@@ -7,6 +7,7 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import { directive as viewer } from "v-viewer"
 import App from "./App.vue";
 import router from './router'
+import './utils/dragImage'
 import './db'
 import "./tailwind.css";
 import 'vuetify/styles'
