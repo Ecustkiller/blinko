@@ -6,11 +6,9 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
-  SidebarInput,
 } from "@/components/ui/sidebar"
 import React from "react"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
+import { NoteManage } from './note-manage'
 
 const mails = new Array(15).fill(0).map((_, index) => (
   {
@@ -27,17 +25,8 @@ const mails = new Array(15).fill(0).map((_, index) => (
 export function MarkSidebar() {
   return (
     <Sidebar collapsible="none" className="flex-1 md:flex border-r max-w-[280px]">
-      <SidebarHeader className="gap-3.5 border-b p-4">
-        <div className="flex w-full items-center justify-between">
-          <div className="text-base font-medium text-foreground">
-            <span>Note</span>
-          </div>
-          <Label className="flex items-center gap-2 text-sm">
-            <span>Unreads</span>
-            <Switch className="shadow-none" />
-          </Label>
-        </div>
-        <SidebarInput placeholder="Type to search..." />
+      <SidebarHeader className="border-b p-2">
+        <NoteManage/>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup className="px-0">
