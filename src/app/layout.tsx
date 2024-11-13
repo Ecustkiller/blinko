@@ -9,24 +9,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html>
-      <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset>
-              <main className="flex flex-1 flex-col">
-                {children}
-              </main>
-            </SidebarInset>
-          </SidebarProvider>
-        </ThemeProvider>
-      </body>
-    </html>
+    <>
+      <html lang="en" suppressHydrationWarning>
+        <body>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <SidebarProvider>
+              <AppSidebar />
+              <SidebarInset>
+                <main className="flex flex-1 flex-col">
+                  {children}
+                </main>
+              </SidebarInset>
+            </SidebarProvider>
+          </ThemeProvider>
+        </body>
+      </html>
+    </>
   );
 }
