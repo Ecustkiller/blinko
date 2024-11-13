@@ -11,6 +11,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+
+import { ModeToggle } from "./mode-toggle"
  
 // Menu items.
 const items = [
@@ -101,6 +103,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
+        <ModeToggle />
         <SidebarMenuButton asChild className="md:h-8 md:p-0"
           tooltip={{
             children: '设置',
