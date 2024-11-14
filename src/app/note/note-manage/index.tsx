@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ArrowUpDown, TagIcon } from "lucide-react"
+import { ArrowUpDown, TagIcon, Lightbulb } from "lucide-react"
 import {
   CommandDialog,
   CommandEmpty,
@@ -67,7 +67,7 @@ export function NoteManage() {
           onClick={() => setOpen(true)}
         >
           <div className="flex gap-2 items-center">
-            <TagIcon className="size-4" />
+            { name === '灵感' ? <Lightbulb className="size-4" /> : <TagIcon className="size-4" /> }
             <span className="text-xs">{name}</span>
           </div>
           <ArrowUpDown className="size-3" />
