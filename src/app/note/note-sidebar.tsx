@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/sidebar"
 import React from "react"
 import { NoteManage } from './note-manage'
+import { MarkToolbar } from './mark-toolbar'
 
 const mails = new Array(15).fill(0).map((_, index) => (
   {
@@ -22,10 +23,11 @@ const mails = new Array(15).fill(0).map((_, index) => (
 ))
 
  
-export function MarkSidebar() {
+export function NoteSidebar() {
   return (
     <Sidebar collapsible="none" className="flex-1 md:flex border-r max-w-[280px]">
       <SidebarHeader className="border-b p-2">
+        <MarkToolbar />
         <NoteManage/>
       </SidebarHeader>
       <SidebarContent>
