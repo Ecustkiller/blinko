@@ -4,7 +4,7 @@ import * as React from "react"
 import {
   ArrowUpDown,
   Plus,
-  Tag,
+  TagIcon,
 } from "lucide-react"
 
 import {
@@ -12,27 +12,39 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandInput,
-  CommandItem,
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command"
 import { Button } from "@/components/ui/button"
 import { NoteItem } from './note-item'
+import { initTagsDb, insertTag, getTags, Tag } from "@/db/tags"
 
 export function NoteManage() {
+  const [tags, setTags] = React.useState<Tag[]>()
   const [open, setOpen] = React.useState(false)
 
-  React.useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === "j" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        setOpen((open) => !open)
-      }
-    }
+  function handleAddTag() {
+    insertTag({
+      name: `新标签${new Date().getTime()}`,
+    })
+  }
 
-    document.addEventListener("keydown", down)
-    return () => document.removeEventListener("keydown", down)
+  function handleGetTags () {
+    getTags().then((res) => {
+      console.log(res);
+      setTags(res)
+    })
+  }
+
+  React.useEffect(() => {
+    initTagsDb()
   }, [])
+
+  React.useEffect(() => {
+    if (open) {
+      handleGetTags();
+    } 
+  }, [open])
 
   return (
     <>
@@ -43,12 +55,12 @@ export function NoteManage() {
           onClick={() => setOpen(true)}
         >
           <div className="flex gap-2 items-center">
-            <Tag className="size-4" />
+            <TagIcon className="size-4" />
             <span className="text-xs">灵感</span>
           </div>
           <ArrowUpDown className="size-3" />
         </div>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" onClick={handleAddTag}>
           <Plus />
         </Button>
       </div>
@@ -58,17 +70,14 @@ export function NoteManage() {
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="置顶">
-            <CommandItem>
-              <NoteItem title="灵感" isLocked />
-            </CommandItem>
-            <CommandItem>
-              <NoteItem title="Tag 1" isPin />
-            </CommandItem>
+            {
+              tags?.filter((tag) => tag.isPin).map((tag) => <NoteItem key={tag.id} tag={tag} onChange={handleGetTags} />)
+            }
           </CommandGroup>
           <CommandGroup heading="其他">
-            <CommandItem>
-              <NoteItem title="Tag 2" />
-            </CommandItem>
+            {
+              tags?.filter((tag) => !tag.isPin).map((tag) => <NoteItem key={tag.id} tag={tag} onChange={handleGetTags} />)
+            }
           </CommandGroup>
           <CommandSeparator />
         </CommandList>

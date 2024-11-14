@@ -38,6 +38,9 @@ importers:
       '@tauri-apps/plugin-shell':
         specifier: '>=2.0.0'
         version: 2.0.1
+      '@tauri-apps/plugin-sql':
+        specifier: ^2.0.1
+        version: 2.0.1
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -987,6 +990,9 @@ packages:
 
   '@tauri-apps/plugin-shell@2.0.1':
     resolution: {integrity: sha512-akU1b77sw3qHiynrK0s930y8zKmcdrSD60htjH+mFZqv5WaakZA/XxHR3/sF1nNv9Mgmt/Shls37HwnOr00aSw==}
+
+  '@tauri-apps/plugin-sql@2.0.1':
+    resolution: {integrity: sha512-SxvRO/qwq/dHHGJ+79Bx4tB/wlfUE44sP1+wpuGOp11fgmfmOaf3nlZAl0P0KX+U3h0rwR/f7PMRQ6Eg408DYQ==}
 
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
@@ -3204,6 +3210,10 @@ snapshots:
       '@tauri-apps/cli-win32-x64-msvc': 2.1.0
 
   '@tauri-apps/plugin-shell@2.0.1':
+    dependencies:
+      '@tauri-apps/api': 2.1.1
+
+  '@tauri-apps/plugin-sql@2.0.1':
     dependencies:
       '@tauri-apps/api': 2.1.1
 
