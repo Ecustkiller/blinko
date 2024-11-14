@@ -76,27 +76,27 @@ export function TagItem(
   }
 
   return (
-    <CommandItem>
-      <ContextMenu>
-        <ContextMenuTrigger className="flex justify-between items-center w-full" onClick={handleSelect}>
+    <ContextMenu>
+      <ContextMenuTrigger onClick={handleSelect}>
+        <CommandItem className="flex justify-between items-center w-full">
           <div className="flex gap-2 items-center">
             <ItemIcon isLocked={tag.isLocked} isPin={tag.isPin} />
             <ItemContent value={tag.name} isEditing={isEditing} onChange={updateName} />
           </div>
           <Badge variant="outline">{ tag.total || 0 }</Badge>
-        </ContextMenuTrigger>
-        <ContextMenuContent className="w-64">
-          <ContextMenuItem inset disabled={tag.isLocked} onClick={togglePin}>
-            { tag.isPin ? "取消置顶" : "置顶" }
-          </ContextMenuItem>
-          <ContextMenuItem inset disabled={isEditing} onClick={setIsEditing.bind(null, true)}>
-            重命名
-          </ContextMenuItem>
-          <ContextMenuItem inset disabled={tag.isLocked} onClick={handleDel}>
-            删除
-          </ContextMenuItem>
-        </ContextMenuContent>
-      </ContextMenu>
-    </CommandItem>
+        </CommandItem>
+      </ContextMenuTrigger>
+      <ContextMenuContent className="w-64">
+        <ContextMenuItem inset disabled={tag.isLocked} onClick={togglePin}>
+          { tag.isPin ? "取消置顶" : "置顶" }
+        </ContextMenuItem>
+        <ContextMenuItem inset disabled={isEditing} onClick={setIsEditing.bind(null, true)}>
+          重命名
+        </ContextMenuItem>
+        <ContextMenuItem inset disabled={tag.isLocked} onClick={handleDel}>
+          删除
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   )
 }
