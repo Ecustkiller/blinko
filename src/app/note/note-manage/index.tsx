@@ -1,12 +1,7 @@
 "use client"
 
 import * as React from "react"
-import {
-  ArrowUpDown,
-  Plus,
-  TagIcon,
-} from "lucide-react"
-
+import { ArrowUpDown, TagIcon } from "lucide-react"
 import {
   CommandDialog,
   CommandEmpty,
@@ -16,17 +11,26 @@ import {
   CommandSeparator,
 } from "@/components/ui/command"
 import { Button } from "@/components/ui/button"
-import { NoteItem } from './note-item'
+import { TagItem } from './tag-item'
 import { initTagsDb, insertTag, getTags, Tag } from "@/db/tags"
+import { Store } from '@tauri-apps/plugin-store';
 
 export function NoteManage() {
   const [tags, setTags] = React.useState<Tag[]>()
   const [open, setOpen] = React.useState(false)
+  const [name, setName] = React.useState<string>("")
 
-  function handleAddTag() {
-    insertTag({
-      name: `新标签${new Date().getTime()}`,
-    })
+  async function initCurrentTag() {
+    const store = await Store.load('store.json');
+    const currentTag = await store.get<Tag>('currentTag')
+    if (currentTag) {
+      setName(currentTag.name)
+    }
+  }
+
+  async function quickAddTag() {
+    await insertTag({ name })
+    setOpen(false)
   }
 
   function handleGetTags () {
@@ -36,7 +40,15 @@ export function NoteManage() {
     })
   }
 
+  async function handleSelect(tag: Tag) {
+    const store = await Store.load('store.json');
+    store.set('currentTag', tag)
+    setName(tag.name)
+    setOpen(false)
+  }
+
   React.useEffect(() => {
+    initCurrentTag()
     initTagsDb()
   }, [])
 
@@ -56,27 +68,29 @@ export function NoteManage() {
         >
           <div className="flex gap-2 items-center">
             <TagIcon className="size-4" />
-            <span className="text-xs">灵感</span>
+            <span className="text-xs">{name}</span>
           </div>
           <ArrowUpDown className="size-3" />
         </div>
-        <Button variant="ghost" size="icon" onClick={handleAddTag}>
-          <Plus />
-        </Button>
       </div>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="查询标签..." />
+        <CommandInput placeholder="创建或查询标签..." onValueChange={(name) => setName(name)} />
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandEmpty>
+            <p className="text-gray-600">未查询到相关标签</p>
+            <Button className="mt-4" onClick={quickAddTag}>快速创建</Button>
+          </CommandEmpty>
           <CommandGroup heading="置顶">
             {
-              tags?.filter((tag) => tag.isPin).map((tag) => <NoteItem key={tag.id} tag={tag} onChange={handleGetTags} />)
+              tags?.filter((tag) => tag.isPin).map((tag) => 
+                <TagItem key={tag.id} tag={tag} onChange={handleGetTags} onSelect={handleSelect.bind(null, tag)} />)
             }
           </CommandGroup>
           <CommandGroup heading="其他">
             {
-              tags?.filter((tag) => !tag.isPin).map((tag) => <NoteItem key={tag.id} tag={tag} onChange={handleGetTags} />)
+              tags?.filter((tag) => !tag.isPin).map((tag) => 
+                <TagItem key={tag.id} tag={tag} onChange={handleGetTags} onSelect={handleSelect.bind(null, tag)} />)
             }
           </CommandGroup>
           <CommandSeparator />
