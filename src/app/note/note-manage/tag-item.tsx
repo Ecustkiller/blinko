@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge"
 import {
   ContextMenu,
   ContextMenuContent,
@@ -7,7 +6,7 @@ import {
 } from "@/components/ui/context-menu"
 import { Lock, Pin, TagIcon } from "lucide-react"
 import { delTag, Tag, updateTag } from "@/db/tags"
-import { CommandItem } from "@/components/ui/command"
+import { CommandItem, CommandShortcut } from "@/components/ui/command"
 import React from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -83,7 +82,7 @@ export function TagItem(
             <ItemIcon isLocked={tag.isLocked} isPin={tag.isPin} />
             <ItemContent value={tag.name} isEditing={isEditing} onChange={updateName} />
           </div>
-          <Badge variant="outline">{ tag.total || 0 }</Badge>
+          <CommandShortcut>{ tag.total || 0 }</CommandShortcut>
         </CommandItem>
       </ContextMenuTrigger>
       <ContextMenuContent className="w-64">

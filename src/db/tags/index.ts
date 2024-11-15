@@ -29,7 +29,6 @@ export async function initTagsDb() {
       true
     )`)
     const tag = (await db.select<Tag[]>(`select * from tags where name = '灵感'`))[0]
-    console.log(tag);
     const store = await Store.load('store.json');
     await store.set('currentTag', tag)
     await store.save()
@@ -38,7 +37,15 @@ export async function initTagsDb() {
 
 export async function getTags() {
   const db = await getDb();
-  return await db.select<Tag[]>(`select * from tags`)
+  const tags = await db.select<Tag[]>(`select * from tags`)
+
+  // 获取 tags 对应的 marks 数量
+  for (const tag of tags) {
+    const res = await db.select<{ total: number }[]>(`select count(*) as total from marks where tagId = ${tag.id}`)
+    tag.total = res[0].total
+  }
+
+  return tags
 }
 
 export async function insertTag(tag: Partial<Tag>) {

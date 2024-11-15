@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button"
 import { TagItem } from './tag-item'
 import { initTagsDb, insertTag, getTags, Tag } from "@/db/tags"
 import { Store } from '@tauri-apps/plugin-store';
+import emitter from "@/lib/emitter"
 
 export function NoteManage() {
   const [tags, setTags] = React.useState<Tag[]>()
@@ -29,8 +30,11 @@ export function NoteManage() {
   }
 
   async function quickAddTag() {
-    await insertTag({ name })
+    const res = await insertTag({ name })
+    const store = await Store.load('store.json');
+    await store.set('currentTag', { id: res.lastInsertId, name, isLocked: false, isPin: false })
     setOpen(false)
+    emitter.emit('refresh-marks')
   }
 
   function handleGetTags () {
@@ -45,11 +49,12 @@ export function NoteManage() {
     store.set('currentTag', tag)
     setName(tag.name)
     setOpen(false)
+    emitter.emit('refresh-marks')
   }
 
   React.useEffect(() => {
-    initCurrentTag()
     initTagsDb()
+    initCurrentTag()
   }, [])
 
   React.useEffect(() => {
