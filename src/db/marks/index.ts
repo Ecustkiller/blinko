@@ -1,5 +1,11 @@
 import { getDb } from "../index"
 
+export enum MarkType {
+  scan = '截图',
+  text = '文本',
+  image = '插图',
+}
+
 export interface Marks {
   id: number
   tagId: number
@@ -29,7 +35,8 @@ export async function initMarksDb() {
 
 export async function getMarks(id: number) {
   const db = await getDb();
-  return await db.select<Marks[]>(`select * from marks where tagId = ${id}`)
+  // 根据 tagId 获取 marks，根据 createdAt 倒序
+  return await db.select<Marks[]>(`select * from marks where tagId = ${id} order by createdAt desc`)
 }
 
 export async function insertMark(mark: Partial<Marks>) {

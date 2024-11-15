@@ -10,6 +10,7 @@ import { getMarks, type Marks } from "@/db/marks"
 import { Store } from '@tauri-apps/plugin-store';
 import { Tag } from "@/db/tags";
 import emitter from "@/lib/emitter";
+import { MarkItem } from "./mark-item";
 
 export function MarkList() {
   const [marks, setMarks] = React.useState<Marks[]>([])
@@ -34,16 +35,7 @@ export function MarkList() {
       <SidebarGroup className="px-0">
         <SidebarGroupContent>
           {marks.map((mark) => (
-            <a
-              href="#"
-              key={mark.id}
-              className="flex flex-col items-start gap-2 whitespace-nowrap border-b p-4 text-sm leading-tight last:border-b-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-            >
-              <div className="flex w-full items-center gap-2">
-                <span>{mark.content}</span>{" "}
-                <span className="ml-auto text-xs">{mark.createdAt}</span>
-              </div>
-            </a>
+            <MarkItem key={mark.id} mark={mark} />
           ))}
         </SidebarGroupContent>
       </SidebarGroup>

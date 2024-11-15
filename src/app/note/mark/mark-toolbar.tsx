@@ -32,7 +32,7 @@ export function MarkToolbar() {
     const store = await Store.load('store.json');
     const currentTag = await store.get<Tag>('currentTag')
     const tagId = currentTag ? currentTag.id : 0
-    await insertMark({ tagId, type: "scan", content: "screenshot" })
+    await insertMark({ tagId, type: 'scan', content: "screenshot" })
     emitter.emit('refresh-marks')
   }
 
