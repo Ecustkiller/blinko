@@ -9,7 +9,7 @@ import React, { useEffect } from "react"
 import { getMarks, type Marks } from "@/db/marks"
 import { Store } from '@tauri-apps/plugin-store';
 import { Tag } from "@/db/tags";
-import emitter from "@/lib/emitter";
+import emitter from "@/Emitter";
 import { MarkItem } from "./mark-item";
 
 export function MarkList() {

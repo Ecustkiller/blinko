@@ -5,6 +5,7 @@ import {
   ContextMenuItem,
   ContextMenuSub,
   ContextMenuSubContent,
+  ContextMenuSeparator,
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
@@ -12,18 +13,14 @@ import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { getTags, Tag } from "@/db/tags";
 import React, { useEffect } from "react";
-import emitter from "@/lib/emitter";
+import emitter from "@/Emitter";
 import { Store } from "@tauri-apps/plugin-store";
 
 dayjs.extend(relativeTime)
 
 export function MarkWrapper({mark}: {mark: Marks}) {
   return (
-    <a
-      href="#"
-      key={mark.id}
-      className="flex flex-col items-start gap-2 whitespace-nowrap border-b p-4 text-sm leading-tight last:border-b-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-    >
+    <div className="p-4 border-b">
       <div className="flex w-full items-center gap-2">
         <span>{MarkType[mark.type]}</span>
         <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
@@ -31,7 +28,7 @@ export function MarkWrapper({mark}: {mark: Marks}) {
       <div className="flex w-full items-center gap-2">
         <span>{mark.desc}</span>
       </div>
-    </a>
+    </div>
   )
 }
 
@@ -78,6 +75,13 @@ export function MarkItem({mark}: {mark: Marks}) {
             }
           </ContextMenuSubContent>
         </ContextMenuSub>
+        <ContextMenuItem inset disabled>
+          转换为{mark.type === 'scan' ? '插图' : '截图'}
+        </ContextMenuItem>
+        <ContextMenuItem inset disabled>
+          查看原文件
+        </ContextMenuItem>
+        <ContextMenuSeparator />
         <ContextMenuItem inset onClick={handleDelMark}>
           删除
         </ContextMenuItem>

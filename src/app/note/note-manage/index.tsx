@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button"
 import { TagItem } from './tag-item'
 import { initTagsDb, insertTag, getTags, Tag } from "@/db/tags"
 import { Store } from '@tauri-apps/plugin-store';
-import emitter from "@/lib/emitter"
+import emitter from "@/Emitter"
 
 export function NoteManage() {
   const [tags, setTags] = React.useState<Tag[]>()
