@@ -13,7 +13,7 @@ import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { getTags, Tag } from "@/db/tags";
 import React, { useEffect } from "react";
-import emitter from "@/Emitter";
+import emitter from "@/emitter";
 import { Store } from "@tauri-apps/plugin-store";
 
 dayjs.extend(relativeTime)

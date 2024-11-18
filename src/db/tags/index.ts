@@ -30,7 +30,7 @@ export async function initTagsDb() {
     )`)
     const tag = (await db.select<Tag[]>(`select * from tags where name = '灵感'`))[0]
     const store = await Store.load('store.json');
-    await store.set('currentTag', tag)
+    await store.set('currentTagId', tag.id)
     await store.save()
   }
 }

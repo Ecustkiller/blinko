@@ -6,7 +6,7 @@ import * as React from "react"
 import { initMarksDb, insertMark } from "@/db/marks"
 import { Store } from '@tauri-apps/plugin-store';
 import { Tag } from "@/db/tags"
-import emitter from "@/Emitter"
+import emitter from "@/emitter"
 
 function TooltipButton(
   { icon, tooltipText, onClick }:

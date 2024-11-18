@@ -68,7 +68,6 @@ export function TagItem(
   }
 
   function handleSelect() {
-    console.log(1);
     if (!isEditing) {
       onSelect()
     }

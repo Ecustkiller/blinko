@@ -1,0 +1,52 @@
+import { Tag, getTags } from '@/db/tags'
+import { Store } from '@tauri-apps/plugin-store'
+import { create } from 'zustand'
+
+interface TagState {
+  currentTagId: number
+  setCurrentTagId: (id: number) => Promise<void>
+  initTags: () => Promise<void>
+
+  currentTag?: Tag
+  getCurrentTag: () => void
+
+  tags: Tag[]
+  fetchTags: () => Promise<void>
+}
+
+const useTagStore = create<TagState>((set, get) => ({
+  // 当前选择的 tag
+  currentTagId: 0,
+  setCurrentTagId: async(currentTagId: number) => {
+    set({ currentTagId })
+    const store = await Store.load('store.json');
+    await store.set('currentTagId', currentTagId)
+  },
+  initTags: async () => {
+    const store = await Store.load('store.json');
+    const currentTagId = await store.get<number>('currentTagId')
+    if (currentTagId) {
+      set({ currentTagId: currentTagId })
+    }
+    get().getCurrentTag()
+  },
+
+  currentTag: undefined,
+  getCurrentTag: () => {
+    const tags = get().tags
+    const getcurrentTagId = get().currentTagId
+    const currentTag = tags.find((tag) => tag.id === getcurrentTagId)
+    if (currentTag) {
+      set({ currentTag })
+    }
+  },
+
+  // 所有 tag
+  tags: [],
+  fetchTags: async () => {
+    const tags = await getTags()
+    set({ tags })
+  }
+}))
+
+export default useTagStore

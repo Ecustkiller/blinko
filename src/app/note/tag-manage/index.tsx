@@ -12,56 +12,45 @@ import {
 } from "@/components/ui/command"
 import { Button } from "@/components/ui/button"
 import { TagItem } from './tag-item'
-import { initTagsDb, insertTag, getTags, Tag } from "@/db/tags"
-import { Store } from '@tauri-apps/plugin-store';
-import emitter from "@/Emitter"
+import { initTagsDb, insertTag, Tag } from "@/db/tags"
+import emitter from "@/emitter"
+import useTagStore from "@/stores/tag-store"
 
 export function NoteManage() {
-  const [tags, setTags] = React.useState<Tag[]>()
   const [open, setOpen] = React.useState(false)
   const [name, setName] = React.useState<string>("")
 
-  async function initCurrentTag() {
-    const store = await Store.load('store.json');
-    const currentTag = await store.get<Tag>('currentTag')
-    if (currentTag) {
-      setName(currentTag.name)
-    }
-  }
+  const {
+    currentTag,
+    tags,
+    fetchTags,
+    initTags,
+    setCurrentTagId,
+    getCurrentTag
+  } = useTagStore()
 
   async function quickAddTag() {
     const res = await insertTag({ name })
-    const store = await Store.load('store.json');
-    await store.set('currentTag', { id: res.lastInsertId, name, isLocked: false, isPin: false })
+    setCurrentTagId(res.lastInsertId)
     setOpen(false)
     emitter.emit('refresh-marks')
-  }
-
-  function handleGetTags () {
-    getTags().then((res) => {
-      console.log(res);
-      setTags(res)
-    })
   }
 
   async function handleSelect(tag: Tag) {
-    const store = await Store.load('store.json');
-    store.set('currentTag', tag)
-    setName(tag.name)
+    await setCurrentTagId(tag.id)
+    getCurrentTag()
     setOpen(false)
     emitter.emit('refresh-marks')
   }
 
   React.useEffect(() => {
-    initTagsDb()
-    initCurrentTag()
-  }, [])
-
-  React.useEffect(() => {
-    if (open) {
-      handleGetTags();
-    } 
-  }, [open])
+    const fetchData = async() => {
+      await initTagsDb()
+      await fetchTags()
+      initTags()
+    }
+    fetchData()
+  }, [initTags, fetchTags])
 
   return (
     <>
@@ -73,7 +62,7 @@ export function NoteManage() {
         >
           <div className="flex gap-2 items-center">
             { name === '灵感' ? <Lightbulb className="size-4" /> : <TagIcon className="size-4" /> }
-            <span className="text-xs">{name}</span>
+            <span className="text-xs">{currentTag?.name}</span>
           </div>
           <ArrowUpDown className="size-3" />
         </div>
@@ -89,13 +78,13 @@ export function NoteManage() {
           <CommandGroup heading="置顶">
             {
               tags?.filter((tag) => tag.isPin).map((tag) => 
-                <TagItem key={tag.id} tag={tag} onChange={handleGetTags} onSelect={handleSelect.bind(null, tag)} />)
+                <TagItem key={tag.id} tag={tag} onChange={fetchTags} onSelect={handleSelect.bind(null, tag)} />)
             }
           </CommandGroup>
           <CommandGroup heading="其他">
             {
               tags?.filter((tag) => !tag.isPin).map((tag) => 
-                <TagItem key={tag.id} tag={tag} onChange={handleGetTags} onSelect={handleSelect.bind(null, tag)} />)
+                <TagItem key={tag.id} tag={tag} onChange={fetchTags} onSelect={handleSelect.bind(null, tag)} />)
             }
           </CommandGroup>
           <CommandSeparator />
