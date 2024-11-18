@@ -13,8 +13,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { TagItem } from './tag-item'
 import { initTagsDb, insertTag, Tag } from "@/db/tags"
-import emitter from "@/emitter"
 import useTagStore from "@/stores/tag-store"
+import useMarkStore from "@/stores/mark-store"
 
 export function NoteManage() {
   const [open, setOpen] = React.useState(false)
@@ -29,18 +29,20 @@ export function NoteManage() {
     getCurrentTag
   } = useTagStore()
 
+  const { fetchMarks } = useMarkStore()
+
   async function quickAddTag() {
     const res = await insertTag({ name })
     setCurrentTagId(res.lastInsertId)
     setOpen(false)
-    emitter.emit('refresh-marks')
+    fetchMarks()
   }
 
   async function handleSelect(tag: Tag) {
     await setCurrentTagId(tag.id)
     getCurrentTag()
     setOpen(false)
-    emitter.emit('refresh-marks')
+    fetchMarks()
   }
 
   React.useEffect(() => {

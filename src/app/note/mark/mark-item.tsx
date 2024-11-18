@@ -11,10 +11,9 @@ import {
 } from "@/components/ui/context-menu"
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { getTags, Tag } from "@/db/tags";
-import React, { useEffect } from "react";
-import emitter from "@/emitter";
-import { Store } from "@tauri-apps/plugin-store";
+import React from "react";
+import useMarkStore from "@/stores/mark-store";
+import useTagStore from "@/stores/tag-store";
 
 dayjs.extend(relativeTime)
 
@@ -33,31 +32,19 @@ export function MarkWrapper({mark}: {mark: Marks}) {
 }
 
 export function MarkItem({mark}: {mark: Marks}) {
-  const [tags, setTags] = React.useState<Tag[]>([])
-  const [currentTag, setCurrentTag] = React.useState<Tag>()
 
-  async function fetchTags() {
-    const res = await getTags()
-    setTags(res)
-    const store = await Store.load('store.json');
-    setCurrentTag(await store.get<Tag>('currentTag'))
-  }
+  const { fetchMarks } = useMarkStore()
+  const { tags, currentTag } = useTagStore()
 
   async function handleDelMark() {
     await delMark(mark.id)
-    fetchTags()
-    emitter.emit('refresh-marks')
+    fetchMarks()
   }
 
   async function handleTransfer(tagId: number) {
     await updateMark({ ...mark, tagId })
-    fetchTags()
-    emitter.emit('refresh-marks')
+    fetchMarks()
   }
-
-  useEffect(() => {
-    fetchTags()
-  }, [])
 
   return (
     <ContextMenu>

@@ -6,29 +6,15 @@ import {
   SidebarGroupContent,
 } from "@/components/ui/sidebar"
 import React, { useEffect } from "react"
-import { getMarks, type Marks } from "@/db/marks"
-import { Store } from '@tauri-apps/plugin-store';
-import { Tag } from "@/db/tags";
-import emitter from "@/emitter";
 import { MarkItem } from "./mark-item";
+import useMarkStore from "@/stores/mark-store";
 
 export function MarkList() {
-  const [marks, setMarks] = React.useState<Marks[]>([])
-
-  async function handleGetMarks() {
-    const store = await Store.load('store.json');
-    const currentTag = await store.get<Tag>('currentTag')
-    if (!currentTag) {
-      return
-    }
-    const res = await getMarks(currentTag.id)
-    setMarks(res)
-  }
+  const { marks, fetchMarks } = useMarkStore()
 
   useEffect(() => {
-    handleGetMarks()
-    emitter.on('refresh-marks', handleGetMarks)
-  }, [])
+    fetchMarks()
+  }, [fetchMarks])
 
   return (
     <SidebarContent>

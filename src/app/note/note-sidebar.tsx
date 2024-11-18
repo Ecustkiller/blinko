@@ -5,9 +5,10 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar"
 import React from "react"
-import { NoteManage } from './tag-manage'
+import { NoteManage } from './tag'
 import { MarkToolbar } from './mark/mark-toolbar'
 import { MarkList } from './mark/mark-list'
+
 
 export function NoteSidebar() {
   return (

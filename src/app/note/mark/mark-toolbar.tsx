@@ -6,7 +6,7 @@ import * as React from "react"
 import { initMarksDb, insertMark } from "@/db/marks"
 import { Store } from '@tauri-apps/plugin-store';
 import { Tag } from "@/db/tags"
-import emitter from "@/emitter"
+import useMarkStore from "@/stores/mark-store"
 
 function TooltipButton(
   { icon, tooltipText, onClick }:
@@ -28,12 +28,14 @@ function TooltipButton(
 
 export function MarkToolbar() {
 
+  const { fetchMarks } = useMarkStore()
+
   async function addScreenShot() {
     const store = await Store.load('store.json');
     const currentTag = await store.get<Tag>('currentTag')
     const tagId = currentTag ? currentTag.id : 0
     await insertMark({ tagId, type: 'scan', content: "screenshot" })
-    emitter.emit('refresh-marks')
+    fetchMarks()
   }
 
   React.useEffect(() => {
