@@ -14,21 +14,60 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import React from "react";
 import useMarkStore from "@/stores/mark";
 import useTagStore from "@/stores/tag";
+import Image from 'next/image'
+import { LocalImage } from "@/components/local-image";
 
 dayjs.extend(relativeTime)
 
 export function MarkWrapper({mark}: {mark: Marks}) {
-  return (
-    <div className="p-4 border-b">
-      <div className="flex w-full items-center gap-2">
-        <span>{MarkType[mark.type]}</span>
-        <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
+  switch (mark.type) {
+    case 'scan':
+    return (
+      <div className="border-b flex p-1">
+        <div className="bg-zinc-900">
+          <LocalImage
+            src={`/screenshot/${mark.url}`}
+            alt=""
+            className="w-24 h-24 object-cover opacity-40 hover:opacity-100 transition-all cursor-pointer"
+          />
+        </div>
+        <div className="px-1 flex-1">
+          <div className="flex w-full items-center gap-2">
+            <span>{MarkType[mark.type]}</span>
+            <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
+          </div>
+          <div className="flex w-full items-center gap-2">
+            <span>{mark.desc}</span>
+          </div>
+        </div>
       </div>
-      <div className="flex w-full items-center gap-2">
-        <span>{mark.desc}</span>
+    )
+    case 'image':
+    return (
+      <div className="p-4 border-b">
+        <div className="flex w-full items-center gap-2">
+          <span>{MarkType[mark.type]}</span>
+          <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
+        </div>
+        <div className="flex w-full items-center gap-2">
+          <Image src={mark.type} width={100} height={100} alt="mark" />
+        </div>
       </div>
-    </div>
-  )
+    )
+    case 'text':
+    default:
+    return (
+      <div className="p-4 border-b">
+        <div className="flex w-full items-center gap-2">
+          <span>{MarkType[mark.type]}</span>
+          <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
+        </div>
+        <div className="flex w-full items-center gap-2">
+          <span>{mark.content}</span>
+        </div>
+      </div>
+    )
+  }
 }
 
 export function MarkItem({mark}: {mark: Marks}) {

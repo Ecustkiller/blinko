@@ -13,7 +13,16 @@ const nextConfig: NextConfig = {
   assetPrefix: isProd ? undefined : `http://${internalHost}:3000`,
   devIndicators: {
     appIsrStatus: false,
-  }
+  },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/note',
+        permanent: true,
+      },
+    ]
+  },
 };
 
 export default nextConfig;
