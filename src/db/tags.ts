@@ -1,4 +1,4 @@
-import { getDb } from "../index"
+import { getDb } from "./index"
 import { Store } from '@tauri-apps/plugin-store';
 
 export interface Tag {

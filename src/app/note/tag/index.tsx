@@ -13,8 +13,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { TagItem } from './tag-item'
 import { initTagsDb, insertTag, Tag } from "@/db/tags"
-import useTagStore from "@/stores/tag-store"
-import useMarkStore from "@/stores/mark-store"
+import useTagStore from "@/stores/tag"
+import useMarkStore from "@/stores/mark"
 
 export function NoteManage() {
   const [open, setOpen] = React.useState(false)

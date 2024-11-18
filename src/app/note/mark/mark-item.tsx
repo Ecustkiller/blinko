@@ -12,8 +12,8 @@ import {
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime'
 import React from "react";
-import useMarkStore from "@/stores/mark-store";
-import useTagStore from "@/stores/tag-store";
+import useMarkStore from "@/stores/mark";
+import useTagStore from "@/stores/tag";
 
 dayjs.extend(relativeTime)
 

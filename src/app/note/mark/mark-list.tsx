@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/sidebar"
 import React, { useEffect } from "react"
 import { MarkItem } from "./mark-item";
-import useMarkStore from "@/stores/mark-store";
+import useMarkStore from "@/stores/mark";
 
 export function MarkList() {
   const { marks, fetchMarks } = useMarkStore()

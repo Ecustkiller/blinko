@@ -1,4 +1,4 @@
-import { getDb } from "../index"
+import { getDb } from "./index"
 
 export enum MarkType {
   scan = '截图',
