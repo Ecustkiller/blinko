@@ -43,10 +43,10 @@ export async function insertMark(mark: Partial<Marks>) {
   const db = await getDb();
   return await db.execute(`insert into marks (tagId, type, content, url, desc, createdAt) values (
       '${mark.tagId}',
-      '${mark.type}',
-      '${mark.content}',
-      '${mark.url}',
-      '${mark.desc}',
+      ${mark.type ? `'${mark.type}'`: null},
+      ${mark.content ? `'${mark.content}'`: null},
+      ${mark.url ? `'${mark.url}'`: null},
+      ${mark.desc ? `'${mark.desc}'`: null},
       ${Date.now()}
     )
   `)

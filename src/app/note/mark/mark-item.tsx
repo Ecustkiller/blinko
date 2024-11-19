@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/context-menu"
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime'
+import zh from 'dayjs/locale/zh'
 import React from "react";
 import useMarkStore from "@/stores/mark";
 import useTagStore from "@/stores/tag";
@@ -18,6 +19,7 @@ import Image from 'next/image'
 import { LocalImage } from "@/components/local-image";
 
 dayjs.extend(relativeTime)
+dayjs.locale(zh)
 
 export function MarkWrapper({mark}: {mark: Marks}) {
   switch (mark.type) {
@@ -31,7 +33,7 @@ export function MarkWrapper({mark}: {mark: Marks}) {
             className="w-24 h-24 object-cover opacity-40 hover:opacity-100 transition-all cursor-pointer"
           />
         </div>
-        <div className="px-1 flex-1">
+        <div className="pr-1 pl-2 flex-1">
           <div className="flex w-full items-center gap-2">
             <span>{MarkType[mark.type]}</span>
             <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
