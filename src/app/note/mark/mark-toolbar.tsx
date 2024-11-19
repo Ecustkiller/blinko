@@ -7,6 +7,8 @@ import { initMarksDb, insertMark } from "@/db/marks"
 import { Store } from '@tauri-apps/plugin-store';
 import { Tag } from "@/db/tags"
 import useMarkStore from "@/stores/mark"
+import { WebviewWindow, getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
+// import { invoke } from '@tauri-apps/api/core';
 
 function TooltipButton(
   { icon, tooltipText, onClick }:
@@ -38,6 +40,24 @@ export function MarkToolbar() {
     fetchMarks()
   }
 
+  async function createScreenShot() {
+
+    // invoke('screenshot_path')
+
+    const currentWindow = getCurrentWebviewWindow()
+    await currentWindow.hide()
+    
+    const webview = new WebviewWindow('screenshot', {
+      url: '/screenshot',
+      maximized: true,
+    });
+    console.log(webview);
+
+    webview.onCloseRequested(async () => {
+      await currentWindow.show()
+    })
+  }
+
   React.useEffect(() => {
     initMarksDb()
   }, [])
@@ -48,7 +68,7 @@ export function MarkToolbar() {
       <div className="flex">
         <TooltipProvider>
           <TooltipButton icon={<ScanText />} tooltipText="屏幕截图" onClick={addScreenShot} />
-          <TooltipButton icon={<CopySlash />} tooltipText="复制文本" />
+          <TooltipButton icon={<CopySlash />} tooltipText="复制文本" onClick={createScreenShot} />
           <TooltipButton icon={<ImagePlus />} tooltipText="插入图片" />
         </TooltipProvider>
       </div>

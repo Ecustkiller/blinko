@@ -1,3 +1,4 @@
+'use client'
 import Image from "next/image"
 import { appDataDir } from '@tauri-apps/api/path';
 import { convertFileSrc } from "@tauri-apps/api/core";
