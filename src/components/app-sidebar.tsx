@@ -18,13 +18,13 @@ import { ModeToggle } from "./mode-toggle"
 const items = [
   {
     title: "笔记",
-    url: "/note",
+    url: "/core/note",
     icon: Heart,
     isActive: true,
   },
   {
     title: "文章",
-    url: "/article",
+    url: "/core/article",
     icon: Notebook,
   },
   {
