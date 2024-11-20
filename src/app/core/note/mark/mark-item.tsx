@@ -25,20 +25,20 @@ export function MarkWrapper({mark}: {mark: Marks}) {
   switch (mark.type) {
     case 'scan':
     return (
-      <div className="border-b flex p-1">
+      <div className="border-b flex p-2">
         <div className="bg-zinc-900">
           <LocalImage
             src={`/screenshot/${mark.url}`}
             alt=""
-            className="w-24 h-24 object-cover opacity-40 hover:opacity-100 transition-all cursor-pointer"
+            className="w-14 h-14 object-cover opacity-40 hover:opacity-100 transition-all cursor-pointer"
           />
         </div>
-        <div className="pr-1 pl-2 flex-1">
-          <div className="flex w-full items-center gap-2">
+        <div className="pl-2 flex-1 overflow-hidden text-xs">
+          <div className="flex w-full items-center gap-2 text-zinc-500">
             <span>{MarkType[mark.type]}</span>
             <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
           </div>
-          <span className="line-clamp-5 leading-4 text-xs">{mark.content}</span>
+          <span className="line-clamp-2 leading-4 mt-2 text-xs break-words">{mark.content}</span>
         </div>
       </div>
     )
@@ -63,7 +63,7 @@ export function MarkWrapper({mark}: {mark: Marks}) {
           <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
         </div>
         <div className="flex w-full items-center gap-2">
-          <span>{mark.content}</span>
+          <span>{mark?.content ? decodeURI(mark.content) : ''}</span>
         </div>
       </div>
     )

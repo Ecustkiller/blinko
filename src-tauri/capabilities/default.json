@@ -24,8 +24,11 @@
       "identifier": "fs:read-all",
       "allow": [{ "path": "**" }]
     },
-    "fs:allow-mkdir",
     "fs:allow-exists",
+    {
+      "identifier": "fs:allow-mkdir",
+      "allow": [{ "path": "**" }]
+    },
     "core:webview:default",
     "core:webview:allow-create-webview-window",
     "core:webview:allow-webview-show",

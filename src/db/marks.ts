@@ -1,4 +1,5 @@
 import { getDb } from "./index"
+import { BaseDirectory, exists, mkdir } from "@tauri-apps/plugin-fs"
 
 export enum MarkType {
   scan = '截图',
@@ -19,6 +20,11 @@ export interface Marks {
 
 // 创建 marks 表
 export async function initMarksDb() {
+  const isExist = await exists('screenshot', { baseDir: BaseDirectory.AppData})
+  console.log(isExist);
+  if (!isExist) {
+    await mkdir('screenshot', { baseDir: BaseDirectory.AppData})
+  }
   const db = await getDb()
   await db.execute(`
     create table if not exists marks (
@@ -44,7 +50,7 @@ export async function insertMark(mark: Partial<Marks>) {
   return await db.execute(`insert into marks (tagId, type, content, url, desc, createdAt) values (
       '${mark.tagId}',
       ${mark.type ? `'${mark.type}'`: null},
-      ${mark.content ? `'${mark.content}'`: null},
+      ${mark.content ? `"${encodeURIComponent(mark?.content)}"`: null},
       ${mark.url ? `'${mark.url}'`: null},
       ${mark.desc ? `'${mark.desc}'`: null},
       ${Date.now()}

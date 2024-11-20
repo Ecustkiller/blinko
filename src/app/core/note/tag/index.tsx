@@ -66,7 +66,7 @@ export function NoteManage() {
         >
           <div className="flex gap-2 items-center">
             { name === '灵感' ? <Lightbulb className="size-4" /> : <TagIcon className="size-4" /> }
-            <span className="text-xs">{currentTag?.name}</span>
+            <span className="text-xs">{currentTag?.name} ({currentTag?.total})</span>
           </div>
           <ArrowUpDown className="size-3" />
         </div>

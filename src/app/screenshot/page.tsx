@@ -7,7 +7,6 @@ import { Check } from "lucide-react"
 import React from "react"
 import { useState } from "react"
 import ReactCrop, { type Crop } from 'react-image-crop'
-import { BaseDirectory, exists, mkdir } from "@tauri-apps/plugin-fs"
 import 'react-image-crop/dist/ReactCrop.css'
 
 export default function Page() {
@@ -25,10 +24,6 @@ export default function Page() {
   }
 
   async function success() {
-    const isExist = exists('screenshot', { baseDir: BaseDirectory.AppData})
-    if (!isExist) {
-      await mkdir('screenshot', { baseDir: BaseDirectory.AppData})
-    }
     const path = await invoke('screenshot_save', {
       x: (crop?.x || 0) * scale,
       y: ((crop?.y || 0) + y) * scale,

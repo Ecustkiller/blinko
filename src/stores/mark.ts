@@ -16,7 +16,14 @@ const useMarkStore = create<MarkState>((set) => ({
       return
     }
     const res = await getMarks(currentTagId)
-    set({ marks: res })
+    const decodeRes = res.map(item => {
+      console.log(decodeURIComponent(item.content || ''));
+      return {
+            ...item,
+            content: decodeURIComponent(item.content || '')
+      }
+    })
+    set({ marks: decodeRes })
   }
 }))
 

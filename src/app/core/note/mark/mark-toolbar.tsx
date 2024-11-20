@@ -48,11 +48,12 @@ export function MarkToolbar() {
       await currentWindow.show()
     })
 
-    await webview.listen("save-success", async e => {
+    const unlisten = await webview.listen("save-success", async e => {
       if (typeof e.payload === 'string') {
         const content = await ocr(e.payload)
         await insertMark({ tagId: currentTagId, type: 'scan', content, url: e.payload })
         fetchMarks()
+        unlisten()
       }
     });
   }
