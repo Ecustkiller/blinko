@@ -73,7 +73,7 @@ export function MarkWrapper({mark}: {mark: Marks}) {
 export function MarkItem({mark}: {mark: Marks}) {
 
   const { fetchMarks } = useMarkStore()
-  const { tags, currentTag } = useTagStore()
+  const { tags, currentTagId } = useTagStore()
 
   async function handleDelMark() {
     await delMark(mark.id)
@@ -95,8 +95,10 @@ export function MarkItem({mark}: {mark: Marks}) {
           <ContextMenuSubTrigger inset>转移</ContextMenuSubTrigger>
           <ContextMenuSubContent className="w-48">
             {
-              tags?.filter(tag => tag.id !== currentTag?.id).map((tag) => (
-                <ContextMenuItem key={tag.id} onClick={() => handleTransfer(tag.id)}>{tag.name}</ContextMenuItem>
+              tags.map((tag) => (
+                <ContextMenuItem disabled={tag.id === currentTagId} key={tag.id} onClick={() => handleTransfer(tag.id)}>
+                  {tag.name}
+                </ContextMenuItem>
               ))
             }
           </ContextMenuSubContent>
