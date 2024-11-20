@@ -14,15 +14,6 @@ const nextConfig: NextConfig = {
   devIndicators: {
     appIsrStatus: false,
   },
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/core/note',
-        permanent: true,
-      },
-    ]
-  },
 };
 
 export default nextConfig;
