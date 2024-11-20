@@ -10,6 +10,7 @@ import { CommandItem, CommandShortcut } from "@/components/ui/command"
 import React from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import useTagStore from "@/stores/tag"
 
 function ItemIcon({ isLocked=false, isPin=false }) {
   if (isLocked) {
@@ -51,6 +52,8 @@ export function TagItem(
 {
   const [isEditing, setIsEditing] = React.useState(false)
 
+  const { fetchTags, getCurrentTag } = useTagStore()
+
   async function handleDel() {
     await delTag(tag.id)
     onChange()
@@ -64,6 +67,8 @@ export function TagItem(
   async function updateName(name: string) {
     setIsEditing(false)
     await updateTag({ ...tag, name })
+    await fetchTags()
+    getCurrentTag()
     onChange()
   }
 
