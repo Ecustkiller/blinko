@@ -8,6 +8,7 @@ import { WebviewWindow, getCurrentWebviewWindow } from '@tauri-apps/api/webviewW
 import { invoke } from '@tauri-apps/api/core';
 import useTagStore from "@/stores/tag"
 import useMarkStore from "@/stores/mark"
+import ocr from "@/lib/ocr"
 
 function TooltipButton(
   { icon, tooltipText, onClick }:
@@ -49,7 +50,8 @@ export function MarkToolbar() {
 
     await webview.listen("save-success", async e => {
       if (typeof e.payload === 'string') {
-        await insertMark({ tagId: currentTagId, type: 'scan', content: "screenshot", url: e.payload })
+        const content = await ocr(e.payload)
+        await insertMark({ tagId: currentTagId, type: 'scan', content, url: e.payload })
         fetchMarks()
       }
     });

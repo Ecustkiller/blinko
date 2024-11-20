@@ -38,9 +38,7 @@ export function MarkWrapper({mark}: {mark: Marks}) {
             <span>{MarkType[mark.type]}</span>
             <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
           </div>
-          <div className="flex w-full items-center gap-2">
-            <span>{mark.desc}</span>
-          </div>
+          <span className="line-clamp-5 leading-4 text-xs">{mark.content}</span>
         </div>
       </div>
     )

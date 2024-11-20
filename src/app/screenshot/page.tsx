@@ -2,43 +2,41 @@
 import { LocalImage } from "@/components/local-image"
 import { Button } from "@/components/ui/button"
 import { invoke } from "@tauri-apps/api/core"
-import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
+import { getCurrentWindow } from '@tauri-apps/api/window'
 import { Check } from "lucide-react"
 import React from "react"
 import { useState } from "react"
 import ReactCrop, { type Crop } from 'react-image-crop'
-
+import { BaseDirectory, exists, mkdir } from "@tauri-apps/plugin-fs"
 import 'react-image-crop/dist/ReactCrop.css'
-
 
 export default function Page() {
 
   const [crop, setCrop] = useState<Crop>()
   const [y, setY] = useState(0)
   const [scale, setScale] = useState(0)
-  const currentWebviewWindow = getCurrentWebviewWindow()
 
   async function setScreen() {
-    const innerPosition = await currentWebviewWindow.innerPosition()
-    const scaleFactor = await currentWebviewWindow.scaleFactor()
+    const innerPosition = await getCurrentWindow().innerPosition()
+    const scaleFactor = await getCurrentWindow().scaleFactor()
 
     setY(innerPosition.y / scaleFactor)
     setScale(scaleFactor)
   }
 
-  React.useEffect(() => {
-    setScreen()
-  })
-
   async function success() {
+    const isExist = exists('screenshot', { baseDir: BaseDirectory.AppData})
+    if (!isExist) {
+      await mkdir('screenshot', { baseDir: BaseDirectory.AppData})
+    }
     const path = await invoke('screenshot_save', {
       x: (crop?.x || 0) * scale,
       y: ((crop?.y || 0) + y) * scale,
       width: (crop?.width || 0) * scale,
       height: (crop?.height || 0) * scale
     })
-    currentWebviewWindow.emit('save-success', path)
-    currentWebviewWindow.close()
+    await getCurrentWindow().emit('save-success', path)
+    getCurrentWindow().close()
   }
 
   function Toolbar() {
@@ -54,7 +52,7 @@ export default function Page() {
   return (
     <div className="flex h-screen w-screen overflow-hidden">
       <ReactCrop crop={crop} onChange={c => setCrop(c)} ruleOfThirds={true} renderSelectionAddon={Toolbar}>
-        <LocalImage className="w-screen" style={{ transform: `translateY(-${y}px)` }} src="/temp_screenshot.png" alt="" />
+        <LocalImage onLoad={setScreen} className="w-screen" style={{ transform: `translateY(-${y}px)` }} src="/temp_screenshot.png" alt="" />
       </ReactCrop>
       <p className="fixed bottom-0 right-0 text-white grid gap-2 text-right py-1 px-4 overflow-hidden">
         <span>x: {crop?.x}</span>

@@ -1,27 +1,24 @@
 'use client'
 import Image from "next/image"
-import { appDataDir } from '@tauri-apps/api/path';
-import { convertFileSrc } from "@tauri-apps/api/core";
 import React, { useState } from "react";
+import { convertImage } from '@/lib/utils'
 
-export function LocalImage({ src, ...props }: React.ComponentProps<typeof Image>) {
+export function LocalImage({ onLoad, src, ...props }: React.ComponentProps<typeof Image>) {
   const [localSrc, setLocalSrc] = useState<string>('')
 
   async function getAppDataDir() {
-    const appDataDirPath = await appDataDir()
-    const imagePath = appDataDirPath + src
-    const covertFileSrcPath = convertFileSrc(imagePath)
+    const covertFileSrcPath = await convertImage(src as string)
     setLocalSrc(covertFileSrcPath)
   }
 
   React.useEffect(() => {
     getAppDataDir()
-  })
+  }, [])
 
   // 如果 loaclSrc 存在
   return (
     localSrc ?
-    <Image src={localSrc} alt="" width={0} height={0} className={props.className} style={props.style} /> :
+    <Image onLoad={onLoad} src={localSrc} alt="" width={0} height={0} className={props.className} style={props.style} /> :
     null
   )
 }
