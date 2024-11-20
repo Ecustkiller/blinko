@@ -33,7 +33,9 @@ export function NoteManage() {
 
   async function quickAddTag() {
     const res = await insertTag({ name })
-    setCurrentTagId(res.lastInsertId)
+    await setCurrentTagId(res.lastInsertId)
+    await fetchTags()
+    getCurrentTag()
     setOpen(false)
     fetchMarks()
   }
