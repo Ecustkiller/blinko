@@ -21,7 +21,7 @@ export function LocalImage({ src, ...props }: React.ComponentProps<typeof Image>
   // 如果 loaclSrc 存在
   return (
     localSrc ?
-    <Image src={localSrc} alt="" width={0} height={0} className={props.className} /> :
+    <Image src={localSrc} alt="" width={0} height={0} className={props.className} style={props.style} /> :
     null
   )
 }

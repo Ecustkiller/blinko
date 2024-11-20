@@ -1,12 +1,67 @@
+'use client'
 import { LocalImage } from "@/components/local-image"
-function Page() {
+import { Button } from "@/components/ui/button"
+import { invoke } from "@tauri-apps/api/core"
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
+import { Check } from "lucide-react"
+import React from "react"
+import { useState } from "react"
+import ReactCrop, { type Crop } from 'react-image-crop'
+
+import 'react-image-crop/dist/ReactCrop.css'
+
+
+export default function Page() {
+
+  const [crop, setCrop] = useState<Crop>()
+  const [y, setY] = useState(0)
+  const [scale, setScale] = useState(0)
+  const currentWebviewWindow = getCurrentWebviewWindow()
+
+  async function setScreen() {
+    const innerPosition = await currentWebviewWindow.innerPosition()
+    const scaleFactor = await currentWebviewWindow.scaleFactor()
+
+    setY(innerPosition.y / scaleFactor)
+    setScale(scaleFactor)
+  }
+
+  React.useEffect(() => {
+    setScreen()
+  })
+
+  async function success() {
+    const path = await invoke('screenshot_save', {
+      x: (crop?.x || 0) * scale,
+      y: ((crop?.y || 0) + y) * scale,
+      width: (crop?.width || 0) * scale,
+      height: (crop?.height || 0) * scale
+    })
+    currentWebviewWindow.emit('save-success', path)
+    currentWebviewWindow.close()
+  }
+
+  function Toolbar() {
+    return (
+      <>
+        <Button className="absolute bottom-2 right-2" onClick={success} size="icon">
+          <Check />
+        </Button>
+      </>
+    )
+  }
+  
   return (
-    <div className="flex h-screen">
-      <LocalImage className="w-screen h-screen" src="/temp_screenshot.png" alt="" />
+    <div className="flex h-screen w-screen overflow-hidden">
+      <ReactCrop crop={crop} onChange={c => setCrop(c)} ruleOfThirds={true} renderSelectionAddon={Toolbar}>
+        <LocalImage className="w-screen" style={{ transform: `translateY(-${y}px)` }} src="/temp_screenshot.png" alt="" />
+      </ReactCrop>
+      <p className="fixed bottom-0 right-0 text-white grid gap-2 text-right py-1 px-4 overflow-hidden">
+        <span>x: {crop?.x}</span>
+        <span>y: {crop?.y}</span>
+        <span>width: {crop?.width}{crop?.unit}</span>
+        <span>height: {crop?.height}{crop?.unit}</span>
+      </p>
     </div>
   )
 }
-
-Page.getLayout = () => <div className="bg-green-500"></div>
-
-export default Page

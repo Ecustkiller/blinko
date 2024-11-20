@@ -1,9 +1,9 @@
 use tauri::{path::BaseDirectory, AppHandle, Manager};
-use xcap::Monitor;
+use xcap::{image, Monitor};
 
 #[allow(dead_code)]
 #[tauri::command]
-pub fn screenshot_path(app: AppHandle) -> String {
+pub fn screenshot(app: AppHandle) -> String {
   let monitors = Monitor::all().unwrap();
   let main_monitor = monitors.get(0).unwrap();
   let image = main_monitor.capture_image().unwrap();
@@ -15,14 +15,14 @@ pub fn screenshot_path(app: AppHandle) -> String {
 
 #[allow(dead_code)]
 #[tauri::command]
-pub fn screenshot_save(app: AppHandle) -> String {
-  let monitors = Monitor::all().unwrap();
-  let main_monitor = monitors.get(0).unwrap();
-  let image = main_monitor.capture_image().unwrap();
-  // 获取app目录
+pub fn screenshot_save(app: AppHandle, x: u32, y: u32, width: u32, height: u32) -> String {
+  let file_path = app.path().resolve("temp_screenshot.png", BaseDirectory::AppData).unwrap();
+  let image = image::open(&file_path).unwrap();
+  let image = image.crop_imm(x, y, width, height);
   let timestamp = chrono::Local::now().format("%Y%m%d%H%M%S").to_string();
-  let file_path = app.path().resolve(format!("temp/{}.png", timestamp), BaseDirectory::AppData).unwrap();
-  println!("{}", file_path.to_str().unwrap());
-  image.save(&file_path).unwrap();
-  file_path.to_str().unwrap().to_string()
+  let save_path = app.path().resolve(format!("screenshot/{}.png", &timestamp), BaseDirectory::AppData).unwrap();
+  image.save(&save_path).unwrap();
+  std::fs::remove_file(&file_path).unwrap();
+  let file_name = format!("{}.png", timestamp);
+  file_name
 }
