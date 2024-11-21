@@ -110,7 +110,7 @@ export function AppSidebar() {
             hidden: false,
           }}
         >
-          <a href="#">
+          <a href="/core/setting">
             <div className="flex size-8 items-center justify-center rounded-lg">
               <Settings className="size-4" />
             </div>

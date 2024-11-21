@@ -21,7 +21,6 @@ export interface Marks {
 // 创建 marks 表
 export async function initMarksDb() {
   const isExist = await exists('screenshot', { baseDir: BaseDirectory.AppData})
-  console.log(isExist);
   if (!isExist) {
     await mkdir('screenshot', { baseDir: BaseDirectory.AppData})
   }
