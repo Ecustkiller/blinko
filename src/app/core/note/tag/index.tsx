@@ -16,7 +16,7 @@ import { initTagsDb, insertTag, Tag } from "@/db/tags"
 import useTagStore from "@/stores/tag"
 import useMarkStore from "@/stores/mark"
 
-export function NoteManage() {
+export function TagManage() {
   const [open, setOpen] = React.useState(false)
   const [name, setName] = React.useState<string>("")
 
@@ -58,7 +58,7 @@ export function NoteManage() {
 
   return (
     <>
-      <div className="flex gap-1 w-full items-center justify-between">
+      <div className="flex gap-1 w-full items-center justify-between px-2">
         <div
           className="w-full h-9 border cursor-pointer rounded flex justify-between items-center px-3 bg-white hover:bg-gray-50
             dark:bg-black dark:hover:bg-zinc-800"

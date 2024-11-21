@@ -39,10 +39,13 @@ export async function fetchAiStream(text: string, callback: (text: string) => vo
         chunkValue.split('data: ').map(item => {
           const str = item.trim()
           if (str && str !== '[DONE]') {
-            const json = JSON.parse(str)
-            const content = json.choices[0].delta.content
-            if (content) {
-              callback(content)
+            try {
+              const json = JSON.parse(str)
+              const content = json.choices[0].delta.content
+              if (content) {
+                callback(content)
+              }
+            } catch {
             }
           }
         })

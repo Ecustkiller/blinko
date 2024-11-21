@@ -1,6 +1,5 @@
 "use client"
-import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import {TooltipProvider } from "@/components/ui/tooltip"
 import { CopySlash, ImagePlus, ScanText } from "lucide-react"
 import * as React from "react"
 import { initMarksDb, insertMark } from "@/db/marks"
@@ -9,24 +8,7 @@ import { invoke } from '@tauri-apps/api/core';
 import useTagStore from "@/stores/tag"
 import useMarkStore from "@/stores/mark"
 import ocr from "@/lib/ocr"
-
-function TooltipButton(
-  { icon, tooltipText, onClick }:
-  { icon: React.ReactNode; tooltipText: string; onClick?: () => void })
-{
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button size="icon" variant="ghost" onClick={onClick}>
-          {icon}
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>
-        <p>{tooltipText}</p>
-      </TooltipContent>
-    </Tooltip>
-  )
-}
+import { TooltipButton } from "@/components/tooltip-button"
 
 export function MarkToolbar() {
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
@@ -65,8 +47,8 @@ export function MarkToolbar() {
   }, [])
 
   return (
-    <div className="flex justify-between items-center">
-      <h1 className="font-bold flex items-center gap-1">Note</h1>
+    <div className="flex justify-between items-center h-12 border-b px-2">
+      <h1 className="font-bold flex items-center gap-1">Marks</h1>
       <div className="flex">
         <TooltipProvider>
           <TooltipButton icon={<ScanText />} tooltipText="屏幕截图" onClick={createScreenShot} />
