@@ -29,7 +29,7 @@ function TooltipButton(
 }
 
 export function MarkToolbar() {
-  const { currentTagId } = useTagStore()
+  const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
   const { fetchMarks } = useMarkStore()
 
   async function createScreenShot() {
@@ -52,7 +52,9 @@ export function MarkToolbar() {
       if (typeof e.payload === 'string') {
         const content = await ocr(e.payload)
         await insertMark({ tagId: currentTagId, type: 'scan', content, url: e.payload })
-        fetchMarks()
+        await fetchMarks()
+        await fetchTags()
+        getCurrentTag()
         unlisten()
       }
     });
