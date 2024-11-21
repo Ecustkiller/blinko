@@ -41,7 +41,7 @@ export function Note() {
   }
 
   return <div className="flex flex-col flex-1">
-    <NoteHeader />
+    <NoteHeader total={text.length} />
     <MdPreview id={id} className="flex-1" value={text} theme={mdTheme} />
     <NoteFooter gen={handleAi} />
   </div>

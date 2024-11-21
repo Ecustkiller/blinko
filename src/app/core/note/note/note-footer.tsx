@@ -15,11 +15,13 @@ export function NoteFooter({gen}: {gen: () => void}) {
     <footer className="h-36 border-t p-4">
       <Textarea placeholder="请输入你的个性化需求（可选）" />
       <div className="flex items-center justify-between mt-4">
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           <Switch id="airplane-mode" />
           <Label htmlFor="airplane-mode">自动生成</Label>
         </div>
-        <Button onClick={gen}>生成</Button>
+        <div className="flex items-center gap-2">
+          <Button onClick={gen}>生成</Button>
+        </div>
       </div>
     </footer>
   )

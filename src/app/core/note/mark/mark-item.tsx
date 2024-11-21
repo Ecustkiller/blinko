@@ -17,7 +17,6 @@ import useMarkStore from "@/stores/mark";
 import useTagStore from "@/stores/tag";
 import Image from 'next/image'
 import { LocalImage } from "@/components/local-image";
-import { ScanText } from "lucide-react";
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
@@ -27,12 +26,11 @@ export function MarkWrapper({mark}: {mark: Marks}) {
     case 'scan':
     return (
       <div className="border-b flex p-2">
-        <div className="bg-zinc-900 flex items-center justify-center group">
-          <ScanText className="size-6 text-white absolute group-hover:hidden" />
+        <div className="bg-zinc-900 flex items-center justify-center">
           <LocalImage
             src={`/screenshot/${mark.url}`}
             alt=""
-            className="w-14 h-14 object-cover opacity-40 hover:opacity-100 transition-all cursor-pointer"
+            className="w-14 h-14 object-cover cursor-pointer"
           />
         </div>
         <div className="pl-2 flex-1 overflow-hidden text-xs">
