@@ -1,6 +1,6 @@
 "use client"
 import {TooltipProvider } from "@/components/ui/tooltip"
-import { CopySlash, ImagePlus, PanelRightClose, ScanText } from "lucide-react"
+import { ImagePlus, PanelRightClose, ScanText } from "lucide-react"
 import * as React from "react"
 import { initMarksDb, insertMark } from "@/db/marks"
 import { WebviewWindow, getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
@@ -9,6 +9,7 @@ import useTagStore from "@/stores/tag"
 import useMarkStore from "@/stores/mark"
 import ocr from "@/lib/ocr"
 import { TooltipButton } from "@/components/tooltip-button"
+import { ControlText } from "./control-text"
 
 export function MarkToolbar() {
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
@@ -55,7 +56,7 @@ export function MarkToolbar() {
         <TooltipProvider>
           <TooltipButton icon={<ScanText />} tooltipText="截图" onClick={createScreenShot} />
           <TooltipButton icon={<ImagePlus />} tooltipText="插图" />
-          <TooltipButton icon={<CopySlash />} tooltipText="文本" />
+          <ControlText />
         </TooltipProvider>
       </div>
     </div>
