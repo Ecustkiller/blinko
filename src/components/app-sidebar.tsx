@@ -1,5 +1,6 @@
+'use client'
+
 import { Heart, Notebook, Star, ImageUp, Search, Recycle, History, Network, ScanFace, Settings } from "lucide-react"
- 
 import {
   Sidebar,
   SidebarContent,
@@ -11,7 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-
+import { usePathname } from 'next/navigation'
 import { ModeToggle } from "./mode-toggle"
  
 // Menu items.
@@ -60,6 +61,9 @@ const items = [
 ]
  
 export function AppSidebar() {
+  // 获取当前的路由
+  const pathname = usePathname()
+
   return (
     <Sidebar 
       collapsible="none"
@@ -86,6 +90,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
+                    isActive={pathname === item.url}
                     tooltip={{
                       children: item.title,
                       hidden: false,
