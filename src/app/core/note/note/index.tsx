@@ -43,9 +43,19 @@ export function Note() {
   async function handleAi(customText: string) {
     setLoading(true)
     await fetchMarks()
+    const scanMarks = marks.filter(item => item.type === 'scan')
+    const textMarks = marks.filter(item => item.type === 'text')
+    const imageMarks = marks.filter(item => item.type === 'image')
     const request_content = `
       以下是通过截图后，使用OCR识别出的文字片段：
-      ${marks.map(item => item.content).join(';\n\n')}。
+      ${scanMarks.map(item => item.content).join(';\n\n')}。
+      以下是通过文本复制记录的片段：
+      ${textMarks.map(item => item.content).join(';\n\n')}。
+      以下是通过图片复制记录的片段描述：
+      ${imageMarks.map(item => `
+        描述：${item.content}，
+        图片地址：${item.url}
+      `).join(';\n\n')}。
       请将这些片段整理成一篇详细完整的笔记，要满足以下要求：
       - 使用 Markdown 语法。
       - 如果是代码，必须完整保留，不要随意生成。

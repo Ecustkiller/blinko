@@ -10,6 +10,7 @@ import useMarkStore from "@/stores/mark"
 import ocr from "@/lib/ocr"
 import { TooltipButton } from "@/components/tooltip-button"
 import { ControlText } from "./control-text"
+import { ControlImage } from "./control-image"
 
 export function MarkToolbar() {
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
@@ -33,7 +34,7 @@ export function MarkToolbar() {
 
     const unlisten = await webview.listen("save-success", async e => {
       if (typeof e.payload === 'string') {
-        const content = await ocr(e.payload)
+        const content = await ocr(`screenshot/${e.payload}`)
         await insertMark({ tagId: currentTagId, type: 'scan', content, url: e.payload })
         await fetchMarks()
         await fetchTags()
@@ -41,6 +42,10 @@ export function MarkToolbar() {
         unlisten()
       }
     });
+  }
+
+  function addImage() {
+    console.log('addImage')
   }
 
   React.useEffect(() => {
@@ -55,7 +60,7 @@ export function MarkToolbar() {
       <div className="flex">
         <TooltipProvider>
           <TooltipButton icon={<ScanText />} tooltipText="截图" onClick={createScreenShot} />
-          <TooltipButton icon={<ImagePlus />} tooltipText="插图" />
+          <ControlImage />
           <ControlText />
         </TooltipProvider>
       </div>
