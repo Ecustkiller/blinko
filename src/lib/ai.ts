@@ -25,7 +25,7 @@ export async function fetchAiStream(text: string, callback: (text: string) => vo
     body,
   };
 
-  fetch("https://api.chatanywhere.tech/v1/chat/completions", requestOptions)
+  await fetch("https://api.chatanywhere.tech/v1/chat/completions", requestOptions)
     .then(response => response.body)
     .then(async (body) => {
       if (body === null) return

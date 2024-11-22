@@ -6,15 +6,16 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
+import { Loader2 } from "lucide-react"
 
-export function NoteFooter({gen}: {gen: (text: string) => void}) {
+export function NoteFooter({gen, loading}: {gen: (text: string) => void, loading: boolean}) {
   const [text, setText] = useState("")
 
   useEffect(() => {
     initMarksDb()
   }, [])
 
-  function handleSuccess() {
+  async function handleSuccess() {
     gen(text)
   }
 
@@ -27,7 +28,10 @@ export function NoteFooter({gen}: {gen: (text: string) => void}) {
           <Label htmlFor="airplane-mode">自动生成</Label>
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={handleSuccess}>生成</Button>
+          <Button disabled={loading} onClick={handleSuccess}>
+            { loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" /> }
+            生成
+          </Button>
         </div>
       </div>
     </footer>

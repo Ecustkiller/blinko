@@ -11,6 +11,7 @@ import 'md-editor-rt/lib/preview.css';
 export function Note() {
   const [text, setText] = useState("")
   const [mdTheme, setMdTheme] = useState<Themes>('light')
+  const [loading, setLoading] = useState(false)
   const { theme } = useTheme()
   const [id] = useState('preview-only');
 
@@ -40,6 +41,7 @@ export function Note() {
   }
     
   async function handleAi(customText: string) {
+    setLoading(true)
     await fetchMarks()
     const request_content = `
       以下是通过截图后，使用OCR识别出的文字片段：
@@ -56,13 +58,13 @@ export function Note() {
 
       请满足用户输入的自定义需求：${customText}
     `
-    fetchAiStream(request_content, aiResponse)
-    setText(textChunks)
+    await fetchAiStream(request_content, aiResponse)
+    setLoading(false)
   }
 
   return <div className="flex flex-col flex-1">
     <NoteHeader total={text.length} />
     <MdPreview id={id} className="flex-1" value={text} theme={mdTheme} />
-    <NoteFooter gen={handleAi} />
+    <NoteFooter gen={handleAi} loading={loading} />
   </div>
 }
