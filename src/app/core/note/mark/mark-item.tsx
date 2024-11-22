@@ -90,10 +90,10 @@ export function MarkItem({mark}: {mark: Marks}) {
       <ContextMenuTrigger>
         <MarkWrapper mark={mark} />
       </ContextMenuTrigger>
-      <ContextMenuContent className="w-64">
+      <ContextMenuContent>
         <ContextMenuSub>
           <ContextMenuSubTrigger inset>转移</ContextMenuSubTrigger>
-          <ContextMenuSubContent className="w-48">
+          <ContextMenuSubContent>
             {
               tags.map((tag) => (
                 <ContextMenuItem disabled={tag.id === currentTagId} key={tag.id} onClick={() => handleTransfer(tag.id)}>
@@ -111,7 +111,7 @@ export function MarkItem({mark}: {mark: Marks}) {
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem inset onClick={handleDelMark}>
-          删除
+          <span className="text-rose-600">删除</span>
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

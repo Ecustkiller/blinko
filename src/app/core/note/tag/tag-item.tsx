@@ -89,7 +89,7 @@ export function TagItem(
           <CommandShortcut>{ tag.total || 0 }</CommandShortcut>
         </CommandItem>
       </ContextMenuTrigger>
-      <ContextMenuContent className="w-64">
+      <ContextMenuContent>
         <ContextMenuItem inset disabled={tag.isLocked} onClick={togglePin}>
           { tag.isPin ? "取消置顶" : "置顶" }
         </ContextMenuItem>

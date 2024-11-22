@@ -1,6 +1,6 @@
 "use client"
 import {TooltipProvider } from "@/components/ui/tooltip"
-import { CopySlash, ImagePlus, ScanText } from "lucide-react"
+import { CopySlash, ImagePlus, PanelRightClose, ScanText } from "lucide-react"
 import * as React from "react"
 import { initMarksDb, insertMark } from "@/db/marks"
 import { WebviewWindow, getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
@@ -48,12 +48,14 @@ export function MarkToolbar() {
 
   return (
     <div className="flex justify-between items-center h-12 border-b px-2">
-      <h1 className="font-bold flex items-center gap-1">Marks</h1>
+      <h1 className="font-bold flex items-center gap-1">
+        <TooltipButton icon={<PanelRightClose />} tooltipText="详细视图" />
+      </h1>
       <div className="flex">
         <TooltipProvider>
-          <TooltipButton icon={<ScanText />} tooltipText="屏幕截图" onClick={createScreenShot} />
-          <TooltipButton icon={<CopySlash />} tooltipText="复制文本" />
-          <TooltipButton icon={<ImagePlus />} tooltipText="插入图片" />
+          <TooltipButton icon={<ScanText />} tooltipText="截图" onClick={createScreenShot} />
+          <TooltipButton icon={<ImagePlus />} tooltipText="插图" />
+          <TooltipButton icon={<CopySlash />} tooltipText="文本" />
         </TooltipProvider>
       </div>
     </div>
