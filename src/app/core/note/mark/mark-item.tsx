@@ -18,6 +18,7 @@ import useTagStore from "@/stores/tag";
 import { LocalImage } from "@/components/local-image";
 import { fetchAiDesc } from "@/lib/ai";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
@@ -26,12 +27,45 @@ function TextHover({text}: {text?: string}) {
   return (
     <HoverCard>
       <HoverCardTrigger asChild>
-        <span className="line-clamp-2 leading-4 mt-2 text-xs break-words hover:underline cursor-pointer">{text}</span>
+        <span className="line-clamp-2 leading-4 mt-2 text-xs break-words hover:underline">{text}</span>
       </HoverCardTrigger>
       <HoverCardContent>
         <p>{text}</p>
       </HoverCardContent>
     </HoverCard>
+  )
+}
+
+function ImageViewer({mark, path}: {mark: Marks, path?: string}) {
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <div>
+          <LocalImage
+            src={`/${path}/${mark.url}`}
+            alt=""
+            className="w-14 h-14 object-cover cursor-pointer"
+          />
+        </div>
+      </SheetTrigger>
+      <SheetContent className="w-[1400px]">
+        <SheetHeader>
+          <SheetTitle>{MarkType[mark.type]}</SheetTitle>
+          <p className="mt-4 text-xs text-zinc-500">创建于：{dayjs(mark.createdAt).format('YYYY-MM-DD HH:mm:ss')}</p>
+          <LocalImage
+            src={`/${path}/${mark.url}`}
+            alt=""
+            className="w-full"
+          />
+          <SheetDescription>
+            <p className="my-4 text-md text-zinc-900 font-bold">描述</p>
+            <p>{mark.desc}</p>
+            <p className="my-4 text-md text-zinc-900 font-bold">OCR</p>
+            <p>{mark.content}</p>
+          </SheetDescription>
+        </SheetHeader>
+      </SheetContent>
+    </Sheet>
   )
 }
 
@@ -50,11 +84,7 @@ export function MarkWrapper({mark}: {mark: Marks}) {
           <TextHover text={mark.desc} />
         </div>
         <div className="bg-zinc-900 flex items-center justify-center">
-          <LocalImage
-            src={`/screenshot/${mark.url}`}
-            alt=""
-            className="w-14 h-14 object-cover cursor-pointer"
-          />
+          <ImageViewer mark={mark} path="screenshot" />
         </div>
       </div>
     )
@@ -71,11 +101,7 @@ export function MarkWrapper({mark}: {mark: Marks}) {
           <TextHover text={mark.desc} />
         </div>
         <div className="bg-zinc-900 flex items-center justify-center">
-          <LocalImage
-            src={`/image/${mark.url}`}
-            alt=""
-            className="w-14 h-14 object-cover cursor-pointer"
-          />
+          <ImageViewer mark={mark} path="image" />
         </div>
       </div>
     )
