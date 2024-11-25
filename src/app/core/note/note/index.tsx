@@ -7,6 +7,7 @@ import useMarkStore from "@/stores/mark";
 import { NoteHeader } from './note-header'
 import { NoteFooter } from "./note-footer";
 import 'md-editor-rt/lib/preview.css';
+import { Store } from "@tauri-apps/plugin-store";
 
 export function Note() {
   const [text, setText] = useState("")
@@ -46,6 +47,7 @@ export function Note() {
     const scanMarks = marks.filter(item => item.type === 'scan')
     const textMarks = marks.filter(item => item.type === 'text')
     const imageMarks = marks.filter(item => item.type === 'image')
+    const locale = await (await Store.load('store.json')).get('note_locale')
     const request_content = `
       以下是通过截图后，使用OCR识别出的文字片段：
       ${scanMarks.map(item => item.content).join(';\n\n')}。
@@ -57,6 +59,7 @@ export function Note() {
         图片地址：${item.url}
       `).join(';\n\n')}。
       请将这些片段整理成一篇详细完整的笔记，要满足以下要求：
+      - 使用 ${locale} 语言。
       - 使用 Markdown 语法。
       - 如果是代码，必须完整保留，不要随意生成。
       - 笔记片段可能缺失，内容要补全。
@@ -64,10 +67,11 @@ export function Note() {
       - 笔记顺序可能是错误的，要按照正确顺序排列。
       - 文字复制的内容尽量不要修改，只处理格式化后的内容。
       - 你通过图片记录的描述，尽量将图片地址链接到笔记中的匹配位置上，不明确的图片放在文章最后。
-      - 参考资料（带链接，最好是中文网站）
+      - 参考资料（带链接，最好是${locale}网站）
 
       请满足用户输入的自定义需求：${customText}
     `
+    console.log(request_content);
     await fetchAiStream(request_content, aiResponse)
     setLoading(false)
   }
