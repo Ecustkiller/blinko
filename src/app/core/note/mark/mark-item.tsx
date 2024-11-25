@@ -51,17 +51,17 @@ function ImageViewer({mark, path}: {mark: Marks, path?: string}) {
       <SheetContent className="w-[1400px]">
         <SheetHeader>
           <SheetTitle>{MarkType[mark.type]}</SheetTitle>
-          <p className="mt-4 text-xs text-zinc-500">创建于：{dayjs(mark.createdAt).format('YYYY-MM-DD HH:mm:ss')}</p>
+          <span className="mt-4 text-xs text-zinc-500">创建于：{dayjs(mark.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
           <LocalImage
             src={`/${path}/${mark.url}`}
             alt=""
             className="w-full"
           />
           <SheetDescription>
-            <p className="my-4 text-md text-zinc-900 font-bold">描述</p>
-            <p>{mark.desc}</p>
-            <p className="my-4 text-md text-zinc-900 font-bold">OCR</p>
-            <p>{mark.content}</p>
+            <span className="block my-4 text-md text-zinc-900 font-bold">描述</span>
+            <span>{mark.desc}</span>
+            <span className="block my-4 text-md text-zinc-900 font-bold">OCR</span>
+            <span>{mark.content}</span>
           </SheetDescription>
         </SheetHeader>
       </SheetContent>
