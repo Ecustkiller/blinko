@@ -48,6 +48,7 @@ export function Note() {
     const textMarks = marks.filter(item => item.type === 'text')
     const imageMarks = marks.filter(item => item.type === 'image')
     const locale = await (await Store.load('store.json')).get('note_locale')
+    const count = await (await Store.load('store.json')).get('note_count')
     const request_content = `
       以下是通过截图后，使用OCR识别出的文字片段：
       ${scanMarks.map(item => item.content).join(';\n\n')}。
@@ -61,6 +62,7 @@ export function Note() {
       请将这些片段整理成一篇详细完整的笔记，要满足以下要求：
       - 使用 ${locale} 语言。
       - 使用 Markdown 语法。
+      - 字数控制在 ${count} 字以内。
       - 如果是代码，必须完整保留，不要随意生成。
       - 笔记片段可能缺失，内容要补全。
       - 根据笔记内容，延伸出扩展知识。
@@ -77,7 +79,7 @@ export function Note() {
   }
 
   return <div className="flex flex-col flex-1">
-    <NoteHeader total={text.length} />
+    <NoteHeader text={text} />
     <MdPreview id={id} className="flex-1" value={text} theme={mdTheme} />
     <NoteFooter gen={handleAi} loading={loading} />
   </div>
