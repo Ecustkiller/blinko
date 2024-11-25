@@ -36,7 +36,7 @@ export async function initMarksDb() {
       createdAt integer
     )
   `)
-  }
+}
 
 export async function getMarks(id: number) {
   const db = await getDb();

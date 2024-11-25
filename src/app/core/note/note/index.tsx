@@ -8,6 +8,7 @@ import { NoteHeader } from './note-header'
 import { NoteFooter } from "./note-footer";
 import 'md-editor-rt/lib/preview.css';
 import { Store } from "@tauri-apps/plugin-store";
+import { initNotesDb } from "@/db/notes";
 
 export function Note() {
   const [text, setText] = useState("")
@@ -17,6 +18,10 @@ export function Note() {
   const [id] = useState('preview-only');
 
   const { fetchMarks, marks } = useMarkStore()
+
+  useEffect(() => {
+    initNotesDb()
+  }, [])
 
   useEffect(() => {
     setMdTheme(theme as Themes)
