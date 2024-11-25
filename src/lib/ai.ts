@@ -1,6 +1,8 @@
 import { Store } from "@tauri-apps/plugin-store";
 
-export async function fetchAiStream(text: string, callback: (text: string) => void) {
+const url = 'https://api.chatanywhere.tech/v1/chat/completions'
+
+async function createAi(text: string, isStream = true) {
   const store = await Store.load('store.json')
   const apiKey = await store.get('apiKey')
 
@@ -10,7 +12,7 @@ export async function fetchAiStream(text: string, callback: (text: string) => vo
 
   const body = JSON.stringify({
     model: 'gpt-4o-mini',
-    stream: true,
+    stream: isStream,
     messages: [
         {
           role: 'user',
@@ -25,7 +27,13 @@ export async function fetchAiStream(text: string, callback: (text: string) => vo
     body,
   };
 
-  await fetch("https://api.chatanywhere.tech/v1/chat/completions", requestOptions)
+  return requestOptions;
+}
+
+export async function fetchAiStream(text: string, callback: (text: string) => void) {
+  const requestOptions = await createAi(text, true)
+
+  await fetch(url, requestOptions)
     .then(response => response.body)
     .then(async (body) => {
       if (body === null) return
@@ -52,4 +60,17 @@ export async function fetchAiStream(text: string, callback: (text: string) => vo
       }
       callback('[DONE]')
     })
+}
+
+export async function fetchAi(text: string) {
+  const requestOptions = await createAi(text, false)
+  return (await fetch(url, requestOptions)).json()
+}
+
+export async function fetchAiDesc(text: string) {
+  const descContent = `
+    根据内容：${text}，返回一段关于截图的描述，不要超过50字，不要包含特殊字符。
+  `
+  const requestOptions = await createAi(descContent, false)
+  return (await fetch(url, requestOptions)).json()
 }

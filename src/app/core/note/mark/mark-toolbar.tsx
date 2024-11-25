@@ -1,53 +1,14 @@
 "use client"
 import {TooltipProvider } from "@/components/ui/tooltip"
-import { ImagePlus, PanelRightClose, ScanText } from "lucide-react"
+import { PanelRightClose } from "lucide-react"
 import * as React from "react"
-import { initMarksDb, insertMark } from "@/db/marks"
-import { WebviewWindow, getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
-import { invoke } from '@tauri-apps/api/core';
-import useTagStore from "@/stores/tag"
-import useMarkStore from "@/stores/mark"
-import ocr from "@/lib/ocr"
+import { initMarksDb } from "@/db/marks"
 import { TooltipButton } from "@/components/tooltip-button"
+import { ControlScan } from "./control-scan"
 import { ControlText } from "./control-text"
 import { ControlImage } from "./control-image"
 
 export function MarkToolbar() {
-  const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
-  const { fetchMarks } = useMarkStore()
-
-  async function createScreenShot() {
-    const currentWindow = getCurrentWebviewWindow()
-    await currentWindow.hide()
-
-    await invoke('screenshot')
-    
-    const webview = new WebviewWindow('screenshot', {
-      url: '/screenshot',
-      decorations: false,
-      maximized: true,
-    });
-
-    webview.onCloseRequested(async () => {
-      await currentWindow.show()
-    })
-
-    const unlisten = await webview.listen("save-success", async e => {
-      if (typeof e.payload === 'string') {
-        const content = await ocr(`screenshot/${e.payload}`)
-        await insertMark({ tagId: currentTagId, type: 'scan', content, url: e.payload })
-        await fetchMarks()
-        await fetchTags()
-        getCurrentTag()
-        unlisten()
-      }
-    });
-  }
-
-  function addImage() {
-    console.log('addImage')
-  }
-
   React.useEffect(() => {
     initMarksDb()
   }, [])
@@ -59,7 +20,7 @@ export function MarkToolbar() {
       </h1>
       <div className="flex">
         <TooltipProvider>
-          <TooltipButton icon={<ScanText />} tooltipText="截图" onClick={createScreenShot} />
+          <ControlScan />
           <ControlImage />
           <ControlText />
         </TooltipProvider>

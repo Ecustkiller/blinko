@@ -62,9 +62,8 @@ export async function updateMark(mark: Marks) {
   return await db.execute(`
     update marks set 
     tagId = ${mark.tagId},
-    content = '${mark.content}',
-    url = '${mark.url}',
-    desc = '${mark.desc}',
+    url = "${mark.url}",
+    desc = "${mark.desc}",
     createdAt = ${mark.createdAt}
     where id = ${mark.id}`
   )

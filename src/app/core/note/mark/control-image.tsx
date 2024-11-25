@@ -1,17 +1,15 @@
 import { TooltipButton } from "@/components/tooltip-button"
-import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { insertMark } from "@/db/marks"
+import { fetchAiDesc } from "@/lib/ai"
 import ocr from "@/lib/ocr"
 import useMarkStore from "@/stores/mark"
 import useTagStore from "@/stores/tag"
@@ -37,7 +35,8 @@ export function ControlImage() {
     const data = new Uint8Array(await file.arrayBuffer())
     await writeFile(`image/${filename}`, data, { baseDir: BaseDirectory.AppData})
     const content = await ocr(`image/${filename}`)
-    await insertMark({ tagId: currentTagId, type: 'image', content, url: filename })
+    const desc = await fetchAiDesc(content).then(res => res.choices[0].message.content)
+    await insertMark({ tagId: currentTagId, type: 'image', content, url: filename, desc })
     await fetchMarks()
     await fetchTags()
     getCurrentTag()

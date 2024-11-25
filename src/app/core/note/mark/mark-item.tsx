@@ -15,8 +15,8 @@ import zh from 'dayjs/locale/zh'
 import React from "react";
 import useMarkStore from "@/stores/mark";
 import useTagStore from "@/stores/tag";
-import Image from 'next/image'
 import { LocalImage } from "@/components/local-image";
+import { fetchAiDesc } from "@/lib/ai";
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
@@ -33,7 +33,7 @@ export function MarkWrapper({mark}: {mark: Marks}) {
             </span>
             <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
           </div>
-          <span className="line-clamp-2 leading-4 mt-2 text-xs break-words">{mark.content}</span>
+          <span className="line-clamp-2 leading-4 mt-2 text-xs break-words">{mark.desc}</span>
         </div>
         <div className="bg-zinc-900 flex items-center justify-center">
           <LocalImage
@@ -54,7 +54,7 @@ export function MarkWrapper({mark}: {mark: Marks}) {
             </span>
             <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
           </div>
-          <span className="line-clamp-2 leading-4 mt-2 text-xs break-words">{mark.content}</span>
+          <span className="line-clamp-2 leading-4 mt-2 text-xs break-words">{mark.desc}</span>
         </div>
         <div className="bg-zinc-900 flex items-center justify-center">
           <LocalImage
@@ -96,6 +96,12 @@ export function MarkItem({mark}: {mark: Marks}) {
     fetchMarks()
   }
 
+  async function regenerateDesc() {
+    const desc = await fetchAiDesc(mark.content || '').then(res => res.choices[0].message.content)
+    await updateMark({ ...mark, desc })
+    fetchMarks()
+  }
+
   return (
     <ContextMenu>
       <ContextMenuTrigger>
@@ -103,7 +109,7 @@ export function MarkItem({mark}: {mark: Marks}) {
       </ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuSub>
-          <ContextMenuSubTrigger inset>转移</ContextMenuSubTrigger>
+          <ContextMenuSubTrigger inset>转移标签</ContextMenuSubTrigger>
           <ContextMenuSubContent>
             {
               tags.map((tag) => (
@@ -117,10 +123,13 @@ export function MarkItem({mark}: {mark: Marks}) {
         <ContextMenuItem inset disabled>
           转换为{mark.type === 'scan' ? '插图' : '截图'}
         </ContextMenuItem>
+        <ContextMenuItem inset disabled={mark.type === 'text'} onClick={regenerateDesc}>
+          重新生成描述
+        </ContextMenuItem>
+        <ContextMenuSeparator />
         <ContextMenuItem inset disabled>
           查看原文件
         </ContextMenuItem>
-        <ContextMenuSeparator />
         <ContextMenuItem inset onClick={handleDelMark}>
           <span className="text-rose-600">删除</span>
         </ContextMenuItem>
