@@ -17,9 +17,23 @@ import useMarkStore from "@/stores/mark";
 import useTagStore from "@/stores/tag";
 import { LocalImage } from "@/components/local-image";
 import { fetchAiDesc } from "@/lib/ai";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
+
+function TextHover({text}: {text?: string}) {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <span className="line-clamp-2 leading-4 mt-2 text-xs break-words hover:underline cursor-pointer">{text}</span>
+      </HoverCardTrigger>
+      <HoverCardContent>
+        <p>{text}</p>
+      </HoverCardContent>
+    </HoverCard>
+  )
+}
 
 export function MarkWrapper({mark}: {mark: Marks}) {
   switch (mark.type) {
@@ -33,7 +47,7 @@ export function MarkWrapper({mark}: {mark: Marks}) {
             </span>
             <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
           </div>
-          <span className="line-clamp-2 leading-4 mt-2 text-xs break-words">{mark.desc}</span>
+          <TextHover text={mark.desc} />
         </div>
         <div className="bg-zinc-900 flex items-center justify-center">
           <LocalImage
@@ -54,7 +68,7 @@ export function MarkWrapper({mark}: {mark: Marks}) {
             </span>
             <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
           </div>
-          <span className="line-clamp-2 leading-4 mt-2 text-xs break-words">{mark.desc}</span>
+          <TextHover text={mark.desc} />
         </div>
         <div className="bg-zinc-900 flex items-center justify-center">
           <LocalImage
@@ -75,7 +89,7 @@ export function MarkWrapper({mark}: {mark: Marks}) {
           </span>
           <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
         </div>
-        <span className="line-clamp-2 leading-4 mt-2 text-xs break-words">{mark.content}</span>
+        <TextHover text={mark.content} />
       </div>
     )
   }
