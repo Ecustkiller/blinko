@@ -13,15 +13,19 @@ import 'md-editor-rt/lib/preview.css';
 export function Note() {
   const [text, setText] = useState("")
   const [mdTheme, setMdTheme] = useState<Themes>('light')
-  const [loading, setLoading] = useState(false)
   const { theme } = useTheme()
   const [id] = useState('preview-only');
 
   const { fetchMarks, marks } = useMarkStore()
-  const { locale, count } = useNoteStore()
+  const { locale, count, currentNote, fetchCurrentNote, setLoading } = useNoteStore()
+
+  async function initNote() {
+    await initNotesDb()
+    await fetchCurrentNote()
+  }
 
   useEffect(() => {
-    initNotesDb()
+    initNote()
   }, [])
 
   useEffect(() => {
@@ -29,12 +33,19 @@ export function Note() {
   }, [theme])
 
   useEffect(() => {
+    const decodedText = decodeURIComponent(currentNote?.content || '')
+    setText(decodedText)
+    const md = document.querySelector('#preview-only-preview-wrapper')
+    if (md) {
+      md.scroll(0, 0)
+    }
+  }, [currentNote])
+
+  useEffect(() => {
     // 根据内容变化滚动到底部
     const md = document.querySelector('#preview-only-preview-wrapper')
     if (md) {
-      setTimeout(() => {
         md.scroll(0, md.scrollHeight)
-      }, 100);
     }
   }, [text])
 
@@ -77,7 +88,6 @@ export function Note() {
 
       请满足用户输入的自定义需求：${customText}
     `
-    console.log(request_content);
     await fetchAiStream(request_content, aiResponse)
     setLoading(false)
   }
@@ -85,6 +95,6 @@ export function Note() {
   return <div className="flex flex-col flex-1">
     <NoteHeader text={text} />
     <MdPreview id={id} className="flex-1" value={text} theme={mdTheme} />
-    <NoteFooter gen={handleAi} loading={loading} />
+    <NoteFooter gen={handleAi} />
   </div>
 }

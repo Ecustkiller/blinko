@@ -20,6 +20,9 @@ export const locales = [
 export const counts = [200, 500, 1000, 2000, 5000]
 
 interface NoteState {
+  loading: boolean
+  setLoading: (loading: boolean) => void
+
   currentNote?: Note
   fetchCurrentNote: () => Promise<void>
 
@@ -33,8 +36,14 @@ interface NoteState {
 }
 
 const useNoteStore = create<NoteState>((set) => ({
+  loading: false,
+  setLoading: (loading: boolean) => {
+    set({ loading })
+  },
+  
   currentNote: undefined,
   fetchCurrentNote: async () => {
+    set({ currentNote: undefined })
     const store = await Store.load('store.json');
     const currentTagId = await store.get<number>('currentTagId')
     if (!currentTagId) {

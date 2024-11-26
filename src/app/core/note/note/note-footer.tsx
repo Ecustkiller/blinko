@@ -7,15 +7,18 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import { Loader2 } from "lucide-react"
+import useNoteStore from "@/stores/note"
 
-export function NoteFooter({gen, loading}: {gen: (text: string) => void, loading: boolean}) {
+export function NoteFooter({gen}: {gen: (text: string) => void}) {
   const [text, setText] = useState("")
+  const { loading, setLoading } = useNoteStore()
 
   useEffect(() => {
     initMarksDb()
   }, [])
 
   async function handleSuccess() {
+    setLoading(true)
     gen(text)
   }
 

@@ -38,7 +38,8 @@ export async function insertNote(note: Partial<Note>) {
 
 export async function getNoteByTagId(tagId: number) {
   const db = await getDb()
-  return await db.select<Note>(`select * from notes where tagId = ${tagId} order by createdAt desc limit 1`)
+  // 根据 tagId 获取 marks，获取最新的一条
+  return (await db.select<Note[]>(`select * from notes where tagId = ${tagId} order by createdAt desc limit 1`))[0]
 }
 
 export async function getNotesByTagId(tagId: number) {
