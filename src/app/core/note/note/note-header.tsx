@@ -7,7 +7,7 @@ import { TooltipButton } from "@/components/tooltip-button"
 import { Separator } from "@/components/ui/separator"
 import { LocaleSet } from './locale-set'
 import { CountSet } from './count-set'
-import { NoteSet } from './note-set'
+import { NoteHistory } from './note-history'
 import wordsCount from 'words-count';
 import useNoteStore from "@/stores/note"
 import dayjs from "dayjs"
@@ -38,7 +38,7 @@ export function NoteHeader({text}: {text: string}) {
               <Separator orientation="vertical" />
             </div> : null
           }
-          <NoteSet content={text} />
+          <NoteHistory content={text} />
           <Separator orientation="vertical" />
           <TooltipButton icon={<HardDriveDownload />} tooltipText="生成文章" />
         </TooltipProvider>

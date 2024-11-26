@@ -20,7 +20,7 @@ import useNoteStore from "@/stores/note"
 export function TagManage() {
   const [open, setOpen] = React.useState(false)
   const [name, setName] = React.useState<string>("")
-  const { fetchCurrentNote } = useNoteStore()
+  const { fetchCurrentNote, fetchCurrentNotes } = useNoteStore()
 
   const {
     currentTag,
@@ -47,6 +47,7 @@ export function TagManage() {
     getCurrentTag()
     setOpen(false)
     await fetchMarks()
+    await fetchCurrentNotes()
     await fetchCurrentNote()
   }
 

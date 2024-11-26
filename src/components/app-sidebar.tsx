@@ -1,6 +1,6 @@
 'use client'
 
-import { Heart, Notebook, Star, ImageUp, Search, Recycle, History, Network, ScanFace, Settings } from "lucide-react"
+import { Notebook, Star, ImageUp, Search, Recycle, History, Network, ScanFace, Settings, Highlighter } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -20,7 +20,7 @@ const items = [
   {
     title: "笔记",
     url: "/core/note",
-    icon: Heart,
+    icon: Highlighter,
     isActive: true,
   },
   {

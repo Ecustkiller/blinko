@@ -17,16 +17,12 @@ export function Note() {
   const [id] = useState('preview-only');
 
   const { fetchMarks, marks } = useMarkStore()
-  const { locale, count, currentNote, fetchCurrentNote, setLoading } = useNoteStore()
-
-  async function initNote() {
-    await initNotesDb()
-    await fetchCurrentNote()
-  }
+  const { locale, count, currentNote, fetchCurrentNote, setLoading, loading, clearCurrentNote } = useNoteStore()
 
   useEffect(() => {
-    initNote()
-  }, [])
+    initNotesDb()
+    fetchCurrentNote()
+  }, [fetchCurrentNote])
 
   useEffect(() => {
     setMdTheme(theme as Themes)
@@ -35,19 +31,17 @@ export function Note() {
   useEffect(() => {
     const decodedText = decodeURIComponent(currentNote?.content || '')
     setText(decodedText)
-    const md = document.querySelector('#preview-only-preview-wrapper')
-    if (md) {
-      md.scroll(0, 0)
+    if (currentNote) {
+      const md = document.querySelector('#preview-only-preview-wrapper')
+      if (md) md.scroll(0, 0)
     }
   }, [currentNote])
 
   useEffect(() => {
     // 根据内容变化滚动到底部
     const md = document.querySelector('#preview-only-preview-wrapper')
-    if (md) {
-        md.scroll(0, md.scrollHeight)
-    }
-  }, [text])
+    if (md && loading) md.scroll(0, md.scrollHeight)
+  }, [loading, text])
 
   let textChunks = ''
 
@@ -90,6 +84,7 @@ export function Note() {
     `
     await fetchAiStream(request_content, aiResponse)
     setLoading(false)
+    clearCurrentNote()
   }
 
   return <div className="flex flex-col flex-1">

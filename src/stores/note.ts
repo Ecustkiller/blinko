@@ -1,4 +1,4 @@
-import { getNoteByTagId, Note } from '@/db/notes';
+import { getNoteByTagId, Note, getNotesByTagId, getNoteById, delNote } from '@/db/notes';
 import { Store } from '@tauri-apps/plugin-store';
 import { create } from 'zustand'
 
@@ -24,7 +24,12 @@ interface NoteState {
   setLoading: (loading: boolean) => void
 
   currentNote?: Note
+  clearCurrentNote: () => void
   fetchCurrentNote: () => Promise<void>
+  fetchNoteById: (id: number) => Promise<void>
+  currentNotes: Note[]
+  fetchCurrentNotes: () => Promise<void>
+  deleteNote: (id: number) => Promise<void>
 
   locale: string
   getLocale: () => Promise<void>
@@ -42,6 +47,9 @@ const useNoteStore = create<NoteState>((set) => ({
   },
   
   currentNote: undefined,
+  clearCurrentNote: () => {
+    set({ currentNote: undefined })
+  },
   fetchCurrentNote: async () => {
     set({ currentNote: undefined })
     const store = await Store.load('store.json');
@@ -51,6 +59,25 @@ const useNoteStore = create<NoteState>((set) => ({
     }
     const res = await getNoteByTagId(currentTagId)
     set({ currentNote: res })
+  },
+  fetchNoteById: async (id: number) => {
+    const res = await getNoteById(id)
+    set({ currentNote: res })
+  },
+
+  currentNotes: [],
+  fetchCurrentNotes: async () => {
+    set({ currentNotes: [] })
+    const store = await Store.load('store.json');
+    const currentTagId = await store.get<number>('currentTagId')
+    if (!currentTagId) {
+      return
+    }
+    const res = await getNotesByTagId(currentTagId)
+    set({ currentNotes: res })
+  },
+  deleteNote: async (id: number) => {
+    await delNote(id)
   },
 
   locale: '简体中文',

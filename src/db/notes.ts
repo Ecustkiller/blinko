@@ -38,11 +38,22 @@ export async function insertNote(note: Partial<Note>) {
 
 export async function getNoteByTagId(tagId: number) {
   const db = await getDb()
-  // 根据 tagId 获取 marks，获取最新的一条
   return (await db.select<Note[]>(`select * from notes where tagId = ${tagId} order by createdAt desc limit 1`))[0]
+}
+
+export async function getNoteById(id: number) {
+  const db = await getDb()
+  // 根据 id 获取 note
+  return (await db.select<Note[]>(`select * from notes where id = ${id}`))[0]
 }
 
 export async function getNotesByTagId(tagId: number) {
   const db = await getDb()
   return await db.select<Note[]>(`select * from notes where tagId = ${tagId} order by createdAt desc`)
+}
+
+// 删除
+export async function delNote(id: number) {
+  const db = await getDb()
+  return await db.execute(`delete from notes where id = ${id}`)
 }
