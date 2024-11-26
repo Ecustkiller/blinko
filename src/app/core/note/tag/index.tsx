@@ -37,6 +37,8 @@ export function TagManage() {
     const res = await insertTag({ name })
     await setCurrentTagId(res.lastInsertId)
     await fetchTags()
+    await fetchCurrentNotes()
+    await fetchCurrentNote()
     getCurrentTag()
     setOpen(false)
     fetchMarks()
