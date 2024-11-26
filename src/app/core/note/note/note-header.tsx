@@ -29,7 +29,7 @@ export function NoteHeader({text}: {text: string}) {
           <Separator orientation="vertical" />
           <span className="text-sm px-2">2024-11-21 04:10:15</span>
           <Separator orientation="vertical" />
-          <NoteSet />
+          <NoteSet content={text} />
           <Separator orientation="vertical" />
           <TooltipButton icon={<HardDriveDownload />} tooltipText="生成文章" />
         </TooltipProvider>

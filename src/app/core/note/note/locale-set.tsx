@@ -2,46 +2,21 @@ import { TooltipButton } from "@/components/tooltip-button";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Store } from "@tauri-apps/plugin-store";
 import { Globe } from "lucide-react";
 import React, { useEffect } from "react";
+import useNoteStore, { locales } from "@/stores/note";
 
 export function LocaleSet() {
+  const { setLocale, locale, getLocale } = useNoteStore()
 
-  const [locale, setLocale] = React.useState('简体中文')
-
-  const locales = [
-    '简体中文',
-    'English',
-    '日本語',
-    'Українська', 
-    'Français', 
-    '한국어', 
-    'Português', 
-    'বাংলা', 
-    'Italiano', 
-    'فارسی', 
-    'Русский', 
-    'Čeština',
-  ]
-
-  async function getLocale() {
-    const store = await Store.load('store.json');
-    const res = await store.get<string>('note_locale')
-    if (res) {
-      setLocale(res)
-    }
-  }
 
   async function localeChange(res: string) {
     setLocale(res)
-    const store = await Store.load('store.json');
-    await store.set('note_locale', res)
   }
 
   useEffect(() => {
     getLocale()
-  }, [])
+  }, [getLocale])
 
   return (
     <Popover>

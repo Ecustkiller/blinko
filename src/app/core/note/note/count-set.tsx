@@ -2,33 +2,21 @@ import { TooltipButton } from "@/components/tooltip-button";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Store } from "@tauri-apps/plugin-store";
 import { PencilRuler } from "lucide-react";
 import React, { useEffect } from "react";
+import useNoteStore, { counts } from "@/stores/note";
 
 export function CountSet() {
 
-  const [locale, setLocale] = React.useState('500')
-
-  const locales = ['200', '500', '1000', '2000', '5000']
-
-  async function getNoteCount() {
-    const store = await Store.load('store.json');
-    const res = await store.get<string>('note_count')
-    if (res) {
-      setLocale(res)
-    }
-  }
+  const { setCount, getCount, count } = useNoteStore()
 
   async function localeChange(res: string) {
-    setLocale(res)
-    const store = await Store.load('store.json');
-    await store.set('note_count', res)
+    setCount(Number(res))
   }
 
   useEffect(() => {
-    getNoteCount()
-  }, [])
+    getCount()
+  }, [getCount])
 
   return (
     <Popover>
@@ -45,12 +33,12 @@ export function CountSet() {
               此设置仅可能不及预期，具体生成的字数与笔记内容有关。
             </p>
           </div>
-          <RadioGroup defaultValue={locale} onValueChange={localeChange}>
+          <RadioGroup defaultValue={count.toString()} onValueChange={localeChange}>
             {
-              locales.map((locale) => (
-                <div className="flex items-center space-x-2" key={locale}>
-                  <RadioGroupItem value={locale} id={locale} />
-                  <Label htmlFor={locale}>{locale}字</Label>
+              counts.map((count) => (
+                <div className="flex items-center space-x-2" key={count}>
+                  <RadioGroupItem value={count.toString()} id={count.toString()} />
+                  <Label htmlFor={count.toString()}>{count}字</Label>
                 </div>
               ))
             }

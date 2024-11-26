@@ -7,7 +7,7 @@ export enum MarkType {
   image = '插图',
 }
 
-export interface Marks {
+export interface Mark {
   id: number
   tagId: number
   type: 'scan' | 'text' | 'image'
@@ -41,10 +41,10 @@ export async function initMarksDb() {
 export async function getMarks(id: number) {
   const db = await getDb();
   // 根据 tagId 获取 marks，根据 createdAt 倒序
-  return await db.select<Marks[]>(`select * from marks where tagId = ${id} order by createdAt desc`)
+  return await db.select<Mark[]>(`select * from marks where tagId = ${id} order by createdAt desc`)
 }
 
-export async function insertMark(mark: Partial<Marks>) {
+export async function insertMark(mark: Partial<Mark>) {
   const db = await getDb();
   return await db.execute(`insert into marks (tagId, type, content, url, desc, createdAt) values (
       '${mark.tagId}',
@@ -57,7 +57,7 @@ export async function insertMark(mark: Partial<Marks>) {
   `)
 }
 
-export async function updateMark(mark: Marks) {
+export async function updateMark(mark: Mark) {
   const db = await getDb();
   return await db.execute(`
     update marks set 

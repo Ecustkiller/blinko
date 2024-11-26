@@ -1,9 +1,9 @@
-import { getMarks, Marks } from '@/db/marks'
+import { getMarks, Mark } from '@/db/marks'
 import { Store } from '@tauri-apps/plugin-store';
 import { create } from 'zustand'
 
 interface MarkState {
-  marks: Marks[]
+  marks: Mark[]
   fetchMarks: () => Promise<void>
 }
 

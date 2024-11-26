@@ -1,11 +1,5 @@
 import { getDb } from "./index"
 
-export enum MarkType {
-  scan = '截图',
-  text = '文本',
-  image = '插图',
-}
-
 export interface Note {
   id: number
   tagId: number
@@ -25,7 +19,29 @@ export async function initNotesDb() {
       content text default null,
       locale text not null,
       count text not null,
-      createdAt integer
+      createdAt integer not null
     )
   `)
+}
+
+export async function insertNote(note: Partial<Note>) {
+  const db = await getDb()
+  return await db.execute(`insert into notes (tagId, content, locale, count, createdAt) values (
+      '${note.tagId}',
+      ${note.content ? `"${encodeURIComponent(note?.content)}"`: null},
+      '${note.locale}',
+      '${note.count}',
+      ${Date.now()}
+    )
+  `)
+}
+
+export async function getNoteByTagId(tagId: number) {
+  const db = await getDb()
+  return await db.select<Note>(`select * from notes where tagId = ${tagId} order by createdAt desc limit 1`)
+}
+
+export async function getNotesByTagId(tagId: number) {
+  const db = await getDb()
+  return await db.select<Note[]>(`select * from notes where tagId = ${tagId} order by createdAt desc`)
 }

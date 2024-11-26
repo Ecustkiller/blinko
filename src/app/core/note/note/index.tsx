@@ -6,9 +6,9 @@ import { useTheme } from 'next-themes'
 import useMarkStore from "@/stores/mark";
 import { NoteHeader } from './note-header'
 import { NoteFooter } from "./note-footer";
-import 'md-editor-rt/lib/preview.css';
-import { Store } from "@tauri-apps/plugin-store";
 import { initNotesDb } from "@/db/notes";
+import useNoteStore from "@/stores/note";
+import 'md-editor-rt/lib/preview.css';
 
 export function Note() {
   const [text, setText] = useState("")
@@ -18,6 +18,7 @@ export function Note() {
   const [id] = useState('preview-only');
 
   const { fetchMarks, marks } = useMarkStore()
+  const { locale, count } = useNoteStore()
 
   useEffect(() => {
     initNotesDb()
@@ -52,8 +53,6 @@ export function Note() {
     const scanMarks = marks.filter(item => item.type === 'scan')
     const textMarks = marks.filter(item => item.type === 'text')
     const imageMarks = marks.filter(item => item.type === 'image')
-    const locale = await (await Store.load('store.json')).get('note_locale')
-    const count = await (await Store.load('store.json')).get('note_count')
     const request_content = `
       以下是通过截图后，使用OCR识别出的文字片段：
       ${scanMarks.map(item => item.content).join(';\n\n')}。

@@ -1,4 +1,4 @@
-import { delMark, Marks, MarkType, updateMark } from "@/db/marks";
+import { delMark, Mark, MarkType, updateMark } from "@/db/marks";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -36,7 +36,7 @@ function TextHover({text}: {text?: string}) {
   )
 }
 
-function ImageViewer({mark, path}: {mark: Marks, path?: string}) {
+function ImageViewer({mark, path}: {mark: Mark, path?: string}) {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -69,7 +69,7 @@ function ImageViewer({mark, path}: {mark: Marks, path?: string}) {
   )
 }
 
-export function MarkWrapper({mark}: {mark: Marks}) {
+export function MarkWrapper({mark}: {mark: Mark}) {
   switch (mark.type) {
     case 'scan':
     return (
@@ -121,7 +121,7 @@ export function MarkWrapper({mark}: {mark: Marks}) {
   }
 }
 
-export function MarkItem({mark}: {mark: Marks}) {
+export function MarkItem({mark}: {mark: Mark}) {
 
   const { fetchMarks } = useMarkStore()
   const { tags, currentTagId } = useTagStore()

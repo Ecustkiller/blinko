@@ -9,7 +9,6 @@ export interface Tag {
   total?: number
 }
 
-
 // 创建 tags 表
 export async function initTagsDb() {
   const db = await getDb()
