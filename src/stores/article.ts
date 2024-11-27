@@ -25,8 +25,10 @@ export interface DirTree extends DirEntry {
 
 const useArticleStore = create<NoteState>((set) => ({
   activeFilePath: '',
-  setActiveFilePath: (path: string) => {
+  setActiveFilePath: async (path: string) => {
     set({ activeFilePath: path })
+    const store = await Store.load('store.json');
+    await store.set('activeFilePath', path)
   },
 
   fileTree: [],
@@ -48,6 +50,11 @@ const useArticleStore = create<NoteState>((set) => ({
   initCollapsibleList: async () => {
     const store = await Store.load('store.json');
     const res = await store.get<string[]>('collapsibleList')
+    const activeFilePath = await store.get<string>('activeFilePath')
+    if (activeFilePath) {
+      set({ activeFilePath })
+      useArticleStore.getState().readArticle(activeFilePath)
+    }
     set({ collapsibleList: res || [] })
   },
   setCollapsibleList: async (name: string, value: boolean) => {
@@ -64,9 +71,7 @@ const useArticleStore = create<NoteState>((set) => ({
 
   currentArticle: '',
   readArticle: async (path: string) => {
-    console.log(path);
     const res = await readTextFile(`article/${path}`, { baseDir: BaseDirectory.AppData })
-    console.log(res);
     set({ currentArticle: res })
   },
   setCurrentArticle: async (content: string) => {

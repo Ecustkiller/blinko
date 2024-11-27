@@ -36,7 +36,7 @@ function Tree({ item }: { item: DirTree }) {
         onClick={handleSelectFile}
       >
         <File />
-        {item.name}
+        <span>{item.name}</span>
       </SidebarMenuButton>
     )
   }
