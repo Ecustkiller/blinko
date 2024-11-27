@@ -8,86 +8,73 @@ import {
   SidebarMenuItem,
   SidebarMenuSub,
 } from "@/components/ui/sidebar"
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { Folder, File, ChevronRight } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { readDir, BaseDirectory, DirEntry } from '@tauri-apps/plugin-fs';
+import useArticleStore, { DirTree } from "@/stores/article"
 
-interface DirTree extends DirEntry {
-  children?: DirTree[]
-  parent?: DirTree
+function Tree({ item }: { item: DirTree }) {
+
+  const { activeFilePath, setActiveFilePath, readArticle } = useArticleStore()
+
+  const path = item.parent?.name + '/' + item.name
+
+  function handleSelectFile() {
+    setActiveFilePath(path)
+    readArticle(path)
+  }
+
+  if (!item.children?.length) {
+    return (
+      <SidebarMenuButton
+        isActive={activeFilePath === path}
+        className="data-[active=true]:bg-transparent"
+        onClick={handleSelectFile}
+      >
+        <File />
+        {item.name}
+      </SidebarMenuButton>
+    )
+  }
+  return (
+    <SidebarMenuItem>
+      <Collapsible
+        className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
+        defaultOpen={item.name === "components" || item.name === "ui"}
+      >
+        <CollapsibleTrigger asChild>
+          <SidebarMenuButton>
+            <ChevronRight className="transition-transform" />
+            <Folder />
+            {item.name}
+          </SidebarMenuButton>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarMenuSub>
+            {item.children.map((subItem) => (
+              <Tree key={subItem.name} item={subItem} />
+            ))}
+          </SidebarMenuSub>
+        </CollapsibleContent>
+      </Collapsible>
+    </SidebarMenuItem>
+  )
 }
 
 export function FileManager() {
-  const [tree, setTree] = useState<DirTree[]>([])
-
-  async function read() {
-    const cacheTree: DirTree[] = []
-    const dirs = await readDir('article', { baseDir: BaseDirectory.AppData });
-    cacheTree.push(...dirs.filter(file => file.name !== '.DS_Store'))
-    for (let index = 0; index < cacheTree.length; index++) {
-      const dir = cacheTree[index];
-      if (dir.isDirectory) {
-        const files = await readDir(`article/${dir.name}`, { baseDir: BaseDirectory.AppData });
-        dir.children = files.filter(file => file.name !== '.DS_Store').map(file => ({ ...file, parent: dir }))
-      }
-    }
-    setTree(cacheTree)
-  }
+  const { fileTree, loadFileTree } = useArticleStore()
 
   useEffect(() => {
-    read()
-  }, [])
-
-  function Tree({ item }: { item: DirTree }) {
-    function handleSelectFile() {
-      console.log(item)
-    }
-
-    if (!item.children?.length) {
-      return (
-        <SidebarMenuButton
-          isActive={item.name === "button.tsx"}
-          className="data-[active=true]:bg-transparent"
-          onClick={handleSelectFile}
-        >
-          <File />
-          {item.name}
-        </SidebarMenuButton>
-      )
-    }
-    return (
-      <SidebarMenuItem>
-        <Collapsible
-          className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
-          defaultOpen={item.name === "components" || item.name === "ui"}
-        >
-          <CollapsibleTrigger asChild>
-            <SidebarMenuButton>
-              <ChevronRight className="transition-transform" />
-              <Folder />
-              {item.name}
-            </SidebarMenuButton>
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <SidebarMenuSub>
-              {item.children.map((subItem, index) => (
-                <Tree key={index} item={subItem} />
-              ))}
-            </SidebarMenuSub>
-          </CollapsibleContent>
-        </Collapsible>
-      </SidebarMenuItem>
-    )
-  }
+    loadFileTree()
+  }, [loadFileTree])
 
   return (
     <SidebarContent>
       <SidebarGroup>
         <SidebarGroupContent>
           <SidebarMenu>
-            {tree.map((item, index) => (
-              <Tree key={index} item={item} />
+            {fileTree.map((item) => (
+              <Tree key={item.name} item={item} />
             ))}
           </SidebarMenu>
         </SidebarGroupContent>
