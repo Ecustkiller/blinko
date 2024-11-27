@@ -15,13 +15,17 @@ import useArticleStore, { DirTree } from "@/stores/article"
 
 function Tree({ item }: { item: DirTree }) {
 
-  const { activeFilePath, setActiveFilePath, readArticle } = useArticleStore()
+  const { activeFilePath, setActiveFilePath, readArticle, collapsibleList, setCollapsibleList } = useArticleStore()
 
   const path = item.parent?.name + '/' + item.name
 
   function handleSelectFile() {
     setActiveFilePath(path)
     readArticle(path)
+  }
+
+  function handleCollapse(isOpen: boolean) {
+    setCollapsibleList(item.name, isOpen)
   }
 
   if (!item.children?.length) {
@@ -39,8 +43,9 @@ function Tree({ item }: { item: DirTree }) {
   return (
     <SidebarMenuItem>
       <Collapsible
+        onOpenChange={handleCollapse}
         className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
-        defaultOpen={item.name === "components" || item.name === "ui"}
+        open={collapsibleList.includes(item.name)}
       >
         <CollapsibleTrigger asChild>
           <SidebarMenuButton>
