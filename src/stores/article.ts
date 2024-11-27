@@ -1,4 +1,4 @@
-import { BaseDirectory, DirEntry, readDir, readTextFile } from '@tauri-apps/plugin-fs'
+import { BaseDirectory, DirEntry, readDir, readTextFile, writeTextFile } from '@tauri-apps/plugin-fs'
 import { create } from 'zustand'
 
 interface NoteState {
@@ -46,6 +46,8 @@ const useArticleStore = create<NoteState>((set) => ({
   },
   setCurrentArticle: async (content: string) => {
     set({ currentArticle: content })
+    const path = useArticleStore.getState().activeFilePath
+    await writeTextFile(`article/${path}`, content, { baseDir: BaseDirectory.AppData })
   }
 }))
 
