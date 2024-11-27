@@ -1,3 +1,11 @@
+import { FileSidebar } from "./file"
+import { MdEditor } from './md-editor'
+
 export default function Page() {
-  return <h1>Hello, Article page!</h1>
+  return (
+    <div className="flex h-screen">
+      <FileSidebar />
+      <MdEditor />
+    </div>
+  )
 }

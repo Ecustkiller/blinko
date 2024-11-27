@@ -33,6 +33,14 @@
       "identifier": "fs:write-files",
       "allow": [{ "path": "**" }]
     },
+    {
+      "identifier": "fs:read-dirs",
+      "allow": [{ "path": "**" }]
+    },
+    {
+      "identifier": "fs:read-files",
+      "allow": [{ "path": "**" }]
+    },
     "fs:write-all",
     "core:webview:default",
     "core:webview:allow-create-webview-window",
