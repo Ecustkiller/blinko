@@ -17,7 +17,7 @@ function Tree({ item }: { item: DirTree }) {
 
   const { activeFilePath, setActiveFilePath, readArticle, collapsibleList, setCollapsibleList } = useArticleStore()
 
-  const path = item.parent?.name + '/' + item.name
+  const path = item.parent?.name ? item.parent.name + '/' + item.name : item.name
 
   function handleSelectFile() {
     setActiveFilePath(path)
