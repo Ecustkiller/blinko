@@ -8,14 +8,18 @@ import {
   SidebarMenuItem,
   SidebarMenuSub,
 } from "@/components/ui/sidebar"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { Folder, File, ChevronRight } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import useArticleStore, { DirTree } from "@/stores/article"
+import { Input } from "@/components/ui/input"
+import { BaseDirectory, mkdir } from "@tauri-apps/plugin-fs"
 
 function Tree({ item }: { item: DirTree }) {
+  const [name, setName] = useState('')
+  const inputRef = React.useRef<HTMLInputElement>(null)
 
-  const { activeFilePath, setActiveFilePath, readArticle, collapsibleList, setCollapsibleList } = useArticleStore()
+  const { activeFilePath, setActiveFilePath, loadFileTree, fileTree, readArticle, collapsibleList, setCollapsibleList } = useArticleStore()
 
   const path = item.parent?.name ? item.parent.name + '/' + item.name : item.name
 
@@ -28,11 +32,24 @@ function Tree({ item }: { item: DirTree }) {
     setCollapsibleList(item.name, isOpen)
   }
 
-  if (!item.children?.length) {
+  async function handleMkdir() {
+    if (name !== '' && !fileTree.map(item => item.name).includes(name)) {
+      await mkdir(`article/${name}`, { baseDir: BaseDirectory.AppData })
+    }
+    loadFileTree()
+  }
+
+  useEffect(() => {
+    if (item.isEditing) {
+      inputRef.current?.focus()
+      setName(item.name)
+    }
+  }, [item])
+
+  if (item.isFile) {
     return (
       <SidebarMenuButton
         isActive={activeFilePath === path}
-        className="data-[active=true]:bg-transparent"
         onClick={handleSelectFile}
       >
         <File />
@@ -42,26 +59,39 @@ function Tree({ item }: { item: DirTree }) {
   }
   return (
     <SidebarMenuItem>
-      <Collapsible
-        onOpenChange={handleCollapse}
-        className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
-        open={collapsibleList.includes(item.name)}
-      >
-        <CollapsibleTrigger asChild>
-          <SidebarMenuButton>
-            <ChevronRight className="transition-transform" />
-            <Folder />
-            {item.name}
-          </SidebarMenuButton>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <SidebarMenuSub>
-            {item.children.map((subItem) => (
-              <Tree key={subItem.name} item={subItem} />
-            ))}
-          </SidebarMenuSub>
-        </CollapsibleContent>
-      </Collapsible>
+      {
+        item.isEditing ? 
+        <div className="flex items-center gap-2 pl-2">
+          <Folder size={18} />
+          <Input
+            ref={inputRef}
+            className="h-6 rounded-sm"
+            value={name}
+            onBlur={handleMkdir}
+            onChange={(e) => { setName(e.target.value) }}
+          />
+        </div> : 
+        <Collapsible
+          onOpenChange={handleCollapse}
+          className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
+          open={collapsibleList.includes(item.name)}
+        >
+          <CollapsibleTrigger asChild>
+            <SidebarMenuButton>
+              <ChevronRight className="transition-transform" />
+              <Folder />
+              <span>{item.name}</span>
+            </SidebarMenuButton>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <SidebarMenuSub>
+              {item.children?.map((subItem) => (
+                <Tree key={subItem.name} item={subItem} />
+              ))}
+            </SidebarMenuSub>
+          </CollapsibleContent>
+        </Collapsible>
+      }
     </SidebarMenuItem>
   )
 }

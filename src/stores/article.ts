@@ -8,6 +8,7 @@ interface NoteState {
 
   fileTree: DirTree[]
   loadFileTree: () => Promise<void>
+  newFolder: () => void
 
   collapsibleList: string[]
   initCollapsibleList: () => Promise<void>
@@ -21,6 +22,7 @@ interface NoteState {
 export interface DirTree extends DirEntry {
   children?: DirTree[]
   parent?: DirTree
+  isEditing?: boolean
 }
 
 const useArticleStore = create<NoteState>((set) => ({
@@ -33,17 +35,33 @@ const useArticleStore = create<NoteState>((set) => ({
 
   fileTree: [],
   loadFileTree: async () => {
+    set({ fileTree: [] })
     const cacheTree: DirTree[] = []
-    const dirs = await readDir('article', { baseDir: BaseDirectory.AppData });
-    cacheTree.push(...dirs.filter(file => file.name !== '.DS_Store'))
+    const dirs = (await readDir('article', { baseDir: BaseDirectory.AppData })).sort((a, b) => a.name.localeCompare(b.name))
+    cacheTree.push(...dirs.filter(file => file.name !== '.DS_Store')
+      .map(file => ({ ...file, parent: undefined, isEditing: false })))
     for (let index = 0; index < cacheTree.length; index++) {
       const dir = cacheTree[index];
       if (dir.isDirectory) {
         const files = await readDir(`article/${dir.name}`, { baseDir: BaseDirectory.AppData });
-        dir.children = files.filter(file => file.name !== '.DS_Store').map(file => ({ ...file, parent: dir }))
+        dir.children = files.filter(file => file.name !== '.DS_Store').map(file => ({ ...file, parent: dir, isEditing: false }))
       }
     }
     set({ fileTree: cacheTree })
+  },
+  newFolder: async () => {
+    const newDir: DirTree = {
+      name: '',
+      isFile: false,
+      isSymlink: false,
+      parent: undefined,
+      isEditing: true,
+      isDirectory: true,
+      children: []
+    }
+    const fileTree = useArticleStore.getState().fileTree
+    fileTree.unshift(newDir)
+    set({ fileTree })
   },
 
   collapsibleList: [],
