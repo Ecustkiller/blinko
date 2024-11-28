@@ -1,43 +1,37 @@
 import { TooltipButton } from "@/components/tooltip-button";
-import { Bold, BotMessageSquare, Code, Columns2, ImagePlus, Italic, Link, Strikethrough, Table, Underline, WrapText } from "lucide-react";
+import { BotMessageSquare, Code, Columns2, ImagePlus, Link, ListRestart, Sparkles, Table } from "lucide-react";
 import { ExposeParam, NormalToolbar, ToolbarNames } from "md-editor-rt";
 import { ReactNode, RefObject } from "react";
+import { fetchAiBeautify } from '@/lib/ai'
 
 const toolbarsConfig = [
   {
-    title: 'AI',
+    title: 'AI对话',
     icon: <BotMessageSquare />,
     onClick: (mdRef: RefObject<ExposeParam>) => {
       mdRef.current?.focus()
     },
   },
-  '-',
   {
-    title: '加粗',
-    icon: <Bold />,
-    onClick: (mdRef: RefObject<ExposeParam>) => {
-      mdRef.current?.execCommand('bold')
+    title: '优化',
+    icon: <Sparkles />,
+    onClick: async (mdRef: RefObject<ExposeParam>) => {
+      mdRef.current?.focus()
+      const selectedText = mdRef.current?.getSelectedText()
+      mdRef.current?.insert(() => ({
+        targetValue: '正在优化中...',
+      }))
+      const beautifyText = await fetchAiBeautify(selectedText || '')
+      mdRef.current?.insert(() => ({
+        targetValue: beautifyText.choices[0].message.content,
+      }))
     },
   },
   {
-    title: '下划线',
-    icon: <Underline />,
+    title: '格式化',
+    icon: <ListRestart />,
     onClick: (mdRef: RefObject<ExposeParam>) => {
-      mdRef.current?.execCommand('underline')
-    },
-  },
-  {
-    title: '斜体',
-    icon: <Italic />,
-    onClick: (mdRef: RefObject<ExposeParam>) => {
-      mdRef.current?.execCommand('italic')
-    },
-  },
-  {
-    title: '删除线',
-    icon: <Strikethrough />,
-    onClick: (mdRef: RefObject<ExposeParam>) => {
-      mdRef.current?.execCommand('strikeThrough')
+      mdRef.current?.execCommand('prettier')
     },
   },
   '-',
@@ -55,7 +49,6 @@ const toolbarsConfig = [
       mdRef.current?.execCommand('image')
     },
   },
-  '-',
   {
     title: '表格',
     icon: <Table />,
@@ -71,13 +64,6 @@ const toolbarsConfig = [
     },
   },
   '=',
-  {
-    title: '格式化',
-    icon: <WrapText />,
-    onClick: (mdRef: RefObject<ExposeParam>) => {
-      mdRef.current?.execCommand('prettier')
-    },
-  },
   {
     title: '预览',
     icon: <Columns2 />,

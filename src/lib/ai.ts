@@ -74,3 +74,11 @@ export async function fetchAiDesc(text: string) {
   const requestOptions = await createAi(descContent, false)
   return (await fetch(url, requestOptions)).json()
 }
+
+export async function fetchAiBeautify(text: string) {
+  const descContent = `
+    优化这段文字：${text}，将内容补充的更加完整，直接返回美化后的结果。
+  `
+  const requestOptions = await createAi(descContent, false)
+  return (await fetch(url, requestOptions)).json()
+}
