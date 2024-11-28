@@ -1,5 +1,5 @@
 import { TooltipButton } from "@/components/tooltip-button";
-import { BotMessageSquare, Code, Columns2, ImagePlus, Link, ListRestart, Sparkles, Table } from "lucide-react";
+import { BotMessageSquare, Code, Columns2, HardDriveUpload, ImagePlus, Link, ListRestart, Sparkles, Table, View } from "lucide-react";
 import { ExposeParam, NormalToolbar, ToolbarNames } from "md-editor-rt";
 import { ReactNode, RefObject } from "react";
 import { fetchAiStream } from '@/lib/ai'
@@ -81,6 +81,21 @@ const toolbarsConfig = [
     icon: <Columns2 />,
     onClick: (mdRef: RefObject<ExposeParam>) => {
       mdRef.current?.togglePreview()
+    },
+  },
+  {
+    title: '仅预览',
+    icon: <View />,
+    onClick: (mdRef: RefObject<ExposeParam>) => {
+      mdRef.current?.togglePreviewOnly()
+    },
+  },
+  '-',
+  {
+    title: '导出',
+    icon: <HardDriveUpload />,
+    onClick: (mdRef: RefObject<ExposeParam>) => {
+      mdRef.current?.togglePreviewOnly()
     },
   }
 ]

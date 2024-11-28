@@ -1,6 +1,6 @@
 'use client'
 
-import { Notebook, Star, ImageUp, Search, Recycle, History, Network, ScanFace, Settings, Highlighter } from "lucide-react"
+import { Star, ImageUp, Search, Recycle, History, Network, ScanFace, Settings, Highlighter, SquarePen } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -18,15 +18,15 @@ import { ModeToggle } from "./mode-toggle"
 // Menu items.
 const items = [
   {
-    title: "笔记",
+    title: "记录",
     url: "/core/note",
     icon: Highlighter,
     isActive: true,
   },
   {
-    title: "文章",
+    title: "写作",
     url: "/core/article",
-    icon: Notebook,
+    icon: SquarePen,
   },
   {
     title: "收藏",
