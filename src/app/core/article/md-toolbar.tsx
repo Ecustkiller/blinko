@@ -3,15 +3,19 @@ import { BotMessageSquare, Code, Columns2, HardDriveUpload, ImagePlus, Link, Lis
 import { ExposeParam, NormalToolbar, ToolbarNames } from "md-editor-rt";
 import { ReactNode, RefObject } from "react";
 import { fetchAiStream } from '@/lib/ai'
+import useArticleStore from "@/stores/article";
 
 const toolbarsConfig = [
   {
     title: 'AI',
     icon: <BotMessageSquare />,
-    onClick: async (mdRef: RefObject<ExposeParam>) => {
+    onClick: async (mdRef: RefObject<ExposeParam>, currentArticle?: string) => {
       mdRef.current?.focus()
       const selectedText = mdRef.current?.getSelectedText()
-      const req = `根据需求：${selectedText}，如果是问题回答问题，如果不是，则根据内容生成文章，直接返回结果。`
+      const req = `
+        参考原文：${currentArticle}
+        根据需求：${selectedText}，如果是问题回答问题，如果不是，则根据内容生成文章，直接返回结果。
+      `
       let res = ''
       await fetchAiStream(req, text => {
         if (text === '[DONE]') return
@@ -109,14 +113,16 @@ export const toolbars: ToolbarNames[] = toolbarsConfig.map(item => {
 
 const Toolbar = (
   { title, icon, onClick, mdRef }:
-  { title: string, icon: ReactNode, onClick: (mdRef: RefObject<ExposeParam>) => void, mdRef: RefObject<ExposeParam>}
+  { title: string, icon: ReactNode, onClick: (mdRef: RefObject<ExposeParam>, currentArticle?: string) => void, mdRef: RefObject<ExposeParam>}
 ) => {
+  const { currentArticle } = useArticleStore()
+  
   return (
     <NormalToolbar
       trigger={
         <TooltipButton icon={icon} tooltipText={title} />
       }
-      onClick={() => onClick(mdRef)}
+      onClick={() => onClick(mdRef, currentArticle)}
       key={title}
     />
   );
