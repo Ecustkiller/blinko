@@ -2,14 +2,24 @@ import { TooltipButton } from "@/components/tooltip-button";
 import { BotMessageSquare, Code, Columns2, ImagePlus, Link, ListRestart, Sparkles, Table } from "lucide-react";
 import { ExposeParam, NormalToolbar, ToolbarNames } from "md-editor-rt";
 import { ReactNode, RefObject } from "react";
-import { fetchAiBeautify } from '@/lib/ai'
+import { fetchAiStream } from '@/lib/ai'
 
 const toolbarsConfig = [
   {
-    title: 'AI对话',
+    title: 'AI',
     icon: <BotMessageSquare />,
-    onClick: (mdRef: RefObject<ExposeParam>) => {
+    onClick: async (mdRef: RefObject<ExposeParam>) => {
       mdRef.current?.focus()
+      const selectedText = mdRef.current?.getSelectedText()
+      const req = `根据需求：${selectedText}，如果是问题回答问题，如果不是，则根据内容生成文章，直接返回结果。`
+      let res = ''
+      await fetchAiStream(req, text => {
+        if (text === '[DONE]') return
+        mdRef.current?.insert(() => ({
+          targetValue: res += text,
+        }))
+        mdRef.current?.rerender();
+      })
     },
   },
   {
@@ -18,13 +28,15 @@ const toolbarsConfig = [
     onClick: async (mdRef: RefObject<ExposeParam>) => {
       mdRef.current?.focus()
       const selectedText = mdRef.current?.getSelectedText()
-      mdRef.current?.insert(() => ({
-        targetValue: '正在优化中...',
-      }))
-      const beautifyText = await fetchAiBeautify(selectedText || '')
-      mdRef.current?.insert(() => ({
-        targetValue: beautifyText.choices[0].message.content,
-      }))
+      const req = `完善这段文字：${selectedText}，注意这不是提问，直接返回优化后的结果。`
+      let res = ''
+      await fetchAiStream(req, text => {
+        if (text === '[DONE]') return
+        mdRef.current?.insert(() => ({
+          targetValue: res += text,
+        }))
+        mdRef.current?.rerender();
+      })
     },
   },
   {
@@ -86,7 +98,6 @@ const Toolbar = (
 ) => {
   return (
     <NormalToolbar
-      title="mark"
       trigger={
         <TooltipButton icon={icon} tooltipText={title} />
       }
