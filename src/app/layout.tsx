@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster"
 import "./globals.css";
 import 'md-editor-rt/lib/style.css';
 import 'md-editor-rt/lib/preview.css';
@@ -12,6 +13,7 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body>
           {children}
+          <Toaster />
         </body>
       </html>
     </>
