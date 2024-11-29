@@ -8,7 +8,6 @@ import { NoteHeader } from './note-header'
 import { NoteFooter } from "./note-footer";
 import { initNotesDb } from "@/db/notes";
 import useNoteStore from "@/stores/note";
-import 'md-editor-rt/lib/preview.css';
 
 export function Note() {
   const [text, setText] = useState("")

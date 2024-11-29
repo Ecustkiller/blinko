@@ -1,4 +1,6 @@
 import "./globals.css";
+import 'md-editor-rt/lib/style.css';
+import 'md-editor-rt/lib/preview.css';
 
 export default function RootLayout({
   children,

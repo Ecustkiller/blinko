@@ -1,6 +1,5 @@
 'use client'
 import { MdEditor as MdEditorRT, ExposeParam, Themes } from 'md-editor-rt';
-import 'md-editor-rt/lib/style.css';
 import useArticleStore from '@/stores/article';
 import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
@@ -21,7 +20,6 @@ export function MdEditor() {
     theme={mdTheme}
     className='flex-1 !h-screen !border-none'
     noImgZoomIn
-    previewTheme={'github'}
     toolbars={toolbars}
     footers={[]}
     value={currentArticle}

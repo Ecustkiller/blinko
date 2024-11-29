@@ -1,9 +1,7 @@
 "use client"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { HardDriveDownload } from "lucide-react"
 import * as React from "react"
 import { initMarksDb } from "@/db/marks"
-import { TooltipButton } from "@/components/tooltip-button"
 import { Separator } from "@/components/ui/separator"
 import { LocaleSet } from './locale-set'
 import { CountSet } from './count-set'
@@ -11,6 +9,7 @@ import { NoteHistory } from './note-history'
 import wordsCount from 'words-count';
 import useNoteStore from "@/stores/note"
 import dayjs from "dayjs"
+import { NoteOutput } from "./note-output"
 
 export function NoteHeader({text}: {text: string}) {
   const { currentNote } = useNoteStore()
@@ -40,7 +39,7 @@ export function NoteHeader({text}: {text: string}) {
           }
           <NoteHistory content={text} />
           <Separator orientation="vertical" />
-          <TooltipButton icon={<HardDriveDownload />} tooltipText="生成文章" />
+          <NoteOutput />
         </TooltipProvider>
       </div>
     </header>

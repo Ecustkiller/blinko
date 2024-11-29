@@ -1,4 +1,4 @@
-import { Tag, getTags } from '@/db/tags'
+import { Tag, delTag, getTags } from '@/db/tags'
 import { Store } from '@tauri-apps/plugin-store'
 import { create } from 'zustand'
 
@@ -12,6 +12,8 @@ interface TagState {
 
   tags: Tag[]
   fetchTags: () => Promise<void>
+
+  deleteTag: (id: number) => Promise<void>
 }
 
 const useTagStore = create<TagState>((set, get) => ({
@@ -46,6 +48,12 @@ const useTagStore = create<TagState>((set, get) => ({
   fetchTags: async () => {
     const tags = await getTags()
     set({ tags })
+  },
+
+  deleteTag: async (id: number) => {
+    await delTag(id)
+    await get().fetchTags()
+    await get().setCurrentTagId(get().tags[0].id)
   }
 }))
 
