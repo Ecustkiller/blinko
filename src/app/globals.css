@@ -81,6 +81,10 @@
   }
 }
 
+.md-editor-preview-wrapper ul li {
+  list-style: disc;
+}
+
 ::-webkit-scrollbar {
   @apply w-2 h-2;
  
