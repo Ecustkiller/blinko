@@ -4,6 +4,12 @@ NoteGen 是一个基于 Tauri + ChatGPT 的笔记软件，旨在帮助用户以�
 
 ![17327782035021732778203299.png](https://fastly.jsdelivr.net/gh/codexu/images@main/img/17327782035021732778203299.png)
 
+## 下载
+
+NoteGen 是一个跨平台的笔记 APP，目前支持 Mac、Windows、Linux，得益于 Tauri2 的跨平台能力，未来将支持 IOS、Android。
+
+[在此查询并选择下载 NoteGen！](https://github.com/codexu/note-gen/releases)
+
 ## 特性
 
 NoteGen 是一个免费的开源项目，内置了国内可用的 ChatGPT 代理，用户每日可享受200次免费的调用服务。目前，该项目仍在开发阶段，但已成功实现了核心功能，期待未来为用户提供更多便捷的使用体验。
