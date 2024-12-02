@@ -27,9 +27,14 @@ export function FileItem({ item }: { item: DirTree }) {
     setCurrentArticle('')
   }
 
+  async function handleStartRename() {
+    setIsEditing(true)
+    setTimeout(() => inputRef.current?.focus(), 0);
+  }
+
   async function handleRename() {
     const name = inputRef.current?.value
-    if (name) {
+    if (name && name !== item.name) {
       await rename(`article/${item.name}`, `article/${name}` ,{ newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData})
       await loadFileTree()
       setActiveFilePath(name)
@@ -56,7 +61,7 @@ export function FileItem({ item }: { item: DirTree }) {
               onBlur={handleRename}
               onChange={(e) => { setName(e.target.value) }}
             /> :
-            <span>{item.name}</span>
+            <span className="select-none">{item.name}</span>
           }
         </SidebarMenuButton>
       </ContextMenuTrigger>
@@ -75,7 +80,7 @@ export function FileItem({ item }: { item: DirTree }) {
           粘贴
         </ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuItem inset onClick={() => setIsEditing(true)}>
+        <ContextMenuItem inset onClick={handleStartRename}>
           重命名
         </ContextMenuItem>
         <ContextMenuItem inset className="text-red-900" onClick={handleDeleteFile}>
