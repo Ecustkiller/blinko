@@ -2,7 +2,7 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator,
 import { Input } from "@/components/ui/input";
 import useArticleStore, { DirTree } from "@/stores/article";
 import { invoke } from "@tauri-apps/api/core";
-import { BaseDirectory, exists, remove, rename, writeTextFile } from "@tauri-apps/plugin-fs";
+import { BaseDirectory, remove, rename, writeTextFile } from "@tauri-apps/plugin-fs";
 import { appDataDir } from '@tauri-apps/api/path';
 import { File } from "lucide-react"
 import { useEffect, useRef, useState } from "react";

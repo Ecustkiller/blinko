@@ -77,7 +77,7 @@ function Tree({ item }: { item: DirTree }) {
 
 export function FileManager() {
   const [isDragging, setIsDragging] = useState(false)
-  const { activeFilePath, fileTree, loadFileTree, setActiveFilePath, collapsibleList, setCollapsibleList } = useArticleStore()
+  const { activeFilePath, fileTree, loadFileTree, setActiveFilePath } = useArticleStore()
 
   async function handleDrop (e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault()
