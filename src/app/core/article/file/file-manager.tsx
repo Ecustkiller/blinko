@@ -4,17 +4,17 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
 } from "@/components/ui/sidebar"
 import React, { useEffect, useState } from "react"
-import { Folder, ChevronRight } from "lucide-react"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Folder } from "lucide-react"
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible"
 import useArticleStore, { DirTree } from "@/stores/article"
 import { Input } from "@/components/ui/input"
 import { BaseDirectory, mkdir } from "@tauri-apps/plugin-fs"
 import { FileItem } from './file-item'
+import { FolderItem } from "./folder-item"
 
 function Tree({ item }: { item: DirTree }) {
   const [name, setName] = useState('')
@@ -40,8 +40,9 @@ function Tree({ item }: { item: DirTree }) {
     }
   }, [item])
 
-  if (item.isFile) return <FileItem item={item} />
   return (
+    item.isFile ? 
+    <FileItem item={item} /> :
     <SidebarMenuItem>
       {
         item.isEditing ? 
@@ -57,16 +58,10 @@ function Tree({ item }: { item: DirTree }) {
         </div> : 
         <Collapsible
           onOpenChange={handleCollapse}
-          className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
+          className="group/collapsible [&[data-state=open]>button>.file-manange-item>svg:first-child]:rotate-90"
           open={collapsibleList.includes(item.name)}
         >
-          <CollapsibleTrigger asChild>
-            <SidebarMenuButton>
-              <ChevronRight className="transition-transform" />
-              <Folder />
-              <span>{item.name}</span>
-            </SidebarMenuButton>
-          </CollapsibleTrigger>
+          <FolderItem item={item} />
           <CollapsibleContent>
             <SidebarMenuSub>
               {item.children?.map((subItem) => (

@@ -81,6 +81,13 @@
   }
 }
 
+.file-manange-item {
+  @apply flex items-center gap-2 p-1 mb-1 text-sm cursor-pointer w-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-black dark:text-white;
+  &.active{
+    @apply bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black rounded;
+  }
+}
+
 .md-editor-preview-wrapper ul li {
   list-style: disc;
 }
