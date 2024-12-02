@@ -9,6 +9,7 @@ interface NoteState {
   fileTree: DirTree[]
   loadFileTree: () => Promise<void>
   newFolder: () => void
+  newFile: () => void
 
   collapsibleList: string[]
   initCollapsibleList: () => Promise<void>
@@ -25,11 +26,10 @@ export interface DirTree extends DirEntry {
   isEditing?: boolean
 }
 
-const useArticleStore = create<NoteState>((set) => ({
+const useArticleStore = create<NoteState>((set, get) => ({
   activeFilePath: '',
   setActiveFilePath: async (path: string) => {
     set({ activeFilePath: path })
-    console.log(path);
     const store = await Store.load('store.json');
     await store.set('activeFilePath', path)
   },
@@ -60,7 +60,20 @@ const useArticleStore = create<NoteState>((set) => ({
       isDirectory: true,
       children: []
     }
-    const fileTree = useArticleStore.getState().fileTree
+    const fileTree = get().fileTree
+    fileTree.unshift(newDir)
+    set({ fileTree })
+  },
+  newFile: async () => {
+    const newDir: DirTree = {
+      name: '',
+      isFile: true,
+      isSymlink: false,
+      parent: undefined,
+      isEditing: true,
+      isDirectory: false,
+    }
+    const fileTree = get().fileTree
     fileTree.unshift(newDir)
     set({ fileTree })
   },
@@ -72,12 +85,12 @@ const useArticleStore = create<NoteState>((set) => ({
     const activeFilePath = await store.get<string>('activeFilePath')
     if (activeFilePath) {
       set({ activeFilePath })
-      useArticleStore.getState().readArticle(activeFilePath)
+      get().readArticle(activeFilePath)
     }
     set({ collapsibleList: res || [] })
   },
   setCollapsibleList: async (name: string, value: boolean) => {
-    const collapsibleList = useArticleStore.getState().collapsibleList
+    const collapsibleList = get().collapsibleList
     if (value) {
       collapsibleList.push(name)
     } else {
@@ -97,7 +110,7 @@ const useArticleStore = create<NoteState>((set) => ({
   setCurrentArticle: async (content: string) => {
     set({ currentArticle: content })
     if (content) {
-      const path = useArticleStore.getState().activeFilePath
+      const path = get().activeFilePath
       await writeTextFile(`article/${path}`, content, { baseDir: BaseDirectory.AppData })
     }
   }
