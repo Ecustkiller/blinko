@@ -29,6 +29,7 @@ const useArticleStore = create<NoteState>((set) => ({
   activeFilePath: '',
   setActiveFilePath: async (path: string) => {
     set({ activeFilePath: path })
+    console.log(path);
     const store = await Store.load('store.json');
     await store.set('activeFilePath', path)
   },
@@ -89,13 +90,16 @@ const useArticleStore = create<NoteState>((set) => ({
 
   currentArticle: '',
   readArticle: async (path: string) => {
+    if (!path) return
     const res = await readTextFile(`article/${path}`, { baseDir: BaseDirectory.AppData })
     set({ currentArticle: res })
   },
   setCurrentArticle: async (content: string) => {
     set({ currentArticle: content })
-    const path = useArticleStore.getState().activeFilePath
-    await writeTextFile(`article/${path}`, content, { baseDir: BaseDirectory.AppData })
+    if (content) {
+      const path = useArticleStore.getState().activeFilePath
+      await writeTextFile(`article/${path}`, content, { baseDir: BaseDirectory.AppData })
+    }
   }
 }))
 

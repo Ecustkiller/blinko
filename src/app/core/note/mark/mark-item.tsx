@@ -171,7 +171,7 @@ export function MarkItem({mark}: {mark: Mark}) {
           查看原文件
         </ContextMenuItem>
         <ContextMenuItem inset onClick={handleDelMark}>
-          <span className="text-rose-600">删除</span>
+          <span className="text-red-900">删除</span>
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

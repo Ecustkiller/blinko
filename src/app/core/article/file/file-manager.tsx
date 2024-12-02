@@ -9,24 +9,18 @@ import {
   SidebarMenuSub,
 } from "@/components/ui/sidebar"
 import React, { useEffect, useState } from "react"
-import { Folder, File, ChevronRight } from "lucide-react"
+import { Folder, ChevronRight } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import useArticleStore, { DirTree } from "@/stores/article"
 import { Input } from "@/components/ui/input"
 import { BaseDirectory, mkdir } from "@tauri-apps/plugin-fs"
+import { FileItem } from './file-item'
 
 function Tree({ item }: { item: DirTree }) {
   const [name, setName] = useState('')
   const inputRef = React.useRef<HTMLInputElement>(null)
 
-  const { activeFilePath, setActiveFilePath, loadFileTree, fileTree, readArticle, collapsibleList, setCollapsibleList } = useArticleStore()
-
-  const path = item.parent?.name ? item.parent.name + '/' + item.name : item.name
-
-  function handleSelectFile() {
-    setActiveFilePath(path)
-    readArticle(path)
-  }
+  const { loadFileTree, fileTree, collapsibleList, setCollapsibleList } = useArticleStore()
 
   function handleCollapse(isOpen: boolean) {
     setCollapsibleList(item.name, isOpen)
@@ -46,17 +40,7 @@ function Tree({ item }: { item: DirTree }) {
     }
   }, [item])
 
-  if (item.isFile) {
-    return (
-      <SidebarMenuButton
-        isActive={activeFilePath === path}
-        onClick={handleSelectFile}
-      >
-        <File />
-        <span>{item.name}</span>
-      </SidebarMenuButton>
-    )
-  }
+  if (item.isFile) return <FileItem item={item} />
   return (
     <SidebarMenuItem>
       {
