@@ -38,7 +38,7 @@ export function FileItem({ item }: { item: DirTree }) {
   return (
     <ContextMenu>
       <ContextMenuTrigger>
-        <SidebarMenuButton isActive={activeFilePath === path} onClick={handleSelectFile}>
+        <SidebarMenuButton isActive={activeFilePath === path} onClick={handleSelectFile} onContextMenu={handleSelectFile}>
           <File />
           {
             isEditing ? 
