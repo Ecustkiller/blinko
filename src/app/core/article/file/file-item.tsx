@@ -1,6 +1,5 @@
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { Input } from "@/components/ui/input";
-import { SidebarMenuButton } from "@/components/ui/sidebar";
 import useArticleStore, { DirTree } from "@/stores/article";
 import { invoke } from "@tauri-apps/api/core";
 import { BaseDirectory, remove, rename } from "@tauri-apps/plugin-fs";
@@ -50,8 +49,8 @@ export function FileItem({ item }: { item: DirTree }) {
   return (
     <ContextMenu>
       <ContextMenuTrigger>
-        <SidebarMenuButton isActive={activeFilePath === path} onClick={handleSelectFile} onContextMenu={handleSelectFile}>
-          <File />
+        <div className={path === activeFilePath ? 'file-manange-item active' : 'file-manange-item'} onClick={handleSelectFile} onContextMenu={handleSelectFile}>
+          <File className="size-4" />
           {
             isEditing ? 
             <Input
@@ -63,7 +62,7 @@ export function FileItem({ item }: { item: DirTree }) {
             /> :
             <span className="select-none">{item.name}</span>
           }
-        </SidebarMenuButton>
+        </div>
       </ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuItem inset onClick={handleShowFileManager}>
