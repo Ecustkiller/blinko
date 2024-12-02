@@ -2,7 +2,9 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator,
 import { Input } from "@/components/ui/input";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import useArticleStore, { DirTree } from "@/stores/article";
+import { invoke } from "@tauri-apps/api/core";
 import { BaseDirectory, remove, rename } from "@tauri-apps/plugin-fs";
+import { appDataDir } from '@tauri-apps/api/path';
 import { File } from "lucide-react"
 import { useRef, useState } from "react";
 
@@ -35,6 +37,11 @@ export function FileItem({ item }: { item: DirTree }) {
     setIsEditing(false)
   }
 
+  async function handleShowFileManager() {
+    const appDir = await appDataDir()
+    invoke('show_in_folder', { path: `${appDir}/article/${path}` })
+  }
+
   return (
     <ContextMenu>
       <ContextMenuTrigger>
@@ -54,7 +61,7 @@ export function FileItem({ item }: { item: DirTree }) {
         </SidebarMenuButton>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem inset>
+        <ContextMenuItem inset onClick={handleShowFileManager}>
           查看原文件
         </ContextMenuItem>
         <ContextMenuSeparator />
