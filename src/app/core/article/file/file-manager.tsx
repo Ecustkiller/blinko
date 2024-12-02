@@ -12,7 +12,7 @@ import { Folder } from "lucide-react"
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible"
 import useArticleStore, { DirTree } from "@/stores/article"
 import { Input } from "@/components/ui/input"
-import { BaseDirectory, mkdir } from "@tauri-apps/plugin-fs"
+import { BaseDirectory, mkdir, rename } from "@tauri-apps/plugin-fs"
 import { FileItem } from './file-item'
 import { FolderItem } from "./folder-item"
 
@@ -76,20 +76,61 @@ function Tree({ item }: { item: DirTree }) {
 }
 
 export function FileManager() {
-  const { fileTree, loadFileTree } = useArticleStore()
+  const [isDragging, setIsDragging] = useState(false)
+  const { activeFilePath, fileTree, loadFileTree, setActiveFilePath, collapsibleList, setCollapsibleList } = useArticleStore()
+
+  async function handleDrop (e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault()
+    const renamePath = e.dataTransfer?.getData('text')
+    if (renamePath) {
+      const filename = renamePath.slice(renamePath.lastIndexOf('/') + 1)
+      const oldPaht = `article/${renamePath}`;
+      const newPath = `article/${filename}`;
+      await rename(oldPaht, newPath ,{ newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData})
+      loadFileTree()
+      if (renamePath === activeFilePath) {
+        setActiveFilePath(newPath.replace('article/', ''))
+      }
+    }
+    setIsDragging(false)
+  }
+  
+  function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setIsDragging(true)
+  }
+
+  function handleDragleave(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setIsDragging(false)
+  }
 
   useEffect(() => {
     loadFileTree()
   }, [loadFileTree])
 
   return (
-    <SidebarContent>
-      <SidebarGroup>
-        <SidebarGroupContent>
-          <SidebarMenu>
+    <SidebarContent className={isDragging ? 'file-on-drop' : ''}>
+      <SidebarGroup className="flex-1">
+        <SidebarGroupContent className="flex-1">
+          <SidebarMenu className="h-full">
+            <div
+              className="min-h-1"
+              onDrop={(e) => handleDrop(e)}
+              onDragOver={e => handleDragOver(e)}
+              onDragLeave={(e) => handleDragleave(e)}
+            >
+            </div>
             {fileTree.map((item) => (
               <Tree key={item.name} item={item} />
             ))}
+            <div
+              className="flex-1 min-h-1"
+              onDrop={(e) => handleDrop(e)}
+              onDragOver={e => handleDragOver(e)}
+              onDragLeave={(e) => handleDragleave(e)}
+            >
+            </div>
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
