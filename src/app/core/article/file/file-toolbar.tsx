@@ -6,10 +6,7 @@ import { TooltipButton } from "@/components/tooltip-button"
 import useArticleStore from "@/stores/article"
 
 export function FileToolbar() {
-  const { newFolder } = useArticleStore()
-  function handleMkdir() {
-    newFolder()
-  }
+  const { newFolder, loadFileTree } = useArticleStore()
 
   return (
     <div className="flex justify-between items-center h-12 border-b px-2">
@@ -19,8 +16,8 @@ export function FileToolbar() {
       <div className="flex">
         <TooltipProvider>
           <TooltipButton icon={<FilePlus />} tooltipText="新建文章" />
-          <TooltipButton icon={<FolderPlus />} tooltipText="新建文件夹" onClick={handleMkdir} />
-          <TooltipButton icon={<FolderSync />} tooltipText="刷新" />
+          <TooltipButton icon={<FolderPlus />} tooltipText="新建文件夹" onClick={newFolder} />
+          <TooltipButton icon={<FolderSync />} tooltipText="刷新" onClick={loadFileTree} />
         </TooltipProvider>
       </div>
     </div>
