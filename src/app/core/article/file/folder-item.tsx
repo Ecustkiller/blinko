@@ -12,8 +12,9 @@ import { toast } from "@/hooks/use-toast";
 export function FolderItem({ item }: { item: DirTree }) {
   const [isEditing, setIsEditing] = useState(false)
   const [name, setName] = useState(item.name)
+  const [isDragging, setIsDragging] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
-  const { loadFileTree } = useArticleStore()
+  const { activeFilePath, loadFileTree, setActiveFilePath, collapsibleList, setCollapsibleList } = useArticleStore()
   const path = item.parent?.name ? item.parent.name + '/' + item.name : item.name
 
   async function handleDeleteFolder(evnet: React.MouseEvent<HTMLDivElement, MouseEvent>) {
@@ -49,11 +50,42 @@ export function FolderItem({ item }: { item: DirTree }) {
     invoke('show_in_folder', { path: `${appDir}/article/${path}` })
   }
 
+  async function handleDrop (e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault()
+    const renamePath = e.dataTransfer?.getData('text')
+    if (renamePath) {
+      const filename = renamePath.slice(renamePath.lastIndexOf('/') + 1)
+      const oldPaht = `article/${renamePath}`;
+      const newPath = `article/${path}/${filename}`;
+      await rename(oldPaht, newPath ,{ newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData})
+      loadFileTree()
+      if (renamePath === activeFilePath && !collapsibleList.includes(item.name)) {
+        setCollapsibleList(item.name, true)
+        setActiveFilePath(newPath.replace('article/', ''))
+      }
+    }
+  }
+  
+  function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setIsDragging(true)
+  }
+
+  function handleDragleave(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setIsDragging(false)
+  }
+
   return (
     <CollapsibleTrigger className="w-full">
       <ContextMenu>
         <ContextMenuTrigger asChild>
-          <div className="file-manange-item">
+          <div
+            className={isDragging ? 'file-manange-item file-on-drop' : 'file-manange-item'}
+            onDrop={(e) => handleDrop(e)}
+            onDragOver={e => handleDragOver(e)}
+            onDragLeave={(e) => handleDragleave(e)}
+          >
             <ChevronRight className="transition-transform size-4" />
             <Folder className="size-4" />
             {

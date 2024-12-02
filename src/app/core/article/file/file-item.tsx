@@ -46,10 +46,20 @@ export function FileItem({ item }: { item: DirTree }) {
     invoke('show_in_folder', { path: `${appDir}/article/${path}` })
   }
 
+  async function handleDragStart(ev: React.DragEvent<HTMLDivElement>) {
+    ev.dataTransfer.setData('text', path)
+  }
+
   return (
     <ContextMenu>
       <ContextMenuTrigger>
-        <div className={path === activeFilePath ? 'file-manange-item active' : 'file-manange-item'} onClick={handleSelectFile} onContextMenu={handleSelectFile}>
+        <div
+          className={path === activeFilePath ? 'file-manange-item active' : 'file-manange-item'}
+          onClick={handleSelectFile}
+          onContextMenu={handleSelectFile}
+          draggable
+          onDragStart={handleDragStart}
+        >
           <File className="size-4" />
           {
             isEditing ? 

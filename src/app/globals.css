@@ -87,6 +87,9 @@
     @apply bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black rounded;
   }
 }
+.file-on-drop{
+  @apply outline-2 outline-black outline-dotted;
+}
 
 .md-editor-preview-wrapper ul li {
   list-style: disc;
