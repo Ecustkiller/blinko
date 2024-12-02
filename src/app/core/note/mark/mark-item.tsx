@@ -19,6 +19,8 @@ import { LocalImage } from "@/components/local-image";
 import { fetchAiDesc } from "@/lib/ai";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { appDataDir } from "@tauri-apps/api/path";
+import { invoke } from "@tauri-apps/api/core";
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
@@ -142,6 +144,12 @@ export function MarkItem({mark}: {mark: Mark}) {
     fetchMarks()
   }
 
+  async function handelShowInFolder() {
+    const appDir = await appDataDir()
+    const path = mark.type === 'scan' ? 'screenshot' : 'image'
+    invoke('show_in_folder', { path: `${appDir}/${path}/${mark.url}` })
+  }
+
   return (
     <ContextMenu>
       <ContextMenuTrigger>
@@ -167,7 +175,7 @@ export function MarkItem({mark}: {mark: Mark}) {
           重新生成描述
         </ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuItem inset disabled>
+        <ContextMenuItem inset disabled={mark.type === 'text'} onClick={handelShowInFolder}>
           查看原文件
         </ContextMenuItem>
         <ContextMenuItem inset onClick={handleDelMark}>
