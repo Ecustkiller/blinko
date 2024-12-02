@@ -20,6 +20,9 @@ export function Note() {
 
   useEffect(() => {
     initNotesDb()
+  }, [])
+
+  useEffect(() => {
     fetchCurrentNote()
   }, [fetchCurrentNote])
 

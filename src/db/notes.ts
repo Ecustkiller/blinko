@@ -1,3 +1,4 @@
+import { BaseDirectory, exists, mkdir } from "@tauri-apps/plugin-fs"
 import { getDb } from "./index"
 
 export interface Note {
@@ -11,6 +12,10 @@ export interface Note {
 
 // 创建 marks 表
 export async function initNotesDb() {
+  const isExist = await exists('article', { baseDir: BaseDirectory.AppData})
+  if (!isExist) {
+    await mkdir('article', { baseDir: BaseDirectory.AppData})
+  }
   const db = await getDb()
   await db.execute(`
     create table if not exists notes (

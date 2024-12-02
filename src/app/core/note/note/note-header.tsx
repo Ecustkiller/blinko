@@ -1,7 +1,6 @@
 "use client"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import * as React from "react"
-import { initMarksDb } from "@/db/marks"
 import { Separator } from "@/components/ui/separator"
 import { LocaleSet } from './locale-set'
 import { CountSet } from './count-set'
@@ -13,11 +12,6 @@ import { NoteOutput } from "./note-output"
 
 export function NoteHeader({text}: {text: string}) {
   const { currentNote } = useNoteStore()
-
-  React.useEffect(() => {
-    initMarksDb()
-  }, [])
-
   return (
     <header className="h-12 flex items-center justify-between gap-2 border-b px-4">
       <div className="flex items-center h-6 gap-1">
