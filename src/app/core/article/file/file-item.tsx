@@ -2,13 +2,13 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator,
 import { Input } from "@/components/ui/input";
 import useArticleStore, { DirTree } from "@/stores/article";
 import { invoke } from "@tauri-apps/api/core";
-import { BaseDirectory, remove, rename } from "@tauri-apps/plugin-fs";
+import { BaseDirectory, exists, remove, rename, writeTextFile } from "@tauri-apps/plugin-fs";
 import { appDataDir } from '@tauri-apps/api/path';
 import { File } from "lucide-react"
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function FileItem({ item }: { item: DirTree }) {
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditing, setIsEditing] = useState(item.isEditing)
   const [name, setName] = useState(item.name)
   const inputRef = useRef<HTMLInputElement>(null)
   const { activeFilePath, setActiveFilePath, readArticle, loadFileTree, setCurrentArticle } = useArticleStore()
@@ -32,12 +32,17 @@ export function FileItem({ item }: { item: DirTree }) {
   }
 
   async function handleRename() {
-    const name = inputRef.current?.value
-    if (name && name !== item.name) {
+    let name = inputRef.current?.value
+    if (name && name !== item.name && item.name) {
       await rename(`article/${item.name}`, `article/${name}` ,{ newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData})
-      await loadFileTree()
+      setActiveFilePath(name)
+    } else if (name) {
+      name = `article/${name}`
+      if (!name.endsWith('.md')) name = name + '.md'
+      writeTextFile(name, '', { baseDir: BaseDirectory.AppData })
       setActiveFilePath(name)
     }
+    await loadFileTree()
     setIsEditing(false)
   }
 
@@ -49,6 +54,13 @@ export function FileItem({ item }: { item: DirTree }) {
   async function handleDragStart(ev: React.DragEvent<HTMLDivElement>) {
     ev.dataTransfer.setData('text', path)
   }
+
+  useEffect(() => {
+    if (item.isEditing) {
+      inputRef.current?.focus()
+      setName(item.name)
+    }
+  }, [item])
 
   return (
     <ContextMenu>

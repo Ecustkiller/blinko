@@ -32,7 +32,6 @@ export function NoteHistory({ content }: { content: string }) {
 
   async function getNotes() {
     const nots = await getNotesByTagId(currentTagId)
-    console.log(nots);
   }
 
   function selectHistory(note: Note) {

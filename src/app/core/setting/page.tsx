@@ -48,7 +48,6 @@ export default function Page() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const store = await Store.load('store.json');
     for (const [key, value] of Object.entries(values)) {
-      console.log(key, value);
       await store.set(key, value)
     }
     await store.save()
