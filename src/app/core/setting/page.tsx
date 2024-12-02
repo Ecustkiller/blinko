@@ -21,7 +21,7 @@ import { OpenBroswer } from "./open-broswer"
 import { toast } from "@/hooks/use-toast"
 
 const formSchema = z.object({
-  apiKey: z.string().min(1),
+  apiKey: z.string(),
   markDescGen: z.boolean().default(true).optional()
 })
 
@@ -39,13 +39,16 @@ export default function Page() {
     const store = await Store.load('store.json');
     for (const [key] of Object.entries(form.getValues())) {
       const value = await store.get(key)
-      form.setValue(key as keyof z.infer<typeof formSchema>, value as string)
+      if (key && value !== undefined) {
+        form.setValue(key as keyof z.infer<typeof formSchema>, value as string)
+      }
     }
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const store = await Store.load('store.json');
     for (const [key, value] of Object.entries(values)) {
+      console.log(key, value);
       await store.set(key, value)
     }
     await store.save()
