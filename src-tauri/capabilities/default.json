@@ -78,6 +78,7 @@
     "core:window:allow-show",
     "core:window:allow-destroy",
     "core:path:allow-resolve-directory",
-    "shell:default"
+    "shell:default",
+    "core:window:allow-start-dragging"
   ]
 }
