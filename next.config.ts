@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
   devIndicators: {
     appIsrStatus: false,
   },
+  sassOptions: {
+    silenceDeprecations: ['legacy-js-api'],
+  },
 };
 
 export default nextConfig;

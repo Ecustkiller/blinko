@@ -11,28 +11,35 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
 import { Store } from "@tauri-apps/plugin-store"
 import { useEffect } from "react"
-import { Switch } from "@/components/ui/switch"
-import { TriangleAlert } from "lucide-react"
-import { OpenBroswer } from "./open-broswer"
 import { toast } from "@/hooks/use-toast"
 import { debounce } from 'lodash-es'
+import { SettingTab } from "./setting-tab"
+import { SettingTitle } from "./setting-title"
+import { config } from "./config"
+import { SettingRender } from "./setting-render"
+import { Separator } from "@/components/ui/separator"
 
-const formSchema = z.object({
-  apiKey: z.string(),
-  markDescGen: z.boolean().default(true).optional()
-})
+const flatConfig = config.flatMap(item => item.settings)
+
+const formSchema = z.object(flatConfig.reduce((acc, item) => {
+  return {
+    ...acc,
+    [item.key]: item.schema,
+  };
+}, {}))
 
 export default function Page() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      apiKey: '',
-      markDescGen: true
-    },
+    defaultValues: flatConfig.reduce((acc, item) => {
+      return {
+        ...acc,
+        [item.key]: item.value,
+      };
+    }, {})
   })
 
   async function initFormDefaultValues() {
@@ -40,12 +47,13 @@ export default function Page() {
     for (const [key] of Object.entries(form.getValues())) {
       const value = await store.get(key)
       if (key && value !== undefined) {
-        form.setValue(key as keyof z.infer<typeof formSchema>, value as string)
+        form.setValue(key as keyof z.infer<typeof formSchema>, value as never)
       }
     }
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(1);
     const store = await Store.load('store.json');
     for (const [key, value] of Object.entries(values)) {
       await store.set(key, value)
@@ -60,51 +68,46 @@ export default function Page() {
     initFormDefaultValues()
   }, [])
 
-  return <div className="p-4">
+  return <div className="flex">
+    <SettingTab />
     <Form {...form}>
-      <form onChange={debounceSubmit} className="space-y-4">
-        <h2 className="text-xl font-bold">ChatGPT(ChatAnywhere API)</h2>
-        <FormField
-          control={form.control}
-          name="apiKey"
-          render={({ field }) => (
-            <FormItem className="flex flex-col justify-between rounded-lg border p-3 shadow-sm">
-              <FormLabel>API KEY</FormLabel>
-              <FormControl>
-                <Input placeholder="请输入 API KEY" {...field} />
-              </FormControl>
-              <FormDescription>
-                你需要使用你的 Github 账号绑定来领取你自己的免费Key。<br />
-                <OpenBroswer title="申请领取内测免费API Key" url="https://api.chatanywhere.org/v1/oauth/free/render" />或
-                <OpenBroswer title="购买内测付费API Key" url="https://buyca.tech/" />
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="markDescGen"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-              <div className="space-y-0.5">
-                <FormLabel>记录 AI 生成描述</FormLabel>
-                <FormDescription>
-                  <span>截图和插图记录时，生成 AI 描述，而不是展示 OCR 识别的文本，可以更加直观的了解记录的核心内容。</span><br />
-                  <span className="flex items-center gap-1 mt-2 text-red-900">
-                    <TriangleAlert className="size-4" />开启此项将降低记录生成的速度，并且消耗更多的 API 请求次数，建议免费用户关闭。
-                  </span>
-                </FormDescription>
+      <form onChange={debounceSubmit} className="space-y-4 p-4 flex-1 h-screen overflow-y-scroll">
+        {
+          config.map(item => {
+            return (
+              <div key={item.anchor}>
+                <SettingTitle title={item.title} />
+                {
+                  item.settings.map((setting, index) => {  
+                    return (
+                      <div key={setting.key}>
+                        <FormField
+                          control={form.control}
+                          name={setting.key as never}
+                          render={({ field }) => (
+                            <FormItem className={`${setting.layout === 'horizontal' ? 'flex-row items-center' : 'flex-col'} flex justify-between mt-4`}>
+                              <div>
+                                <FormLabel>{setting.title}</FormLabel>
+                                <FormDescription>{setting.desc}</FormDescription>
+                              </div>
+                              <FormControl>
+                                <SettingRender setting={setting} field={field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        {
+                          index !== item.settings.length - 1 && <Separator className="my-4" />
+                        }
+                      </div>
+                    )
+                  })
+                }
               </div>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+            )
+          })
+        }
       </form>
     </Form>
   </div>

@@ -1,5 +1,5 @@
 import { Toaster } from "@/components/ui/toaster"
-import "./globals.css";
+import "./globals.scss";
 import 'md-editor-rt/lib/style.css';
 import 'md-editor-rt/lib/preview.css';
 

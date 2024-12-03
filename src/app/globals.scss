@@ -118,3 +118,10 @@
 .md-editor-toolbar-item{
   margin: 0 !important;
 }
+
+.setting-anchor{
+  @apply text-sm w-full hover:bg-zinc-100 px-4 py-2 rounded cursor-pointer flex gap-2 items-center;
+  svg {
+    @apply size-4;
+  }
+}

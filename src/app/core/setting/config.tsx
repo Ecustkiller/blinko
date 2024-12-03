@@ -1,0 +1,104 @@
+import { BotMessageSquare, Command, FileUp, Palette, ScanText, Store, TriangleAlert } from "lucide-react"
+import { OpenBroswer } from "./open-broswer"
+import { toast } from "@/hooks/use-toast"
+import { z } from "zod";
+
+export const config = [
+  {
+    title: '关于',
+    icon: <Store />,
+    anchor: 'about',
+    settings: [
+      {
+        title: `版本`,
+        key: 'version',
+        value: '检查更新',
+        desc: <>
+          查询<OpenBroswer title="历史版本" url="https://github.com/codexu/note-gen/releases" />。
+        </>,
+        type: 'button',
+        schema: z.string(),
+        layout: 'horizontal',
+        onClick: async () => {
+          toast({ title: '当前版本' })
+        }
+      },
+      {
+        title: '自动更新',
+        key: 'markDescGen',
+        value: true,
+        desc: <>关闭后，NoteGen 将不会自动更新</>,
+        schema: z.boolean(),
+        layout: 'horizontal',
+        type: 'switch',
+      },
+      {
+        title: '语言',
+        key: 'language',
+        value: '简体中文',
+        desc: <>更改界面语言</>,
+        type: 'select',
+        schema: z.string(),
+        layout: 'horizontal',
+      }
+    ]
+  },
+  {
+    title: '外观',
+    icon: <Palette />,
+    anchor: 'style',
+    settings: [],
+  },
+  {
+    title: 'ChatGPT',
+    icon: <BotMessageSquare />,
+    anchor: 'ai',
+    settings: [
+      {
+        title: 'API Key',
+        key: 'apiKey',
+        value: '',
+        desc: <>
+          你需要使用你的 Github 账号绑定来领取你自己的免费Key。<br />
+          <OpenBroswer title="申请领取内测免费API Key" url="https://api.chatanywhere.org/v1/oauth/free/render" />或
+          <OpenBroswer title="购买内测付费API Key" url="https://buyca.tech/" />
+        </>,
+        schema: z.string(),
+        layout: 'vertical',
+        type: 'input',
+      },
+      {
+        title: '记录 AI 生成描述',
+        key: 'markDescGen',
+        value: true,
+        desc: <>
+          <span>截图和插图记录时，生成 AI 描述，而不是展示 OCR 识别的文本，可以更加直观的了解记录的核心内容。</span><br />
+          <span className="flex items-center gap-1 mt-2 text-red-900">
+            <TriangleAlert className="size-4" />开启此项将降低记录生成的速度，并且消耗更多的 API 请求次数，建议免费用户关闭。
+          </span>
+        </>,
+        schema: z.boolean(),
+        layout: 'horizontal',
+        type: 'switch',
+      }
+    ],
+  },
+  {
+    title: 'OCR',
+    icon: <ScanText />,
+    anchor: 'ocr',
+    settings: [],
+  },
+  {
+    title: '快捷键',
+    icon: <Command />,
+    anchor: 'shortcut',
+    settings: [],
+  },
+  {
+    title: '同步',
+    icon: <FileUp />,
+    anchor: 'file',
+    settings: [],
+  },
+]
