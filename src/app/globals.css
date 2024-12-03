@@ -94,10 +94,12 @@
 .md-editor-preview-wrapper ul li {
   list-style: disc;
 }
+.md-editor-preview-wrapper ol li {
+  list-style: decimal;
+}
 
 ::-webkit-scrollbar {
   @apply w-2 h-2;
- 
 }
 
 ::-webkit-scrollbar-track {
