@@ -82,7 +82,7 @@ export function FileItem({ item }: { item: DirTree }) {
               onBlur={handleRename}
               onChange={(e) => { setName(e.target.value) }}
             /> :
-            <span className="select-none">{item.name}</span>
+            <span className="select-none line-clamp-1">{item.name}</span>
           }
         </div>
       </ContextMenuTrigger>
