@@ -2,7 +2,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -19,6 +18,7 @@ import { Switch } from "@/components/ui/switch"
 import { TriangleAlert } from "lucide-react"
 import { OpenBroswer } from "./open-broswer"
 import { toast } from "@/hooks/use-toast"
+import { debounce } from 'lodash-es'
 
 const formSchema = z.object({
   apiKey: z.string(),
@@ -54,13 +54,15 @@ export default function Page() {
     toast({ title: "设置已保存", duration: 2000 })
   }
 
+  const debounceSubmit = debounce(() => form.handleSubmit(onSubmit)(), 1000)
+
   useEffect(() => {
     initFormDefaultValues()
   }, [])
 
   return <div className="p-4">
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onChange={debounceSubmit} className="space-y-4">
         <h2 className="text-xl font-bold">ChatGPT(ChatAnywhere API)</h2>
         <FormField
           control={form.control}
@@ -103,7 +105,6 @@ export default function Page() {
             </FormItem>
           )}
         />
-        <Button type="submit">保存</Button>
       </form>
     </Form>
   </div>
