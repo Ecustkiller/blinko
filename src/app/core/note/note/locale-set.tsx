@@ -4,11 +4,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Globe } from "lucide-react";
 import React, { useEffect } from "react";
-import useNoteStore, { locales } from "@/stores/note";
+import useNoteStore from "@/stores/note";
+import { locales } from "@/lib/locales";
 
 export function LocaleSet() {
   const { setLocale, locale, getLocale } = useNoteStore()
-
 
   async function localeChange(res: string) {
     setLocale(res)

@@ -1,21 +1,7 @@
 import { getNoteByTagId, Note, getNotesByTagId, getNoteById, delNote } from '@/db/notes';
 import { Store } from '@tauri-apps/plugin-store';
 import { create } from 'zustand'
-
-export const locales = [
-  '简体中文',
-  'English',
-  '日本語',
-  'Українська', 
-  'Français', 
-  '한국어', 
-  'Português', 
-  'বাংলা', 
-  'Italiano', 
-  'فارسی', 
-  'Русский', 
-  'Čeština',
-]
+import { locales } from '@/lib/locales';
 
 export const counts = [200, 500, 1000, 2000, 5000]
 
@@ -80,10 +66,10 @@ const useNoteStore = create<NoteState>((set) => ({
     await delNote(id)
   },
 
-  locale: '简体中文',
+  locale: locales[0],
   getLocale: async () => {
     const store = await Store.load('store.json');
-    const res = (await store.get<string>('note_locale')) || '简体中文'
+    const res = (await store.get<string>('note_locale')) || locales[0]
     set({ locale: res })
   },
   setLocale: async (locale: string) => {
