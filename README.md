@@ -1,6 +1,7 @@
 # NoteGen
 
 [![publish](https://github.com/codexu/note-gen/actions/workflows/release.yml/badge.svg?branch=release)](https://github.com/codexu/note-gen/actions/workflows/release.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/codexu/note-gen)](https://github.com/codexu/note-gen/releases/latest)
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/codexu/note-gen/total)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/codexu/note-gen)](https://github.com/codexu/note-gen/commits/dev/)
 ![Discord](https://img.shields.io/discord/1313305041918103552)
