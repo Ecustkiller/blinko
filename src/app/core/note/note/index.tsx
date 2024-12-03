@@ -6,9 +6,10 @@ import { useTheme } from 'next-themes'
 import useMarkStore from "@/stores/mark";
 import { NoteHeader } from './note-header'
 import { NoteFooter } from "./note-footer";
-import { initNotesDb } from "@/db/notes";
+import { initNotesDb, insertNote } from "@/db/notes";
 import useNoteStore from "@/stores/note";
 import { convertImage } from "@/lib/utils";
+import useTagStore from "@/stores/tag";
 
 export function Note() {
   const [text, setText] = useState("")
@@ -17,7 +18,8 @@ export function Note() {
   const [id] = useState('preview-only');
 
   const { fetchMarks, marks } = useMarkStore()
-  const { locale, count, currentNote, fetchCurrentNote, setLoading, loading, clearCurrentNote } = useNoteStore()
+  const { currentTagId } = useTagStore()
+  const { currentNote, fetchCurrentNote, setLoading, loading, clearCurrentNote, locale, count, fetchCurrentNotes } = useNoteStore()
 
   useEffect(() => {
     initNotesDb()
@@ -48,10 +50,22 @@ export function Note() {
 
   let textChunks = ''
 
-  function aiResponse(res: string) {
+  async function aiResponse(res: string) {
     if (res !== '[DONE]') {
       textChunks += res
       setText(textChunks)
+    } else if (res === '[DONE]') {
+      const note = {
+        tagId: currentTagId,
+        locale,
+        count: `${count}`,
+        content: textChunks,
+        createdAt: Date.now()
+      }
+      await insertNote(note)
+      await fetchCurrentNotes()
+      await fetchCurrentNote()
+      setLoading(false)
     }
   }
     
@@ -87,7 +101,6 @@ export function Note() {
       请满足用户输入的自定义需求：${customText}
     `
     await fetchAiStream(request_content, aiResponse)
-    setLoading(false)
   }
 
   return <div className="flex flex-col flex-1">

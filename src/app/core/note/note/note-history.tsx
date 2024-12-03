@@ -1,7 +1,6 @@
 import { TooltipButton } from "@/components/tooltip-button";
-import { Clock, Save, Trash } from "lucide-react";
-import { getNotesByTagId, insertNote, Note } from '@/db/notes';
-import { Store } from "@tauri-apps/plugin-store";
+import { Clock, Trash } from "lucide-react";
+import { getNotesByTagId, Note } from '@/db/notes';
 import useTagStore from "@/stores/tag";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import useNoteStore from "@/stores/note";
@@ -11,24 +10,9 @@ import { Separator } from "@/components/ui/separator";
 import { extractTitle } from '@/lib/markdown'
 import { Button } from "@/components/ui/button";
 
-export function NoteHistory({ content }: { content: string }) {
+export function NoteHistory() {
   const { currentTagId } = useTagStore()
-  const { currentNote, currentNotes, fetchCurrentNotes, fetchCurrentNote, fetchNoteById, deleteNote } = useNoteStore()
-
-  async function saveNote() {
-    const locale = await(await Store.load('store.json')).get<string>('note_locale')
-    const count = await(await Store.load('store.json')).get<string>('note_count')
-    const note = {
-      tagId: currentTagId,
-      locale,
-      count,
-      content,
-      createdAt: Date.now()
-    }
-    await insertNote(note)
-    await fetchCurrentNotes()
-    await fetchCurrentNote()
-  }
+  const { currentNotes, fetchCurrentNotes, fetchNoteById, deleteNote } = useNoteStore()
 
   async function getNotes() {
     const nots = await getNotesByTagId(currentTagId)
@@ -83,12 +67,6 @@ export function NoteHistory({ content }: { content: string }) {
           }
         </PopoverContent>
       </Popover>
-      <TooltipButton icon={<Save />}
-        disabled={currentNote && currentNotes.map(note => note.id).includes(currentNote.id)}
-        tooltipText="保存笔记"
-        onClick={saveNote}
-      />
-      {/* <TooltipButton icon={<Trash />} tooltipText="删除笔记" /> */}
     </div>
   )
 }

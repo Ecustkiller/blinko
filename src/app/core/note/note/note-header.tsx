@@ -33,8 +33,7 @@ export function NoteHeader({text}: {text: string}) {
                 </> : null
               }
             </div>
-          <NoteHistory content={text} />
-          <Separator orientation="vertical" />
+          <NoteHistory />
           <NoteOutput />
         </TooltipProvider>
       </div>

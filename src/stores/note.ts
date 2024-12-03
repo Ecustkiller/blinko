@@ -37,7 +37,6 @@ const useNoteStore = create<NoteState>((set) => ({
     set({ currentNote: undefined })
   },
   fetchCurrentNote: async () => {
-    console.log('fetchCurrentNote')
     set({ currentNote: undefined })
     const store = await Store.load('store.json');
     const currentTagId = await store.get<number>('currentTagId')
