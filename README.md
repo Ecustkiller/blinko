@@ -1,6 +1,9 @@
 # NoteGen
 
 [![publish](https://github.com/codexu/note-gen/actions/workflows/release.yml/badge.svg?branch=release)](https://github.com/codexu/note-gen/actions/workflows/release.yml)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/codexu/note-gen/total)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/codexu/note-gen)](https://github.com/codexu/note-gen/commits/dev/)
+![Discord](https://img.shields.io/discord/1313305041918103552)
 
 NoteGen 是一个基于 Tauri + ChatGPT 的笔记软件，旨在帮助用户以截图、插图、文本的记录方式，快捷的保存碎片化知识，通过 AI 自动整理为一篇可读的笔记，通过内置的 Markdown 编辑器将 AI 笔记进行二次创作。
 
