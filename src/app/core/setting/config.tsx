@@ -114,18 +114,54 @@ export const config = [
     title: 'OCR',
     icon: <ScanText />,
     anchor: 'ocr',
-    settings: [],
+    settings: [
+      {
+        title: '识别语言包',
+        key: 'tesseractList',
+        value: true,
+        desc: <>
+          选择你需要的语言包，并下载。
+          <OpenBroswer title="在此查询全部模型" url="https://tesseract-ocr.github.io/tessdoc/Data-Files#data-files-for-version-400-november-29-2016" />。
+        </>,
+        schema: z.boolean(),
+        disabled: true,
+        layout: 'horizontal',
+        type: 'switch',
+      }
+    ],
   },
   {
     title: '快捷键',
     icon: <Command />,
     anchor: 'shortcut',
-    settings: [],
+    settings: [
+      {
+        title: '截图',
+        key: 'screenshotShortcut',
+        value: 'Command+Shift+R',
+        desc: <>截图是快速记录的最佳方式，可以通过全局快捷键快速截图，无需打开主页面。</>,
+        schema: z.string(),
+        disabled: true,
+        layout: 'horizontal',
+        type: 'shortcut',
+      }
+    ],
   },
   {
     title: '同步',
     icon: <FileUp />,
     anchor: 'file',
-    settings: [],
+    settings: [
+      {
+        title: '开启同步',
+        key: 'sync',
+        value: false,
+        desc: <>开启同步后，您的数据将同步到 Github，但需要你配置 Github Token，并创建存储仓库。</>,
+        schema: z.boolean(),
+        disabled: true,
+        layout: 'horizontal',
+        type: 'switch',
+      }
+    ],
   },
 ]
