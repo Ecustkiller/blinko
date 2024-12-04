@@ -1,14 +1,20 @@
+'use client'
+
 import { ThemeProvider } from "@/components/theme-provider"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
+import useSettingStore from "@/stores/setting"
+import { useEffect } from "react";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-
+  const { initSettingData } = useSettingStore()
+  useEffect(() => {
+    initSettingData()
+  }, [])
   return (
     <ThemeProvider
       attribute="class"

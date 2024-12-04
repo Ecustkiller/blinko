@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Store } from "@tauri-apps/plugin-store"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "@/hooks/use-toast"
 import { debounce } from 'lodash-es'
 import { SettingTab } from "./setting-tab"
@@ -31,6 +31,7 @@ const formSchema = z.object(flatConfig.reduce((acc, item) => {
 }, {}))
 
 export default function Page() {
+  const [isInitialRender, setIsInitialRender] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,16 +51,19 @@ export default function Page() {
         form.setValue(key as keyof z.infer<typeof formSchema>, value as never)
       }
     }
+    setIsInitialRender(true)
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(1);
+    console.log(values);
     const store = await Store.load('store.json');
     for (const [key, value] of Object.entries(values)) {
       await store.set(key, value)
+      if (isInitialRender) {
+        toast({ title: "设置已保存", duration: 2000 })
+      }
     }
     await store.save()
-    toast({ title: "设置已保存", duration: 2000 })
   }
 
   const debounceSubmit = debounce(() => form.handleSubmit(onSubmit)(), 1000)

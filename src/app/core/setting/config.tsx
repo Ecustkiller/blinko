@@ -2,6 +2,7 @@ import { BotMessageSquare, Command, FileUp, Palette, ScanText, Store, TriangleAl
 import { OpenBroswer } from "./open-broswer"
 import { toast } from "@/hooks/use-toast"
 import { z } from "zod";
+import { Version } from "./version";
 
 export const config = [
   {
@@ -14,7 +15,7 @@ export const config = [
         key: 'version',
         value: '检查更新',
         desc: <>
-          查询<OpenBroswer title="历史版本" url="https://github.com/codexu/note-gen/releases" />。
+          当前版本: <Version />，<OpenBroswer title="查询历史版本" url="https://github.com/codexu/note-gen/releases" />。
         </>,
         type: 'button',
         schema: z.string(),
@@ -25,9 +26,9 @@ export const config = [
       },
       {
         title: '自动更新',
-        key: 'markDescGen',
+        key: 'autoUpdate',
         value: true,
-        desc: <>关闭后，NoteGen 将不会自动更新</>,
+        desc: <span>关闭后，NoteGen 将不会自动更新</span>,
         schema: z.boolean(),
         layout: 'horizontal',
         type: 'switch',
