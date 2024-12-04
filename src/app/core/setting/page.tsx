@@ -78,12 +78,12 @@ export default function Page() {
   return <div className="flex">
     <SettingTab />
     <Form {...form}>
-      <form onChange={debounceSubmit} className="space-y-4 p-4 flex-1 h-screen overflow-y-scroll">
+      <form onChange={debounceSubmit} id="setting-form" className="space-y-4 p-4 flex-1 h-screen overflow-y-scroll">
         {
           config.map(item => {
             return (
               <div key={item.anchor}>
-                <SettingTitle title={item.title} />
+                <SettingTitle title={item.title} anchor={item.anchor} icon={item.icon} />
                 {
                   item.settings.map((setting, index) => {  
                     return (

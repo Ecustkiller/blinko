@@ -6,6 +6,16 @@ import { config } from './config'
 export function SettingTab() {
   const [currentAnchor, setCurrentAnchor] = useState('about')
 
+  function handleAnchor(anchor: string) {
+    setCurrentAnchor(anchor)
+    const settingForm = document.querySelector('#setting-form')
+    const titleDom = document.querySelector<HTMLElement>(`#${anchor}`)
+    if (settingForm && titleDom) {
+      const y = titleDom?.offsetTop
+      settingForm.scrollTop = y || 0
+    }
+  }
+
   useEffect(() => {
     setCurrentAnchor(config[0].anchor)
   }, [])
@@ -18,10 +28,10 @@ export function SettingTab() {
               <li
                 key={item.anchor}
                 className={currentAnchor === item.anchor ? '!bg-zinc-800 text-white setting-anchor' : 'setting-anchor'}
-                onClick={() => setCurrentAnchor(item.anchor)}
+                onClick={() => handleAnchor(item.anchor)}
               >
                 {item.icon}
-                <a href={`#${item.anchor}`}>{item.title}</a>
+                <span>{item.title}</span>
               </li>
             )
           })
