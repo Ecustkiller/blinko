@@ -19,6 +19,7 @@ export const config = [
         </>,
         type: 'button',
         schema: z.string(),
+        disabled: true,
         layout: 'horizontal',
         onClick: async () => {
           toast({ title: '当前版本' })
@@ -28,8 +29,9 @@ export const config = [
         title: '自动更新',
         key: 'autoUpdate',
         value: true,
-        desc: <span>关闭后，NoteGen 将不会自动更新</span>,
+        desc: <>关闭后，NoteGen 将不会自动更新。</>,
         schema: z.boolean(),
+        disabled: true,
         layout: 'horizontal',
         type: 'switch',
       },
@@ -40,6 +42,7 @@ export const config = [
         desc: <>更改界面语言</>,
         type: 'select',
         schema: z.string(),
+        disabled: true,
         layout: 'horizontal',
       }
     ]
@@ -48,7 +51,28 @@ export const config = [
     title: '外观',
     icon: <Palette />,
     anchor: 'style',
-    settings: [],
+    settings: [
+      {
+        title: '预览内容主题',
+        key: 'previewTheme',
+        value: 'github',
+        desc: <>在笔记生成和文章编辑预览时，更改预览内容主题。</>,
+        type: 'select',
+        schema: z.string(),
+        disabled: false,
+        layout: 'horizontal',
+      },
+      {
+        title: '代码高亮主题',
+        key: 'codeTheme',
+        value: 'github',
+        desc: <>代码块高亮样式。</>,
+        type: 'select',
+        schema: z.string(),
+        disabled: false,
+        layout: 'horizontal',
+      },
+    ],
   },
   {
     title: 'ChatGPT',
@@ -65,6 +89,7 @@ export const config = [
           <OpenBroswer title="购买内测付费API Key" url="https://buyca.tech/" />
         </>,
         schema: z.string(),
+        disabled: false,
         layout: 'vertical',
         type: 'input',
       },
@@ -79,6 +104,7 @@ export const config = [
           </span>
         </>,
         schema: z.boolean(),
+        disabled: true,
         layout: 'horizontal',
         type: 'switch',
       }

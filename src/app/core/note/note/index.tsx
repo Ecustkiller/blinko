@@ -10,6 +10,7 @@ import { initNotesDb, insertNote } from "@/db/notes";
 import useNoteStore from "@/stores/note";
 import { convertImage } from "@/lib/utils";
 import useTagStore from "@/stores/tag";
+import useSettingStore from "@/stores/setting";
 
 export function Note() {
   const [text, setText] = useState("")
@@ -20,7 +21,8 @@ export function Note() {
   const { fetchMarks, marks } = useMarkStore()
   const { currentTagId } = useTagStore()
   const { currentNote, fetchCurrentNote, setLoading, loading, clearCurrentNote, locale, count, fetchCurrentNotes } = useNoteStore()
-
+  const { codeTheme, previewTheme } = useSettingStore()
+  
   useEffect(() => {
     initNotesDb()
   }, [])
@@ -105,7 +107,14 @@ export function Note() {
 
   return <div className="flex flex-col flex-1">
     <NoteHeader text={text} />
-    <MdPreview id={id} className="flex-1" value={text} theme={mdTheme} />
+    <MdPreview
+      id={id}
+      className="flex-1"
+      value={text}
+      theme={mdTheme}
+      codeTheme={codeTheme}
+      previewTheme={previewTheme}
+    />
     <NoteFooter gen={handleAi} />
   </div>
 }

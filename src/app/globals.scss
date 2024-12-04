@@ -81,6 +81,10 @@
   }
 }
 
+html, body {
+  @apply h-screen overflow-hidden;
+}
+
 .file-manange-item {
   @apply flex items-center gap-2 p-1 mb-1 text-sm cursor-pointer w-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-black dark:text-white;
   &.active{
@@ -120,7 +124,7 @@
 }
 
 .setting-anchor{
-  @apply text-sm w-full hover:bg-zinc-100 px-4 py-2 rounded cursor-pointer flex gap-2 items-center;
+  @apply text-sm w-full hover:bg-accent px-4 py-2 rounded cursor-pointer flex gap-2 items-center;
   svg {
     @apply size-4;
   }

@@ -5,6 +5,9 @@ import { ControllerRenderProps } from "react-hook-form";
 import { config } from "./config";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { LanguageSelect } from "./lanage-select";
+import { PreviewThemeSelect } from "./preview-theme-select";
+import { CodeThemeSelect } from "./code-theme-select";
 
 export function SettingRender(
   { setting, field }:
@@ -15,10 +18,19 @@ export function SettingRender(
 ) {
   switch (setting.type) {
     case 'button':
-      return <Button size={'sm'}>{setting.value}</Button>
+      return <Button size={'sm'} disabled={setting.disabled}>{setting.value}</Button>
     case 'switch':
-      return <Switch checked={field.value} onCheckedChange={field.onChange} />
+      return <Switch checked={field.value} onCheckedChange={field.onChange} disabled={setting.disabled} />
     case 'input':
-      return <Input placeholder={`请输入${setting.title}`} {...field} />
+      return <Input placeholder={`请输入${setting.title}`} {...field} disabled={setting.disabled} />
+    case 'select':
+      switch (setting.key) {
+        case 'language':
+          return <LanguageSelect field={field} />
+        case 'previewTheme':
+          return <PreviewThemeSelect field={field} />
+        case 'codeTheme':
+          return <CodeThemeSelect field={field} />
+      }
   }
 }

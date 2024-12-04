@@ -14,12 +14,13 @@ import {
 import { Store } from "@tauri-apps/plugin-store"
 import { useEffect, useState } from "react"
 import { toast } from "@/hooks/use-toast"
-import { debounce } from 'lodash-es'
+import { debounce, upperFirst } from 'lodash-es'
 import { SettingTab } from "./setting-tab"
 import { SettingTitle } from "./setting-title"
 import { config } from "./config"
 import { SettingRender } from "./setting-render"
 import { Separator } from "@/components/ui/separator"
+import useSettingStore from "@/stores/setting"
 
 const flatConfig = config.flatMap(item => item.settings)
 
@@ -32,6 +33,7 @@ const formSchema = z.object(flatConfig.reduce((acc, item) => {
 
 export default function Page() {
   const [isInitialRender, setIsInitialRender] = useState(false)
+  const settingStore = useSettingStore()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,10 +57,11 @@ export default function Page() {
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     const store = await Store.load('store.json');
     for (const [key, value] of Object.entries(values)) {
       await store.set(key, value)
+      const storeKey = `set${upperFirst(key)}` as keyof typeof settingStore
+      (settingStore[storeKey] as (value: unknown) => void)(value)
       if (isInitialRender) {
         toast({ title: "设置已保存", duration: 2000 })
       }

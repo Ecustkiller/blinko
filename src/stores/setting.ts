@@ -19,6 +19,15 @@ interface SettingState {
 
   markDescGen: boolean
   setMarkDescGen: (markDescGen: boolean) => void
+
+  darkMode: string
+  setDarkMode: (darkMode: string) => void
+
+  previewTheme: string
+  setPreviewTheme: (previewTheme: string) => void
+
+  codeTheme: string
+  setCodeTheme: (codeTheme: string) => void
 }
 
 
@@ -31,10 +40,8 @@ const useSettingStore = create<SettingState>((set, get) => ({
       if (typeof value === 'function') return
       if (res) {
         set({ [key]: res })
-        console.log(`store ${key} is ${res}`);
       } else {
         await store.set(key, value)
-        console.log(`data ${key} is ${value}`);
       }
     })
   },
@@ -56,6 +63,15 @@ const useSettingStore = create<SettingState>((set, get) => ({
 
   markDescGen: true,
   setMarkDescGen: (markDescGen: boolean) => set({ markDescGen }),
+
+  darkMode: 'system',
+  setDarkMode: (darkMode: string) => set({ darkMode }),
+
+  previewTheme: 'atom',
+  setPreviewTheme: (previewTheme: string) => set({ previewTheme }),
+
+  codeTheme: 'atom',
+  setCodeTheme: (codeTheme: string) => set({ codeTheme }),
 }))
 
 export default useSettingStore
