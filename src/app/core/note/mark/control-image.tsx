@@ -16,6 +16,7 @@ import useTagStore from "@/stores/tag"
 import { BaseDirectory, exists, mkdir, writeFile } from "@tauri-apps/plugin-fs"
 import { ImagePlus } from "lucide-react"
 import { useState } from "react"
+import { uploadFile, uint8ArrayToBase64 } from "@/lib/github"
  
 export function ControlImage() {
   const [open, setOpen] = useState(false);
@@ -26,6 +27,7 @@ export function ControlImage() {
   async function selectImage(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
     if (!file) return
+    // 获取文件后缀
     const isImageFolderExists = await exists('image', { baseDir: BaseDirectory.AppData})
     if (!isImageFolderExists) {
       await mkdir('image', { baseDir: BaseDirectory.AppData})
@@ -36,7 +38,19 @@ export function ControlImage() {
     await writeFile(`image/${filename}`, data, { baseDir: BaseDirectory.AppData})
     const content = await ocr(`image/${filename}`)
     const desc = await fetchAiDesc(content).then(res => res.choices[0].message.content)
-    await insertMark({ tagId: currentTagId, type: 'image', content, url: filename, desc })
+    const ext = file.name.substring(file.name.lastIndexOf('.') + 1)
+    const res = await uploadFile({
+      path: 'images',
+      ext,
+      file: uint8ArrayToBase64(data),
+    })
+    await insertMark({
+      tagId: currentTagId,
+      type: 'image',
+      content,
+      url: res ? res.data.content.download_url : filename,
+      desc
+    })
     await fetchMarks()
     await fetchTags()
     getCurrentTag()

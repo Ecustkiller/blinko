@@ -7,8 +7,12 @@ export function LocalImage({ onLoad, src, ...props }: React.ComponentProps<typeo
   const [localSrc, setLocalSrc] = useState<string>('')
 
   async function getAppDataDir() {
-    const covertFileSrcPath = await convertImage(src as string)
-    setLocalSrc(covertFileSrcPath)
+    if (src.toString().includes('http')) {
+      setLocalSrc(src.toString())
+    } else {
+      const covertFileSrcPath = await convertImage(src as string)
+      setLocalSrc(covertFileSrcPath)
+    }
   }
 
   React.useEffect(() => {

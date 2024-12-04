@@ -44,7 +44,7 @@ function ImageViewer({mark, path}: {mark: Mark, path?: string}) {
       <SheetTrigger asChild>
         <div>
           <LocalImage
-            src={`/${path}/${mark.url}`}
+            src={mark.url.includes('http') ? mark.url : `/${path}/${mark.url}`}
             alt=""
             className="w-14 h-14 object-cover cursor-pointer"
           />
@@ -55,7 +55,7 @@ function ImageViewer({mark, path}: {mark: Mark, path?: string}) {
           <SheetTitle>{MarkType[mark.type]}</SheetTitle>
           <span className="mt-4 text-xs text-zinc-500">创建于：{dayjs(mark.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
           <LocalImage
-            src={`/${path}/${mark.url}`}
+            src={mark.url.includes('http') ? mark.url : `/${path}/${mark.url}`}
             alt=""
             className="w-full"
           />

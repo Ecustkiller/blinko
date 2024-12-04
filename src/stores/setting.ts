@@ -28,6 +28,24 @@ interface SettingState {
 
   codeTheme: string
   setCodeTheme: (codeTheme: string) => void
+
+  tesseractList: string[]
+  setTesseractList: (tesseractList: string[]) => void
+
+  screenshotShortcut: string
+  setScreenshotShortcut: (screenshotShortcut: string) => void
+
+  sync: boolean
+  setSync: (sync: boolean) => void
+
+  githubUsername: string
+  setGithubUsername: (githubUsername: string) => void
+
+  accessToken: string
+  setAccessToken: (accessToken: string) => void
+
+  repositoryName: string
+  setRepositoryName: (repositoryName: string) => void
 }
 
 
@@ -72,6 +90,24 @@ const useSettingStore = create<SettingState>((set, get) => ({
 
   codeTheme: 'atom',
   setCodeTheme: (codeTheme: string) => set({ codeTheme }),
+
+  tesseractList: [],
+  setTesseractList: (tesseractList: string[]) => set({ tesseractList }),
+
+  screenshotShortcut: 'Command+Shift+R',
+  setScreenshotShortcut: (screenshotShortcut: string) => set({ screenshotShortcut }),
+
+  sync: false,
+  setSync: (sync: boolean) => set({ sync }),
+
+  githubUsername: '',
+  setGithubUsername: (githubUsername: string) => set({ githubUsername }),
+
+  accessToken: '',
+  setAccessToken: (accessToken: string) => set({ accessToken }),
+
+  repositoryName: '',
+  setRepositoryName: (repositoryName: string) => set({ repositoryName })
 }))
 
 export default useSettingStore

@@ -79,7 +79,9 @@ export function Note() {
     const textMarks = marks.filter(item => item.type === 'text')
     const imageMarks = marks.filter(item => item.type === 'image')
     for (const image of imageMarks) {
-      image.url = await convertImage(`/image/${image.url}`)
+      if (!image.url.includes('http')) {
+        image.url = await convertImage(`/image/${image.url}`)
+      }
     }
     const request_content = `
       以下是通过截图后，使用OCR识别出的文字片段：

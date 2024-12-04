@@ -57,19 +57,23 @@ export default function Page() {
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const store = await Store.load('store.json');
     for (const [key, value] of Object.entries(values)) {
-      await store.set(key, value)
-      const storeKey = `set${upperFirst(key)}` as keyof typeof settingStore
-      (settingStore[storeKey] as (value: unknown) => void)(value)
-      if (isInitialRender) {
-        toast({ title: "设置已保存", duration: 2000 })
+      const checkKey = key as keyof typeof settingStore
+      const checkValue = settingStore[checkKey]
+      if (checkValue !== value) {
+        const store = await Store.load('store.json');
+        await store.set(key, value)
+        const storeKey = `set${upperFirst(key)}` as keyof typeof settingStore
+        (settingStore[storeKey] as (value: unknown) => void)(value)
+        await store.save()
+        if (isInitialRender) {
+          toast({ title: "设置已保存", description: `${flatConfig.find(item => item.key === key)?.title}已更新。`, duration: 1000 })
+        }
       }
     }
-    await store.save()
   }
 
-  const debounceSubmit = debounce(() => form.handleSubmit(onSubmit)(), 1000)
+  const debounceSubmit = debounce(() => form.handleSubmit(onSubmit)(), 2000)
 
   useEffect(() => {
     initFormDefaultValues()

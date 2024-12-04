@@ -35,7 +35,7 @@ const items = [
   },
   {
     title: "图床",
-    url: "#",
+    url: "/core/image",
     icon: ImageUp,
   },
   {
