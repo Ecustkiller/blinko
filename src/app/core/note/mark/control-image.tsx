@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { insertMark } from "@/db/marks"
+import { insertMark, Mark } from "@/db/marks"
 import { fetchAiDesc } from "@/lib/ai"
 import ocr from "@/lib/ocr"
 import useMarkStore from "@/stores/mark"
@@ -29,6 +29,7 @@ export function ControlImage() {
   async function selectImage(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
     if (!file) return
+    setOpen(false)
     // 获取文件后缀
     const isImageFolderExists = await exists('image', { baseDir: BaseDirectory.AppData})
     if (!isImageFolderExists) {
@@ -41,32 +42,25 @@ export function ControlImage() {
     const content = await ocr(`image/${filename}`)
     const desc = await fetchAiDesc(content).then(res => res.choices[0].message.content)
     const ext = file.name.substring(file.name.lastIndexOf('.') + 1)
+    const mark: Partial<Mark> = {
+      tagId: currentTagId,
+      type: 'image',
+      content,
+      url: filename,
+      desc,
+    }
     if (sync) {
       const res = await uploadFile({
         path: 'images',
         ext,
         file: uint8ArrayToBase64(data),
       })
-      await insertMark({
-        tagId: currentTagId,
-        type: 'image',
-        content,
-        url: res ? res.data.content.download_url : filename,
-        desc
-      })
-    } else {
-      await insertMark({
-        tagId: currentTagId,
-        type: 'image',
-        content,
-        url: filename,
-        desc
-      })
+      mark.url = res ? res.data.content.download_url : filename
     }
+    await insertMark(mark)
     await fetchMarks()
     await fetchTags()
     getCurrentTag()
-    setOpen(false)
   }
 
   return (
