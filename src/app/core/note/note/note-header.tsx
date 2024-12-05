@@ -22,17 +22,17 @@ export function NoteHeader({text}: {text: string}) {
       </div>
       <div className="flex items-center h-6 gap-1">
         <TooltipProvider>
-            <div className="flex items-center h-6 gap-1">
-              <span className="text-sm px-2">{wordsCount(text)} 字</span>
-              <Separator orientation="vertical" />
-              {
-                currentNote?.createdAt ? 
-                <>
-                  <time className="text-sm px-2" suppressHydrationWarning>{dayjs(currentNote?.createdAt).format('YYYY-MM-DD HH:mm:ss')}</time>
-                  <Separator orientation="vertical" />
-                </> : null
-              }
-            </div>
+          <div className="flex items-center h-6 gap-1">
+            <span className="text-sm px-2">{wordsCount(text)} 字</span>
+            <Separator orientation="vertical" />
+            {
+              currentNote?.createdAt ? 
+              <>
+                <time className="text-sm px-2" suppressHydrationWarning>{dayjs(currentNote?.createdAt).format('YYYY-MM-DD HH:mm:ss')}</time>
+                <Separator orientation="vertical" />
+              </> : null
+            }
+          </div>
           <NoteHistory />
           <NoteOutput />
         </TooltipProvider>

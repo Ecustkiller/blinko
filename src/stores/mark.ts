@@ -1,10 +1,13 @@
-import { getMarks, Mark } from '@/db/marks'
+import { getAllMarks, getMarks, Mark } from '@/db/marks'
 import { Store } from '@tauri-apps/plugin-store';
 import { create } from 'zustand'
 
 interface MarkState {
   marks: Mark[]
   fetchMarks: () => Promise<void>
+
+  allMarks: Mark[]
+  fetchAllMarks: () => Promise<void>
 }
 
 const useMarkStore = create<MarkState>((set) => ({
@@ -23,7 +26,19 @@ const useMarkStore = create<MarkState>((set) => ({
       }
     })
     set({ marks: decodeRes })
-  }
+  },
+
+  allMarks: [],
+  fetchAllMarks: async () => {
+    const res = await getAllMarks()
+    const decodeRes = res.map(item => {
+      return {
+        ...item,
+        content: decodeURIComponent(item.content || '')
+      }
+    })
+    set({ allMarks: decodeRes })
+  },
 }))
 
 export default useMarkStore

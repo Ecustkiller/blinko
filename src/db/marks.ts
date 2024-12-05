@@ -57,6 +57,11 @@ export async function insertMark(mark: Partial<Mark>) {
   `)
 }
 
+export async function getAllMarks() {
+  const db = await getDb();
+  return await db.select<Mark[]>(`select * from marks order by createdAt desc`)
+}
+
 export async function updateMark(mark: Mark) {
   const db = await getDb();
   return await db.execute(`

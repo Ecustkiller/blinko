@@ -1,30 +1,29 @@
 'use client'
-import { Button } from '@/components/ui/button'
-import useSettingStore from '@/stores/setting'
-import { Octokit } from '@octokit/core'
-
+import { GithubFile } from '@/lib/github'
+import { useEffect } from 'react'
+import { ImageCard } from './image-card'
+import useImageStore from '@/stores/image'
+import useMarkStore from '@/stores/mark'
+import { ImageHeader } from './image-header'
+ 
 export default function Page() {
-
-  const { accessToken } = useSettingStore()
-
-  const octokit = new Octokit({
-    auth: accessToken
-  })
-  
-  async function uploadImage() {
-    const res = await octokit.request('PUT /repos/codexu/note-gen-sync/contents/images/your_image1.png', {
-      message: 'a new commit message',
-      content: 'bXkgdXBkYXRlZCBmaWxlIGNvbnRlbnRz',
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
-    })
-    console.log(res);
-  }
+  const { images, getImages } = useImageStore()
+  const { fetchAllMarks } = useMarkStore()
+  useEffect(() => {
+    getImages()
+    fetchAllMarks()
+  }, [])
   
   return (
-    <div className="flex h-screen">
-      <Button onClick={uploadImage}>上传</Button>
+    <div className="h-screen overflow-auto">
+      <ImageHeader />
+      <div className="p-2 grid md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2">
+        {
+          images.map((file: GithubFile) => (
+            <ImageCard key={file.sha} file={file} />
+          ))
+        }
+      </div>
     </div>
   )
 }
