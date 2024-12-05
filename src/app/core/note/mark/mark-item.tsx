@@ -21,6 +21,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/h
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { appDataDir } from "@tauri-apps/api/path";
 import { invoke } from "@tauri-apps/api/core";
+import { ImageUp } from "lucide-react";
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
@@ -98,6 +99,7 @@ export function MarkWrapper({mark}: {mark: Mark}) {
             <span className="flex items-center gap-1 bg-fuchsia-900 text-white px-1 rounded">
               {MarkType[mark.type]}
             </span>
+            {mark.url.includes('http') ? <ImageUp className="size-3" /> : null}
             <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
           </div>
           <TextHover text={mark.desc} />
