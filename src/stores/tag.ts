@@ -18,7 +18,7 @@ interface TagState {
 
 const useTagStore = create<TagState>((set, get) => ({
   // 当前选择的 tag
-  currentTagId: 0,
+  currentTagId: 1,
   setCurrentTagId: async(currentTagId: number) => {
     set({ currentTagId })
     const store = await Store.load('store.json');

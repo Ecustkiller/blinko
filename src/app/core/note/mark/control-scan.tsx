@@ -7,6 +7,8 @@ import useTagStore from "@/stores/tag"
 import { invoke } from "@tauri-apps/api/core"
 import { getCurrentWebviewWindow, WebviewWindow } from "@tauri-apps/api/webviewWindow"
 import { ScanText } from "lucide-react"
+import { isRegistered, register, unregister } from '@tauri-apps/plugin-global-shortcut';
+import { useEffect } from "react"
  
 export function ControlScan() {
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
@@ -40,6 +42,22 @@ export function ControlScan() {
       }
     });
   }
+
+  async function initRegister() {
+    const isEscRegistered = await isRegistered('CommandOrControl+Shift+S');
+    if (isEscRegistered) {
+      await unregister('CommandOrControl+Shift+S');
+    }
+    await register('CommandOrControl+Shift+S', async (e) => {
+      if (e.state === 'Pressed') {
+        await createScreenShot()
+      }
+    });
+  }
+
+  useEffect(() => {
+    initRegister()
+  }, [])
 
   return (
     <TooltipButton icon={<ScanText />} tooltipText="截图" onClick={createScreenShot} />

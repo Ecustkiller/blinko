@@ -32,7 +32,7 @@ export default function Page() {
       height: (crop?.height || 0) * scale
     })
     await getCurrentWindow().emit('save-success', path)
-    getCurrentWindow().close()
+    await getCurrentWindow().close()
   }
 
   async function initRegister() {

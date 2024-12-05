@@ -138,7 +138,7 @@ export const config = [
       {
         title: '截图',
         key: 'screenshotShortcut',
-        value: 'Command+Shift+R',
+        value: 'CommandOrControl+Shift+S',
         desc: <>截图是快速记录的最佳方式，可以通过全局快捷键快速截图，无需打开主页面。</>,
         schema: z.string(),
         disabled: true,

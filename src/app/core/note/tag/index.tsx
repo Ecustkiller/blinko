@@ -57,7 +57,7 @@ export function TagManage() {
     const fetchData = async() => {
       await initTagsDb()
       await fetchTags()
-      initTags()
+      await initTags()
     }
     fetchData()
   }, [initTags, fetchTags])
