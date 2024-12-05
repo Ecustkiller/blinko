@@ -17,12 +17,14 @@ import { BaseDirectory, exists, mkdir, writeFile } from "@tauri-apps/plugin-fs"
 import { ImagePlus } from "lucide-react"
 import { useState } from "react"
 import { uploadFile, uint8ArrayToBase64 } from "@/lib/github"
+import useSettingStore from "@/stores/setting"
  
 export function ControlImage() {
   const [open, setOpen] = useState(false);
 
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
   const { fetchMarks } = useMarkStore()
+  const { sync } = useSettingStore()
 
   async function selectImage(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
@@ -39,18 +41,28 @@ export function ControlImage() {
     const content = await ocr(`image/${filename}`)
     const desc = await fetchAiDesc(content).then(res => res.choices[0].message.content)
     const ext = file.name.substring(file.name.lastIndexOf('.') + 1)
-    const res = await uploadFile({
-      path: 'images',
-      ext,
-      file: uint8ArrayToBase64(data),
-    })
-    await insertMark({
-      tagId: currentTagId,
-      type: 'image',
-      content,
-      url: res ? res.data.content.download_url : filename,
-      desc
-    })
+    if (sync) {
+      const res = await uploadFile({
+        path: 'images',
+        ext,
+        file: uint8ArrayToBase64(data),
+      })
+      await insertMark({
+        tagId: currentTagId,
+        type: 'image',
+        content,
+        url: res ? res.data.content.download_url : filename,
+        desc
+      })
+    } else {
+      await insertMark({
+        tagId: currentTagId,
+        type: 'image',
+        content,
+        url: filename,
+        desc
+      })
+    }
     await fetchMarks()
     await fetchTags()
     getCurrentTag()
