@@ -37,7 +37,7 @@ export function NoteHistory() {
       <div className="max-h-80 overflow-y-auto">
         {currentNotes.map((note, index) => (
           <div key={note.id}>
-            <div className="flex items-center gap-4 text-sm py-2 cursor-pointer hover:bg-zinc-50" onClick={() => selectHistory(note)}>
+            <div className="flex items-center gap-4 text-sm py-2 cursor-pointer hover:bg-secondary" onClick={() => selectHistory(note)}>
               <span className="w-8 text-center">{index+1}</span>
               <span className="flex-1 ellipsis line-clamp-1">{extractTitle(note.content || '')}</span>
               <span>{dayjs(note.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
