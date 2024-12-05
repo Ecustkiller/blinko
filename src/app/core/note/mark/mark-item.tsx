@@ -99,7 +99,7 @@ export function MarkWrapper({mark}: {mark: Mark}) {
             <span className="flex items-center gap-1 bg-fuchsia-900 text-white px-1 rounded">
               {MarkType[mark.type]}
             </span>
-            {mark.url.includes('http') ? <ImageUp className="size-3" /> : null}
+            {mark.url.includes('http') ? <ImageUp className="size-3 text-zinc-400" /> : null}
             <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
           </div>
           <TextHover text={mark.desc} />

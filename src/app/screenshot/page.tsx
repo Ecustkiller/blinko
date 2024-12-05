@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button"
 import { invoke } from "@tauri-apps/api/core"
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { Check } from "lucide-react"
-import React from "react"
+import React, { useEffect } from "react"
 import { useState } from "react"
 import ReactCrop, { type Crop } from 'react-image-crop'
+import { register, isRegistered, unregister } from '@tauri-apps/plugin-global-shortcut';
 import 'react-image-crop/dist/ReactCrop.css'
 
 export default function Page() {
@@ -33,6 +34,22 @@ export default function Page() {
     await getCurrentWindow().emit('save-success', path)
     getCurrentWindow().close()
   }
+
+  async function initRegister() {
+    const isEscRegistered = await isRegistered('Esc');
+    if (isEscRegistered) {
+      await unregister('Esc');
+    }
+    await register('Esc', (e) => {
+      if (e.state === 'Released') {
+        getCurrentWindow().close()
+      }
+    });
+  }
+
+  useEffect(() => {
+    initRegister()
+  }, [])
 
   function Toolbar() {
     return (
