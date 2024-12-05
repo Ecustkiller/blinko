@@ -128,11 +128,13 @@ export function MarkWrapper({mark}: {mark: Mark}) {
 export function MarkItem({mark}: {mark: Mark}) {
 
   const { fetchMarks } = useMarkStore()
-  const { tags, currentTagId } = useTagStore()
+  const { tags, currentTagId, fetchTags, getCurrentTag } = useTagStore()
 
   async function handleDelMark() {
     await delMark(mark.id)
-    fetchMarks()
+    await fetchMarks()
+    await fetchTags()
+    getCurrentTag()
   }
 
   async function handleTransfer(tagId: number) {
