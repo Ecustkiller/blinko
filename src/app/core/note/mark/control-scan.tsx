@@ -27,6 +27,7 @@ export function ControlScan() {
     });
 
     webview.onCloseRequested(async () => {
+      unlisten()
       await currentWindow.show()
     })
 
@@ -38,8 +39,8 @@ export function ControlScan() {
         await fetchMarks()
         await fetchTags()
         getCurrentTag()
-        unlisten()
       }
+      unlisten()
     });
   }
 
