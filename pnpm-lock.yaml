@@ -68,6 +68,9 @@ importers:
       '@tauri-apps/api':
         specifier: '>=2.0.0'
         version: 2.1.1
+      '@tauri-apps/plugin-clipboard-manager':
+        specifier: ^2.0.1
+        version: 2.0.1
       '@tauri-apps/plugin-fs':
         specifier: ~2.0.2
         version: 2.0.2
@@ -134,6 +137,9 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.14)
+      tauri-plugin-clipboard-api:
+        specifier: ^2.1.11
+        version: 2.1.11(typescript@5.6.3)
       tesseract.js:
         specifier: ^5.1.1
         version: 5.1.1
@@ -1386,6 +1392,9 @@ packages:
   '@swc/helpers@0.5.13':
     resolution: {integrity: sha512-UoKGxQ3r5kYI9dALKJapMmuK+1zWM/H17Z1+iwnNmzcJRnfFuevZs375TA5rW31pu4BS4NoSy1fRsexDXfWn5w==}
 
+  '@tauri-apps/api@2.0.1':
+    resolution: {integrity: sha512-eoQWT+Tq1qSwQpHV+nw1eNYe5B/nm1PoRjQCRiEOS12I1b+X4PUcREfXVX8dPcBT6GrzWGDtaecY0+1p0Rfqlw==}
+
   '@tauri-apps/api@2.1.1':
     resolution: {integrity: sha512-fzUfFFKo4lknXGJq8qrCidkUcKcH2UHhfaaCNt4GzgzGaW2iS26uFOg4tS3H4P8D6ZEeUxtiD5z0nwFF0UN30A==}
 
@@ -1457,6 +1466,9 @@ packages:
     resolution: {integrity: sha512-K2VhcKqBhAeS5pNOVdnR/xQRU6jwpgmkSL2ejHXcl0m+kaTggT0WRDQnFtPq6NljA7aE03cvwsbCAoFG7vtkJw==}
     engines: {node: '>= 10'}
     hasBin: true
+
+  '@tauri-apps/plugin-clipboard-manager@2.0.1':
+    resolution: {integrity: sha512-JDzqqhEnIAvt3HAsejgdvPfb74da1CagHfT+71qJL6Jip4Qzu+TzxaYXilIT5p5N8ZFwE7K1nJJ2aGsEUHvJtg==}
 
   '@tauri-apps/plugin-fs@2.0.2':
     resolution: {integrity: sha512-4YZaX2j7ta81M5/DL8aN10kTnpUkEpkPo1FTYPT8Dd0ImHe3azM8i8MrtjrDGoyBYLPO3zFv7df/mSCYF8oA0Q==}
@@ -2952,6 +2964,9 @@ packages:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
 
+  tauri-plugin-clipboard-api@2.1.11:
+    resolution: {integrity: sha512-VNkGaVPPfRoHg7/rJBcWqsvLvn4/kNEOOlzqwyI9Qdf6g54B3mc31GLZdnq/HWtX0vZskw3J8b/EF9YkASDCBQ==}
+
   tesseract.js-core@5.1.1:
     resolution: {integrity: sha512-KX3bYSU5iGcO1XJa+QGPbi+Zjo2qq6eBhNjSGR5E5q0JtzkoipJKOUQD7ph8kFyteCEfEQ0maWLu8MCXtvX5uQ==}
 
@@ -3063,6 +3078,14 @@ packages:
   uuid@11.0.3:
     resolution: {integrity: sha512-d0z310fCWv5dJwnX1Y/MncBAqGMKEzlBb1AOf7z9K8ALnd0utBX/msg/fA0+sbyN1ihbMsLhrBlnl1ak7Wa0rg==}
     hasBin: true
+
+  valibot@0.40.0:
+    resolution: {integrity: sha512-XHKnaVtwHqxPwnGOsLrwka9CEaL7yNeLNp707OKv/bmT29GnPVdl6PxBOZ6BW7hF66/6QT6iVbOlnW7qVPmoKw==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   vaul@1.1.1:
     resolution: {integrity: sha512-+ejzF6ffQKPcfgS7uOrGn017g39F8SO4yLPXbBhpC7a0H+oPqPna8f1BUfXaz8eU4+pxbQcmjxW+jWBSbxjaFg==}
@@ -4491,6 +4514,8 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
+  '@tauri-apps/api@2.0.1': {}
+
   '@tauri-apps/api@2.1.1': {}
 
   '@tauri-apps/cli-darwin-arm64@2.1.0':
@@ -4535,6 +4560,10 @@ snapshots:
       '@tauri-apps/cli-win32-arm64-msvc': 2.1.0
       '@tauri-apps/cli-win32-ia32-msvc': 2.1.0
       '@tauri-apps/cli-win32-x64-msvc': 2.1.0
+
+  '@tauri-apps/plugin-clipboard-manager@2.0.1':
+    dependencies:
+      '@tauri-apps/api': 2.1.1
 
   '@tauri-apps/plugin-fs@2.0.2':
     dependencies:
@@ -6279,6 +6308,13 @@ snapshots:
 
   tapable@2.2.1: {}
 
+  tauri-plugin-clipboard-api@2.1.11(typescript@5.6.3):
+    dependencies:
+      '@tauri-apps/api': 2.0.1
+      valibot: 0.40.0(typescript@5.6.3)
+    transitivePeerDependencies:
+      - typescript
+
   tesseract.js-core@5.1.1: {}
 
   tesseract.js@5.1.1:
@@ -6404,6 +6440,10 @@ snapshots:
   util-deprecate@1.0.2: {}
 
   uuid@11.0.3: {}
+
+  valibot@0.40.0(typescript@5.6.3):
+    optionalDependencies:
+      typescript: 5.6.3
 
   vaul@1.1.1(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@19.0.0-rc-66855b96-20241106(react@19.0.0-rc-66855b96-20241106))(react@19.0.0-rc-66855b96-20241106):
     dependencies:
