@@ -27,9 +27,9 @@ export function ImageCard({file}: {file: GithubFile}) {
     getImages()
   }
   return (
-    <Card className={`w-full h-36 overflow-hidden p-0 rounded relative group`}>
+    <Card className={`w-full h-36 overflow-hidden p-0 rounded-lg shadow-none relative group`}>
       <CardHeader className="p-0 relative">
-        <Image src={file.download_url} alt={file.name} width={0} height={0} className="w-full h-36" />
+        <Image src={file.download_url} alt={file.name} width={0} height={0} className="w-full h-36 object-cover" />
         <div className="absolute top-0 right-0 !mt-0 z-10">
           {allMarks.map(item => item.url).includes(file.download_url) ?
             <Button size="icon" disabled><Lock /></Button>: 
