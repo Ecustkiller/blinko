@@ -2,12 +2,24 @@ import { getAllMarks, getMarks, Mark } from '@/db/marks'
 import { Store } from '@tauri-apps/plugin-store';
 import { create } from 'zustand'
 
+export interface MarkQueue {
+  queueId: string
+  type: Mark["type"]
+  progress: string
+  startTime: number
+}
+
 interface MarkState {
   marks: Mark[]
   fetchMarks: () => Promise<void>
 
   allMarks: Mark[]
   fetchAllMarks: () => Promise<void>
+
+  queues: MarkQueue[]
+  addQueue: (mark: MarkQueue) => void
+  setQueue: (queueId: string, mark: Partial<MarkQueue>) => void
+  removeQueue: (queueId: string) => void
 }
 
 const useMarkStore = create<MarkState>((set) => ({
@@ -39,6 +51,37 @@ const useMarkStore = create<MarkState>((set) => ({
     })
     set({ allMarks: decodeRes })
   },
+
+  queues: [],
+  addQueue: (mark) => {
+    set((state) => {
+      return {
+        queues: [mark, ...state.queues]
+      }
+    })
+  },
+  setQueue: (queueId, mark) => {
+    set((state) => {
+      return {
+        queues: state.queues.map(item => {
+          if (item.queueId === queueId) {
+            return {
+              ...item,
+              ...mark
+            }
+          }
+          return item
+        })
+      }
+    })
+  },
+  removeQueue: (queueId) => {
+    set((state) => {
+      return {
+        queues: state.queues.filter(item => item.queueId !== queueId)
+      }
+    })
+  }
 }))
 
 export default useMarkStore

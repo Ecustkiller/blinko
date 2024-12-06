@@ -8,9 +8,10 @@ import {
 import React, { useEffect } from "react"
 import { MarkItem } from "./mark-item";
 import useMarkStore from "@/stores/mark";
+import { MarkLoading } from "./mark-loading";
 
 export function MarkList() {
-  const { marks, fetchMarks } = useMarkStore()
+  const { marks, fetchMarks, queues } = useMarkStore()
 
   useEffect(() => {
     fetchMarks()
@@ -20,6 +21,13 @@ export function MarkList() {
     <SidebarContent>
       <SidebarGroup className="px-0">
         <SidebarGroupContent>
+          {
+            queues.map(mark => {
+              return (
+                <MarkLoading key={mark.queueId} mark={mark} />
+              )
+            })
+          }
           {marks.map((mark) => (
             <MarkItem key={mark.id} mark={mark} />
           ))}

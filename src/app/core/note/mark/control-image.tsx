@@ -18,19 +18,22 @@ import { ImagePlus } from "lucide-react"
 import { useState } from "react"
 import { uploadFile, uint8ArrayToBase64 } from "@/lib/github"
 import useSettingStore from "@/stores/setting"
- 
+import { v4 as uuid } from 'uuid'
+
 export function ControlImage() {
   const [open, setOpen] = useState(false);
 
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
-  const { fetchMarks } = useMarkStore()
   const { sync } = useSettingStore()
+  const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
 
   async function selectImage(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
     if (!file) return
     setOpen(false)
+    const queueId = uuid()
     // 获取文件后缀
+    addQueue({ queueId, progress: '保存图片', type: 'image', startTime: Date.now() })
     const isImageFolderExists = await exists('image', { baseDir: BaseDirectory.AppData})
     if (!isImageFolderExists) {
       await mkdir('image', { baseDir: BaseDirectory.AppData})
@@ -39,7 +42,9 @@ export function ControlImage() {
     const filename = `${timestamp}-${file.name}`
     const data = new Uint8Array(await file.arrayBuffer())
     await writeFile(`image/${filename}`, data, { baseDir: BaseDirectory.AppData})
+    setQueue(queueId, { progress: ' OCR 识别' });
     const content = await ocr(`image/${filename}`)
+    setQueue(queueId, { progress: ' AI 内容识别' });
     const desc = await fetchAiDesc(content).then(res => res.choices[0].message.content)
     const ext = file.name.substring(file.name.lastIndexOf('.') + 1)
     const mark: Partial<Mark> = {
@@ -50,6 +55,7 @@ export function ControlImage() {
       desc,
     }
     if (sync) {
+      setQueue(queueId, { progress: '上传至图床' });
       const res = await uploadFile({
         path: 'images',
         ext,
@@ -57,6 +63,7 @@ export function ControlImage() {
       })
       mark.url = res ? res.data.content.download_url : filename
     }
+    removeQueue(queueId)
     await insertMark(mark)
     await fetchMarks()
     await fetchTags()
