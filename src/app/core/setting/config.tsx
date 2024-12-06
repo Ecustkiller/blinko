@@ -118,15 +118,14 @@ export const config = [
       {
         title: '识别语言包',
         key: 'tesseractList',
-        value: true,
+        value: 'eng,chi_sim',
         desc: <>
-          选择你需要的语言包，并下载。
-          <OpenBroswer title="在此查询全部模型" url="https://tesseract-ocr.github.io/tessdoc/Data-Files#data-files-for-version-400-november-29-2016" />。
+          <OpenBroswer title="在此查询全部模型" url="https://tesseract-ocr.github.io/tessdoc/Data-Files#data-files-for-version-400-november-29-2016" />，以逗号分隔，例如：eng,chi_sim。
         </>,
-        schema: z.boolean(),
-        disabled: true,
-        layout: 'horizontal',
-        type: 'switch',
+        schema: z.string(),
+        disabled: false,
+        layout: 'vertical',
+        type: 'input',
       }
     ],
   },
