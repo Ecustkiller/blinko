@@ -2,7 +2,7 @@
 import { LocalImage } from "@/components/local-image"
 import { Button } from "@/components/ui/button"
 import { invoke } from "@tauri-apps/api/core"
-import { getCurrentWindow } from '@tauri-apps/api/window'
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { Check } from "lucide-react"
 import React, { useEffect } from "react"
 import { useState } from "react"
@@ -17,8 +17,8 @@ export default function Page() {
   const [scale, setScale] = useState(0)
 
   async function setScreen() {
-    const innerPosition = await getCurrentWindow().innerPosition()
-    const scaleFactor = await getCurrentWindow().scaleFactor()
+    const innerPosition = await getCurrentWebviewWindow().innerPosition()
+    const scaleFactor = await getCurrentWebviewWindow().scaleFactor()
 
     setY(innerPosition.y / scaleFactor)
     setScale(scaleFactor)
@@ -31,8 +31,8 @@ export default function Page() {
       width: (crop?.width || 0) * scale,
       height: (crop?.height || 0) * scale
     })
-    await getCurrentWindow().emit('save-success', path)
-    await getCurrentWindow().close()
+    await getCurrentWebviewWindow().emit('save-success', path)
+    await getCurrentWebviewWindow().close()
   }
 
   async function initRegister() {
@@ -40,9 +40,10 @@ export default function Page() {
     if (isEscRegistered) {
       await unregister('Esc');
     }
-    await register('Esc', (e) => {
+    await register('Esc', async (e) => {
       if (e.state === 'Released') {
-        getCurrentWindow().close()
+        const window = getCurrentWebviewWindow()
+        await window.close()
       }
     });
   }

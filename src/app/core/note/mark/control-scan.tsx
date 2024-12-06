@@ -16,7 +16,7 @@ export function ControlScan() {
 
   async function createScreenShot() {
     const currentWindow = getCurrentWebviewWindow()
-    await currentWindow.hide()
+    await currentWindow.minimize()
 
     await invoke('screenshot')
     
@@ -27,8 +27,8 @@ export function ControlScan() {
     });
 
     webview.onCloseRequested(async () => {
-      unlisten()
       await currentWindow.show()
+      unlisten()
     })
 
     const unlisten = await webview.listen("save-success", async e => {
@@ -53,7 +53,7 @@ export function ControlScan() {
       if (e.state === 'Pressed') {
         await createScreenShot()
       }
-    });
+    }).catch(e => console.log(e))
   }
 
   useEffect(() => {

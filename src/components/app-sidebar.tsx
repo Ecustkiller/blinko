@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sidebar"
 import { usePathname } from 'next/navigation'
 import { ModeToggle } from "./mode-toggle"
+import Link from "next/link"
  
 // Menu items.
 const items = [
@@ -90,16 +91,17 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
+                    disabled={item.url === '#'}
                     isActive={pathname === item.url}
                     tooltip={{
                       children: item.title,
                       hidden: false,
                     }}
                   >
-                    <a href={item.url}>
+                    <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -115,11 +117,11 @@ export function AppSidebar() {
             hidden: false,
           }}
         >
-          <a href="/core/setting">
+          <Link href="/core/setting">
             <div className="flex size-8 items-center justify-center rounded-lg">
               <Settings className="size-4" />
             </div>
-          </a>
+          </Link>
         </SidebarMenuButton>
       </SidebarFooter>
     </Sidebar>

@@ -12,7 +12,6 @@ export function FileToolbar() {
 
   async function openFolder() {
     const appDir = await appDataDir()
-    console.log(activeFilePath);
     invoke('show_in_folder', { path: `${appDir}/article/${activeFilePath}` })
   }
 
