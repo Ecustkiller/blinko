@@ -22,6 +22,8 @@ export function MdEditor() {
     theme={mdTheme}
     codeTheme={codeTheme}
     previewTheme={previewTheme}
+    codeFoldable={false}
+    preview={false}
     className='flex-1 !h-screen !border-none'
     noImgZoomIn
     toolbars={toolbars}
