@@ -12,6 +12,7 @@ import ocr from "@/lib/ocr";
 import { fetchAiDesc } from "@/lib/ai";
 import { insertMark, Mark } from "@/db/marks";
 import { uint8ArrayToBase64, uploadFile } from "@/lib/github";
+import { listen } from '@tauri-apps/api/event';
 
 export function ClipboardImage() {
   const [image, setImage] = useState('')
@@ -21,6 +22,7 @@ export function ClipboardImage() {
   async function read() {
     try{
       const image = await clipboard.readImageBase64()
+      await clipboard.clear()
       const uint8Array = Uint8Array.from(atob(image), c => c.charCodeAt(0))
       await writeFile('clipboard.png', uint8Array, { baseDir: BaseDirectory.AppData })
       setImage(`data:image/png;base64, ${image}`)
@@ -38,7 +40,7 @@ export function ClipboardImage() {
     if (!isImageFolderExists) {
       await mkdir('image', { baseDir: BaseDirectory.AppData})
     }
-    copyFile('clipboard.png', `image/${queueId}.png`, { fromPathBaseDir: BaseDirectory.AppData, toPathBaseDir: BaseDirectory.AppData})
+    await copyFile('clipboard.png', `image/${queueId}.png`, { fromPathBaseDir: BaseDirectory.AppData, toPathBaseDir: BaseDirectory.AppData})
     setQueue(queueId, { progress: ' OCR 识别' });
     const content = await ocr(`image/${queueId}.png`)
     setQueue(queueId, { progress: ' AI 内容识别' });
@@ -66,11 +68,10 @@ export function ClipboardImage() {
     await fetchMarks()
     await fetchTags()
     getCurrentTag()
-    await clipboard.clear()
   }
 
   useEffect(() => {
-    window.addEventListener('visibilitychange', read)
+    listen('tauri://focus', read)
   }, [])
 
   return (
