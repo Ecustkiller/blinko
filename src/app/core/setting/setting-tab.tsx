@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react"
+import { useSearchParams } from "next/navigation";
 import { config } from './config'
+
 
 export function SettingTab() {
   const [currentAnchor, setCurrentAnchor] = useState('about')
+  const searchParams = useSearchParams()
 
   function handleAnchor(anchor: string) {
     setCurrentAnchor(anchor)
@@ -17,7 +20,12 @@ export function SettingTab() {
   }
 
   useEffect(() => {
-    setCurrentAnchor(config[0].anchor)
+    const anchor = searchParams.get('anchor')
+    if (anchor) {
+      handleAnchor(anchor)
+    } else {
+      setCurrentAnchor(config[0].anchor)
+    }
   }, [])
   return (
     <div className="w-56 border-r h-full min-h-screen bg-sidebar p-4">
