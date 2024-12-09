@@ -1,6 +1,6 @@
 'use client'
 
-import { ImageUp, Search, ScanFace, Settings, Highlighter, SquarePen } from "lucide-react"
+import { ImageUp, Search, ScanFace, Settings, Highlighter, SquarePen, PencilRuler } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -28,6 +28,11 @@ const items = [
     title: "写作",
     url: "/core/article",
     icon: SquarePen,
+  },
+  {
+    title: "绘图",
+    url: "#",
+    icon: PencilRuler,
   },
   {
     title: "搜索",
