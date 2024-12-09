@@ -1,6 +1,6 @@
 'use client'
 
-import { Star, ImageUp, Search, Recycle, History, Network, ScanFace, Settings, Highlighter, SquarePen } from "lucide-react"
+import { ImageUp, Search, ScanFace, Settings, Highlighter, SquarePen } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -30,34 +30,14 @@ const items = [
     icon: SquarePen,
   },
   {
-    title: "收藏",
-    url: "#",
-    icon: Star,
-  },
-  {
-    title: "图床",
-    url: "/core/image",
-    icon: ImageUp,
-  },
-  {
     title: "搜索",
     url: "#",
     icon: Search,
   },
   {
-    title: "回收站",
-    url: "#",
-    icon: Recycle,
-  },
-  {
-    title: "历史",
-    url: "#",
-    icon: History,
-  },
-  {
-    title: "平台",
-    url: "#",
-    icon: Network,
+    title: "图床",
+    url: "/core/image",
+    icon: ImageUp,
   },
 ]
  
@@ -111,7 +91,7 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <ModeToggle />
-        <SidebarMenuButton asChild className="md:h-8 md:p-0"
+        <SidebarMenuButton isActive={pathname === '/core/setting'} asChild className="md:h-8 md:p-0"
           tooltip={{
             children: '设置',
             hidden: false,
