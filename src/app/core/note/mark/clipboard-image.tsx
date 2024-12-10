@@ -17,7 +17,7 @@ import { listen } from '@tauri-apps/api/event';
 export function ClipboardImage() {
   const [image, setImage] = useState('')
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
-  const { sync } = useSettingStore()
+  const { sync, apiKey } = useSettingStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
   async function read() {
     try{
@@ -43,8 +43,13 @@ export function ClipboardImage() {
     await copyFile('clipboard.png', `image/${queueId}.png`, { fromPathBaseDir: BaseDirectory.AppData, toPathBaseDir: BaseDirectory.AppData})
     setQueue(queueId, { progress: ' OCR 识别' });
     const content = await ocr(`image/${queueId}.png`)
-    setQueue(queueId, { progress: ' AI 内容识别' });
-    const desc = await fetchAiDesc(content).then(res => res.choices[0].message.content)
+    let desc = ''
+    if (apiKey) {
+      setQueue(queueId, { progress: ' AI 内容识别' });
+      desc = await fetchAiDesc(content).then(res => res.choices[0].message.content)
+    } else {
+      desc = content
+    }
     const mark: Partial<Mark> = {
       tagId: currentTagId,
       type: 'image',
