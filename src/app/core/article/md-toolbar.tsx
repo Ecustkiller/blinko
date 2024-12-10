@@ -1,10 +1,13 @@
 import { TooltipButton } from "@/components/tooltip-button";
-import { BotMessageSquare, Code, Columns2, Globe, HardDriveUpload, ImagePlus, Link, ListRestart, Sparkles, Table, View } from "lucide-react";
+import { BotMessageSquare, CloudUpload, Code, Columns2, Globe, HardDriveUpload, ImagePlus, Link, ListRestart, Sparkles, Table, View } from "lucide-react";
 import { DropdownToolbar, ExposeParam, NormalToolbar, ToolbarNames } from "md-editor-rt";
 import { ReactNode, RefObject, useState } from "react";
 import { fetchAiStream } from '@/lib/ai'
 import useArticleStore from "@/stores/article";
 import { locales } from "@/lib/locales";
+import { BaseDirectory, readFile } from "@tauri-apps/plugin-fs";
+import { getFiles, uint8ArrayToBase64, uploadFile } from "@/lib/github";
+import { toast } from "@/hooks/use-toast";
 
 const toolbarsConfig = [
   {
@@ -131,6 +134,24 @@ const toolbarsConfig = [
     onClick: (mdRef: RefObject<ExposeParam>) => {
       mdRef.current?.togglePreviewOnly()
     },
+  },
+  {
+    title: '同步',
+    type: 'button',
+    icon: <CloudUpload />,
+    onClick: async(mdRef: RefObject<ExposeParam>, currentArticle?: string, path?: string) => {
+      const res = await getFiles({path: `article/${path}`})
+      let sha = undefined
+      if (res) {
+        sha = res.sha
+      }
+      toast({title: '开始同步', description: '请稍等...'})
+      const filename = path?.split('/').pop()
+      const _path = path?.split('/').slice(0, -1).join('/')
+      const file = await readFile(`article/${path}`, { baseDir: BaseDirectory.AppData  })
+      console.log({ path: `article${_path ?? '/' + _path}`, ext: 'md', file: uint8ArrayToBase64(file), filename, sha });
+      await uploadFile({ path: `article${_path ?? '/' + _path}`, ext: 'md', file: uint8ArrayToBase64(file), filename, sha })
+    },
   }
 ]
 
@@ -145,14 +166,14 @@ const Toolbar = (
   { title, icon, onClick, mdRef }:
   { title: string, icon: ReactNode, onClick: (mdRef: RefObject<ExposeParam>, locale: string, currentArticle?: string) => void, mdRef: RefObject<ExposeParam>}
 ) => {
-  const { currentArticle } = useArticleStore()
+  const { currentArticle, activeFilePath } = useArticleStore()
   
   return (
     <NormalToolbar
       trigger={
         <TooltipButton icon={icon} tooltipText={title} />
       }
-      onClick={() => onClick(mdRef, currentArticle)}
+      onClick={() => onClick(mdRef, currentArticle, activeFilePath)}
       key={title}
     />
   );

@@ -1,3 +1,4 @@
+import { toast } from '@/hooks/use-toast';
 import { Octokit } from '@octokit/core'
 import { Store } from '@tauri-apps/plugin-store';
 import { v4 as uuid } from 'uuid';
@@ -25,7 +26,10 @@ interface Links {
   html: string;
 }
 
-export async function uploadFile({ path, ext, file }: { path: string, ext: string, file: string}) {
+export async function uploadFile(
+  { path, ext, file, filename, sha }:
+  { path: string, ext: string, file: string, filename?: string, sha?: string}) 
+{
   const store = await Store.load('store.json');
   const accessToken = await store.get('accessToken')
   const octokit = new Octokit({
@@ -34,18 +38,30 @@ export async function uploadFile({ path, ext, file }: { path: string, ext: strin
   const githubUsername = await store.get('githubUsername')
   const repositoryName = await store.get('repositoryName')
   try {
-    const filename = `${uuid()}.${ext}`
-    const res = await octokit.request(`PUT /repos/${githubUsername}/${repositoryName}/contents/${path}/${filename}`, {
-      message: 'a new commit message',
+    let _filename = ''
+    if (filename) {
+      _filename = filename
+    } else {
+      _filename = `${uuid()}.${ext}`
+    }
+    toast({title: '正在上传', description: _filename})
+    const res = await octokit.request(`PUT /repos/${githubUsername}/${repositoryName}/contents/${path}/${_filename}`, {
+      message: `Upload ${_filename}`,
       content: file,
+      sha,
       headers: {
         'X-GitHub-Api-Version': '2022-11-28'
-      }
+      },
+
     })
     return res;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.log(error);
-    return false
+    toast({
+      title: '上传失败',
+      description: '请检查网络或配置是否正确。',
+      variant: 'destructive',
+    })
   }
 }
 
