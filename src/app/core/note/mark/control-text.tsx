@@ -24,7 +24,8 @@ export function ControlText() {
   const { fetchMarks } = useMarkStore()
 
   async function handleSuccess() {
-    await insertMark({ tagId: currentTagId, type: 'text', desc: text, content: text })
+    const resetText = text.replace(/'/g, '')
+    await insertMark({ tagId: currentTagId, type: 'text', desc: resetText, content: resetText })
     await fetchMarks()
     await fetchTags()
     getCurrentTag()
