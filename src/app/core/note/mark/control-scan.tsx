@@ -10,10 +10,12 @@ import { ScanText } from "lucide-react"
 import { isRegistered, register, unregister } from '@tauri-apps/plugin-global-shortcut';
 import { useEffect } from "react"
 import { v4 as uuid } from 'uuid'
+import useSettingStore from "@/stores/setting"
  
 export function ControlScan() {
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
+  const { apiKey, markDescGen } = useSettingStore()
 
   async function createScreenShot() {
     const currentWindow = getCurrentWebviewWindow()
@@ -37,8 +39,13 @@ export function ControlScan() {
         const queueId = uuid()
         addQueue({ queueId, progress: ' OCR 识别', type: 'scan', startTime: Date.now() })
         const content = await ocr(`screenshot/${e.payload}`)
-        setQueue(queueId, { progress: ' AI 内容识别' });
-        const desc = await fetchAiDesc(content).then(res => res.choices[0].message.content)
+        let desc = ''
+        if (apiKey && markDescGen) {
+          setQueue(queueId, { progress: ' AI 内容识别' });
+          desc = await fetchAiDesc(content).then(res => res.choices[0].message.content)
+        } else {
+          desc = content
+        }
         setQueue(queueId, { progress: '保存' });
         await insertMark({ tagId: currentTagId, type: 'scan', content, url: e.payload, desc })
         removeQueue(queueId)

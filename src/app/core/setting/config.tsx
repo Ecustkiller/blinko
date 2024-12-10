@@ -94,17 +94,17 @@ export const config = [
         type: 'input',
       },
       {
-        title: '记录 AI 生成描述',
+        title: '记录生成描述',
         key: 'markDescGen',
         value: true,
         desc: <>
-          <span>截图和插图记录时，生成 AI 描述，而不是展示 OCR 识别的文本，可以更加直观的了解记录的核心内容。</span><br />
+          <span>截图和插图记录时，使用 ChatGPT 生成描述，而不是展示 OCR 识别的文本，可以更加直观的了解记录的核心内容。</span><br />
           <span className="flex items-center gap-1 mt-2 text-red-900">
             <TriangleAlert className="size-4" />开启此项将降低记录生成的速度，并且消耗更多的 API 请求次数，建议免费用户关闭。
           </span>
         </>,
         schema: z.boolean(),
-        disabled: true,
+        disabled: false,
         layout: 'horizontal',
         type: 'switch',
       }

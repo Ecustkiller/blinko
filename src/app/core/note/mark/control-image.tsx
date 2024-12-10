@@ -24,7 +24,7 @@ export function ControlImage() {
   const [open, setOpen] = useState(false);
 
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
-  const { sync } = useSettingStore()
+  const { sync, apiKey, markDescGen } = useSettingStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
 
   async function selectImage(event: React.ChangeEvent<HTMLInputElement>) {
@@ -45,7 +45,12 @@ export function ControlImage() {
     setQueue(queueId, { progress: ' OCR 识别' });
     const content = await ocr(`image/${filename}`)
     setQueue(queueId, { progress: ' AI 内容识别' });
-    const desc = await fetchAiDesc(content).then(res => res.choices[0].message.content)
+    let desc = ''
+    if (apiKey && markDescGen) {
+      desc = await fetchAiDesc(content).then(res => res.choices[0].message.content)
+    } else {
+      desc = content
+    }
     const ext = file.name.substring(file.name.lastIndexOf('.') + 1)
     const mark: Partial<Mark> = {
       tagId: currentTagId,
