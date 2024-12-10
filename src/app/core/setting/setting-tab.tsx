@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation";
 import { config } from './config'
 
-
 export function SettingTab() {
   const [currentAnchor, setCurrentAnchor] = useState('about')
   const searchParams = useSearchParams()

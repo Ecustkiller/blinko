@@ -35,7 +35,7 @@ export function TagManage() {
 
   async function quickAddTag() {
     const res = await insertTag({ name })
-    await setCurrentTagId(res.lastInsertId)
+    await setCurrentTagId(res.lastInsertId as number)
     await fetchTags()
     await fetchCurrentNotes()
     await fetchCurrentNote()
