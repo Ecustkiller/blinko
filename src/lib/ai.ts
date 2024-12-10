@@ -1,3 +1,4 @@
+import { toast } from "@/hooks/use-toast";
 import { Store } from "@tauri-apps/plugin-store";
 
 const url = 'https://api.chatanywhere.tech/v1/chat/completions'
@@ -72,5 +73,15 @@ export async function fetchAiDesc(text: string) {
     根据内容：${text}，返回一段关于截图的描述，不要超过50字，不要包含特殊字符。
   `
   const requestOptions = await createAi(descContent, false)
-  return (await fetch(url, requestOptions)).json()
+  const res = await (await fetch(url, requestOptions)).json()
+  if (res.error) {
+    toast({
+      title: 'AI 错误',
+      description: res.error.message,
+      variant: 'destructive',
+    })
+    return null
+  } else {
+    return res
+  }
 }
