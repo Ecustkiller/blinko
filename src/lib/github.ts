@@ -40,11 +40,13 @@ export async function uploadFile(
   try {
     let _filename = ''
     if (filename) {
-      _filename = filename
+      _filename = `${filename}`
     } else {
       _filename = `${uuid()}.${ext}`
     }
     toast({title: '正在上传', description: _filename})
+    // 将空格转换成下划线
+    _filename = _filename.replace(/\s/g, '_')
     const res = await octokit.request(`PUT /repos/${githubUsername}/${repositoryName}/contents/${path}/${_filename}`, {
       message: `Upload ${_filename}`,
       content: file,
@@ -52,7 +54,6 @@ export async function uploadFile(
       headers: {
         'X-GitHub-Api-Version': '2022-11-28'
       },
-
     })
     return res;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -73,6 +74,7 @@ export async function getFiles({ path }: { path: string}) {
   })
   const githubUsername = await store.get('githubUsername')
   const repositoryName = await store.get('repositoryName')
+  path = path.replace(/\s/g, '_')
   try {
     const res = await octokit.request(`GET /repos/${githubUsername}/${repositoryName}/contents/${path}`, {
       headers: {
