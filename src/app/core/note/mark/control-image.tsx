@@ -24,7 +24,7 @@ export function ControlImage() {
   const [open, setOpen] = useState(false);
 
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
-  const { sync, apiKey, markDescGen } = useSettingStore()
+  const { sync, apiKey, markDescGen, githubUsername, repositoryName } = useSettingStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
 
   async function selectImage(event: React.ChangeEvent<HTMLInputElement>) {
@@ -66,7 +66,7 @@ export function ControlImage() {
         ext,
         file: uint8ArrayToBase64(data),
       })
-      mark.url = res ? res.data.content.download_url : filename
+      mark.url = res ? `https://fastly.jsdelivr.net/gh/${githubUsername}/${repositoryName}@main/images/${res.data.content.name}` : filename
     }
     removeQueue(queueId)
     await insertMark(mark)

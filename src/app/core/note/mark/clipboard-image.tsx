@@ -17,7 +17,7 @@ import { listen } from '@tauri-apps/api/event';
 export function ClipboardImage() {
   const [image, setImage] = useState('')
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
-  const { sync, apiKey } = useSettingStore()
+  const { sync, apiKey, githubUsername, repositoryName } = useSettingStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
   async function read() {
     try{
@@ -66,7 +66,7 @@ export function ClipboardImage() {
         file: uint8ArrayToBase64(file),
       })
       console.log(res);
-      mark.url = res ? res.data.content.download_url : `${queueId}.png}`
+      mark.url = res ? `https://fastly.jsdelivr.net/gh/${githubUsername}/${repositoryName}@main/images/${res.data.content.name}` : `${queueId}.png}`
     }
     removeQueue(queueId)
     await insertMark(mark)
