@@ -7,6 +7,14 @@ export function uint8ArrayToBase64(data: Uint8Array) {
   return Buffer.from(data).toString('base64');
 }
 
+
+export function decodeBase64ToString(str: string){
+  return decodeURIComponent(atob(str).split('').map(function (c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+}
+
+
 export interface GithubFile {
   name: string;
   path: string;
@@ -44,7 +52,6 @@ export async function uploadFile(
     } else {
       _filename = `${uuid()}.${ext}`
     }
-    toast({title: '正在上传', description: _filename})
     // 将空格转换成下划线
     _filename = _filename.replace(/\s/g, '_')
     const res = await octokit.request(`PUT /repos/${githubUsername}/${repositoryName}/contents/${path}/${_filename}`, {
@@ -101,6 +108,29 @@ export async function deleteFile({ path, sha }: { path: string, sha: string}) {
     const res = await octokit.request(`DELETE /repos/${githubUsername}/${repositoryName}/contents/${path}`, {
       sha,
       message: 'a new commit message',
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    })
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return false
+  }
+}
+
+export async function getFileCommits({ path }: { path: string}) {
+  // https://api.github.com/repos/{owner}/{repo}/commits?path={path}
+  const store = await Store.load('store.json');
+  const accessToken = await store.get('accessToken')
+  const octokit = new Octokit({
+    auth: accessToken
+  })
+  const githubUsername = await store.get('githubUsername')
+  const repositoryName = await store.get('repositoryName')
+  path = path.replace(/\s/g, '_')
+  try {
+    const res = await octokit.request(`GET /repos/${githubUsername}/${repositoryName}/commits?path=${path}`, {
       headers: {
         'X-GitHub-Api-Version': '2022-11-28'
       }

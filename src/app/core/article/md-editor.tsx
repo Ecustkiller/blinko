@@ -3,8 +3,9 @@ import { MdEditor as MdEditorRT, ExposeParam, Themes } from 'md-editor-rt';
 import useArticleStore from '@/stores/article';
 import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
-import { defToolbars, toolbars } from './md-toolbar';
+// import { defToolbars, toolbars } from './md-toolbar';
 import useSettingStore from '@/stores/setting';
+import CustomToolbar from './custom-toolbar/index';
 
 export function MdEditor() {
   const ref = useRef<ExposeParam>(null);
@@ -17,19 +18,22 @@ export function MdEditor() {
     setMdTheme(theme as Themes)
   }, [theme])
 
-  return <MdEditorRT
-    ref={ref}
-    theme={mdTheme}
-    codeTheme={codeTheme}
-    previewTheme={previewTheme}
-    codeFoldable={false}
-    preview={false}
-    className='flex-1 !h-screen !border-none'
-    noImgZoomIn
-    toolbars={toolbars}
-    footers={[]}
-    value={currentArticle}
-    onChange={setCurrentArticle}
-    defToolbars={defToolbars(ref)}
-  />;
+  return <div className='flex-1'>
+    <CustomToolbar mdRef={ref} />
+    <MdEditorRT
+      ref={ref}
+      theme={mdTheme}
+      codeTheme={codeTheme}
+      previewTheme={previewTheme}
+      codeFoldable={false}
+      preview={false}
+      className='!h-screen !border-none'
+      noImgZoomIn
+      // toolbars={toolbars}
+      footers={[]}
+      value={currentArticle}
+      onChange={setCurrentArticle}
+      // defToolbars={defToolbars(ref)}
+    />;
+  </div>
 }
