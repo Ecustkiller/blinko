@@ -1,5 +1,6 @@
 import { toast } from "@/hooks/use-toast";
 import { Store } from "@tauri-apps/plugin-store";
+import { AiResult } from "./ai.types";
 
 const url = 'https://api.chatanywhere.tech/v1/chat/completions'
 
@@ -63,7 +64,7 @@ export async function fetchAiStream(text: string, callback: (text: string) => vo
     })
 }
 
-export async function fetchAi(text: string) {
+export async function fetchAi(text: string): Promise<AiResult> {
   const requestOptions = await createAi(text, false)
   return (await fetch(url, requestOptions)).json()
 }

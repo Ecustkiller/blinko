@@ -17,7 +17,7 @@ import { listen } from '@tauri-apps/api/event';
 export function ClipboardImage() {
   const [image, setImage] = useState('')
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
-  const { sync, apiKey } = useSettingStore()
+  const { sync, apiKey, githubUsername, repositoryName } = useSettingStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
   async function read() {
     try{
@@ -65,8 +65,13 @@ export function ClipboardImage() {
         ext: 'png',
         file: uint8ArrayToBase64(file),
       })
-      console.log(res);
-      mark.url = res ? res.data.content.download_url : `${queueId}.png}`
+      if (res) {
+        setQueue(queueId, { progress: '通知 jsdelivr 缓存' });
+        await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${repositoryName}@main/images/${res.data.content.name}`)
+        mark.url = `https://fastly.jsdelivr.net/gh/${githubUsername}/${repositoryName}@main/images/${res.data.content.name}`
+      } else {
+        mark.url = `${queueId}.png}`
+      }
     }
     removeQueue(queueId)
     await insertMark(mark)
