@@ -66,7 +66,13 @@ export function ControlImage() {
         ext,
         file: uint8ArrayToBase64(data),
       })
-      mark.url = res ? `https://fastly.jsdelivr.net/gh/${githubUsername}/${repositoryName}@main/images/${res.data.content.name}` : filename
+      if (res) {
+        setQueue(queueId, { progress: '通知 jsdelivr 缓存' });
+        await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${repositoryName}@main/images/${res.data.content.name}`)
+        mark.url = `https://fastly.jsdelivr.net/gh/${githubUsername}/${repositoryName}@main/images/${res.data.content.name}`
+      } else {
+        mark.url = filename
+      }
     }
     removeQueue(queueId)
     await insertMark(mark)

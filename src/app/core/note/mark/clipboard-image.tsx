@@ -65,8 +65,13 @@ export function ClipboardImage() {
         ext: 'png',
         file: uint8ArrayToBase64(file),
       })
-      console.log(res);
-      mark.url = res ? `https://fastly.jsdelivr.net/gh/${githubUsername}/${repositoryName}@main/images/${res.data.content.name}` : `${queueId}.png}`
+      if (res) {
+        setQueue(queueId, { progress: '通知 jsdelivr 缓存' });
+        await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${repositoryName}@main/images/${res.data.content.name}`)
+        mark.url = `https://fastly.jsdelivr.net/gh/${githubUsername}/${repositoryName}@main/images/${res.data.content.name}`
+      } else {
+        mark.url = `${queueId}.png}`
+      }
     }
     removeQueue(queueId)
     await insertMark(mark)
