@@ -1,5 +1,5 @@
 'use client'
-import { MdEditor as MdEditorRT, ExposeParam, Themes } from 'md-editor-rt';
+import { MdEditor as MdEditorRT, ExposeParam, Themes, ToolbarNames } from 'md-editor-rt';
 import useArticleStore from '@/stores/article';
 import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
@@ -13,6 +13,8 @@ export function MdEditor() {
   const [mdTheme, setMdTheme] = useState<Themes>('light')
   const { theme } = useTheme()
   const { codeTheme, previewTheme } = useSettingStore()
+
+  const toolbarsExclude: ToolbarNames[] = ['github', 'catalog', 'fullscreen', 'save']
 
   useEffect(() => {
     setMdTheme(theme as Themes)
@@ -29,6 +31,7 @@ export function MdEditor() {
       preview={false}
       className='!h-screen !border-none'
       noImgZoomIn
+      toolbarsExclude={toolbarsExclude}
       // toolbars={toolbars}
       footers={[]}
       value={currentArticle}
