@@ -7,6 +7,11 @@ import { decodeBase64ToString, getFileCommits, getFiles } from "@/lib/github";
 import useArticleStore from "@/stores/article";
 import { ResCommit } from "@/lib/github.types";
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import zh from "dayjs/locale/zh-cn";
+
+dayjs.extend(relativeTime)
+dayjs.locale(zh)
 
 export default function History({mdRef}: {mdRef: RefObject<ExposeParam>}) {
   const { activeFilePath, setCurrentArticle, currentArticle } = useArticleStore()
@@ -14,7 +19,8 @@ export default function History({mdRef}: {mdRef: RefObject<ExposeParam>}) {
   const [loading, setLoading] = useState(false)
   const [commitsLoading, setCommitsLoading] = useState(false)
 
-  async function onOpenChange() {
+  async function onOpenChange(e: boolean) {
+    if (!e) return
     setCommitsLoading(true)
     setCommits([])
     mdRef.current?.focus()
@@ -45,7 +51,7 @@ export default function History({mdRef}: {mdRef: RefObject<ExposeParam>}) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>历史记录</DropdownMenuLabel>
+        <DropdownMenuLabel>历史记录（60秒间隔）</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {
           commitsLoading ? 
@@ -53,9 +59,10 @@ export default function History({mdRef}: {mdRef: RefObject<ExposeParam>}) {
             <DropdownMenuGroup>
               {
                 commits.length ?
-                  commits.map(commit => (
-                    <DropdownMenuItem key={commit.sha} onClick={() => handleCommit(commit.sha)}>
-                      {dayjs(commit.commit.committer.date).format('YYYY-MM-DD HH:mm:ss')} - {commit.commit.message}
+                  commits.map((commit) => (
+                    <DropdownMenuItem className="flex justify-between" key={commit.sha} onClick={() => handleCommit(commit.sha)}>
+                      <span>{commit.commit.message}</span>
+                      <span className="ml-4">{dayjs(commit.commit.committer.date).fromNow()}</span>
                     </DropdownMenuItem>
                   )) :
                   <DropdownMenuItem>暂无历史记录</DropdownMenuItem>
