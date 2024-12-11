@@ -119,6 +119,10 @@ html, body {
   padding: 0 4px !important;
 }
 
+.md-editor-code{
+  max-width: calc(100vw - 370px);
+}
+
 .md-editor-toolbar-item{
   margin: 0 !important;
 }

@@ -149,7 +149,6 @@ const toolbarsConfig = [
       const filename = path?.split('/').pop()
       const _path = path?.split('/').slice(0, -1).join('/')
       const file = await readFile(`article/${path}`, { baseDir: BaseDirectory.AppData  })
-      console.log({ path: `article${_path ?? '/' + _path}`, ext: 'md', file: uint8ArrayToBase64(file), filename, sha });
       await uploadFile({ path: `article${_path ?? '/' + _path}`, ext: 'md', file: uint8ArrayToBase64(file), filename, sha })
     },
   }
