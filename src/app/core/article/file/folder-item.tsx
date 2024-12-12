@@ -4,7 +4,7 @@ import useArticleStore, { DirTree } from "@/stores/article";
 import { invoke } from "@tauri-apps/api/core";
 import { BaseDirectory, remove, rename } from "@tauri-apps/plugin-fs";
 import { appDataDir } from '@tauri-apps/api/path';
-import { ChevronRight, Folder } from "lucide-react"
+import { ChevronRight, Cloud, Folder, FolderDown } from "lucide-react"
 import { useRef, useState } from "react";
 import { CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "@/hooks/use-toast";
@@ -80,25 +80,39 @@ export function FolderItem({ item }: { item: DirTree }) {
     <CollapsibleTrigger className="w-full">
       <ContextMenu>
         <ContextMenuTrigger asChild>
-          <div
-            className={isDragging ? 'file-manange-item file-on-drop' : 'file-manange-item'}
-            onDrop={(e) => handleDrop(e)}
-            onDragOver={e => handleDragOver(e)}
-            onDragLeave={(e) => handleDragleave(e)}
-          >
+          <div className={`${isDragging ? 'file-on-drop' : ''} file-manange-item flex`}>
             <ChevronRight className="transition-transform size-4 ml-1" />
-            <Folder className="size-4" />
             {
               isEditing ? 
-              <Input
-                ref={inputRef}
-                className="h-6 rounded-sm"
-                value={name}
-                onBlur={handleRename}
-                onChange={(e) => { setName(e.target.value) }}
-              /> :
-              <span className="select-none text-xs line-clamp-1">{item.name}</span>
+              <>
+                {
+                  item.isLocale ? 
+                    <Folder className="size-4" /> :
+                    <FolderDown className="size-4" />
+                }
+                <Input
+                  ref={inputRef}
+                  className="h-6 rounded-sm"
+                  value={name}
+                  onBlur={handleRename}
+                  onChange={(e) => { setName(e.target.value) }}
+                />
+              </> :
+              <div 
+                onDrop={(e) => handleDrop(e)}
+                onDragOver={e => handleDragOver(e)}
+                onDragLeave={(e) => handleDragleave(e)}
+                className={`${item.isLocale ? '' : 'opacity-50'} flex gap-1 items-center flex-1`}
+              >
+                {
+                item.isLocale ? 
+                  <Folder className="size-4" /> :
+                  <FolderDown className="size-4" />
+                }
+                <span className="select-none text-xs line-clamp-1">{item.name}</span>
+              </div>
             }
+            { item.sha && item.isLocale && <Cloud className="size-3 mr-2 opacity-30" /> } 
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent>

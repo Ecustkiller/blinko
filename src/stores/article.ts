@@ -68,7 +68,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
         if (index !== -1) {
           cacheTree[index].sha = file.sha
         } else {
-          cacheTree.unshift({
+          cacheTree.push({
             name: file.path.replace('article/', '').replace('_', ' '),
             isFile: file.type === 'file',
             isSymlink: false,
