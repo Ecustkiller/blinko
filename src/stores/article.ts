@@ -173,8 +173,20 @@ const useArticleStore = create<NoteState>((set, get) => ({
   readArticle: async (path: string, sha?: string, isLocale = true) => {
     if (!path) return
     if (isLocale) {
-      const res = await readTextFile(`article/${path}`, { baseDir: BaseDirectory.AppData })
-      set({ currentArticle: res })
+      try {
+        const res = await readTextFile(`article/${path}`, { baseDir: BaseDirectory.AppData })
+        set({ currentArticle: res })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
+        set({ currentArticle: '' })
+        try{
+          const res = await getFiles({ path: `article/${path}` })
+          set({ currentArticle: decodeBase64ToString(res.content) })
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+          set({ currentArticle: '' })
+        }
+      }
     } else {
       const res = await getFiles({ path: `article/${path}` })
       set({ currentArticle: decodeBase64ToString(res.content) })
@@ -182,7 +194,6 @@ const useArticleStore = create<NoteState>((set, get) => ({
   },
 
   setCurrentArticle: async (content: string) => {
-    console.log(content);
     set({ currentArticle: content })
     if (content) {
       const path = get().activeFilePath
@@ -192,6 +203,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
           await mkdir(`article/${dirPath}`, { baseDir: BaseDirectory.AppData })
         } 
       }
+      console.log(path);
       await writeTextFile(`article/${path}`, content, { baseDir: BaseDirectory.AppData })
     }
   },

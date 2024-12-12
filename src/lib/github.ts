@@ -104,10 +104,9 @@ export async function deleteFile({ path, sha }: { path: string, sha: string}) {
   const githubUsername = await store.get('githubUsername')
   const repositoryName = await store.get('repositoryName')
   try {
-    console.log(`DELETE /repos/${githubUsername}/${repositoryName}/contents/${path}`);
     const res = await octokit.request(`DELETE /repos/${githubUsername}/${repositoryName}/contents/${path}`, {
       sha,
-      message: 'a new commit message',
+      message: `Delete ${path}`,
       headers: {
         'X-GitHub-Api-Version': '2022-11-28'
       }

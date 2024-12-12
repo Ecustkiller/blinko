@@ -25,7 +25,7 @@ export default function Sync({mdRef}: {mdRef: RefObject<ExposeParam>}) {
         ---
         本次修改后的文章：${currentArticle}
         ---
-        上次提交文章：${decodeBase64ToString(latContent?.content)}
+        上次提交文章：${decodeBase64ToString(latContent?.content || '')}
         ---
         对比后对本次修改返回一条标准的提交描述，仅返回描述内容，字数不能超过30个字。
       `

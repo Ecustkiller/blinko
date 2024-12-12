@@ -31,7 +31,7 @@ export function NoteOutput() {
 
   async function handleTransform() {
     const content = decodeURIComponent(currentNote?.content || '')
-    await writeTextFile(`article/${title.replace(' ', '_')}`, content, { baseDir: BaseDirectory.AppData })
+    await writeTextFile(`article/${title.replace(/ /g, '_')}`, content, { baseDir: BaseDirectory.AppData })
     const store = await Store.load('store.json');
     await store.set('activeFilePath', title)
     if (isRemove) {

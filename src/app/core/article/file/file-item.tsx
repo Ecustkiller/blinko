@@ -34,6 +34,8 @@ export function FileItem({ item }: { item: DirTree }) {
       kind: 'warning',
     });
     if (answer) {
+      setActiveFilePath('')
+      setCurrentArticle('')
       await deleteFile({ path: `article/${activeFilePath}`, sha: item.sha as string })
       await loadFileTree()
     }
@@ -45,7 +47,9 @@ export function FileItem({ item }: { item: DirTree }) {
   }
 
   async function handleRename() {
-    let name = inputRef.current?.value.replace(' ', '_')
+    // 将所有空格替换为下划线
+    let name = inputRef.current?.value.replace(/ /g, '_')
+    console.log(name);
     if (name && name !== item.name && item.name) {
       await rename(`article/${item.name}`, `article/${name}` ,{ newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData})
       setActiveFilePath(name)
