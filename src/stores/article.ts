@@ -1,6 +1,6 @@
 import { decodeBase64ToString, getFiles } from '@/lib/github'
 import { GithubContent } from '@/lib/github.types'
-import { BaseDirectory, DirEntry, readDir, readTextFile, writeTextFile } from '@tauri-apps/plugin-fs'
+import { BaseDirectory, DirEntry, exists, mkdir, readDir, readTextFile, writeTextFile } from '@tauri-apps/plugin-fs'
 import { Store } from '@tauri-apps/plugin-store'
 import { create } from 'zustand'
 
@@ -42,7 +42,6 @@ export interface DirTree extends DirEntry {
 const useArticleStore = create<NoteState>((set, get) => ({
   activeFilePath: '',
   setActiveFilePath: async (path: string) => {
-    console.log(path);
     set({ activeFilePath: path })
     const store = await Store.load('store.json');
     await store.set('activeFilePath', path)
@@ -78,7 +77,8 @@ const useArticleStore = create<NoteState>((set, get) => ({
             isEditing: false,
             isDirectory: file.type === 'dir',
             sha: file.sha,
-            isLocale: false
+            isLocale: false,
+            children: file.type === 'file' ? undefined : []
           })
         }
       });
@@ -108,7 +108,8 @@ const useArticleStore = create<NoteState>((set, get) => ({
             isEditing: false,
             isDirectory: file.type === 'dir',
             sha: file.sha,
-            isLocale: false
+            isLocale: false,
+            children: file.type === 'file' ? undefined : []
           })
         }
       });
@@ -177,15 +178,20 @@ const useArticleStore = create<NoteState>((set, get) => ({
     } else {
       const res = await getFiles({ path: `article/${path}` })
       set({ currentArticle: decodeBase64ToString(res.content) })
-      await writeTextFile(`article/${path}`, decodeBase64ToString(res.content), { baseDir: BaseDirectory.AppData })
-      get().loadFileTree()
     }
   },
 
   setCurrentArticle: async (content: string) => {
+    console.log(content);
     set({ currentArticle: content })
     if (content) {
       const path = get().activeFilePath
+      if (path.includes('/')) {
+        const dirPath = path.split('/')[0]
+        if (!await exists(`article/${dirPath}`, { baseDir: BaseDirectory.AppData })) {
+          await mkdir(`article/${dirPath}`, { baseDir: BaseDirectory.AppData })
+        } 
+      }
       await writeTextFile(`article/${path}`, content, { baseDir: BaseDirectory.AppData })
     }
   },

@@ -90,7 +90,7 @@ export function FileManager() {
       const oldPaht = `article/${renamePath}`;
       const newPath = `article/${filename}`;
       await rename(oldPaht, newPath ,{ newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData})
-      loadFileTree()
+      await loadFileTree()
       if (renamePath === activeFilePath) {
         setActiveFilePath(newPath.replace('article/', ''))
       }

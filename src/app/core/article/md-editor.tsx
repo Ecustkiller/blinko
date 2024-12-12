@@ -9,16 +9,26 @@ import CustomToolbar from './custom-toolbar/index';
 
 export function MdEditor() {
   const ref = useRef<ExposeParam>(null);
-  const { currentArticle, setCurrentArticle } = useArticleStore()
+  const [value, setValue] = useState('')
+  const { currentArticle, setCurrentArticle, loadFileTree } = useArticleStore()
   const [mdTheme, setMdTheme] = useState<Themes>('light')
   const { theme } = useTheme()
   const { codeTheme, previewTheme } = useSettingStore()
 
-  const toolbarsExclude: ToolbarNames[] = ['github', 'catalog', 'fullscreen', 'save']
+  const toolbarsExclude: ToolbarNames[] = ['github', 'catalog', 'fullscreen']
+
+  function handleSave() {
+    setCurrentArticle(value)
+    loadFileTree()
+  }
 
   useEffect(() => {
     setMdTheme(theme as Themes)
   }, [theme])
+
+  useEffect(() => {
+    setValue(currentArticle)
+  }, [currentArticle])
 
   return <div className='flex-1'>
     <CustomToolbar mdRef={ref} />
@@ -34,8 +44,9 @@ export function MdEditor() {
       toolbarsExclude={toolbarsExclude}
       // toolbars={toolbars}
       footers={[]}
-      value={currentArticle}
-      onChange={setCurrentArticle}
+      value={value}
+      onChange={setValue}
+      onSave={handleSave}
       // defToolbars={defToolbars(ref)}
     />;
   </div>

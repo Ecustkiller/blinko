@@ -6,7 +6,7 @@ import { BaseDirectory, remove, rename, writeTextFile } from "@tauri-apps/plugin
 import { appDataDir } from '@tauri-apps/api/path';
 import { Cloud, CloudDownload, File } from "lucide-react"
 import { useEffect, useRef, useState } from "react";
-
+import { ask } from '@tauri-apps/plugin-dialog';
 export function FileItem({ item }: { item: DirTree }) {
   const [isEditing, setIsEditing] = useState(item.isEditing)
   const [name, setName] = useState(item.name)
@@ -16,10 +16,18 @@ export function FileItem({ item }: { item: DirTree }) {
 
   function handleSelectFile() {
     setActiveFilePath(path)
+    setCurrentArticle('')
     readArticle(path, item.sha, item.isLocale)
   }
 
   async function handleDeleteFile() {
+    if (item.sha) {
+      const answer = await ask('This action cannot be reverted. Are you sure?', {
+        title: 'Tauri',
+        kind: 'warning',
+      });
+      console.log(answer);
+    }
     await remove(`article/${path}`, { baseDir: BaseDirectory.AppData })
     await loadFileTree()
     setActiveFilePath('')

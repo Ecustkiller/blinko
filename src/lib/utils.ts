@@ -21,3 +21,8 @@ export function convertBytesToSize(bytes: number) {
   const i = Math.floor(Math.log(bytes) / Math.log(1024))
   return Math.round(bytes / Math.pow(1024, i)) + ' ' + sizes[i];
 }
+
+export function arrayBuffer2String(buffer: ArrayBuffer) {
+  const decoder = new TextDecoder('iso-8859-1');
+  return decoder.decode(buffer);
+}
