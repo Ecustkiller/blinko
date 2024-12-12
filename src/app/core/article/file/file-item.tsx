@@ -69,20 +69,25 @@ export function FileItem({ item }: { item: DirTree }) {
           className={path === activeFilePath ? 'file-manange-item active' : 'file-manange-item'}
           onClick={handleSelectFile}
           onContextMenu={handleSelectFile}
-          draggable
-          onDragStart={handleDragStart}
         >
-          <File className="size-4" />
           {
             isEditing ? 
-            <Input
-              ref={inputRef}
-              className="h-6 rounded-sm"
-              value={name}
-              onBlur={handleRename}
-              onChange={(e) => { setName(e.target.value) }}
-            /> :
-            <span className="select-none line-clamp-1 flex-1">{item.name}</span>
+            <div className="flex gap-1 items-center w-full">
+              <span className={item.parent ? 'size-0' : 'size-4 ml-1'} />
+              <File className="size-4" />
+              <Input
+                ref={inputRef}
+                className="h-5 rounded-sm text-xs px-1 font-normal flex-1 mr-1"
+                value={name}
+                onBlur={handleRename}
+                onChange={(e) => { setName(e.target.value) }}
+              />
+            </div> :
+            <span draggable onDragStart={handleDragStart} className="flex gap-1 select-none">
+              <span className={item.parent ? 'size-0' : 'size-4 ml-1'} />
+              <File className="size-4" />
+              <span className="text-xs flex-1 line-clamp-1">{item.name.slice(0, -3)}</span>
+            </span>
           }
         </div>
       </ContextMenuTrigger>

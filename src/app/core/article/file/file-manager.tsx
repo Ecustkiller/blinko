@@ -62,7 +62,7 @@ function Tree({ item }: { item: DirTree }) {
           open={collapsibleList.includes(item.name)}
         >
           <FolderItem item={item} />
-          <CollapsibleContent>
+          <CollapsibleContent className="pl-1">
             <SidebarMenuSub>
               {item.children?.map((subItem) => (
                 <Tree key={subItem.name} item={subItem} />
@@ -111,11 +111,11 @@ export function FileManager() {
 
   return (
     <SidebarContent className={isDragging ? 'file-on-drop' : ''}>
-      <SidebarGroup className="flex-1">
+      <SidebarGroup className="flex-1 p-0">
         <SidebarGroupContent className="flex-1">
           <SidebarMenu className="h-full">
             <div
-              className="min-h-1"
+              className="min-h-0.5"
               onDrop={(e) => handleDrop(e)}
               onDragOver={e => handleDragOver(e)}
               onDragLeave={(e) => handleDragleave(e)}

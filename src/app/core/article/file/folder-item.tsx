@@ -86,7 +86,7 @@ export function FolderItem({ item }: { item: DirTree }) {
             onDragOver={e => handleDragOver(e)}
             onDragLeave={(e) => handleDragleave(e)}
           >
-            <ChevronRight className="transition-transform size-4" />
+            <ChevronRight className="transition-transform size-4 ml-1" />
             <Folder className="size-4" />
             {
               isEditing ? 
@@ -97,7 +97,7 @@ export function FolderItem({ item }: { item: DirTree }) {
                 onBlur={handleRename}
                 onChange={(e) => { setName(e.target.value) }}
               /> :
-              <span className="select-none line-clamp-1">{item.name}</span>
+              <span className="select-none text-xs line-clamp-1">{item.name}</span>
             }
           </div>
         </ContextMenuTrigger>
