@@ -7,6 +7,7 @@ import { appDataDir } from '@tauri-apps/api/path';
 import { Cloud, CloudDownload, File } from "lucide-react"
 import { useEffect, useRef, useState } from "react";
 import { ask } from '@tauri-apps/plugin-dialog';
+import { deleteFile } from "@/lib/github";
 export function FileItem({ item }: { item: DirTree }) {
   const [isEditing, setIsEditing] = useState(item.isEditing)
   const [name, setName] = useState(item.name)
@@ -21,17 +22,21 @@ export function FileItem({ item }: { item: DirTree }) {
   }
 
   async function handleDeleteFile() {
-    if (item.sha) {
-      const answer = await ask('This action cannot be reverted. Are you sure?', {
-        title: 'Tauri',
-        kind: 'warning',
-      });
-      console.log(answer);
-    }
     await remove(`article/${path}`, { baseDir: BaseDirectory.AppData })
     await loadFileTree()
     setActiveFilePath('')
     setCurrentArticle('')
+  }
+
+  async function handleDeleteSyncFile() {
+    const answer = await ask('确定是否将同步文件删除?', {
+      title: 'NoteGen',
+      kind: 'warning',
+    });
+    if (answer) {
+      await deleteFile({ path: `article/${activeFilePath}`, sha: item.sha as string })
+      await loadFileTree()
+    }
   }
 
   async function handleStartRename() {
@@ -125,8 +130,11 @@ export function FileItem({ item }: { item: DirTree }) {
         <ContextMenuItem disabled={!item.isLocale} inset onClick={handleStartRename}>
           重命名
         </ContextMenuItem>
-        <ContextMenuItem inset className="text-red-900" onClick={handleDeleteFile}>
-          删除
+        <ContextMenuItem disabled={!item.sha} inset className="text-red-900" onClick={handleDeleteSyncFile}>
+          删除同步文件
+        </ContextMenuItem>
+        <ContextMenuItem disabled={!item.isLocale} inset className="text-red-900" onClick={handleDeleteFile}>
+          删除本地文件
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

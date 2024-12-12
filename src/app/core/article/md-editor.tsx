@@ -17,8 +17,8 @@ export function MdEditor() {
 
   const toolbarsExclude: ToolbarNames[] = ['github', 'catalog', 'fullscreen']
 
-  function handleSave() {
-    setCurrentArticle(value)
+  async function handleSave() {
+    await setCurrentArticle(value)
     loadFileTree()
   }
 
