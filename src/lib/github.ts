@@ -7,13 +7,11 @@ export function uint8ArrayToBase64(data: Uint8Array) {
   return Buffer.from(data).toString('base64');
 }
 
-
 export function decodeBase64ToString(str: string){
   return decodeURIComponent(atob(str).split('').map(function (c) {
     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
   }).join(''));
 }
-
 
 export interface GithubFile {
   name: string;
@@ -85,7 +83,8 @@ export async function getFiles({ path }: { path: string}) {
   try {
     const res = await octokit.request(`GET /repos/${githubUsername}/${repositoryName}/contents/${path}`, {
       headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
+        'X-GitHub-Api-Version': '2022-11-28',
+        'If-None-Match': ''
       }
     })
     return res.data;
@@ -131,7 +130,8 @@ export async function getFileCommits({ path }: { path: string}) {
   try {
     const res = await octokit.request(`GET /repos/${githubUsername}/${repositoryName}/commits?path=${path}`, {
       headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
+        'X-GitHub-Api-Version': '2022-11-28',
+        'If-None-Match': ''
       }
     })
     return res.data;
