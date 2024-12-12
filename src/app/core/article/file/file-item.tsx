@@ -16,7 +16,7 @@ export function FileItem({ item }: { item: DirTree }) {
 
   function handleSelectFile() {
     setActiveFilePath(path)
-    readArticle(path)
+    readArticle(path, item.sha, item.isLocale)
   }
 
   async function handleDeleteFile() {
@@ -32,7 +32,7 @@ export function FileItem({ item }: { item: DirTree }) {
   }
 
   async function handleRename() {
-    let name = inputRef.current?.value
+    let name = inputRef.current?.value.replace(' ', '_')
     if (name && name !== item.name && item.name) {
       await rename(`article/${item.name}`, `article/${name}` ,{ newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData})
       setActiveFilePath(name)

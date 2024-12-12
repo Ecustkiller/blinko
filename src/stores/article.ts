@@ -1,4 +1,4 @@
-import { getFiles } from '@/lib/github'
+import { decodeBase64ToString, getFiles } from '@/lib/github'
 import { GithubContent } from '@/lib/github.types'
 import { BaseDirectory, DirEntry, readDir, readTextFile, writeTextFile } from '@tauri-apps/plugin-fs'
 import { Store } from '@tauri-apps/plugin-store'
@@ -24,7 +24,7 @@ interface NoteState {
   setCollapsibleList: (name: string, value: boolean) => Promise<void>
 
   currentArticle: string
-  readArticle: (path: string) => Promise<void>
+  readArticle: (path: string, sha?: string, isLocale?: boolean) => Promise<void>
   setCurrentArticle: (content: string) => Promise<void>
 
   allArticle: Article[]
@@ -42,6 +42,7 @@ export interface DirTree extends DirEntry {
 const useArticleStore = create<NoteState>((set, get) => ({
   activeFilePath: '',
   setActiveFilePath: async (path: string) => {
+    console.log(path);
     set({ activeFilePath: path })
     const store = await Store.load('store.json');
     await store.set('activeFilePath', path)
@@ -70,7 +71,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
           cacheTree[index].sha = file.sha
         } else {
           cacheTree.push({
-            name: file.path.replace('article/', '').replace('_', ' '),
+            name: file.path.replace('article/', ''),
             isFile: file.type === 'file',
             isSymlink: false,
             parent: undefined,
@@ -96,12 +97,11 @@ const useArticleStore = create<NoteState>((set, get) => ({
     if (githubFiles && cacheFolder) {
       githubFiles.forEach((file: GithubContent) => {
         const index = cacheFolder.children?.findIndex(item => item.name === file.path.replace(`article/${folderName}/`, ''))
-        console.log(index);
         if (index !== undefined && index !== -1 && cacheTree[cacheFolderIndex]?.children) {
           cacheTree[cacheFolderIndex].children[index].sha = file.sha
         } else {
           cacheTree[cacheFolderIndex].children?.push({
-            name: file.path.replace(`article/${folderName}/`, '').replace('_', ' '),
+            name: file.path.replace(`article/${folderName}/`, ''),
             isFile: file.type === 'file',
             isSymlink: false,
             parent: cacheTree[cacheFolderIndex],
@@ -112,7 +112,6 @@ const useArticleStore = create<NoteState>((set, get) => ({
           })
         }
       });
-      console.log(cacheTree);
       set({ fileTree: cacheTree })
     }
   },
@@ -170,11 +169,19 @@ const useArticleStore = create<NoteState>((set, get) => ({
   },
 
   currentArticle: '',
-  readArticle: async (path: string) => {
+  readArticle: async (path: string, sha?: string, isLocale = true) => {
     if (!path) return
-    const res = await readTextFile(`article/${path}`, { baseDir: BaseDirectory.AppData })
-    set({ currentArticle: res })
+    if (isLocale) {
+      const res = await readTextFile(`article/${path}`, { baseDir: BaseDirectory.AppData })
+      set({ currentArticle: res })
+    } else {
+      const res = await getFiles({ path: `article/${path}` })
+      set({ currentArticle: decodeBase64ToString(res.content) })
+      await writeTextFile(`article/${path}`, decodeBase64ToString(res.content), { baseDir: BaseDirectory.AppData })
+      get().loadFileTree()
+    }
   },
+
   setCurrentArticle: async (content: string) => {
     set({ currentArticle: content })
     if (content) {
