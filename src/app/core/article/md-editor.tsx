@@ -33,13 +33,14 @@ export function MdEditor() {
   return <div className='flex-1'>
     <CustomToolbar mdRef={ref} />
     <MdEditorRT
+      id="aritcle-md-editor"
       ref={ref}
       theme={mdTheme}
       codeTheme={codeTheme}
       previewTheme={previewTheme}
       codeFoldable={false}
       preview={false}
-      className='!h-screen !border-none'
+      className='!border-none'
       noImgZoomIn
       toolbarsExclude={toolbarsExclude}
       // toolbars={toolbars}

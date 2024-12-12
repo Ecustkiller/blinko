@@ -104,6 +104,10 @@ html, body {
   list-style: decimal;
 }
 
+#aritcle-md-editor{
+  height: calc(100vh - 48px);
+}
+
 ::-webkit-scrollbar {
   @apply w-2 h-2;
 }
