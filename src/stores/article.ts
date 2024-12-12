@@ -1,3 +1,5 @@
+import { getFiles } from '@/lib/github'
+import { GithubContent } from '@/lib/github.types'
 import { BaseDirectory, DirEntry, readDir, readTextFile, writeTextFile } from '@tauri-apps/plugin-fs'
 import { Store } from '@tauri-apps/plugin-store'
 import { create } from 'zustand'
@@ -31,7 +33,9 @@ interface NoteState {
 export interface DirTree extends DirEntry {
   children?: DirTree[]
   parent?: DirTree
+  sha?: string
   isEditing?: boolean
+  isLocale: boolean
 }
 
 const useArticleStore = create<NoteState>((set, get) => ({
@@ -48,15 +52,36 @@ const useArticleStore = create<NoteState>((set, get) => ({
     const cacheTree: DirTree[] = []
     const dirs = (await readDir('article', { baseDir: BaseDirectory.AppData })).sort((a, b) => a.name.localeCompare(b.name))
     cacheTree.push(...dirs.filter(file => file.name !== '.DS_Store')
-      .map(file => ({ ...file, parent: undefined, isEditing: false })))
+      .map(file => ({ ...file, parent: undefined, isEditing: false, isLocale: true })))
     for (let index = 0; index < cacheTree.length; index++) {
       const dir = cacheTree[index];
       if (dir.isDirectory) {
         const files = await readDir(`article/${dir.name}`, { baseDir: BaseDirectory.AppData });
-        dir.children = files.filter(file => file.name !== '.DS_Store').map(file => ({ ...file, parent: dir, isEditing: false }))
+        dir.children = files.filter(file => file.name !== '.DS_Store').map(file => ({ ...file, parent: dir, isEditing: false, isLocale: true }))
       }
     }
     set({ fileTree: cacheTree })
+    const githubFiles = await getFiles({ path: 'article' })
+    if (githubFiles) {
+      githubFiles.forEach((file: GithubContent) => {
+        const index = cacheTree.findIndex(item => item.name === file.path.replace('article/', ''))
+        if (index !== -1) {
+          cacheTree[index].sha = file.sha
+        } else {
+          cacheTree.unshift({
+            name: file.path.replace('article/', '').replace('_', ' '),
+            isFile: file.type === 'file',
+            isSymlink: false,
+            parent: undefined,
+            isEditing: false,
+            isDirectory: file.type === 'dir',
+            sha: file.sha,
+            isLocale: false
+          })
+        }
+      });
+      set({ fileTree: cacheTree })
+    }
   },
   newFolder: async () => {
     const newDir: DirTree = {
@@ -66,6 +91,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
       parent: undefined,
       isEditing: true,
       isDirectory: true,
+      isLocale: true,
       children: []
     }
     const fileTree = get().fileTree
@@ -79,6 +105,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
       isSymlink: false,
       parent: undefined,
       isEditing: true,
+      isLocale: true,
       isDirectory: false,
     }
     const fileTree = get().fileTree

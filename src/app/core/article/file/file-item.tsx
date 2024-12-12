@@ -4,7 +4,7 @@ import useArticleStore, { DirTree } from "@/stores/article";
 import { invoke } from "@tauri-apps/api/core";
 import { BaseDirectory, remove, rename, writeTextFile } from "@tauri-apps/plugin-fs";
 import { appDataDir } from '@tauri-apps/api/path';
-import { File } from "lucide-react"
+import { Cloud, CloudDownload, File } from "lucide-react"
 import { useEffect, useRef, useState } from "react";
 
 export function FileItem({ item }: { item: DirTree }) {
@@ -83,10 +83,18 @@ export function FileItem({ item }: { item: DirTree }) {
                 onChange={(e) => { setName(e.target.value) }}
               />
             </div> :
-            <span draggable onDragStart={handleDragStart} className="flex gap-1 select-none">
-              <span className={item.parent ? 'size-0' : 'size-4 ml-1'} />
-              <File className="size-4" />
-              <span className="text-xs flex-1 line-clamp-1">{item.name.slice(0, -3)}</span>
+            <span draggable onDragStart={handleDragStart}
+              className={`${item.isLocale ? '' : 'opacity-50'} flex justify-between flex-1 select-none items-center gap-1 dark:hover:text-white`}>
+              <div className="flex flex-1 gap-1 select-none">
+                <span className={item.parent ? 'size-0' : 'size-4 ml-1'} />
+                {
+                  item.isLocale ? 
+                    <File className="size-4" /> :
+                    <CloudDownload className="size-4" />
+                }
+                <span className="text-xs flex-1 line-clamp-1">{item.name.slice(0, -3)}</span>
+              </div>
+              { item.sha && item.isLocale && <Cloud className="size-3 mr-2 opacity-30" /> } 
             </span>
           }
         </div>
@@ -106,7 +114,7 @@ export function FileItem({ item }: { item: DirTree }) {
           粘贴
         </ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuItem inset onClick={handleStartRename}>
+        <ContextMenuItem disabled={!item.isLocale} inset onClick={handleStartRename}>
           重命名
         </ContextMenuItem>
         <ContextMenuItem inset className="text-red-900" onClick={handleDeleteFile}>
