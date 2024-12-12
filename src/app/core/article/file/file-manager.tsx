@@ -20,10 +20,13 @@ function Tree({ item }: { item: DirTree }) {
   const [name, setName] = useState('')
   const inputRef = React.useRef<HTMLInputElement>(null)
 
-  const { loadFileTree, fileTree, collapsibleList, setCollapsibleList } = useArticleStore()
+  const { loadFileTree, fileTree, collapsibleList, setCollapsibleList, loadCollapsibleFiles } = useArticleStore()
 
   function handleCollapse(isOpen: boolean) {
     setCollapsibleList(item.name, isOpen)
+    if (isOpen) {
+      loadCollapsibleFiles(item.name)
+    }
   }
 
   async function handleMkdir() {

@@ -15,6 +15,7 @@ interface NoteState {
 
   fileTree: DirTree[]
   loadFileTree: () => Promise<void>
+  loadCollapsibleFiles: (folderName: string) => Promise<void>
   newFolder: () => void
   newFile: () => void
 
@@ -80,6 +81,38 @@ const useArticleStore = create<NoteState>((set, get) => ({
           })
         }
       });
+      set({ fileTree: cacheTree })
+      get().collapsibleList.forEach(async (item) => {
+        await get().loadCollapsibleFiles(item)
+      })
+    }
+  },
+  // 加载文件夹内部的 Github 仓库文件
+  loadCollapsibleFiles: async (folderName: string) => {
+    const cacheTree: DirTree[] = get().fileTree
+    const cacheFolderIndex = cacheTree.findIndex(item => item.name === folderName)
+    const cacheFolder = cacheTree.find(item => item.name === folderName)
+    const githubFiles = await getFiles({ path: `article/${folderName}`})
+    if (githubFiles && cacheFolder) {
+      githubFiles.forEach((file: GithubContent) => {
+        const index = cacheFolder.children?.findIndex(item => item.name === file.path.replace(`article/${folderName}/`, ''))
+        console.log(index);
+        if (index !== undefined && index !== -1 && cacheTree[cacheFolderIndex]?.children) {
+          cacheTree[cacheFolderIndex].children[index].sha = file.sha
+        } else {
+          cacheTree[cacheFolderIndex].children?.push({
+            name: file.path.replace(`article/${folderName}/`, '').replace('_', ' '),
+            isFile: file.type === 'file',
+            isSymlink: false,
+            parent: cacheTree[cacheFolderIndex],
+            isEditing: false,
+            isDirectory: file.type === 'dir',
+            sha: file.sha,
+            isLocale: false
+          })
+        }
+      });
+      console.log(cacheTree);
       set({ fileTree: cacheTree })
     }
   },
