@@ -10,7 +10,7 @@ import CustomToolbar from './custom-toolbar/index';
 export function MdEditor() {
   const ref = useRef<ExposeParam>(null);
   const [value, setValue] = useState('')
-  const { currentArticle, setCurrentArticle, loadFileTree } = useArticleStore()
+  const { currentArticle, setCurrentArticle, loadFileTree, activeFilePath } = useArticleStore()
   const [mdTheme, setMdTheme] = useState<Themes>('light')
   const { theme } = useTheme()
   const { codeTheme, previewTheme } = useSettingStore()
@@ -37,6 +37,7 @@ export function MdEditor() {
       ref={ref}
       theme={mdTheme}
       codeTheme={codeTheme}
+      disabled={!activeFilePath}
       previewTheme={previewTheme}
       codeFoldable={false}
       preview={false}

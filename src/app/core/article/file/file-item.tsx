@@ -54,9 +54,8 @@ export function FileItem({ item }: { item: DirTree }) {
       await rename(`article/${item.name}`, `article/${name}` ,{ newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData})
       setActiveFilePath(name)
     } else if (name) {
-      name = `article/${name}`
       if (!name.endsWith('.md')) name = name + '.md'
-      writeTextFile(name, '', { baseDir: BaseDirectory.AppData })
+      writeTextFile(`article/${name}`, '', { baseDir: BaseDirectory.AppData })
       setActiveFilePath(name)
     }
     await loadFileTree()
