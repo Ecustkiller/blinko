@@ -2,6 +2,7 @@ import { toast } from '@/hooks/use-toast';
 import { Octokit } from '@octokit/core'
 import { Store } from '@tauri-apps/plugin-store';
 import { v4 as uuid } from 'uuid';
+import { RepoNames } from './github.types';
 
 export function uint8ArrayToBase64(data: Uint8Array) {
   return Buffer.from(data).toString('base64');
@@ -33,8 +34,8 @@ interface Links {
 }
 
 export async function uploadFile(
-  { path, ext, file, filename, sha, message }:
-  { path: string, ext: string, file: string, filename?: string, sha?: string, message?: string }) 
+  { ext, file, filename, sha, message, repo }:
+  { ext: string, file: string, filename?: string, sha?: string, message?: string, repo: RepoNames }) 
 {
   const store = await Store.load('store.json');
   const accessToken = await store.get('accessToken')
@@ -42,7 +43,6 @@ export async function uploadFile(
     auth: accessToken
   })
   const githubUsername = await store.get('githubUsername')
-  const repositoryName = await store.get('repositoryName')
   try {
     let _filename = ''
     if (filename) {
@@ -52,8 +52,9 @@ export async function uploadFile(
     }
     // 将空格转换成下划线
     _filename = _filename.replace(/\s/g, '_')
-    const res = await octokit.request(`PUT /repos/${githubUsername}/${repositoryName}/contents/${path}/${_filename}`, {
-      message: message,
+    console.log(_filename);
+    const res = await octokit.request(`PUT /repos/${githubUsername}/${repo}/contents/${_filename}`, {
+      message: message || `Upload ${filename}`,
       content: file,
       sha,
       headers: {
@@ -71,17 +72,16 @@ export async function uploadFile(
   }
 }
 
-export async function getFiles({ path }: { path: string}) {
+export async function getFiles({ path, repo }: { path: string, repo: RepoNames }) {
   const store = await Store.load('store.json');
   const accessToken = await store.get('accessToken')
   const octokit = new Octokit({
     auth: accessToken
   })
   const githubUsername = await store.get('githubUsername')
-  const repositoryName = await store.get('repositoryName')
   path = path.replace(/\s/g, '_')
   try {
-    const res = await octokit.request(`GET /repos/${githubUsername}/${repositoryName}/contents/${path}`, {
+    const res = await octokit.request(`GET /repos/${githubUsername}/${repo}/contents/${path}`, {
       headers: {
         'X-GitHub-Api-Version': '2022-11-28',
         'If-None-Match': ''
@@ -94,16 +94,15 @@ export async function getFiles({ path }: { path: string}) {
   }
 }
 
-export async function deleteFile({ path, sha }: { path: string, sha: string}) {
+export async function deleteFile({ path, sha, repo }: { path: string, sha: string, repo: RepoNames }) {
   const store = await Store.load('store.json');
   const accessToken = await store.get('accessToken')
   const octokit = new Octokit({
     auth: accessToken
   })
   const githubUsername = await store.get('githubUsername')
-  const repositoryName = await store.get('repositoryName')
   try {
-    const res = await octokit.request(`DELETE /repos/${githubUsername}/${repositoryName}/contents/${path}`, {
+    const res = await octokit.request(`DELETE /repos/${githubUsername}/${repo}/contents/${path}`, {
       sha,
       message: `Delete ${path}`,
       headers: {
@@ -117,18 +116,16 @@ export async function deleteFile({ path, sha }: { path: string, sha: string}) {
   }
 }
 
-export async function getFileCommits({ path }: { path: string}) {
-  // https://api.github.com/repos/{owner}/{repo}/commits?path={path}
+export async function getFileCommits({ path, repo }: { path: string, repo: RepoNames }) {
   const store = await Store.load('store.json');
   const accessToken = await store.get('accessToken')
   const octokit = new Octokit({
     auth: accessToken
   })
   const githubUsername = await store.get('githubUsername')
-  const repositoryName = await store.get('repositoryName')
   path = path.replace(/\s/g, '_')
   try {
-    const res = await octokit.request(`GET /repos/${githubUsername}/${repositoryName}/commits?path=${path}`, {
+    const res = await octokit.request(`GET /repos/${githubUsername}/${repo}/commits?path=${path}`, {
       headers: {
         'X-GitHub-Api-Version': '2022-11-28',
         'If-None-Match': ''
@@ -138,5 +135,54 @@ export async function getFileCommits({ path }: { path: string}) {
   } catch (error) {
     console.log(error);
     return false
+  }
+}
+
+// 获取 Github 用户信息
+export async function getUserInfo() {
+  const store = await Store.load('store.json');
+  const accessToken = await store.get('accessToken')
+  const octokit = new Octokit({
+    auth: accessToken
+  })
+  try {
+    const res = await octokit.request(`GET /user`, {
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28',
+        'If-None-Match': ''
+      }
+    })
+    return res;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error) {
+    return false;
+  }
+}
+
+// 创建 Github 仓库
+export async function createSyncRepo() {
+  const store = await Store.load('store.json');
+  const accessToken = await store.get('accessToken')
+  const octokit = new Octokit({
+    auth: accessToken
+  })
+  try {
+    const res = await octokit.request(`POST /user/repos`, {
+      name: 'note-gen-image-sync',
+      description: 'This is a NoteGen sync public repository.',
+    })
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+  try {
+    const res = await octokit.request(`POST /user/repos`, {
+      name: 'note-gen-article-sync',
+      private: true,
+      description: 'This is a NoteGen article sync private repository.',
+    })
+    return res;
+  } catch (error) {
+    console.log(error);
   }
 }

@@ -19,12 +19,13 @@ import { useState } from "react"
 import { uploadFile, uint8ArrayToBase64 } from "@/lib/github"
 import useSettingStore from "@/stores/setting"
 import { v4 as uuid } from 'uuid'
+import { RepoNames } from "@/lib/github.types"
 
 export function ControlImage() {
   const [open, setOpen] = useState(false);
 
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
-  const { sync, apiKey, markDescGen, githubUsername, repositoryName } = useSettingStore()
+  const { apiKey, markDescGen, githubUsername } = useSettingStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
 
   async function selectImage(event: React.ChangeEvent<HTMLInputElement>) {
@@ -59,17 +60,17 @@ export function ControlImage() {
       url: filename,
       desc,
     }
-    if (sync) {
+    if (githubUsername) {
       setQueue(queueId, { progress: '上传至图床' });
       const res = await uploadFile({
-        path: 'images',
         ext,
         file: uint8ArrayToBase64(data),
+        repo: RepoNames.image
       })
       if (res) {
         setQueue(queueId, { progress: '通知 jsdelivr 缓存' });
-        await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${repositoryName}@main/images/${res.data.content.name}`)
-        mark.url = `https://fastly.jsdelivr.net/gh/${githubUsername}/${repositoryName}@main/images/${res.data.content.name}`
+        await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`)
+        mark.url = `https://fastly.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`
       } else {
         mark.url = filename
       }

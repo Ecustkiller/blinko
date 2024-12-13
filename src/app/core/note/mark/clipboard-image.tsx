@@ -13,11 +13,12 @@ import { fetchAiDesc } from "@/lib/ai";
 import { insertMark, Mark } from "@/db/marks";
 import { uint8ArrayToBase64, uploadFile } from "@/lib/github";
 import { listen } from '@tauri-apps/api/event';
+import { RepoNames } from "@/lib/github.types";
 
 export function ClipboardImage() {
   const [image, setImage] = useState('')
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
-  const { sync, apiKey, githubUsername, repositoryName } = useSettingStore()
+  const { apiKey, githubUsername } = useSettingStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
   async function read() {
     try{
@@ -58,17 +59,17 @@ export function ClipboardImage() {
       desc,
     }
     const file = await readFile(`image/${queueId}.png`, { baseDir: BaseDirectory.AppData  })
-    if (sync) {
+    if (githubUsername) {
       setQueue(queueId, { progress: '上传至图床' });
       const res = await uploadFile({
-        path: 'images',
         ext: 'png',
         file: uint8ArrayToBase64(file),
+        repo: RepoNames.image
       })
       if (res) {
         setQueue(queueId, { progress: '通知 jsdelivr 缓存' });
-        await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${repositoryName}@main/images/${res.data.content.name}`)
-        mark.url = `https://fastly.jsdelivr.net/gh/${githubUsername}/${repositoryName}@main/images/${res.data.content.name}`
+        await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`)
+        mark.url = `https://fastly.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`
       } else {
         mark.url = `${queueId}.png}`
       }

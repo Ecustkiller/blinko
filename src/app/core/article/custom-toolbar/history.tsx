@@ -5,7 +5,7 @@ import { RefObject, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { decodeBase64ToString, getFileCommits, getFiles } from "@/lib/github";
 import useArticleStore from "@/stores/article";
-import { ResCommit } from "@/lib/github.types";
+import { RepoNames, ResCommit } from "@/lib/github.types";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import zh from "dayjs/locale/zh-cn";
@@ -24,7 +24,7 @@ export default function History({mdRef}: {mdRef: RefObject<ExposeParam>}) {
     setCommitsLoading(true)
     setCommits([])
     mdRef.current?.focus()
-    const res = await getFileCommits({ path: `article/${activeFilePath}` })
+    const res = await getFileCommits({ path: activeFilePath, repo: RepoNames.article })
     setCommits(res)
     setCommitsLoading(false)
   }
@@ -33,7 +33,7 @@ export default function History({mdRef}: {mdRef: RefObject<ExposeParam>}) {
     setLoading(true)
     const cacheArticle = currentArticle;
     setCurrentArticle('正在读取历史记录...')
-    const res = await getFiles({path: `article/${activeFilePath}?ref=${sha}`})
+    const res = await getFiles({path: `${activeFilePath}?ref=${sha}`, repo: RepoNames.article})
     if (res.content) {
       setCurrentArticle(decodeBase64ToString(res.content))
     } else {

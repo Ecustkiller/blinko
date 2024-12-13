@@ -2,6 +2,7 @@ import { TooltipButton } from "@/components/tooltip-button";
 import { toast } from "@/hooks/use-toast";
 import { fetchAi } from "@/lib/ai";
 import { decodeBase64ToString, getFileCommits, getFiles, uint8ArrayToBase64, uploadFile } from "@/lib/github";
+import { RepoNames } from "@/lib/github.types";
 import useArticleStore from "@/stores/article";
 import { BaseDirectory, readFile } from "@tauri-apps/plugin-fs";
 import { CloudUpload, LoaderCircle } from "lucide-react";
@@ -16,10 +17,10 @@ export default function Sync({mdRef}: {mdRef: RefObject<ExposeParam>}) {
     mdRef.current?.focus()
     // 获取上一次提交的记录内容
     let message = `Upload ${activeFilePath}`
-    const commits = await getFileCommits({ path: `article/${activeFilePath}` })
+    const commits = await getFileCommits({ path: activeFilePath, repo: RepoNames.article })
     if (commits?.length > 0) {
       const lastCommit = commits[0]
-      const latContent = await getFiles({path: `article/${activeFilePath}?ref=${lastCommit.sha}`})
+      const latContent = await getFiles({path: `${activeFilePath}?ref=${lastCommit.sha}`, repo: RepoNames.article})
       const text = `
         对比两篇文章：
         ---
@@ -31,7 +32,7 @@ export default function Sync({mdRef}: {mdRef: RefObject<ExposeParam>}) {
       `
       message = (await fetchAi(text)).choices[0].message.content
     }
-    const res = await getFiles({path: `article/${activeFilePath}`})
+    const res = await getFiles({path: activeFilePath, repo: RepoNames.article})
     let sha = undefined
     if (res) {
       sha = res.sha
@@ -40,12 +41,12 @@ export default function Sync({mdRef}: {mdRef: RefObject<ExposeParam>}) {
     const _path = activeFilePath?.split('/').slice(0, -1).join('/')
     const file = await readFile(`article/${activeFilePath}`, { baseDir: BaseDirectory.AppData  })
     const uploadRes = await uploadFile({
-      path: `article${_path && '/' + _path}`,
       ext: 'md',
       file: uint8ArrayToBase64(file),
-      filename,
+      filename: `${_path && _path + '/'}${filename}`,
       sha,
-      message
+      message,
+      repo: RepoNames.article
     })
     if (uploadRes?.status === 200) {
       toast({title: '同步成功', description: uploadRes.data?.commit.message})

@@ -1,3 +1,8 @@
+export enum RepoNames {
+  image = 'note-gen-image-sync',
+  article = 'note-gen-article-sync'
+}
+
 export interface ResCommit {
   sha: string;
   node_id: string;

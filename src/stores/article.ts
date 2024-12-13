@@ -1,5 +1,5 @@
 import { decodeBase64ToString, getFiles } from '@/lib/github'
-import { GithubContent } from '@/lib/github.types'
+import { GithubContent, RepoNames } from '@/lib/github.types'
 import { BaseDirectory, DirEntry, exists, mkdir, readDir, readTextFile, writeTextFile } from '@tauri-apps/plugin-fs'
 import { Store } from '@tauri-apps/plugin-store'
 import { create } from 'zustand'
@@ -62,7 +62,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
       }
     }
     set({ fileTree: cacheTree })
-    const githubFiles = await getFiles({ path: 'article' })
+    const githubFiles = await getFiles({ path: '', repo: RepoNames.article })
     if (githubFiles) {
       githubFiles.forEach((file: GithubContent) => {
         const index = cacheTree.findIndex(item => item.name === file.path.replace('article/', ''))
@@ -70,7 +70,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
           cacheTree[index].sha = file.sha
         } else {
           cacheTree.push({
-            name: file.path.replace('article/', ''),
+            name: file.path,
             isFile: file.type === 'file',
             isSymlink: false,
             parent: undefined,
@@ -93,15 +93,15 @@ const useArticleStore = create<NoteState>((set, get) => ({
     const cacheTree: DirTree[] = get().fileTree
     const cacheFolderIndex = cacheTree.findIndex(item => item.name === folderName)
     const cacheFolder = cacheTree.find(item => item.name === folderName)
-    const githubFiles = await getFiles({ path: `article/${folderName}`})
+    const githubFiles = await getFiles({ path: folderName, repo: RepoNames.article })
     if (githubFiles && cacheFolder) {
       githubFiles.forEach((file: GithubContent) => {
-        const index = cacheFolder.children?.findIndex(item => item.name === file.path.replace(`article/${folderName}/`, ''))
+        const index = cacheFolder.children?.findIndex(item => item.name === file.path.replace(`${folderName}/`, ''))
         if (index !== undefined && index !== -1 && cacheTree[cacheFolderIndex]?.children) {
           cacheTree[cacheFolderIndex].children[index].sha = file.sha
         } else {
           cacheTree[cacheFolderIndex].children?.push({
-            name: file.path.replace(`article/${folderName}/`, ''),
+            name: file.path.replace(`${folderName}/`, ''),
             isFile: file.type === 'file',
             isSymlink: false,
             parent: cacheTree[cacheFolderIndex],
@@ -180,7 +180,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
       } catch (error) {
         set({ currentArticle: '' })
         try{
-          const res = await getFiles({ path: `article/${path}` })
+          const res = await getFiles({ path, repo: RepoNames.article })
           set({ currentArticle: decodeBase64ToString(res.content) })
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
@@ -188,7 +188,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
         }
       }
     } else {
-      const res = await getFiles({ path: `article/${path}` })
+      const res = await getFiles({ path, repo: RepoNames.article })
       set({ currentArticle: decodeBase64ToString(res.content) })
     }
   },

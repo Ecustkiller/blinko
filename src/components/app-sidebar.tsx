@@ -1,6 +1,6 @@
 'use client'
 
-import { ImageUp, Search, ScanFace, Settings, Highlighter, SquarePen, PencilRuler } from "lucide-react"
+import { ImageUp, Search, Settings, Highlighter, SquarePen, PencilRuler } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -15,6 +15,7 @@ import {
 import { usePathname } from 'next/navigation'
 import { ModeToggle } from "./mode-toggle"
 import Link from "next/link"
+import AppStatus from "./app-status"
  
 // Menu items.
 const items = [
@@ -58,13 +59,7 @@ export function AppSidebar() {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild className="md:h-8 md:p-0">
-              <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <ScanFace className="size-5" />
-                </div>
-              </a>
-            </SidebarMenuButton>
+            <AppStatus />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
