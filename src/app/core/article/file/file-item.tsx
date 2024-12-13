@@ -8,6 +8,7 @@ import { Cloud, CloudDownload, File } from "lucide-react"
 import { useEffect, useRef, useState } from "react";
 import { ask } from '@tauri-apps/plugin-dialog';
 import { deleteFile } from "@/lib/github";
+import { RepoNames } from "@/lib/github.types";
 export function FileItem({ item }: { item: DirTree }) {
   const [isEditing, setIsEditing] = useState(item.isEditing)
   const [name, setName] = useState(item.name)
@@ -36,7 +37,7 @@ export function FileItem({ item }: { item: DirTree }) {
     if (answer) {
       setActiveFilePath('')
       setCurrentArticle('')
-      await deleteFile({ path: `article/${activeFilePath}`, sha: item.sha as string })
+      await deleteFile({ path: activeFilePath, sha: item.sha as string, repo: RepoNames.article })
       await loadFileTree()
     }
   }
