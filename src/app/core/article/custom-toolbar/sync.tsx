@@ -48,7 +48,7 @@ export default function Sync({mdRef}: {mdRef: RefObject<ExposeParam>}) {
       message,
       repo: RepoNames.article
     })
-    if (uploadRes?.status === 200) {
+    if (uploadRes?.status === 200 || uploadRes?.status === 201) {
       toast({title: '同步成功', description: uploadRes.data?.commit.message})
     }
     setLoading(false)

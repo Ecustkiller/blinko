@@ -23,10 +23,10 @@ export function FileItem({ item }: { item: DirTree }) {
   }
 
   async function handleDeleteFile() {
-    await remove(`article/${path}`, { baseDir: BaseDirectory.AppData })
-    await loadFileTree()
     setActiveFilePath('')
     setCurrentArticle('')
+    await remove(`article/${path}`, { baseDir: BaseDirectory.AppData })
+    await loadFileTree()
   }
 
   async function handleDeleteSyncFile() {
@@ -50,7 +50,6 @@ export function FileItem({ item }: { item: DirTree }) {
   async function handleRename() {
     // 将所有空格替换为下划线
     let name = inputRef.current?.value.replace(/ /g, '_')
-    console.log(name);
     if (name && name !== item.name && item.name) {
       await rename(`article/${item.name}`, `article/${name}` ,{ newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData})
       setActiveFilePath(name)
@@ -58,6 +57,7 @@ export function FileItem({ item }: { item: DirTree }) {
       if (!name.endsWith('.md')) name = name + '.md'
       writeTextFile(`article/${name}`, '', { baseDir: BaseDirectory.AppData })
       setActiveFilePath(name)
+      setCurrentArticle('')
     }
     await loadFileTree()
     setIsEditing(false)
