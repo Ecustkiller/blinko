@@ -158,7 +158,7 @@ export async function getUserInfo() {
 }
 
 // 创建 Github 仓库
-export async function createSyncRepo() {
+export async function createSyncRepo(name: string) {
   const store = await Store.load('store.json');
   const accessToken = await store.get('accessToken')
   const octokit = new Octokit({
@@ -166,21 +166,11 @@ export async function createSyncRepo() {
   })
   try {
     const res = await octokit.request(`POST /user/repos`, {
-      name: 'note-gen-image-sync',
-      description: 'This is a NoteGen sync public repository.',
+      name,
+      description: 'This is a NoteGen sync repository.',
     })
     return res;
-  } catch (error) {
-    console.log(error);
-  }
-  try {
-    const res = await octokit.request(`POST /user/repos`, {
-      name: 'note-gen-article-sync',
-      private: true,
-      description: 'This is a NoteGen article sync private repository.',
-    })
-    return res;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    return error.response.status
   }
 }
