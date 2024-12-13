@@ -13,12 +13,13 @@ import { deleteFile } from "@/lib/github"
 import { toast } from "@/hooks/use-toast"
 import useImageStore from "@/stores/image"
 import useMarkStore from "@/stores/mark"
+import { RepoNames } from "@/lib/github.types"
 
 export function ImageCard({file}: {file: GithubFile}) {
   const { getImages } = useImageStore()
   const { allMarks } = useMarkStore()
   async function handleDelete(file: GithubFile) {
-    const res = await deleteFile(file)
+    const res = await deleteFile({path: file.path, sha: file.sha, repo: RepoNames.image})
     if (res) {
       toast({ title: '文件已删除', description: file.name })
     } else {

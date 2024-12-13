@@ -12,7 +12,7 @@ export default function Page() {
   const [checkSetting, setCheckSetting] = useState(false)
 
   const { images, getImages } = useImageStore()
-  const { githubUsername, accessToken, repositoryName, } = useSettingStore()
+  const { githubUsername, accessToken } = useSettingStore()
   const { fetchAllMarks } = useMarkStore()
 
   useEffect(() => {
@@ -23,10 +23,10 @@ export default function Page() {
   }, [checkSetting])
 
   useEffect(() => {
-    if (githubUsername && accessToken && repositoryName) {
+    if (githubUsername && accessToken) {
       setCheckSetting(true)
     }
-  }, [githubUsername, accessToken, repositoryName])
+  }, [githubUsername, accessToken])
   
   return (
     <div className="h-screen overflow-auto">
