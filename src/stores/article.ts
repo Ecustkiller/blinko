@@ -51,6 +51,10 @@ const useArticleStore = create<NoteState>((set, get) => ({
   loadFileTree: async () => {
     set({ fileTree: [] })
     const cacheTree: DirTree[] = []
+    const isArticleDir = await exists('article', { baseDir: BaseDirectory.AppData })
+    if (!isArticleDir) {
+      await mkdir('article', { baseDir: BaseDirectory.AppData })
+    }
     const dirs = (await readDir('article', { baseDir: BaseDirectory.AppData })).sort((a, b) => a.name.localeCompare(b.name))
     cacheTree.push(...dirs.filter(file => file.name !== '.DS_Store')
       .map(file => ({ ...file, parent: undefined, isEditing: false, isLocale: true })))

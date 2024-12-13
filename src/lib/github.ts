@@ -52,7 +52,6 @@ export async function uploadFile(
     }
     // 将空格转换成下划线
     _filename = _filename.replace(/\s/g, '_')
-    console.log(_filename);
     const res = await octokit.request(`PUT /repos/${githubUsername}/${repo}/contents/${_filename}`, {
       message: message || `Upload ${filename}`,
       content: file,
@@ -149,7 +148,6 @@ export async function getUserInfo() {
     const res = await octokit.request(`GET /user`, {
       headers: {
         'X-GitHub-Api-Version': '2022-11-28',
-        'If-None-Match': ''
       }
     })
     return res;
