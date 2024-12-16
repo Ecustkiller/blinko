@@ -10,15 +10,17 @@ import CustomToolbar from './custom-toolbar/index';
 export function MdEditor() {
   const ref = useRef<ExposeParam>(null);
   const [value, setValue] = useState('')
-  const { currentArticle, setCurrentArticle, loadFileTree, activeFilePath } = useArticleStore()
+  const { currentArticle, saveCurrentArticle, activeFilePath } = useArticleStore()
   const [mdTheme, setMdTheme] = useState<Themes>('light')
   const { theme } = useTheme()
   const { codeTheme, previewTheme } = useSettingStore()
   const [toolbar, setToolbar] = useState<ToolbarNames[]>([])
 
-  async function handleSave() {
-    await setCurrentArticle(value)
-    loadFileTree()
+  async function handleSave(value: string) {
+    if (value !== currentArticle) {
+      setValue(value)
+      await saveCurrentArticle(value)
+    }
   }
 
   useEffect(() => {
@@ -26,7 +28,9 @@ export function MdEditor() {
   }, [theme])
 
   useEffect(() => {
-    setValue(currentArticle)
+    if (value !== currentArticle) {
+      setValue(currentArticle)
+    }
   }, [currentArticle])
 
   return <div className='flex-1'>
@@ -47,8 +51,7 @@ export function MdEditor() {
       noImgZoomIn
       toolbars={toolbar}
       value={value}
-      onChange={setValue}
-      onSave={handleSave}
+      onChange={handleSave}
     />;
   </div>
 }

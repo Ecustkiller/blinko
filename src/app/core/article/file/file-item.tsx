@@ -9,24 +9,24 @@ import { useEffect, useRef, useState } from "react";
 import { ask } from '@tauri-apps/plugin-dialog';
 import { deleteFile } from "@/lib/github";
 import { RepoNames } from "@/lib/github.types";
+import { cloneDeep } from "lodash-es";
 export function FileItem({ item }: { item: DirTree }) {
   const [isEditing, setIsEditing] = useState(item.isEditing)
   const [name, setName] = useState(item.name)
   const inputRef = useRef<HTMLInputElement>(null)
-  const { activeFilePath, setActiveFilePath, readArticle, loadFileTree, setCurrentArticle } = useArticleStore()
+  const { activeFilePath, setActiveFilePath, readArticle, loadFileTree, setCurrentArticle, fileTree, setFileTree } = useArticleStore()
   const path = item.parent?.name ? item.parent.name + '/' + item.name : item.name
 
   function handleSelectFile() {
     setActiveFilePath(path)
-    setCurrentArticle('')
     readArticle(path, item.sha, item.isLocale)
   }
 
   async function handleDeleteFile() {
-    setActiveFilePath('')
-    setCurrentArticle('')
     await remove(`article/${path}`, { baseDir: BaseDirectory.AppData })
     await loadFileTree()
+    setActiveFilePath('')
+    setCurrentArticle('')
   }
 
   async function handleDeleteSyncFile() {
@@ -44,23 +44,47 @@ export function FileItem({ item }: { item: DirTree }) {
 
   async function handleStartRename() {
     setIsEditing(true)
-    setTimeout(() => inputRef.current?.focus(), 0);
+    setTimeout(() => inputRef.current?.focus(), 300);
   }
 
   async function handleRename() {
     // 将所有空格替换为下划线
     let name = inputRef.current?.value.replace(/ /g, '_')
-    if (name && name !== item.name && item.name) {
+    if (name && item.name && name !== item.name) {
       await rename(`article/${item.name}`, `article/${name}` ,{ newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData})
+      const cacheTree = cloneDeep(fileTree)
+      const index = cacheTree.findIndex(file => file.name === item.name)
+      if (index !== -1) {
+        cacheTree.splice(index, 1, {
+          name,
+          parent: undefined,
+          isEditing: false,
+          isLocale: true,
+          isDirectory: false,
+          isFile: true,
+          isSymlink: false
+        })
+        setFileTree(cacheTree)
+      }
       setActiveFilePath(name)
     } else if (name) {
       if (!name.endsWith('.md')) name = name + '.md'
-      writeTextFile(`article/${name}`, '', { baseDir: BaseDirectory.AppData })
+      await writeTextFile(`article/${name}`, '', { baseDir: BaseDirectory.AppData })
+      const cacheTree = cloneDeep(fileTree)
+      cacheTree.splice(0, 1, {
+        name,
+        parent: undefined,
+        isEditing: false,
+        isLocale: true,
+        isDirectory: false,
+        isFile: true,
+        isSymlink: false
+      })
+      setFileTree(cacheTree)
       setActiveFilePath(name)
       setCurrentArticle('')
+      setIsEditing(false)
     }
-    await loadFileTree()
-    setIsEditing(false)
   }
 
   async function handleShowFileManager() {
@@ -74,8 +98,8 @@ export function FileItem({ item }: { item: DirTree }) {
 
   useEffect(() => {
     if (item.isEditing) {
-      inputRef.current?.focus()
-      setName(item.name)
+      setName(name)
+      setTimeout(() => inputRef.current?.focus(), 300);
     }
   }, [item])
 

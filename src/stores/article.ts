@@ -2,6 +2,7 @@ import { decodeBase64ToString, getFiles } from '@/lib/github'
 import { GithubContent, RepoNames } from '@/lib/github.types'
 import { BaseDirectory, DirEntry, exists, mkdir, readDir, readTextFile, writeTextFile } from '@tauri-apps/plugin-fs'
 import { Store } from '@tauri-apps/plugin-store'
+import { cloneDeep } from 'lodash-es'
 import { create } from 'zustand'
 
 export interface Article {
@@ -17,6 +18,7 @@ interface NoteState {
   setActiveFilePath: (name: string) => void
 
   fileTree: DirTree[]
+  setFileTree: (tree: DirTree[]) => void
   loadFileTree: () => Promise<void>
   loadCollapsibleFiles: (folderName: string) => Promise<void>
   newFolder: () => void
@@ -28,7 +30,8 @@ interface NoteState {
 
   currentArticle: string
   readArticle: (path: string, sha?: string, isLocale?: boolean) => Promise<void>
-  setCurrentArticle: (content: string) => Promise<void>
+  setCurrentArticle: (content: string) => void
+  saveCurrentArticle: (content: string) => Promise<void>
 
   allArticle: Article[]
   loadAllArticle: () => Promise<void>
@@ -54,6 +57,9 @@ const useArticleStore = create<NoteState>((set, get) => ({
   },
 
   fileTree: [],
+  setFileTree: (tree: DirTree[]) => {
+    set({ fileTree: tree })
+  },
   loadFileTree: async () => {
     set({ fileTree: [] })
     const cacheTree: DirTree[] = []
@@ -183,38 +189,44 @@ const useArticleStore = create<NoteState>((set, get) => ({
   readArticle: async (path: string, sha?: string, isLocale = true) => {
     if (!path) return
     if (isLocale) {
+      let res = ''
       try {
-        const res = await readTextFile(`article/${path}`, { baseDir: BaseDirectory.AppData })
-        set({ currentArticle: res })
+        res = await readTextFile(`article/${path}`, { baseDir: BaseDirectory.AppData })
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
-        set({ currentArticle: '' })
         try{
-          const res = await getFiles({ path, repo: RepoNames.article })
-          set({ currentArticle: decodeBase64ToString(res.content) })
+          res = decodeBase64ToString(await getFiles({ path, repo: RepoNames.article }))
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
-          set({ currentArticle: '' })
         }
       }
+      set({ currentArticle: res })
     } else {
       const res = await getFiles({ path, repo: RepoNames.article })
       set({ currentArticle: decodeBase64ToString(res.content) })
     }
   },
 
-  setCurrentArticle: async (content: string) => {
+  setCurrentArticle: (content: string) => {
     set({ currentArticle: content })
+  },
+  saveCurrentArticle: async (content: string) => {
     if (content) {
       const path = get().activeFilePath
+      const isLocale = await exists(`article/${path}`, { baseDir: BaseDirectory.AppData })
       if (path.includes('/')) {
         const dirPath = path.split('/')[0]
         if (!await exists(`article/${dirPath}`, { baseDir: BaseDirectory.AppData })) {
           await mkdir(`article/${dirPath}`, { baseDir: BaseDirectory.AppData })
         } 
       }
-      console.log(path);
       await writeTextFile(`article/${path}`, content, { baseDir: BaseDirectory.AppData })
+      if (!isLocale) {
+        const index = get().fileTree.findIndex(item => item.name === path)
+        const cacheTree = cloneDeep(get().fileTree)
+        cacheTree[index].isLocale = true
+        set({ fileTree: cacheTree })
+      }
     }
   },
   
