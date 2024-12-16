@@ -14,8 +14,7 @@ export function MdEditor() {
   const [mdTheme, setMdTheme] = useState<Themes>('light')
   const { theme } = useTheme()
   const { codeTheme, previewTheme } = useSettingStore()
-
-  const toolbarsExclude: ToolbarNames[] = ['github', 'catalog', 'fullscreen']
+  const [toolbar, setToolbar] = useState<ToolbarNames[]>([])
 
   async function handleSave() {
     await setCurrentArticle(value)
@@ -31,7 +30,10 @@ export function MdEditor() {
   }, [currentArticle])
 
   return <div className='flex-1'>
-    <CustomToolbar mdRef={ref} />
+    <CustomToolbar mdRef={ref} settings={{
+      toolbar,
+      setToolbar
+    }} />
     <MdEditorRT
       id="aritcle-md-editor"
       ref={ref}
@@ -43,13 +45,10 @@ export function MdEditor() {
       preview={false}
       className='!border-none'
       noImgZoomIn
-      toolbarsExclude={toolbarsExclude}
-      // toolbars={toolbars}
-      footers={[]}
+      toolbars={toolbar}
       value={value}
       onChange={setValue}
       onSave={handleSave}
-      // defToolbars={defToolbars(ref)}
     />;
   </div>
 }
