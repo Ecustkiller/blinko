@@ -1,5 +1,5 @@
 import { SidebarMenuButton } from "./ui/sidebar";
-import { createSyncRepo, getUserInfo } from "@/lib/github";
+import { createSyncRepo, checkyncRepo, getUserInfo } from "@/lib/github";
 import { useEffect, useState } from "react";
 import useSettingStore from "@/stores/setting";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -25,12 +25,16 @@ export default function AppStatus() {
     } else {
       setUserInfo(undefined)
     }
-    const imageRes = await createSyncRepo('note-gen-image-sync')
-    if (imageRes || imageRes === 422) {
+    const checkImageRepo = await checkyncRepo('note-gen-image-sync')
+    if (checkImageRepo.status !== 200) {
+      await createSyncRepo('note-gen-image-sync')
+    } else {
       setImageRepoStatus(true)
     }
-    const articleRes = await createSyncRepo('note-gen-article-sync')
-    if (articleRes || articleRes === 422) {
+    const checkArticleRepo = await checkyncRepo('note-gen-article-sync')
+    if (checkArticleRepo.status !== 200) {
+      await createSyncRepo('note-gen-article-sync')
+    } else {
       setArticleRepoStatus(true)
     }
     setLoading(false)
