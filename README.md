@@ -6,9 +6,9 @@
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/codexu/note-gen)](https://github.com/codexu/note-gen/commits/dev/)
 ![Discord](https://img.shields.io/discord/1313305041918103552)
 
-NoteGen 是一个基于 Tauri + ChatGPT 的笔记软件，旨在帮助用户以截图、插图、文本的记录方式，快捷的保存碎片化知识，通过 AI 自动整理为一篇可读的笔记，通过内置的 Markdown 编辑器将 AI 笔记进行二次创作。
+NoteGen 是一个基于 Tauri + ChatGPT 的笔记软件，旨在帮助用户以**截图**、插图、文本的记录方式，快捷的保存碎片化知识，通过 AI 自动整理为一篇可读的笔记，通过内置的 Markdown 编辑器将 AI 笔记进行二次创作。笔记最终形态以文件存储于本地，同时也支持`同步`与`图床`功能，其基于 Github 实现，保证数据安全。
 
-![17327782035021732778203299.png](https://fastly.jsdelivr.net/gh/codexu/images@main/img/17327782035021732778203299.png)
+![b8df1739-09db-4f0f-bc6d-6b322f7f6f95.jpg](https://fastly.jsdelivr.net/gh/codexu/note-gen-image-sync@main/b8df1739-09db-4f0f-bc6d-6b322f7f6f95.jpg)
 
 ## 下载
 
@@ -18,13 +18,26 @@ NoteGen 是一个跨平台的笔记 APP，目前支持 Mac、Windows、Linux，�
 
 ## 快速上手
 
+### 1. 配置 ChatGPT API Key
+
 NoteGen 使用了国内代理[GPT-API-free](https://github.com/chatanywhere/GPT_API_free)，可[申请领取内测免费API Key](https://api.chatanywhere.org/v1/oauth/free/render)，限制200请求/天，基本够用。
 
 软件安装完毕后，请先在设置页面配置 API Key 后即可正常使用。
 
-> Mac 用户需要配置屏幕录制权限，才可以使用截图记录功能。
+> 此功能只限制于 AI 相关功能，不影响正常写作。
 
-同步和图床功能（可选），需要创建 Github 仓库，并配置好密钥，即可使用。
+### 2. 同步与图床（可选）
+
+同步和图床基于 Github 仓库实现，需要[创建密钥](https://github.com/settings/tokens/new)，需勾选 `repo` 权限。
+
+配置完成后，NoteGen 会自动创建两个仓库：
+
+- `note-gen-image-sync`: 图床，使用 jsdelivr 加速。
+- `note-gen-article-sync`: 用于存放笔记 `.md` 文件。
+
+### 3. 权限
+
+Mac 用户需要配置屏幕录制权限，才可以使用截图记录功能。
 
 ## 特性
 
@@ -71,6 +84,8 @@ NoteGen 自动将所有记录整理成一篇可读性高的笔记，有效节省
 
 支持文件管理器和 Markdown 编辑器，可以实现文章的管理、编辑和预览。
 
+![35370027-b170-497a-8b91-d788824183ff.jpg](https://fastly.jsdelivr.net/gh/codexu/note-gen-image-sync@main/35370027-b170-497a-8b91-d788824183ff.jpg)
+
 在编辑器中你同样可以享受到 ChatGPT 带来的便利，他支持了两种模式：
 
 - **AI**，你可以在编辑器中编写需求，选中内容，随即将内容替换为 ChatGPT 提供的回复，适合在没有思路时使用。
@@ -96,11 +111,7 @@ NoteGen 自动将所有记录整理成一篇可读性高的笔记，有效节省
 
 待实现，平台管理是配合写作的功能，支持多个平台，实现快速发布。
 
-## 贡献
-
-在 NoteGen 的开发过程中，我们鼓励社区的积极参与和贡献。无论您是开发者、设计师，还是只对软件的功能和用户体验有独到见解的用户，您的反馈和建议对我们来说都十分宝贵。
-
-### 技术栈
+## 技术栈
 
 - Tauri v2
 - Next.js v15
@@ -109,17 +120,3 @@ NoteGen 自动将所有记录整理成一篇可读性高的笔记，有效节省
 - TypeScript
 - Tesseract.js OCR 识别
 - GPT-API-free ChatGPT 国内代理
-
-### 如何贡献
-
-1. **代码贡献**：如果您是一名开发者，并且对我们的项目有兴趣，欢迎在 GitHub 上提交您的代码贡献。您可以通过创建新的功能、修复现有的错误或者优化代码来直接参与到 NoteGen 的发展中。
-
-2. **BUG报告**：如果在使用 NoteGen 时您发现了任何问题或者 BUG，请在我们的 issue tracker 中报告。这将帮助我们更快地识别和修复问题，提升产品的稳定性和用户体验。
-
-3. **功能建议**：我们也欢迎用户对软件功能的建议。请分享您希望 NoteGen 增加的功能，或者您在使用过程中遇到的困难。您的反馈是我们改进产品的重要依据。
-
-4. **文档贡献**：如果您对文档内容有改进建议，或者希望为项目的使用指南和开发者文档贡献内容，请随时与我们联系。清晰而详细的文档可以帮助更多用户更好地使用 NoteGen。
-
-5. **推广项目**：通过社交媒体、博客或者技术社区分享 NoteGen 也能为项目带来更多的用户和关注，同时帮助我们建立一个更活跃的用户社区。
-
-感谢您的每一份贡献，让我们一起将 NoteGen 打造成更好的笔记工具！
