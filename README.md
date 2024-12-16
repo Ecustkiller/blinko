@@ -2,21 +2,25 @@
 
 [![publish](https://github.com/codexu/note-gen/actions/workflows/release.yml/badge.svg?branch=release)](https://github.com/codexu/note-gen/actions/workflows/release.yml)
 [![GitHub Release](https://img.shields.io/github/v/release/codexu/note-gen)](https://github.com/codexu/note-gen/releases/latest)
+[![Vsersion](https://img.shields.io/badge/version-alpha-orange)](https://img.shields.io/badge/version-alpha-orange)
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/codexu/note-gen/total)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/codexu/note-gen)](https://github.com/codexu/note-gen/commits/dev/)
-![Discord](https://img.shields.io/discord/1313305041918103552)
 
-NoteGen 是一个基于 Tauri + ChatGPT 的笔记软件，旨在帮助用户以**截图**、插图、文本的记录方式，快捷的保存碎片化知识，通过 AI 自动整理为一篇可读的笔记，通过内置的 Markdown 编辑器将 AI 笔记进行二次创作。笔记最终形态以文件存储于本地，同时也支持`同步`与`图床`功能，其基于 Github 实现，保证数据安全。
+NoteGen 是一个基于 Tauri + ChatGPT 的免费开源笔记 App，旨在帮助用户以**截图**、插图、文本的记录方式，快捷的保存碎片化知识，通过 AI 自动整理为一篇可读的笔记，通过内置的 Markdown 编辑器将 AI 笔记进行二次创作。笔记最终形态以文件存储于本地，同时也支持`同步`与`图床`功能，其基于 Github 实现，保证数据安全。
 
-![b8df1739-09db-4f0f-bc6d-6b322f7f6f95.jpg](https://fastly.jsdelivr.net/gh/codexu/note-gen-image-sync@main/b8df1739-09db-4f0f-bc6d-6b322f7f6f95.jpg)
+![4b0cbac8-dacd-4334-8b5b-7446728248c8.png](https://fastly.jsdelivr.net/gh/codexu/note-gen-image-sync@main/4b0cbac8-dacd-4334-8b5b-7446728248c8.png)
 
 ## 下载
 
-NoteGen 是一个跨平台的笔记 APP，目前支持 Mac、Windows、Linux，得益于 Tauri2 的跨平台能力，未来将支持 IOS、Android。
+NoteGen 是一个跨平台的笔记 APP，目前支持 `Mac`、`Windows`、`Linux`，得益于 Tauri2 的跨平台能力，未来将支持 `IOS`、`Android`。
 
-[在此查询并选择下载 NoteGen！](https://github.com/codexu/note-gen/releases)
+[=> 下载 NoteGen <=](https://github.com/codexu/note-gen/releases)
 
 ## 快速上手
+
+唯一的门槛就是需要拥有一个 Github 账号，并且可以流畅访问。
+
+以下的配置工作在仅需在 1 分钟内完成：
 
 ### 1. 配置 ChatGPT API Key
 
@@ -33,17 +37,15 @@ NoteGen 使用了国内代理[GPT-API-free](https://github.com/chatanywhere/GPT_
 配置完成后，NoteGen 会自动创建两个仓库：
 
 - `note-gen-image-sync`: 图床，使用 jsdelivr 加速。
-- `note-gen-article-sync`: 用于存放笔记 `.md` 文件。
+- `note-gen-article-sync（私有）`: 用于存放笔记 `.md` 文件。
 
-### 3. 权限
+### 3. Mac 权限
 
 Mac 用户需要配置屏幕录制权限，才可以使用截图记录功能。
 
-## 特性
+## 工作流
 
-在如今信息爆炸的时代，高效地记录和整理知识已成为许多用户的迫切需求。NoteGen 是一款创新性的笔记软件，能够大幅提升用户的记录与整理体验。无论是快速记忆灵感，还是系统化汇总信息，NoteGen 都能为用户提供灵活又高效的解决方案，让知识整理变得更加轻松、便捷。
-
-### 工作流
+NoteGen 的核心就是如何高效的记录和内容的整理，以下是从记录到自动整理为笔记的工作流：
 
 ```mermaid
 flowchart LR
@@ -59,64 +61,80 @@ flowchart LR
   Note --> Article[文章]
 ```
 
-### 记录
+## 记录
 
 支持截图、插图和文本的多种记录方式，用户可以根据不同场景灵活选择最适合的记录形式。借助 ChatGPT 的强大功能，您无需担心记录的顺序和完整性，轻松捕捉灵感与信息，提升记录效率。
 
-以下介绍三种不同的记录方式及对应的场景：
+![b8df1739-09db-4f0f-bc6d-6b322f7f6f95.jpg](https://fastly.jsdelivr.net/gh/codexu/note-gen-image-sync@main/b8df1739-09db-4f0f-bc6d-6b322f7f6f95.jpg)
 
-- **截图记录**是 NoteGen 的核心功能。通过截图，用户可以快速捕捉和记录碎片化知识，尤其是在遇到无法进行文本复制的情况下。其原理是通过 OCR 识别图片中的文字，再使用 ChatGPT 进行总结。
-- **文本记录**，可以确保内容的准确性，但是需要将文本复制至软件中，稍微增加了操作的复杂度。
-- **插图记录**，可以在笔记生成时，自动插入到合适的位置。
+**记录方式**
 
-为了区分不同的知识记录，支持了标签功能。用户可以创建的标签，以便更好地归类和区分不同的记录场景。在文章生成时，这些标签及其对应的记录将会被删除，从而保持内容的整洁和专注。
+1. **截图记录**是 NoteGen 的核心功能。通过截图，用户可以快速捕捉和记录碎片化知识，尤其是在遇到无法进行文本复制的情况下。其原理是通过 OCR 识别图片中的文字，再使用 ChatGPT 进行总结。
+2. **文本记录**，可以确保内容的准确性，但是需要将文本复制至软件中，稍微增加了操作的复杂度。
+3. **插图记录**，可以在笔记生成时，自动插入到合适的位置，你也可以复制图片，在打开 APP 时会自动识别辅助导入，如果配置了同步功能，将使用图床链接。
 
-### 生成
+**标签**
 
-NoteGen 自动将所有记录整理成一篇可读性高的笔记，有效节省了手动整理所需的时间。
+用户可以创建的标签，以便更好地归类和区分不同的记录场景。在文章生成时，这些标签及其对应的记录将会被删除（可选），从而保持内容的整洁和专注，当然其内容将在回收站中找回。
+
+**整理**
+
+当你在不断的记录中，积攒了足够的内容，你可以使用整理功能，自动将所有记录整理成一篇可读的笔记，有效节省了手动整理所需的时间，此功能具备以下几个特点：
 
 - 支持输入个性化的需求。
+- 无需关心记录顺序，由 ChatGPT 辅助你整理。
 - 支持多种语言。
 - 支持控制笔记长度。
-- 笔记生成记录管理。
+- 可多次整理，支持生成记录管理。
 
-### 写作
+当你整理出一篇满意的笔记后，你可以将其转换为文章进行写作，它将笔记转换为 `.md` 文件存储于本地，并跳转至写作页面进行后续的完善工作。
 
-支持文件管理器和 Markdown 编辑器，可以实现文章的管理、编辑和预览。
+## 写作
+
+写作模式是基于文件管理器和 Markdown 编辑器组合实现的，即使你不使用记录功能，它也可以完全独立使用。
 
 ![35370027-b170-497a-8b91-d788824183ff.jpg](https://fastly.jsdelivr.net/gh/codexu/note-gen-image-sync@main/35370027-b170-497a-8b91-d788824183ff.jpg)
 
-在编辑器中你同样可以享受到 ChatGPT 带来的便利，他支持了两种模式：
+**文件管理器**
+
+支持本地和 Github 仓库的文件和文件夹的管理，支持二级目录。
+
+**Makrdown**
+
+除了 Markdown 的基础功能外，还支持 mermaid 扩展，可以方便绘制各种图表。
+
+在 Markdown 编辑器中你同样可以享受到 ChatGPT 带来的便利，目前支持了三种功能：
 
 - **AI**，你可以在编辑器中编写需求，选中内容，随即将内容替换为 ChatGPT 提供的回复，适合在没有思路时使用。
 - **优化**，将一段内容选中，ChatGPT 将优化你这段文字，适合无法表答清楚语义时使用。
+- **翻译**，使用 ChatGPT 将翻译选中的文字，支持多种语言。
 
-### 图床
+**版本管理**
 
-图床基于 Github 仓库实现，需要配置密钥，以支持图床的功能。
+Github 基于 Git 实现，所以天然支持版本管理，你可以在历史记录中回溯任何时刻的记录。
 
-### 全局搜索
+## 辅助功能
 
-用户可以通过文字模糊查询，快速查找到相应的记录或者文章，支持跳转。
+1. [x] **图床**，基于 Github 仓库实现，需要配置密钥，支持图床管理。
+2. [x] **全局搜索**，支持全局模糊搜索，快速查询记录或文章，支持跳转。
+3. [x] **深色模式**，完全支持深色模式，支持自动跟随系统。
+4. [x] **主题**，支持多种 markdown 和代码块主题。
+5. [ ] **绘图**，可能支持流程图、思维导图、草图、图表、图片标注，并支持上传至图床。
+6. [ ] **AI识图**，目前以 OCR 识别插图文字，这种方式不能精确的判断整理时放置的位置，AI 识图可以增加整理效率。
+7. [ ] **回收站**，内容并不会在数据中完全消失，可以方便地管理和恢复被删除的项目。
+8. [ ] **平台管理**，平台管理配合写作，实现多平台管理，可在写作中实现快速发布。
+9. [ ] **格式转换**，默认以 `.md` 文件存储于本地，支持导出为 PDF、HTML 等其他格式。
 
-### 绘图
+## 贡献
 
-待实现，为了方便插入自定义图片，可以考虑支持以下绘图功能：流程图、思维导图、草图、图表、图片标注等。
+目前使用以下技术栈：
 
-### 回收站
-
-待实现，内容并不会在数据中完全消失，而是会被转移到回收站。在那里，我们可以方便地管理和恢复被删除的项目，在垃圾中淘金。
-
-### 平台管理
-
-待实现，平台管理是配合写作的功能，支持多个平台，实现快速发布。
-
-## 技术栈
-
-- Tauri v2
-- Next.js v15
-- shadcn-ui
+- [Tauri 2](https://v2.tauri.app/)
+- [Next.js 15](https://nextjs.org/)
+- [shadcn-ui](https://ui.shadcn.com/)
+- [Tesseract.js](https://github.com/naptha/tesseract.js)
+- [ChatGPT GPT-API-free](https://github.com/chatanywhere/GPT_API_free)
 - Tailwind CSS
 - TypeScript
-- Tesseract.js OCR 识别
-- GPT-API-free ChatGPT 国内代理
+
+欢迎提交 PR 或 issue。
