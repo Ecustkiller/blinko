@@ -5,9 +5,12 @@ import { ExposeParam } from "md-editor-rt";
 import { RefObject } from "react";
 import { locales } from "@/lib/locales";
 import { Button } from "@/components/ui/button";
+import useArticleStore from "@/stores/article";
 
 export default function Translation({mdRef}: {mdRef: RefObject<ExposeParam>}) {
+  const { loading, setLoading } = useArticleStore()
   async function handleBlock(locale: string) {
+    setLoading(true)
     mdRef.current?.focus()
     const selectedText = mdRef.current?.getSelectedText()
     const req = `将这段文字：${selectedText}，翻译为${locale}语言，直接返回翻译后的结果。`
@@ -19,11 +22,12 @@ export default function Translation({mdRef}: {mdRef: RefObject<ExposeParam>}) {
       }))
       mdRef.current?.rerender();
     })
+    setLoading(false)
   }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="outline-none">
-        <Button variant="ghost" size="icon" title="翻译"><Globe /></Button>
+        <Button disabled={loading} variant="ghost" size="icon" title="翻译"><Globe /></Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>将选中的文本进行翻译</DropdownMenuLabel>

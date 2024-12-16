@@ -10,6 +10,9 @@ export interface Article {
 }
 
 interface NoteState {
+  loading: boolean
+  setLoading: (loading: boolean) => void
+
   activeFilePath: string 
   setActiveFilePath: (name: string) => void
 
@@ -40,6 +43,9 @@ export interface DirTree extends DirEntry {
 }
 
 const useArticleStore = create<NoteState>((set, get) => ({
+  loading: false,
+  setLoading: (loading: boolean) => { set({ loading }) },
+
   activeFilePath: '',
   setActiveFilePath: async (path: string) => {
     set({ activeFilePath: path })

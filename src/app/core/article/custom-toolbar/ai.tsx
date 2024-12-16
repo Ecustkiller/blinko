@@ -7,8 +7,9 @@ import { RefObject } from "react";
 
 export default function Ai({mdRef}: {mdRef: RefObject<ExposeParam>}) {
 
-  const { currentArticle } = useArticleStore()
+  const { currentArticle, loading, setLoading } = useArticleStore()
   async function handleBlock() {
+    setLoading(true)
     mdRef.current?.focus()
     const selectedText = mdRef.current?.getSelectedText()
     const req = `
@@ -21,11 +22,11 @@ export default function Ai({mdRef}: {mdRef: RefObject<ExposeParam>}) {
       mdRef.current?.insert(() => ({
         targetValue: res += text,
       }))
-      mdRef.current?.rerender();
     })
+    setLoading(false)
   }
   return (
-    <TooltipButton icon={<BotMessageSquare />} tooltipText="AI" onClick={handleBlock}>
+    <TooltipButton disabled={loading} icon={<BotMessageSquare />} tooltipText="AI" onClick={handleBlock}>
     </TooltipButton>
   )
 }
