@@ -14,7 +14,7 @@ export function FileItem({ item }: { item: DirTree }) {
   const [isEditing, setIsEditing] = useState(item.isEditing)
   const [name, setName] = useState(item.name)
   const inputRef = useRef<HTMLInputElement>(null)
-  const { activeFilePath, setActiveFilePath, readArticle, loadFileTree, setCurrentArticle, fileTree, setFileTree } = useArticleStore()
+  const { activeFilePath, setActiveFilePath, readArticle, setCurrentArticle, fileTree, setFileTree } = useArticleStore()
   const path = item.parent?.name ? item.parent.name + '/' + item.name : item.name
 
   function handleSelectFile() {
@@ -24,7 +24,10 @@ export function FileItem({ item }: { item: DirTree }) {
 
   async function handleDeleteFile() {
     await remove(`article/${path}`, { baseDir: BaseDirectory.AppData })
-    await loadFileTree()
+    const cacheTree = cloneDeep(fileTree)
+    const index = cacheTree.findIndex(file => file.name === activeFilePath)
+    cacheTree.splice(index, 1)
+    setFileTree(cacheTree)
     setActiveFilePath('')
     setCurrentArticle('')
   }
@@ -35,10 +38,13 @@ export function FileItem({ item }: { item: DirTree }) {
       kind: 'warning',
     });
     if (answer) {
-      setActiveFilePath('')
-      setCurrentArticle('')
       await deleteFile({ path: activeFilePath, sha: item.sha as string, repo: RepoNames.article })
-      await loadFileTree()
+      const cacheTree = cloneDeep(fileTree)
+      const index = cacheTree.findIndex(file => file.name === activeFilePath)
+      const currentFile = cacheTree[index]
+      currentFile.sha = undefined;
+      cacheTree.splice(index, 1, currentFile)
+      setFileTree(cacheTree)
     }
   }
 
