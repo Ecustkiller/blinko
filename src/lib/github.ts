@@ -160,16 +160,12 @@ export async function getUserInfo() {
 // 检查 Github 仓库
 export async function checkyncRepo(name: string) {
   const store = await Store.load('store.json');
+  const githubUsername = await store.get('githubUsername')
   const accessToken = await store.get('accessToken')
   const octokit = new Octokit({
     auth: accessToken
   })
-  const res = await octokit.request(`Get /user/repos`, {
-    name,
-  }).catch(error => {
-    return error.response.status
-  })
-  return res;
+  return octokit.request(`Get /repos/${githubUsername}/${name}`)
 }
 
 // 创建 Github 仓库
@@ -182,8 +178,16 @@ export async function createSyncRepo(name: string) {
   const res = await octokit.request(`POST /user/repos`, {
     name,
     description: 'This is a NoteGen sync repository.',
-  }).catch(error => {
+  })
+  .then(() => {
+    toast({
+      title: '仓库创建成功',
+      description: `仓库名：${name}`,
+    })
+  })
+  .catch(error => {
     return error.response.status
   })
+  
   return res;
 }

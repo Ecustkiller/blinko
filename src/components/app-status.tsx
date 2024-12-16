@@ -25,23 +25,26 @@ export default function AppStatus() {
     } else {
       setUserInfo(undefined)
     }
-    const checkImageRepo = await checkyncRepo('note-gen-image-sync')
-    if (checkImageRepo.status !== 200) {
-      await createSyncRepo('note-gen-image-sync')
-    } else {
+    await checkyncRepo('note-gen-image-sync').then(() => {
       setImageRepoStatus(true)
-    }
-    const checkArticleRepo = await checkyncRepo('note-gen-article-sync')
-    if (checkArticleRepo.status !== 200) {
-      await createSyncRepo('note-gen-article-sync')
-    } else {
+    }).catch(async () => {
+      await createSyncRepo('note-gen-image-sync')
+      setImageRepoStatus(true)
+    })
+    
+    await checkyncRepo('note-gen-article-sync').then(() => {
       setArticleRepoStatus(true)
-    }
+    }).catch(async () => {
+      await createSyncRepo('note-gen-article-sync')
+      setImageRepoStatus(true)
+    })
     setLoading(false)
   }
 
   useEffect(() => {
-    handleGetUserInfo()
+    if (accessToken) {
+      handleGetUserInfo()
+    }
   }, [accessToken])
 
   return <SidebarMenuButton size="lg" asChild className="md:h-8 md:p-0">
