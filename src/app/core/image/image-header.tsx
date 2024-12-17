@@ -6,14 +6,21 @@ import * as React from "react"
 import useImageStore from "@/stores/image"
 import { Separator } from "@/components/ui/separator"
 import { convertBytesToSize } from "@/lib/utils"
+import { open } from '@tauri-apps/plugin-shell';
+import useSettingStore from "@/stores/setting"
 
 export function ImageHeader() {
   const { getImages, images } = useImageStore()
+  const { githubUsername } = useSettingStore()
+  const handleOpenBroswer = () => {
+    const url = `https://github.com/${githubUsername}/note-gen-image-sync`
+    open(url)
+  }
 
   return (
     <header className="h-12 flex items-center justify-between gap-2 border-b px-4">
       <div className="flex items-center h-6 gap-1">
-        <TooltipButton icon={<Link />} tooltipText="打开仓库" onClick={getImages} />
+        <TooltipButton icon={<Link />} tooltipText="打开仓库" onClick={handleOpenBroswer} />
       </div>
       <div className="flex items-center h-6 gap-1">
         <TooltipProvider>
