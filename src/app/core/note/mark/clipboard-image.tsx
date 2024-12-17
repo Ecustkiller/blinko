@@ -64,6 +64,7 @@ export function ClipboardImage() {
       const res = await uploadFile({
         ext: 'png',
         file: uint8ArrayToBase64(file),
+        filename: `${queueId}.png`,
         repo: RepoNames.image
       })
       if (res) {

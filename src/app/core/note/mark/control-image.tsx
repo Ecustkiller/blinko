@@ -65,6 +65,7 @@ export function ControlImage() {
       const res = await uploadFile({
         ext,
         file: uint8ArrayToBase64(data),
+        filename,
         repo: RepoNames.image
       })
       if (res) {

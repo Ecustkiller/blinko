@@ -49,7 +49,7 @@ export function ImageCard({file}: {file: GithubFile}) {
     <ContextMenu>
       <ContextMenuTrigger>
         <Card className={`w-full h-36 overflow-hidden p-0 rounded-lg shadow-none relative group hover:outline outline-2`}>
-          <CardContent className="p-0">
+          <CardContent className="p-0 h-full">
             <PhotoProvider>
               <PhotoView src={file.download_url}>
                 <Image src={file.download_url} alt={file.name} width={0} height={0} className="w-full h-full object-cover" />
