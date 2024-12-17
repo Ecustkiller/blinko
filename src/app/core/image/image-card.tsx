@@ -14,6 +14,7 @@ import { toast } from "@/hooks/use-toast"
 import useImageStore from "@/stores/image"
 import useMarkStore from "@/stores/mark"
 import { RepoNames } from "@/lib/github.types"
+import { PhotoProvider, PhotoView } from 'react-photo-view';
 
 export function ImageCard({file}: {file: GithubFile}) {
   const { getImages } = useImageStore()
@@ -30,7 +31,11 @@ export function ImageCard({file}: {file: GithubFile}) {
   return (
     <Card className={`w-full h-36 overflow-hidden p-0 rounded-lg shadow-none relative group hover:outline outline-2`}>
       <CardHeader className="p-0 relative">
-        <Image src={file.download_url} alt={file.name} width={0} height={0} className="w-full h-36 object-cover" />
+        <PhotoProvider>
+          <PhotoView src={file.download_url}>
+            <Image src={file.download_url} alt={file.name} width={0} height={0} className="w-full h-36 object-cover" />
+          </PhotoView>
+        </PhotoProvider>
         <div className="absolute top-0 right-0 !mt-0 z-10">
           {allMarks.map(item => item.url).includes(file.download_url) ?
             <Button size="icon" disabled><Lock /></Button>: 
