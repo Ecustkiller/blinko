@@ -1,7 +1,7 @@
 import { FuseResult, RangeTuple } from 'fuse.js'
 import { SearchResult } from './types'
 import { LocalImage } from '@/components/local-image'
-import { LocateFixed } from 'lucide-react'
+import { LocateFixed, MapPin } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { MarkType } from '@/db/marks'
 import dayjs from 'dayjs'
@@ -35,14 +35,17 @@ function SearchMark({
       <div className='flex flex-col justify-between'>
         <div className='flex gap-1 mb-2 items-center'>
           <RouteTo item={item} />
-          <Badge variant={'secondary'}>{MarkType[item.item.type || 'scan']}</Badge>
-          <Badge variant={'secondary'}>{dayjs(item.item.createdAt).fromNow()}</Badge>
-          <Badge variant={'secondary'}>{item.matches?.[0].indices.length}个匹配项</Badge>
+          <Badge>记录</Badge>
         </div>
-        <p className='text-sm line-clamp-1' dangerouslySetInnerHTML={
+        <p className='text-sm line-clamp-1 mb-4' dangerouslySetInnerHTML={
           {__html: highlightMatches(item.item?.desc || '', item.matches?.[0].indices || []).join('')}
         }>
         </p>
+        <div className='flex gap-1'>
+          <Badge variant={'secondary'}>{item.matches?.[0].indices.length}个匹配项</Badge>
+          <Badge variant={'secondary'}>{MarkType[item.item.type || 'scan']}</Badge>
+          <Badge variant={'secondary'}>{dayjs(item.item.createdAt).fromNow()}</Badge>
+        </div>
       </div>
       {
         item.item?.type === 'text' ? (
@@ -51,7 +54,7 @@ function SearchMark({
           <LocalImage
             src={item.item?.url?.includes('http') ? item.item.url : `/${path}/${item.item.url}`}
             alt=""
-            className="size-12 border object-cover"
+            className="size-24 border object-cover"
           />
         )
       }
@@ -71,19 +74,23 @@ function SearchArticle({
       <div className='flex flex-col flex-1 justify-between'>
         <div className='flex gap-1 mb-2 items-center'>
           <RouteTo item={item} />
-          <Badge variant={'secondary'}>文章</Badge>
-          <Badge variant={'secondary'}>{item.item.path}</Badge>
-          <Badge variant={'secondary'}>{item.matches?.[0].indices.length}个匹配项</Badge>
+          <Badge>文章</Badge>
         </div>
-        <div className='flex flex-col gap-1 flex-1'>
+        <div className='flex flex-col gap-1 flex-1 mb-4'>
           {
-            item.matches?.[0].indices.slice(0, 2).map((range, index) => {
-              return <p key={index} className='text-sm line-clamp-1 overflow-hidden' dangerouslySetInnerHTML={{
-                __html: hightlightArticle?.slice(Math.max(range[0] - 50 + index * 44, 0), range[1] + 180 + index * 44)
-              }}>
-              </p>
+            item.matches?.[0].indices.slice(0, 3).map((range, index) => {
+              return <div key={index} className='flex items-center gap-2'>
+                <MapPin className='size-3' />
+                <p className='text-sm line-clamp-1 overflow-hidden flex-1' dangerouslySetInnerHTML={{
+                  __html: hightlightArticle?.slice(Math.max(range[0] - 50 + index * 44, 0), range[1] + 180 + index * 44)
+                }} />
+              </div>
             })
           }
+        </div>
+        <div className='flex gap-1 items-center'>
+          <Badge variant={'secondary'}>{item.matches?.[0].indices.length}个匹配项</Badge>
+          <Badge variant={'secondary'}>{item.item.path}</Badge>
         </div>
       </div>
     </div>
@@ -135,7 +142,7 @@ export function SearchItem({
 }) {
   
   return (
-    <div className="flex items-center justify-between px-2 py-2 border-b border-b-gray-200 dark:border-b-gray-700">
+    <div className="flex items-center justify-between p-4 border m-4 rounded overflow-hidden border-b-gray-200 dark:border-b-gray-700">
       <div className="flex items-center gap-2 w-full">
         <SearchType item={item} />
       </div>
