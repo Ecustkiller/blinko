@@ -24,6 +24,8 @@ import { invoke } from "@tauri-apps/api/core";
 import { ImageUp } from "lucide-react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import { convertImage } from "@/lib/utils";
+import { toast } from "@/hooks/use-toast";
+
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
@@ -173,6 +175,13 @@ export function MarkItem({mark}: {mark: Mark}) {
     invoke('show_in_folder', { path: `${appDir}/${path}/${mark.url}` })
   }
 
+  async function handleCopyLink() {
+    await navigator.clipboard.writeText(mark.url)
+    toast({
+      title: '已复制到剪切板'
+    })
+  }
+
   return (
     <ContextMenu>
       <ContextMenuTrigger>
@@ -193,6 +202,9 @@ export function MarkItem({mark}: {mark: Mark}) {
         </ContextMenuSub>
         <ContextMenuItem inset disabled>
           转换为{mark.type === 'scan' ? '插图' : '截图'}
+        </ContextMenuItem>
+        <ContextMenuItem inset disabled={!mark.url} onClick={handleCopyLink}>
+          复制链接
         </ContextMenuItem>
         <ContextMenuItem inset disabled={mark.type === 'text'} onClick={regenerateDesc}>
           重新生成描述
