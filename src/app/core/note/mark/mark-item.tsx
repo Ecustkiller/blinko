@@ -1,3 +1,4 @@
+'use client'
 import { delMark, Mark, MarkType, updateMark } from "@/db/marks";
 import {
   ContextMenu,
@@ -12,37 +13,36 @@ import {
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime'
 import zh from 'dayjs/locale/zh'
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useMarkStore from "@/stores/mark";
 import useTagStore from "@/stores/tag";
 import { LocalImage } from "@/components/local-image";
 import { fetchAiDesc } from "@/lib/ai";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { appDataDir } from "@tauri-apps/api/path";
 import { invoke } from "@tauri-apps/api/core";
 import { ImageUp } from "lucide-react";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import { convertImage } from "@/lib/utils";
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
 
-function TextHover({text}: {text?: string}) {
-  return (
-    <HoverCard>
-      <HoverCardTrigger asChild>
-        <span className="line-clamp-2 leading-4 mt-2 text-xs break-words hover:underline">{text}</span>
-      </HoverCardTrigger>
-      <HoverCardContent>
-        <p>{text}</p>
-      </HoverCardContent>
-    </HoverCard>
-  )
-}
-
 function ImageViewer({mark, path}: {mark: Mark, path?: string}) {
+  const [src, setSrc] = useState('')
+
+  async function init() {
+    const res = mark.url.includes('http') ? mark.url : await convertImage(`/${path}/${mark.url}`)
+    setSrc(res)
+  }
+
+  useEffect(() => {
+    init()
+  }, [])
+
   return (
-    <Sheet>
-      <SheetTrigger asChild>
+    <PhotoProvider>
+      <PhotoView src={src}>
         <div>
           <LocalImage
             src={mark.url.includes('http') ? mark.url : `/${path}/${mark.url}`}
@@ -50,21 +50,40 @@ function ImageViewer({mark, path}: {mark: Mark, path?: string}) {
             className="w-14 h-14 object-cover cursor-pointer"
           />
         </div>
+      </PhotoView>
+    </PhotoProvider>
+  )
+}
+
+function DetailViewer({mark, content, path}: {mark: Mark, content: string, path?: string}) {
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <span className="line-clamp-2 leading-4 mt-2 text-xs break-words cursor-pointer hover:underline">{content}</span>
       </SheetTrigger>
       <SheetContent className="w-[1400px]">
         <SheetHeader>
           <SheetTitle>{MarkType[mark.type]}</SheetTitle>
           <span className="mt-4 text-xs text-zinc-500">创建于：{dayjs(mark.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
-          <LocalImage
-            src={mark.url.includes('http') ? mark.url : `/${path}/${mark.url}`}
-            alt=""
-            className="w-full"
-          />
+          {
+            mark.url ?
+            <LocalImage
+              src={mark.url.includes('http') ? mark.url : `/${path}/${mark.url}`}
+              alt=""
+              className="w-full"
+            /> :
+            null
+          }
           <SheetDescription>
             <span className="block my-4 text-md text-zinc-900 font-bold">描述</span>
             <span>{mark.desc}</span>
-            <span className="block my-4 text-md text-zinc-900 font-bold">OCR</span>
-            <span>{mark.content}</span>
+            {
+              mark.type === 'text' ? null :
+              <>
+                <span className="block my-4 text-md text-zinc-900 font-bold">OCR</span>
+                <span>{mark.content}</span>
+              </>
+            }
           </SheetDescription>
         </SheetHeader>
       </SheetContent>
@@ -84,7 +103,7 @@ export function MarkWrapper({mark}: {mark: Mark}) {
             </span>
             <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
           </div>
-          <TextHover text={mark.desc} />
+          <DetailViewer mark={mark} content={mark.desc || ''} />
         </div>
         <div className="bg-zinc-900 flex items-center justify-center">
           <ImageViewer mark={mark} path="screenshot" />
@@ -102,7 +121,7 @@ export function MarkWrapper({mark}: {mark: Mark}) {
             {mark.url.includes('http') ? <ImageUp className="size-3 text-zinc-400" /> : null}
             <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
           </div>
-          <TextHover text={mark.desc} />
+          <DetailViewer mark={mark} content={mark.desc || ''} />
         </div>
         <div className="bg-zinc-900 flex items-center justify-center">
           <ImageViewer mark={mark} path="image" />
@@ -119,7 +138,7 @@ export function MarkWrapper({mark}: {mark: Mark}) {
           </span>
           <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
         </div>
-        <TextHover text={mark.content} />
+        <DetailViewer mark={mark} content={mark.content || ''} />
       </div>
     )
   }
