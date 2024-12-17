@@ -12,19 +12,24 @@ import { RepoNames } from "@/lib/github.types"
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger } from "@/components/ui/context-menu"
 import useSettingStore from '@/stores/setting'
+import { useState } from 'react'
+import { LoaderCircle } from 'lucide-react'
 
 export function ImageCard({file}: {file: GithubFile}) {
-  const { getImages } = useImageStore()
+  const [loading, setLoading] = useState(false)
+  const { deleteImage } = useImageStore()
   const { githubUsername } = useSettingStore()
 
   async function handleDelete(file: GithubFile) {
+    setLoading(true)
     const res = await deleteFile({path: file.path, sha: file.sha, repo: RepoNames.image})
     if (res) {
       toast({ title: '文件已删除', description: file.name })
+      deleteImage(file.name)
     } else {
-      toast({ title: '文件已删除', description: '图床数据同步有延迟' })
+      toast({ title: '文件删除失败' })
     }
-    getImages()
+    setLoading(false)
   }
 
   async function handleCopyLink() {
@@ -52,7 +57,13 @@ export function ImageCard({file}: {file: GithubFile}) {
           <CardContent className="p-0 h-full">
             <PhotoProvider>
               <PhotoView src={file.download_url}>
-                <Image src={file.download_url} alt={file.name} width={0} height={0} className="w-full h-full object-cover" />
+                {
+                  loading ? 
+                  <div className='absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center text-white'>
+                    <LoaderCircle className='animate-spin size-6' />
+                  </div> :
+                  <Image src={file.download_url} alt={file.name} width={0} height={0} className="w-full h-full object-cover" />
+                }
               </PhotoView>
             </PhotoProvider>
           </CardContent>
