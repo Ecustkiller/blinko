@@ -42,8 +42,8 @@ export function FolderItem({ item }: { item: DirTree }) {
   }
 
   async function handleRename() {
-    const name = inputRef.current?.value.replace(/ /g, '_')
-    if (name && item.name && name !== item.name) {
+    const name = inputRef.current?.value.replace(/ /g, '_') as string
+    if (name !== '' && item.name && name !== item.name) {
       if (name && name !== item.name) {
         await loadFileTree()
       }
@@ -62,7 +62,7 @@ export function FolderItem({ item }: { item: DirTree }) {
         })
         setFileTree(cacheTree)
       }
-    } else if (name && !fileTree.map(item => item.name).includes(name)) {
+    } else if (name !== '' && !fileTree.map(item => item.name).includes(name)) {
       await mkdir(`article/${name}`, { baseDir: BaseDirectory.AppData })
       const cacheTree = cloneDeep(fileTree)
       cacheTree.splice(0, 1, {
@@ -75,6 +75,9 @@ export function FolderItem({ item }: { item: DirTree }) {
         isSymlink: false
       })
       setFileTree(cacheTree)
+    } else {
+      fileTree.splice(0, 1)
+      setFileTree(fileTree)
     }
     setIsEditing(false)
   }
