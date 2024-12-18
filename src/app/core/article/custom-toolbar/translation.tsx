@@ -6,23 +6,31 @@ import { RefObject } from "react";
 import { locales } from "@/lib/locales";
 import { Button } from "@/components/ui/button";
 import useArticleStore from "@/stores/article";
+import { toast } from "@/hooks/use-toast";
 
 export default function Translation({mdRef}: {mdRef: RefObject<ExposeParam>}) {
   const { loading, setLoading } = useArticleStore()
   async function handleBlock(locale: string) {
-    setLoading(true)
-    mdRef.current?.focus()
     const selectedText = mdRef.current?.getSelectedText()
-    const req = `将这段文字：${selectedText}，翻译为${locale}语言，直接返回翻译后的结果。`
-    let res = ''
-    await fetchAiStream(req, text => {
-      if (text === '[DONE]') return
-      mdRef.current?.insert(() => ({
-        targetValue: res += text,
-      }))
-      mdRef.current?.rerender();
-    })
-    setLoading(false)
+    if (selectedText) {
+      setLoading(true)
+      mdRef.current?.focus()
+      const req = `将这段文字：${selectedText}，翻译为${locale}语言，直接返回翻译后的结果。`
+      let res = ''
+      await fetchAiStream(req, text => {
+        if (text === '[DONE]') return
+        mdRef.current?.insert(() => ({
+          targetValue: res += text,
+        }))
+        mdRef.current?.rerender();
+      })
+      setLoading(false)
+    } else {
+      toast({
+        title: '请先选择一段内容',
+        variant: 'destructive'
+      })
+    }
   }
   return (
     <DropdownMenu>

@@ -3,7 +3,6 @@ import { MdEditor as MdEditorRT, ExposeParam, Themes, ToolbarNames } from 'md-ed
 import useArticleStore from '@/stores/article';
 import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
-// import { defToolbars, toolbars } from './md-toolbar';
 import useSettingStore from '@/stores/setting';
 import CustomToolbar from './custom-toolbar/index';
 
