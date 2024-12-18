@@ -9,7 +9,7 @@ import CustomToolbar from './custom-toolbar/index';
 export function MdEditor() {
   const ref = useRef<ExposeParam>(null);
   const [value, setValue] = useState('')
-  const { currentArticle, saveCurrentArticle, activeFilePath } = useArticleStore()
+  const { currentArticle, setCurrentArticle , saveCurrentArticle, activeFilePath } = useArticleStore()
   const [mdTheme, setMdTheme] = useState<Themes>('light')
   const { theme } = useTheme()
   const { codeTheme, previewTheme } = useSettingStore()
@@ -18,6 +18,7 @@ export function MdEditor() {
   async function handleSave(value: string) {
     if (value !== currentArticle) {
       setValue(value)
+      setCurrentArticle(value)
       await saveCurrentArticle(value)
     }
   }
