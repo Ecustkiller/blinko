@@ -23,10 +23,21 @@ export function FileItem({ item }: { item: DirTree }) {
   }
 
   async function handleDeleteFile() {
+    console.log(path);
     await remove(`article/${path}`, { baseDir: BaseDirectory.AppData })
     const cacheTree = cloneDeep(fileTree)
-    const index = cacheTree.findIndex(file => file.name === activeFilePath)
-    cacheTree.splice(index, 1)
+    if (path.includes('/')) {
+      const dirIndex = cacheTree.findIndex(item => item.name === path.split('/')[0])
+      const fileIndex = cacheTree[dirIndex].children?.findIndex(file => file.name === path.split('/')[1])
+      const file = cacheTree[dirIndex].children?.find(file => file.name === path.split('/')[1])
+      if (file && fileIndex !== undefined && fileIndex !== -1) {
+        file.isLocale = false
+        cacheTree[dirIndex].children?.splice(fileIndex, 1, file)
+      }
+    } else {
+      const index = cacheTree.findIndex(file => file.name === activeFilePath)
+      cacheTree.splice(index, 1)
+    }
     setFileTree(cacheTree)
     setActiveFilePath('')
     setCurrentArticle('')
