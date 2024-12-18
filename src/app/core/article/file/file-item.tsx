@@ -40,10 +40,22 @@ export function FileItem({ item }: { item: DirTree }) {
     if (answer) {
       await deleteFile({ path: activeFilePath, sha: item.sha as string, repo: RepoNames.article })
       const cacheTree = cloneDeep(fileTree)
-      const index = cacheTree.findIndex(file => file.name === activeFilePath)
-      const currentFile = cacheTree[index]
-      currentFile.sha = undefined;
-      cacheTree.splice(index, 1, currentFile)
+      if (item.parent) {
+        const parentIndex = cacheTree.findIndex(file => file.name === item.parent?.name)
+        const index = item.parent.children?.findIndex(file => file.name === item.name)
+        if (index !== undefined && index !== -1) {
+          const currentFile = cloneDeep(item.parent.children?.[index])
+          if (currentFile) {
+            currentFile.sha = undefined;
+            cacheTree[parentIndex].children?.splice(index, 1, currentFile)
+          }
+        }
+      } else {
+        const index = cacheTree.findIndex(file => file.name === activeFilePath)
+        const currentFile = cacheTree[index]
+        currentFile.sha = undefined;
+        cacheTree.splice(index, 1, currentFile)
+      }
       setFileTree(cacheTree)
     }
   }
@@ -128,6 +140,11 @@ export function FileItem({ item }: { item: DirTree }) {
                 value={name}
                 onBlur={handleRename}
                 onChange={(e) => { setName(e.target.value) }}
+                onKeyDown={(e) => {
+                  if (e.code === 'Enter') {
+                    handleRename()
+                  }
+                }}
               />
             </div> :
             <span draggable onDragStart={handleDragStart}
