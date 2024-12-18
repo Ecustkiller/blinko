@@ -22,7 +22,11 @@ export function FolderItem({ item }: { item: DirTree }) {
     evnet.stopPropagation()
     try {
       await remove(`article/${path}`, { baseDir: BaseDirectory.AppData })
-      await loadFileTree()
+      const index = fileTree.findIndex(file => file.name === item.name)
+      if (index!== -1) {
+        fileTree.splice(index, 1)
+        setFileTree(fileTree)
+      }
     } catch {
       toast({
         title: '删除失败',
