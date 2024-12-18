@@ -1,24 +1,29 @@
 "use client"
 import {TooltipProvider } from "@/components/ui/tooltip"
-import { FilePlus, FolderOpen, FolderPlus, FolderSync } from "lucide-react"
+import { FilePlus, FolderGit2, FolderPlus, FolderSync, LoaderCircle } from "lucide-react"
 import * as React from "react"
 import { TooltipButton } from "@/components/tooltip-button"
 import useArticleStore from "@/stores/article"
-import { invoke } from "@tauri-apps/api/core"
-import { appDataDir } from "@tauri-apps/api/path"
+import { open } from '@tauri-apps/plugin-shell';
+import useSettingStore from "@/stores/setting"
 
 export function FileToolbar() {
-  const { newFolder, loadFileTree, newFile, activeFilePath } = useArticleStore()
-
+  const { newFolder, loadFileTree, newFile, activeFilePath, fileTreeLoading } = useArticleStore()
+  const { githubUsername } = useSettingStore()
+  
   async function openFolder() {
-    const appDir = await appDataDir()
-    invoke('show_in_folder', { path: `${appDir}/article/${activeFilePath}` })
+    open(`https://github.com/${githubUsername}/note-gen-article-sync`)
   }
 
   return (
     <div className="flex justify-between items-center h-12 border-b px-2">
       <div>
-        <TooltipButton icon={<FolderOpen />} tooltipText="本地仓库" disabled={!activeFilePath} onClick={openFolder} />
+        <TooltipButton
+          icon={fileTreeLoading ? <LoaderCircle className="animate-spin size-4" /> : <FolderGit2 />}
+          tooltipText={fileTreeLoading ? '正在加载同步信息' : '打开文件夹'}
+          disabled={!activeFilePath}
+          onClick={openFolder}
+        />
       </div>
       <div>
         <TooltipProvider>

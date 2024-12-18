@@ -18,6 +18,7 @@ interface NoteState {
   setActiveFilePath: (name: string) => void
 
   fileTree: DirTree[]
+  fileTreeLoading: boolean
   setFileTree: (tree: DirTree[]) => void
   loadFileTree: () => Promise<void>
   loadCollapsibleFiles: (folderName: string) => Promise<void>
@@ -60,7 +61,9 @@ const useArticleStore = create<NoteState>((set, get) => ({
   setFileTree: (tree: DirTree[]) => {
     set({ fileTree: tree })
   },
+  fileTreeLoading: false,
   loadFileTree: async () => {
+    set({ fileTreeLoading: true })
     set({ fileTree: [] })
     const cacheTree: DirTree[] = []
     const isArticleDir = await exists('article', { baseDir: BaseDirectory.AppData })
@@ -103,6 +106,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
         await get().loadCollapsibleFiles(item)
       })
     }
+    set({ fileTreeLoading: false })
   },
   // 加载文件夹内部的 Github 仓库文件
   loadCollapsibleFiles: async (folderName: string) => {
