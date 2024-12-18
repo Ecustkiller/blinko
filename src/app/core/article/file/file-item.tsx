@@ -23,7 +23,6 @@ export function FileItem({ item }: { item: DirTree }) {
   }
 
   async function handleDeleteFile() {
-    console.log(path);
     await remove(`article/${path}`, { baseDir: BaseDirectory.AppData })
     const cacheTree = cloneDeep(fileTree)
     if (path.includes('/')) {

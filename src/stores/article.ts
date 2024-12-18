@@ -237,8 +237,8 @@ const useArticleStore = create<NoteState>((set, get) => ({
         } else {
           const index = get().fileTree.findIndex(item => item.name === path)
           cacheTree[index].isLocale = true
-          set({ fileTree: cacheTree })
         }
+        set({ fileTree: cacheTree })
       }
     }
   },
