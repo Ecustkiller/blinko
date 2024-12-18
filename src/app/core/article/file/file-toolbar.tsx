@@ -8,7 +8,7 @@ import { open } from '@tauri-apps/plugin-shell';
 import useSettingStore from "@/stores/setting"
 
 export function FileToolbar() {
-  const { newFolder, loadFileTree, newFile, activeFilePath, fileTreeLoading } = useArticleStore()
+  const { newFolder, loadFileTree, newFile, fileTreeLoading } = useArticleStore()
   const { githubUsername } = useSettingStore()
   
   async function openFolder() {
@@ -21,7 +21,7 @@ export function FileToolbar() {
         <TooltipButton
           icon={fileTreeLoading ? <LoaderCircle className="animate-spin size-4" /> : <FolderGit2 />}
           tooltipText={fileTreeLoading ? '正在加载同步信息' : '打开文件夹'}
-          disabled={!activeFilePath}
+          disabled={githubUsername? false : true}
           onClick={openFolder}
         />
       </div>
