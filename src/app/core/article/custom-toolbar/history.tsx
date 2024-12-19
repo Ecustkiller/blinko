@@ -54,7 +54,7 @@ export default function History({mdRef}: {mdRef: RefObject<ExposeParam>}) {
   return (
     <Sheet open={sheetOpen} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" title="翻译">
+        <Button variant="ghost" size="icon" title="历史记录">
           {
             loading ? <LoaderCircle className="animate-spin size-4" /> : <HistoryIcon />
           }
