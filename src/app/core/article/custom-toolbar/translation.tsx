@@ -1,6 +1,6 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { fetchAiStream } from "@/lib/ai";
-import { Globe } from "lucide-react";
+import { Languages } from "lucide-react";
 import { ExposeParam } from "md-editor-rt";
 import { RefObject } from "react";
 import { locales } from "@/lib/locales";
@@ -35,7 +35,7 @@ export default function Translation({mdRef}: {mdRef: RefObject<ExposeParam>}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="outline-none">
-        <Button disabled={loading} variant="ghost" size="icon" title="翻译"><Globe /></Button>
+        <Button disabled={loading} variant="ghost" size="icon" title="翻译"><Languages /></Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>将选中的文本进行翻译</DropdownMenuLabel>
