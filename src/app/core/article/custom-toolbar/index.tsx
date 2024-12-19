@@ -10,6 +10,7 @@ import Toggle from "./toggle";
 import { Settings } from "./settings.type";
 import Continue from "./continue";
 import Mark from "./mark";
+import Eraser from "./eraser";
 
 export default function CustomToolbar({mdRef, settings}: {mdRef: RefObject<ExposeParam>, settings: Settings}) {
   return <div className="h-12 w-full border-b flex items-center px-2 gap-1 justify-between">
@@ -18,10 +19,11 @@ export default function CustomToolbar({mdRef, settings}: {mdRef: RefObject<Expos
       <Separator orientation="vertical" />
       <Question mdRef={mdRef} />
       <Continue mdRef={mdRef} />
-      <Optimize mdRef={mdRef} />
-      <Translation mdRef={mdRef} />
-      <Separator orientation="vertical" />
       <Mark mdRef={mdRef} />
+      <Separator orientation="vertical" />
+      <Optimize mdRef={mdRef} />
+      <Eraser mdRef={mdRef} />
+      <Translation mdRef={mdRef} />
     </div>
 
     <div>
