@@ -25,3 +25,10 @@ interface Message {
   role: string;
   content: string;
 }
+
+export interface AiModel {
+  id: string;
+  object: string;
+  created: number;
+  owned_by: string;
+}

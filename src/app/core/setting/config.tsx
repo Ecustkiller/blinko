@@ -25,26 +25,26 @@ export const config = [
           toast({ title: '当前版本' })
         }
       },
-      {
-        title: '自动更新',
-        key: 'autoUpdate',
-        value: true,
-        desc: <>关闭后，NoteGen 将不会自动更新。</>,
-        schema: z.boolean(),
-        disabled: true,
-        layout: 'horizontal',
-        type: 'switch',
-      },
-      {
-        title: '语言',
-        key: 'language',
-        value: '简体中文',
-        desc: <>更改界面语言</>,
-        type: 'select',
-        schema: z.string(),
-        disabled: true,
-        layout: 'horizontal',
-      }
+      // {
+      //   title: '自动更新',
+      //   key: 'autoUpdate',
+      //   value: true,
+      //   desc: <>关闭后，NoteGen 将不会自动更新。</>,
+      //   schema: z.boolean(),
+      //   disabled: true,
+      //   layout: 'horizontal',
+      //   type: 'switch',
+      // },
+      // {
+      //   title: '语言',
+      //   key: 'language',
+      //   value: '简体中文',
+      //   desc: <>更改界面语言</>,
+      //   type: 'select',
+      //   schema: z.string(),
+      //   disabled: true,
+      //   layout: 'horizontal',
+      // }
     ]
   },
   {
@@ -65,6 +65,19 @@ export const config = [
         disabled: false,
         layout: 'vertical',
         type: 'input',
+      },
+      {
+        title: '模型选择',
+        key: 'model',
+        value: 'gpt-4o-mini',
+        desc: <>
+          <span>选择 ChatGPT 模型，不同的模型对应不同的资费标准，请按实力选择。</span><br />
+          <OpenBroswer title="费用标准参考" url="https://chatanywhere.apifox.cn/doc-2694962" />
+        </>,
+        schema: z.string(),
+        disabled: false,
+        layout: 'horizontal',
+        type: 'select',
       },
       {
         title: '记录生成描述',

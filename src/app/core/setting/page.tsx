@@ -101,7 +101,7 @@ export default function Page() {
                             <FormItem className={`${setting.layout === 'horizontal' ? 'flex-row items-center' : 'flex-col'} flex justify-between mt-4`}>
                               <div>
                                 <FormLabel>{setting.title}</FormLabel>
-                                <FormDescription>{setting.desc}</FormDescription>
+                                <FormDescription className="my-1">{setting.desc}</FormDescription>
                               </div>
                               <FormControl>
                                 <SettingRender setting={setting} field={field} />

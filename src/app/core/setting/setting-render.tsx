@@ -9,6 +9,7 @@ import { LanguageSelect } from "./lanage-select";
 import { PreviewThemeSelect } from "./preview-theme-select";
 import { CodeThemeSelect } from "./code-theme-select";
 import { Badge } from "@/components/ui/badge";
+import { ModelSelect } from "./model-select";
 
 export function SettingRender(
   { setting, field }:
@@ -32,6 +33,8 @@ export function SettingRender(
           return <PreviewThemeSelect field={field} />
         case 'codeTheme':
           return <CodeThemeSelect field={field} />
+        case 'model':
+          return <ModelSelect field={field} />
       }
     case 'shortcut':
       return <Badge>{setting.value}</Badge>

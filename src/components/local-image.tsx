@@ -11,7 +11,6 @@ export function LocalImage({ onLoad, src, ...props }: React.ComponentProps<typeo
       setLocalSrc(src.toString())
     } else {
       const covertFileSrcPath = await convertImage(src as string)
-      console.log(covertFileSrcPath);
       setLocalSrc(covertFileSrcPath)
     }
   }
