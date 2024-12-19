@@ -50,7 +50,11 @@ export default function Sync({mdRef}: {mdRef: RefObject<ExposeParam>}) {
       repo: RepoNames.article
     })
     if (uploadRes?.status === 200 || uploadRes?.status === 201) {
-      toast({title: '同步成功', description: uploadRes.data?.commit.message})
+      if (uploadRes.data.content?.sha === sha) {
+        toast({title: '内容未改变，无需提交', variant: 'destructive'})
+      } else {
+        toast({title: '同步成功', description: uploadRes.data?.commit.message})
+      }
     }
     setLoading(false)
   }
