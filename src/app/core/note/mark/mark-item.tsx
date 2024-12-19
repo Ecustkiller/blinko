@@ -97,7 +97,7 @@ export function MarkWrapper({mark}: {mark: Mark}) {
   switch (mark.type) {
     case 'scan':
     return (
-      <div className="border-b flex p-2">
+      <div className="flex p-2">
         <div className="pr-2 flex-1 overflow-hidden text-xs">
           <div className="flex w-full items-center gap-2 text-zinc-500">
             <span className="flex items-center gap-1 bg-cyan-900 text-white px-1 rounded">
@@ -114,7 +114,7 @@ export function MarkWrapper({mark}: {mark: Mark}) {
     )
     case 'image':
     return (
-      <div className="border-b flex p-2">
+      <div className="flex p-2">
         <div className="pr-2 flex-1 overflow-hidden text-xs">
           <div className="flex w-full items-center gap-2 text-zinc-500">
             <span className="flex items-center gap-1 bg-fuchsia-900 text-white px-1 rounded">
@@ -133,7 +133,7 @@ export function MarkWrapper({mark}: {mark: Mark}) {
     case 'text':
     default:
     return (
-      <div className="border-b p-2">
+      <div className="p-2 flex-1">
         <div className="flex w-full items-center gap-2 text-zinc-500 text-xs">
           <span className="flex items-center gap-1 bg-lime-900 text-white px-1 rounded">
             {MarkType[mark.type]}
@@ -185,7 +185,9 @@ export function MarkItem({mark}: {mark: Mark}) {
   return (
     <ContextMenu>
       <ContextMenuTrigger>
-        <MarkWrapper mark={mark} />
+        <div className="border-b">
+          <MarkWrapper mark={mark} />
+        </div>
       </ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuSub>

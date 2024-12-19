@@ -14,6 +14,7 @@ export interface Mark {
   content?: string
   desc?: string
   url: string
+  deleted: 0 | 1
   createdAt: number
 }
 
@@ -33,6 +34,7 @@ export async function initMarksDb() {
       content text default null,
       url text default null,
       desc text default null,
+      deleted integer default 0,
       createdAt integer
     )
   `)
@@ -46,13 +48,14 @@ export async function getMarks(id: number) {
 
 export async function insertMark(mark: Partial<Mark>) {
   const db = await getDb();
-  return await db.execute(`insert into marks (tagId, type, content, url, desc, createdAt) values (
+  return await db.execute(`insert into marks (tagId, type, content, url, desc, createdAt, deleted) values (
       '${mark.tagId}',
       ${mark.type ? `'${mark.type}'`: null},
       ${mark.content ? `"${encodeURIComponent(mark?.content)}"`: null},
       ${mark.url ? `'${mark.url}'`: null},
       ${mark.desc ? `'${mark.desc}'`: null},
-      ${Date.now()}
+      ${Date.now()},
+      0
     )
   `)
 }
@@ -76,5 +79,10 @@ export async function updateMark(mark: Mark) {
 
 export async function delMark(id: number) {
   const db = await getDb();
-  return await db.execute(`delete from marks where id = ${id}`)
+  // 判断有没有 deleted 列，没有就添加
+  const res = await db.select<Mark[]>(`select * from marks where id = ${id}`)
+  if (res[0].deleted === undefined) {
+    await db.execute(`alter table marks add column deleted integer default 0`)
+  }
+  return await db.execute(`update marks set deleted = 1 where id = ${id}`)
 }
