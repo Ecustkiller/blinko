@@ -10,8 +10,12 @@ export interface MarkQueue {
 }
 
 interface MarkState {
+  trashState: boolean
+  setTrashState: (flag: boolean) => void
+
   marks: Mark[]
   fetchMarks: () => Promise<void>
+  fetchAllTrashMarks: () => Promise<void>
 
   allMarks: Mark[]
   fetchAllMarks: () => Promise<void>
@@ -23,6 +27,11 @@ interface MarkState {
 }
 
 const useMarkStore = create<MarkState>((set) => ({
+  trashState: false,
+  setTrashState: (flag) => {
+    set({ trashState: flag })
+  },
+
   marks: [],
   fetchMarks: async () => {
     const store = await Store.load('store.json');
@@ -37,6 +46,16 @@ const useMarkStore = create<MarkState>((set) => ({
         content: decodeURIComponent(item.content || '')
       }
     }).filter((item) => item.deleted === 0)
+    set({ marks: decodeRes })
+  },
+  fetchAllTrashMarks: async () => {
+    const res = await getAllMarks()
+    const decodeRes = res.map(item => {
+      return {
+        ...item,
+        content: decodeURIComponent(item.content || '')
+      }
+    }).filter((item) => item.deleted === 1)
     set({ marks: decodeRes })
   },
 

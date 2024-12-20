@@ -77,6 +77,11 @@ export async function updateMark(mark: Mark) {
   )
 }
 
+export async function restoreMark(id: number) {
+  const db = await getDb();
+  return await db.execute(`update marks set deleted = 0 where id = ${id}`)
+}
+
 export async function delMark(id: number) {
   const db = await getDb();
   // 判断有没有 deleted 列，没有就添加

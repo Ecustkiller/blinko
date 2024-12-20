@@ -1,5 +1,5 @@
 'use client'
-import { delMark, Mark, MarkType, updateMark } from "@/db/marks";
+import { delMark, Mark, MarkType, restoreMark, updateMark } from "@/db/marks";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -148,7 +148,7 @@ export function MarkWrapper({mark}: {mark: Mark}) {
 
 export function MarkItem({mark}: {mark: Mark}) {
 
-  const { fetchMarks } = useMarkStore()
+  const { fetchMarks, trashState, fetchAllTrashMarks } = useMarkStore()
   const { tags, currentTagId, fetchTags, getCurrentTag } = useTagStore()
 
   async function handleDelMark() {
@@ -156,6 +156,15 @@ export function MarkItem({mark}: {mark: Mark}) {
     await fetchMarks()
     await fetchTags()
     getCurrentTag()
+  }
+
+  async function handleRestore() {
+    await restoreMark(mark.id)
+    if (trashState) {
+      await fetchAllTrashMarks()
+    } else {
+      await fetchMarks()
+    }
   }
 
   async function handleTransfer(tagId: number) {
@@ -190,18 +199,21 @@ export function MarkItem({mark}: {mark: Mark}) {
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuSub>
-          <ContextMenuSubTrigger inset>转移标签</ContextMenuSubTrigger>
-          <ContextMenuSubContent>
-            {
-              tags.map((tag) => (
-                <ContextMenuItem disabled={tag.id === currentTagId} key={tag.id} onClick={() => handleTransfer(tag.id)}>
-                  {tag.name}
-                </ContextMenuItem>
-              ))
-            }
-          </ContextMenuSubContent>
-        </ContextMenuSub>
+        {
+          trashState ? null :
+          <ContextMenuSub>
+            <ContextMenuSubTrigger inset>转移标签</ContextMenuSubTrigger>
+            <ContextMenuSubContent>
+              {
+                tags.map((tag) => (
+                  <ContextMenuItem disabled={tag.id === currentTagId} key={tag.id} onClick={() => handleTransfer(tag.id)}>
+                    {tag.name}
+                  </ContextMenuItem>
+                ))
+              }
+            </ContextMenuSubContent>
+          </ContextMenuSub>
+        }
         <ContextMenuItem inset disabled>
           转换为{mark.type === 'scan' ? '插图' : '截图'}
         </ContextMenuItem>
@@ -215,9 +227,15 @@ export function MarkItem({mark}: {mark: Mark}) {
         <ContextMenuItem inset disabled={mark.type === 'text'} onClick={handelShowInFolder}>
           查看原文件
         </ContextMenuItem>
-        <ContextMenuItem inset onClick={handleDelMark}>
-          <span className="text-red-900">删除</span>
-        </ContextMenuItem>
+        {
+          trashState ? 
+          <ContextMenuItem inset onClick={handleRestore}>
+            <span className="text-red-900">还原</span>
+          </ContextMenuItem> :
+          <ContextMenuItem inset onClick={handleDelMark}>
+            <span className="text-red-900">删除</span>
+          </ContextMenuItem>
+        }
       </ContextMenuContent>
     </ContextMenu>
   )
