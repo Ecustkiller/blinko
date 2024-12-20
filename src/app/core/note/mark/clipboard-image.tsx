@@ -14,6 +14,7 @@ import { insertMark, Mark } from "@/db/marks";
 import { uint8ArrayToBase64, uploadFile } from "@/lib/github";
 import { listen } from '@tauri-apps/api/event';
 import { RepoNames } from "@/lib/github.types";
+import { CircleX } from "lucide-react";
 
 export function ClipboardImage() {
   const [image, setImage] = useState('')
@@ -82,6 +83,10 @@ export function ClipboardImage() {
     getCurrentTag()
   }
 
+  function handleCancle() {
+    setImage('')
+  }
+
   useEffect(() => {
     listen('tauri://focus', read)
   }, [])
@@ -93,6 +98,9 @@ export function ClipboardImage() {
         <div className="absolute z-10 flex justify-center items-center gap-4 flex-col w-full h-full bg-black text-white bg-opacity-50">
           <p className="text-base">检测到剪贴板内的图片</p>
           <Button onClick={handleInset}>插入</Button>
+          <Button className="absolute top-2 right-2" variant={"ghost"} size={"icon"} onClick={handleCancle}>
+            <CircleX />
+          </Button>
         </div>
       </div>
     ) :
