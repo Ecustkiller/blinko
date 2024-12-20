@@ -25,6 +25,7 @@ export default function Page() {
   }
 
   async function success() {
+    await unregister('Esc');
     const path = await invoke('screenshot_save', {
       x: (crop?.x || 0) * scale,
       y: ((crop?.y || 0) + y) * scale,
