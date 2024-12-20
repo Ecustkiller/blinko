@@ -79,7 +79,9 @@ export async function updateMark(mark: Mark) {
 
 export async function restoreMark(id: number) {
   const db = await getDb();
-  return await db.execute(`update marks set deleted = 0 where id = ${id}`)
+  // 删除的标记恢复，创建时间更新
+  console.log(Date.now());
+  return await db.execute(`update marks set deleted = 0, createdAt = ${Date.now()} where id = ${id}`)
 }
 
 export async function delMark(id: number) {
@@ -89,5 +91,5 @@ export async function delMark(id: number) {
   if (res[0].deleted === undefined) {
     await db.execute(`alter table marks add column deleted integer default 0`)
   }
-  return await db.execute(`update marks set deleted = 1 where id = ${id}`)
+  return await db.execute(`update marks set deleted = 1, createdAt = ${Date.now()} where id = ${id}`)
 }

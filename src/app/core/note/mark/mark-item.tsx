@@ -159,6 +159,7 @@ export function MarkItem({mark}: {mark: Mark}) {
   }
 
   async function handleRestore() {
+    console.log(mark);
     await restoreMark(mark.id)
     if (trashState) {
       await fetchAllTrashMarks()
