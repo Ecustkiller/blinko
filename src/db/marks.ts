@@ -79,8 +79,6 @@ export async function updateMark(mark: Mark) {
 
 export async function restoreMark(id: number) {
   const db = await getDb();
-  // 删除的标记恢复，创建时间更新
-  console.log(Date.now());
   return await db.execute(`update marks set deleted = 0, createdAt = ${Date.now()} where id = ${id}`)
 }
 

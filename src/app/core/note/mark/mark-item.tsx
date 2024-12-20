@@ -159,7 +159,6 @@ export function MarkItem({mark}: {mark: Mark}) {
   }
 
   async function handleRestore() {
-    console.log(mark);
     await restoreMark(mark.id)
     if (trashState) {
       await fetchAllTrashMarks()
@@ -170,6 +169,8 @@ export function MarkItem({mark}: {mark: Mark}) {
 
   async function handleTransfer(tagId: number) {
     await updateMark({ ...mark, tagId })
+    await fetchTags()
+    getCurrentTag()
     fetchMarks()
   }
 
