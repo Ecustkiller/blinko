@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Store } from "@tauri-apps/plugin-store"
-import { Suspense, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "@/hooks/use-toast"
 import { debounce, upperFirst } from 'lodash-es'
 import { SettingTab } from "./setting-tab"
@@ -95,9 +95,7 @@ export default function Page() {
   }, [parmas])
 
   return <div className="flex">
-    <Suspense>
-      <SettingTab />
-    </Suspense>
+    <SettingTab />
     <Form {...form}>
       <form onChange={debounceSubmit} id="setting-form" className="space-y-4 p-2 flex-1 h-screen overflow-y-scroll">
         {
