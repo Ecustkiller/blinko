@@ -63,10 +63,12 @@ function DetailViewer({mark, content, path}: {mark: Mark, content: string, path?
       <SheetTrigger asChild>
         <span className="line-clamp-2 leading-4 mt-2 text-xs break-words cursor-pointer hover:underline">{content}</span>
       </SheetTrigger>
-      <SheetContent className="w-[1400px]">
-        <SheetHeader>
+      <SheetContent className="min-w-[400px] p-0">
+        <SheetHeader className="p-4 border-b">
           <SheetTitle>{MarkType[mark.type]}</SheetTitle>
           <span className="mt-4 text-xs text-zinc-500">创建于：{dayjs(mark.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
+        </SheetHeader>
+        <div className="h-[calc(100vh-88px)] overflow-y-auto p-4">
           {
             mark.url ?
             <LocalImage
@@ -78,16 +80,16 @@ function DetailViewer({mark, content, path}: {mark: Mark, content: string, path?
           }
           <SheetDescription>
             <span className="block my-4 text-md text-zinc-900 font-bold">描述</span>
-            <span>{mark.desc}</span>
+            <span className="leading-6">{mark.desc}</span>
             {
               mark.type === 'text' ? null :
               <>
                 <span className="block my-4 text-md text-zinc-900 font-bold">OCR</span>
-                <span>{mark.content}</span>
+                <span className="leading-6">{mark.content}</span>
               </>
             }
           </SheetDescription>
-        </SheetHeader>
+        </div>
       </SheetContent>
     </Sheet>
   )
