@@ -99,7 +99,7 @@ export const config = [
   {
     title: '同步',
     icon: <FileUp />,
-    anchor: 'file',
+    anchor: 'sync',
     settings: [
       {
         title: '访问令牌',
