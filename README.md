@@ -39,9 +39,12 @@ NoteGen 使用了国内代理[GPT-API-free](https://github.com/chatanywhere/GPT_
 - `note-gen-image-sync`: 图床，使用 jsdelivr 加速。
 - `note-gen-article-sync（私有）`: 用于存放笔记 `.md` 文件。
 
-### 3. Mac 权限
+### 3. 仅限 Mac 用户
 
-Mac 用户需要配置屏幕录制权限，才可以使用截图记录功能。
+1. Mac 用户需要配置屏幕录制权限，才可以使用截图记录功能。
+2. NoteGen 暂未签名，因此安装时会出现文件已损坏的提示，根据不同芯片解决方法如下：
+  - Intel：[打开来自未知开发商的 Mac 应用程序](https://support.apple.com/zh-cn/guide/mac-help/mh40616/mac)。
+  - Apple：打开终端并运行以下命令：`sudo xattr -r -d com.apple.quarantine /Applications/NoteGen.app`
 
 ## 工作流
 
