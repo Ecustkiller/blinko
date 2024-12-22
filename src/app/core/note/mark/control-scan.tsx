@@ -6,6 +6,7 @@ import useMarkStore from "@/stores/mark"
 import useTagStore from "@/stores/tag"
 import { invoke } from "@tauri-apps/api/core"
 import { getCurrentWebviewWindow, WebviewWindow } from "@tauri-apps/api/webviewWindow"
+import { currentMonitor } from '@tauri-apps/api/window';
 import { ScanText } from "lucide-react"
 import { isRegistered, register, unregister } from '@tauri-apps/plugin-global-shortcut';
 import { useEffect } from "react"
@@ -23,10 +24,15 @@ export function ControlScan() {
 
     await invoke('screenshot')
     
+    const monitor = await currentMonitor();
+    
     const webview = new WebviewWindow('screenshot', {
       url: '/screenshot',
       decorations: false,
-      maximized: true,
+      x: 0,
+      y: 0,
+      width: monitor?.size.width,
+      height: monitor?.size.height,
     });
 
     webview.onCloseRequested(async () => {

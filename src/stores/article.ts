@@ -18,6 +18,7 @@ interface NoteState {
   setActiveFilePath: (name: string) => void
 
   fileTree: DirTree[]
+  fileTreeLoading: boolean
   setFileTree: (tree: DirTree[]) => void
   loadFileTree: () => Promise<void>
   loadCollapsibleFiles: (folderName: string) => Promise<void>
@@ -60,7 +61,9 @@ const useArticleStore = create<NoteState>((set, get) => ({
   setFileTree: (tree: DirTree[]) => {
     set({ fileTree: tree })
   },
+  fileTreeLoading: false,
   loadFileTree: async () => {
+    set({ fileTreeLoading: true })
     set({ fileTree: [] })
     const cacheTree: DirTree[] = []
     const isArticleDir = await exists('article', { baseDir: BaseDirectory.AppData })
@@ -103,6 +106,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
         await get().loadCollapsibleFiles(item)
       })
     }
+    set({ fileTreeLoading: false })
   },
   // 加载文件夹内部的 Github 仓库文件
   loadCollapsibleFiles: async (folderName: string) => {
@@ -222,9 +226,22 @@ const useArticleStore = create<NoteState>((set, get) => ({
       }
       await writeTextFile(`article/${path}`, content, { baseDir: BaseDirectory.AppData })
       if (!isLocale) {
-        const index = get().fileTree.findIndex(item => item.name === path)
         const cacheTree = cloneDeep(get().fileTree)
-        cacheTree[index].isLocale = true
+        if (path.includes('/')) {
+          const dirPath = path.split('/')[0]
+          const dirIndex = get().fileTree.findIndex(item => item.name === dirPath)
+          const fileIndex = get().fileTree[dirIndex].children?.findIndex(item => item.name === path.split('/')[1])
+          if (fileIndex !== undefined && fileIndex !== -1) {
+            const file = get().fileTree[dirIndex].children?.[fileIndex]
+            if (file) {
+              file.isLocale = true
+              cacheTree[dirIndex]?.children?.splice(fileIndex, 1, file)
+            }
+          }
+        } else {
+          const index = get().fileTree.findIndex(item => item.name === path)
+          cacheTree[index].isLocale = true
+        }
         set({ fileTree: cacheTree })
       }
     }

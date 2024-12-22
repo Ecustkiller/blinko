@@ -14,7 +14,7 @@ export function SettingTab() {
     const settingForm = document.querySelector('#setting-form')
     const titleDom = document.querySelector<HTMLElement>(`#${anchor}`)
     if (settingForm && titleDom) {
-      const y = titleDom?.offsetTop
+      const y = titleDom?.offsetTop - 16
       settingForm.scrollTop = y || 0
     }
   }

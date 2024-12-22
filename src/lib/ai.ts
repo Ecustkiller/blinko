@@ -7,13 +7,14 @@ const url = 'https://api.chatanywhere.tech/v1/chat/completions'
 async function createAi(text: string, isStream = true) {
   const store = await Store.load('store.json')
   const apiKey = await store.get('apiKey')
+  const model = await store.get('model')
 
   const headers = new Headers();
   headers.append("Authorization", `Bearer ${apiKey}`);
   headers.append("Content-Type", "application/json");
 
   const body = JSON.stringify({
-    model: 'gpt-4o-mini',
+    model,
     stream: isStream,
     messages: [
         {
@@ -30,6 +31,19 @@ async function createAi(text: string, isStream = true) {
   };
 
   return requestOptions;
+}
+
+// 获取模型
+export async function fetchAiModels() {
+  const store = await Store.load('store.json')
+  const apiKey = await store.get('apiKey')
+  const headers = new Headers();
+  headers.append("Authorization", `Bearer ${apiKey}`);
+  const requestOptions = {
+    method: 'GET',
+    headers,
+  };
+  return (await fetch('https://api.chatanywhere.tech/v1/models', requestOptions)).json()
 }
 
 export async function fetchAiStream(text: string, callback: (text: string) => void) {

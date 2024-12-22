@@ -17,6 +17,9 @@ interface SettingState {
   apiKey: string
   setApiKey: (apiKey: string) => void
 
+  model: string
+  setModel: (language: string) => void
+
   markDescGen: boolean
   setMarkDescGen: (markDescGen: boolean) => void
 
@@ -29,14 +32,14 @@ interface SettingState {
   codeTheme: string
   setCodeTheme: (codeTheme: string) => void
 
-  tesseractList: string[]
-  setTesseractList: (tesseractList: string[]) => void
+  tesseractList: string
+  setTesseractList: (tesseractList: string) => void
 
   screenshotShortcut: string
   setScreenshotShortcut: (screenshotShortcut: string) => void
 
   githubUsername: string
-  setGithubUsername: (githubUsername: string) => void
+  setGithubUsername: (githubUsername: string) => Promise<void>
 
   accessToken: string
   setAccessToken: (accessToken: string) => void
@@ -73,6 +76,9 @@ const useSettingStore = create<SettingState>((set, get) => ({
   apiKey: '',
   setApiKey: (apiKey: string) => set({ apiKey }),
 
+  model: 'gpt-4o-mini',
+  setModel: (model: string) => set({ model }),
+
   markDescGen: true,
   setMarkDescGen: (markDescGen: boolean) => set({ markDescGen }),
 
@@ -85,14 +91,18 @@ const useSettingStore = create<SettingState>((set, get) => ({
   codeTheme: 'atom',
   setCodeTheme: (codeTheme: string) => set({ codeTheme }),
 
-  tesseractList: [],
-  setTesseractList: (tesseractList: string[]) => set({ tesseractList }),
+  tesseractList: 'eng,chi_sim',
+  setTesseractList: (tesseractList: string) => set({ tesseractList }),
 
   screenshotShortcut: 'Command+Shift+R',
   setScreenshotShortcut: (screenshotShortcut: string) => set({ screenshotShortcut }),
 
   githubUsername: '',
-  setGithubUsername: (githubUsername: string) => set({ githubUsername }),
+  setGithubUsername: async(githubUsername: string) => {
+    set({ githubUsername })
+    const store = await Store.load('store.json');
+    store.set('githubUsername', githubUsername)
+  },
 
   accessToken: '',
   setAccessToken: (accessToken: string) => set({ accessToken }),

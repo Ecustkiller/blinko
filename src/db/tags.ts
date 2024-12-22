@@ -40,7 +40,8 @@ export async function getTags() {
 
   // 获取 tags 对应的 marks 数量
   for (const tag of tags) {
-    const res = await db.select<{ total: number }[]>(`select count(*) as total from marks where tagId = ${tag.id}`)
+    // deleted = 0  
+    const res = await db.select<{ total: number }[]>(`select count(*) as total from marks where tagId = ${tag.id} and deleted = 0`)
     tag.total = res[0].total
   }
 

@@ -9,6 +9,7 @@ import { SearchItem } from "./search-item";
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import zh from 'dayjs/locale/zh-cn'
+import { Search } from "lucide-react";
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
@@ -57,25 +58,34 @@ export default function Page() {
   }, [allArticle, allMarks])
 
   return <div className="h-screen flex flex-col justify-center items-center overflow-y-auto">
-    <div className="w-full">
-      <Input
-        type="text"
-        
-        value={searchValue}
-        onChange={(e) => handleSearch(e)}
-        className="w-[560px] mx-auto my-4"
-        placeholder="搜索笔记和文章..."
-      />
+    <div className={`${searchValue ? 'border-b' : ''} w-full h-20 flex justify-center items-center`}>
+      <div className="relative">
+        <Input
+          type="text"
+          value={searchValue}
+          onChange={(e) => handleSearch(e)}
+          className="w-[560px] mx-auto pl-8 pr-24"
+          placeholder="搜索笔记和文章..."
+        />
+        <Search className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 select-none opacity-50" />
+        {
+          searchResult.length ? 
+          <p className="absolute right-2 top-1/2 text-xs -translate-y-1/2 select-none opacity-50">{searchResult.length} 个搜索结果</p> : null
+        }
+      </div>
     </div>
     {
-      searchResult.length > 0 ?
-      <div className="flex-1 w-full">
+      searchValue ?
+      <div className="flex-1 w-full overflow-y-auto">
         {
+          searchResult.length === 0 && searchValue ? 
+          <div className="text-center mt-12 text-gray-400 text-sm">暂无搜索结果</div> :
           searchResult.map((item: FuseResult<Partial<SearchResult>>) => {
             return <SearchItem key={item.refIndex} item={item} />
           })
         }
-      </div>: null
+      </div> :
+      null
     }
   </div>
 }

@@ -8,6 +8,7 @@ import { BaseDirectory, readFile } from "@tauri-apps/plugin-fs";
 import { CloudUpload, LoaderCircle } from "lucide-react";
 import { ExposeParam } from "md-editor-rt";
 import { RefObject, useState } from "react";
+import { diffWordsWithSpace } from 'diff';
 
 export default function Sync({mdRef}: {mdRef: RefObject<ExposeParam>}) {
   const { activeFilePath, currentArticle } = useArticleStore()
@@ -21,14 +22,14 @@ export default function Sync({mdRef}: {mdRef: RefObject<ExposeParam>}) {
     if (commits?.length > 0) {
       const lastCommit = commits[0]
       const latContent = await getFiles({path: `${activeFilePath}?ref=${lastCommit.sha}`, repo: RepoNames.article})
+      const diff = diffWordsWithSpace(decodeBase64ToString(latContent?.content || ''), currentArticle)
+      const addDiff = diff.filter(item => item.added).map(item => item.value).join('')
+      const removeDiff = diff.filter(item => item.removed).map(item => item.value).join('')
       const text = `
-        对比两篇文章：
-        ---
-        本次修改后的文章：${currentArticle}
-        ---
-        上次提交文章：${decodeBase64ToString(latContent?.content || '')}
-        ---
-        对比后对本次修改返回一条标准的提交描述，仅返回描述内容，字数不能超过30个字。
+        根据两篇内容的diff：
+        增加了内容：${addDiff}
+        删除了内容：${removeDiff}
+        对比后对本次修改返回一条标准的提交描述，仅返回描述内容，字数不能超过50个字。
       `
       message = (await fetchAi(text)).choices[0].message.content
     }
@@ -49,7 +50,11 @@ export default function Sync({mdRef}: {mdRef: RefObject<ExposeParam>}) {
       repo: RepoNames.article
     })
     if (uploadRes?.status === 200 || uploadRes?.status === 201) {
-      toast({title: '同步成功', description: uploadRes.data?.commit.message})
+      if (uploadRes.data.content?.sha === sha) {
+        toast({title: '内容未改变，无需提交', variant: 'destructive'})
+      } else {
+        toast({title: '同步成功', description: uploadRes.data?.commit.message})
+      }
     }
     setLoading(false)
   }

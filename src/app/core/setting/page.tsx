@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Store } from "@tauri-apps/plugin-store"
-import { Suspense, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "@/hooks/use-toast"
 import { debounce, upperFirst } from 'lodash-es'
 import { SettingTab } from "./setting-tab"
@@ -21,6 +21,7 @@ import { config } from "./config"
 import { SettingRender } from "./setting-render"
 import { Separator } from "@/components/ui/separator"
 import useSettingStore from "@/stores/setting"
+import { useSearchParams } from "next/navigation";
 
 const flatConfig = config.flatMap(item => item.settings)
 
@@ -33,7 +34,10 @@ const formSchema = z.object(flatConfig.reduce((acc, item) => {
 
 export default function Page() {
   const [isInitialRender, setIsInitialRender] = useState(false)
+  const [currentAnchor, setCurrentAnchor] = useState('about')
+  const [showOutline, setShowOutline] = useState(false)
   const settingStore = useSettingStore()
+  const parmas = useSearchParams()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -79,16 +83,25 @@ export default function Page() {
     initFormDefaultValues()
   }, [])
 
+  useEffect(() => {
+    const anchor = parmas.get('anchor')
+    if (anchor) {
+      setCurrentAnchor(anchor)
+      setShowOutline(true)
+      setTimeout(() => {
+        setShowOutline(false)
+      }, 2000);
+    }
+  }, [parmas])
+
   return <div className="flex">
-    <Suspense>
-      <SettingTab />
-    </Suspense>
+    <SettingTab />
     <Form {...form}>
-      <form onChange={debounceSubmit} id="setting-form" className="space-y-4 p-4 flex-1 h-screen overflow-y-scroll">
+      <form onChange={debounceSubmit} id="setting-form" className="space-y-4 p-2 flex-1 h-screen overflow-y-scroll">
         {
           config.map(item => {
             return (
-              <div key={item.anchor}>
+              <div key={item.anchor} className={`${item.anchor === currentAnchor ? showOutline ? 'outline-dashed' : '' : ''} p-2`}>
                 <SettingTitle title={item.title} anchor={item.anchor} icon={item.icon} />
                 {
                   item.settings.map((setting, index) => {  
@@ -101,7 +114,7 @@ export default function Page() {
                             <FormItem className={`${setting.layout === 'horizontal' ? 'flex-row items-center' : 'flex-col'} flex justify-between mt-4`}>
                               <div>
                                 <FormLabel>{setting.title}</FormLabel>
-                                <FormDescription>{setting.desc}</FormDescription>
+                                <FormDescription className="my-1">{setting.desc}</FormDescription>
                               </div>
                               <FormControl>
                                 <SettingRender setting={setting} field={field} />
@@ -111,7 +124,7 @@ export default function Page() {
                           )}
                         />
                         {
-                          index !== item.settings.length - 1 && <Separator className="my-4" />
+                          index !== item.settings.length - 1 && <Separator className="my-2" />
                         }
                       </div>
                     )

@@ -25,6 +25,7 @@ export default function Page() {
   }
 
   async function success() {
+    await unregister('Esc');
     const path = await invoke('screenshot_save', {
       x: (crop?.x || 0) * scale,
       y: ((crop?.y || 0) + y) * scale,
@@ -42,6 +43,7 @@ export default function Page() {
     }
     await register('Esc', async (e) => {
       if (e.state === 'Released') {
+        await unregister('Esc');
         const window = getCurrentWebviewWindow()
         await window.close()
       }
@@ -67,12 +69,6 @@ export default function Page() {
       <ReactCrop crop={crop} onChange={c => setCrop(c)} ruleOfThirds={true} renderSelectionAddon={Toolbar}>
         <LocalImage onLoad={setScreen} className="w-screen" style={{ transform: `translateY(-${y}px)` }} src="/temp_screenshot.png" alt="" />
       </ReactCrop>
-      <p className="fixed bottom-0 right-0 text-white grid gap-2 text-right py-1 px-4 overflow-hidden">
-        <span>x: {crop?.x}</span>
-        <span>y: {crop?.y}</span>
-        <span>width: {crop?.width}{crop?.unit}</span>
-        <span>height: {crop?.height}{crop?.unit}</span>
-      </p>
     </div>
   )
 }

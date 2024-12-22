@@ -8,6 +8,20 @@ export function uint8ArrayToBase64(data: Uint8Array) {
   return Buffer.from(data).toString('base64');
 }
 
+// File 转换 Base64
+export async function fileToBase64(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      // 删除前缀
+      const base64 = reader.result?.toString().replace(/^data:image\/\w+;base64,/, '');
+      resolve(base64 || '');
+    }
+    reader.onerror = error => reject(error);
+  });
+}
+
 export function decodeBase64ToString(str: string){
   return decodeURIComponent(atob(str).split('').map(function (c) {
     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);

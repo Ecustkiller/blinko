@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { UserInfo } from "@/lib/github.types";
 import { Button } from "./ui/button";
 import { OpenBroswer } from "@/app/core/setting/open-broswer";
+import { useRouter } from "next/navigation";
 
 export default function AppStatus() {
   const { accessToken, setGithubUsername } = useSettingStore()
@@ -15,6 +16,8 @@ export default function AppStatus() {
   const [userInfo, setUserInfo] = useState<UserInfo>()
   const [imageRepoStatus, setImageRepoStatus] = useState(false)
   const [articleRepoStatus, setArticleRepoStatus] = useState(false)
+
+  const router = useRouter()
 
   async function handleGetUserInfo() {
     setLoading(true)
@@ -41,9 +44,15 @@ export default function AppStatus() {
     setLoading(false)
   }
 
+  function routerToSetting() {
+    router.push('/core/setting?anchor=sync', { scroll: false });
+  }
+
   useEffect(() => {
     if (accessToken) {
       handleGetUserInfo()
+    } else {
+      setUserInfo(undefined)
     }
   }, [accessToken])
 
@@ -79,7 +88,7 @@ export default function AppStatus() {
         </PopoverContent>
       </Popover>
       <AvatarFallback className="rounded-none">
-        <Button size="icon" onClick={handleGetUserInfo}>
+        <Button size="icon" onClick={routerToSetting}>
           {
             loading ? 
               <LoaderPinwheel className={`${loading ? 'animate-spin' : ''}`} /> :

@@ -2,26 +2,31 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator,
 import { Input } from "@/components/ui/input";
 import useArticleStore, { DirTree } from "@/stores/article";
 import { invoke } from "@tauri-apps/api/core";
-import { BaseDirectory, remove, rename } from "@tauri-apps/plugin-fs";
+import { BaseDirectory, mkdir, remove, rename } from "@tauri-apps/plugin-fs";
 import { appDataDir } from '@tauri-apps/api/path';
 import { ChevronRight, Cloud, Folder, FolderDown } from "lucide-react"
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "@/hooks/use-toast";
+import { cloneDeep } from "lodash-es";
 
 export function FolderItem({ item }: { item: DirTree }) {
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditing, setIsEditing] = useState(item.isEditing)
   const [name, setName] = useState(item.name)
   const [isDragging, setIsDragging] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
-  const { activeFilePath, loadFileTree, setActiveFilePath, collapsibleList, setCollapsibleList } = useArticleStore()
+  const { activeFilePath, loadFileTree, setActiveFilePath, collapsibleList, setCollapsibleList, fileTree, setFileTree } = useArticleStore()
   const path = item.parent?.name ? item.parent.name + '/' + item.name : item.name
 
   async function handleDeleteFolder(evnet: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     evnet.stopPropagation()
-    try{
+    try {
       await remove(`article/${path}`, { baseDir: BaseDirectory.AppData })
-      await loadFileTree()
+      const index = fileTree.findIndex(file => file.name === item.name)
+      if (index!== -1) {
+        fileTree.splice(index, 1)
+        setFileTree(fileTree)
+      }
     } catch {
       toast({
         title: '删除失败',
@@ -37,10 +42,42 @@ export function FolderItem({ item }: { item: DirTree }) {
   }
 
   async function handleRename() {
-    const name = inputRef.current?.value
-    if (name && name !== item.name) {
-      await rename(`article/${item.name}`, `article/${name}` ,{ newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData})
-      await loadFileTree()
+    const name = inputRef.current?.value.replace(/ /g, '_') as string
+    if (name !== '' && item.name && name !== item.name) {
+      if (name && name !== item.name) {
+        await loadFileTree()
+      }
+      await rename(`article/${item.name}`, `article/${name}`, { newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData })
+      const cacheTree = cloneDeep(fileTree)
+      const index = cacheTree.findIndex(file => file.name === item.name)
+      if (index !== -1) {
+        cacheTree.splice(index, 1, {
+          name,
+          parent: undefined,
+          isEditing: false,
+          isLocale: true,
+          isDirectory: true,
+          isFile: false,
+          isSymlink: false
+        })
+        setFileTree(cacheTree)
+      }
+    } else if (name !== '' && !fileTree.map(item => item.name).includes(name)) {
+      await mkdir(`article/${name}`, { baseDir: BaseDirectory.AppData })
+      const cacheTree = cloneDeep(fileTree)
+      cacheTree.splice(0, 1, {
+        name,
+        parent: undefined,
+        isEditing: false,
+        isLocale: true,
+        isDirectory: true,
+        isFile: false,
+        isSymlink: false
+      })
+      setFileTree(cacheTree)
+    } else {
+      fileTree.splice(0, 1)
+      setFileTree(fileTree)
     }
     setIsEditing(false)
   }
@@ -50,14 +87,14 @@ export function FolderItem({ item }: { item: DirTree }) {
     invoke('show_in_folder', { path: `${appDir}/article/${path}` })
   }
 
-  async function handleDrop (e: React.DragEvent<HTMLDivElement>) {
+  async function handleDrop(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault()
     const renamePath = e.dataTransfer?.getData('text')
     if (renamePath) {
       const filename = renamePath.slice(renamePath.lastIndexOf('/') + 1)
       const oldPaht = `article/${renamePath}`;
       const newPath = `article/${path}/${filename}`;
-      await rename(oldPaht, newPath ,{ newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData})
+      await rename(oldPaht, newPath, { newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData })
       loadFileTree()
       if (renamePath === activeFilePath && !collapsibleList.includes(item.name)) {
         setCollapsibleList(item.name, true)
@@ -65,7 +102,7 @@ export function FolderItem({ item }: { item: DirTree }) {
       }
     }
   }
-  
+
   function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
     setIsDragging(true)
@@ -76,6 +113,13 @@ export function FolderItem({ item }: { item: DirTree }) {
     setIsDragging(false)
   }
 
+  useEffect(() => {
+    if (item.isEditing) {
+      setName(name)
+      setTimeout(() => inputRef.current?.focus(), 300);
+    }
+  }, [item])
+
   return (
     <CollapsibleTrigger className="w-full">
       <ContextMenu>
@@ -83,36 +127,41 @@ export function FolderItem({ item }: { item: DirTree }) {
           <div className={`${isDragging ? 'file-on-drop' : ''} file-manange-item flex`}>
             <ChevronRight className="transition-transform size-4 ml-1" />
             {
-              isEditing ? 
-              <>
-                {
-                  item.isLocale ? 
-                    <Folder className="size-4" /> :
-                    <FolderDown className="size-4" />
-                }
-                <Input
-                  ref={inputRef}
-                  className="h-6 rounded-sm"
-                  value={name}
-                  onBlur={handleRename}
-                  onChange={(e) => { setName(e.target.value) }}
-                />
-              </> :
-              <div 
-                onDrop={(e) => handleDrop(e)}
-                onDragOver={e => handleDragOver(e)}
-                onDragLeave={(e) => handleDragleave(e)}
-                className={`${item.isLocale ? '' : 'opacity-50'} flex gap-1 items-center flex-1`}
-              >
-                {
-                item.isLocale ? 
-                  <Folder className="size-4" /> :
-                  <FolderDown className="size-4" />
-                }
-                <span className="select-none text-xs line-clamp-1">{item.name}</span>
-              </div>
+              isEditing ?
+                <>
+                  {
+                    item.isLocale ?
+                      <Folder className="size-4" /> :
+                      <FolderDown className="size-4" />
+                  }
+                  <Input
+                    ref={inputRef}
+                    className="h-5 rounded-sm text-xs px-1 font-normal flex-1 mr-1"
+                    value={name}
+                    onBlur={handleRename}
+                    onChange={(e) => { setName(e.target.value) }}
+                    onKeyDown={(e) => {
+                      if (e.code === 'Enter') {
+                        handleRename()
+                      }
+                    }}
+                  />
+                </> :
+                <div
+                  onDrop={(e) => handleDrop(e)}
+                  onDragOver={e => handleDragOver(e)}
+                  onDragLeave={(e) => handleDragleave(e)}
+                  className={`${item.isLocale ? '' : 'opacity-50'} flex gap-1 items-center flex-1`}
+                >
+                  {
+                    item.isLocale ?
+                      <Folder className="size-4" /> :
+                      <FolderDown className="size-4" />
+                  }
+                  <span className="select-none text-xs line-clamp-1">{item.name}</span>
+                </div>
             }
-            { item.sha && item.isLocale && <Cloud className="size-3 mr-2 opacity-30" /> } 
+            {item.sha && item.isLocale && <Cloud className="size-3 mr-2 opacity-30" />}
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent>
