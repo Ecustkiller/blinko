@@ -115,7 +115,7 @@ export function FileItem({ item }: { item: DirTree }) {
         setActiveFilePath(item.parent.name + '/' + name)
       } else {
         await writeTextFile(`article/${name}`, '', { baseDir: BaseDirectory.AppData })
-        cacheTree.push({
+        cacheTree.splice(0, 1, {
           name,
           parent: item.parent,
           isEditing: false,
