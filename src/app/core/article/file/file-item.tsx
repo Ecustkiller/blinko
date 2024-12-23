@@ -79,6 +79,7 @@ export function FileItem({ item }: { item: DirTree }) {
   async function handleRename() {
     // 将所有空格替换为下划线
     let name = inputRef.current?.value.replace(/ /g, '_')
+    const cacheTree = cloneDeep(fileTree)
     if (name && item.name && name !== item.name) {
       await rename(`article/${item.name}`, `article/${name}` ,{ newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData})
       const cacheTree = cloneDeep(fileTree)
@@ -98,7 +99,6 @@ export function FileItem({ item }: { item: DirTree }) {
       setActiveFilePath(name)
     } else if (name) {
       if (!name.endsWith('.md')) name = name + '.md'
-      const cacheTree = cloneDeep(fileTree)
       if (item.parent) {
         await writeTextFile(`article/${item.parent.name}/${name}`, '', { baseDir: BaseDirectory.AppData })
         const parentIndex = cacheTree.findIndex(file => file.name === item.parent?.name)
@@ -129,6 +129,21 @@ export function FileItem({ item }: { item: DirTree }) {
       }
       setCurrentArticle('')
       setIsEditing(false)
+    } else {
+      if (item.parent) {
+        const index = cacheTree.findIndex(file => file.name === item.parent?.name)
+        const fileIndex = cacheTree[index].children?.findIndex(file => file.name === item.name)
+        if (fileIndex!== undefined && fileIndex!== -1) {
+          cacheTree[index].children?.splice(fileIndex, 1)
+        }
+        setFileTree(cacheTree)
+      } else {
+        const index = cacheTree.findIndex(file => file.name === item.name)
+        if (index!== -1) {
+          cacheTree.splice(index, 1)
+        }
+        setFileTree(cacheTree)
+      }
     }
   }
 
