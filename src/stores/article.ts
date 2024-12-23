@@ -152,18 +152,40 @@ const useArticleStore = create<NoteState>((set, get) => ({
     set({ fileTree })
   },
   newFile: async () => {
-    const newDir: DirTree = {
-      name: '',
-      isFile: true,
-      isSymlink: false,
-      parent: undefined,
-      isEditing: true,
-      isLocale: true,
-      isDirectory: false,
+    // 判断 activeFilePath 是否存在 parent
+    if (get().activeFilePath.includes('/')) {
+      const dirPath = get().activeFilePath.split('/')[0]
+      const dirIndex = get().fileTree.findIndex(item => item.name === dirPath)
+      if (dirIndex!== undefined && dirIndex!== -1) {
+        const fileTree = get().fileTree
+        fileTree[dirIndex].isEditing = true
+        const newFile: DirTree = {
+          name: '',
+          isFile: true,
+          isSymlink: false,
+          parent: fileTree[dirIndex],
+          isEditing: true,
+          isDirectory: false,
+          isLocale: true,
+        }
+        fileTree[dirIndex].children?.unshift(newFile)
+        set({ fileTree })
+      }
+    } else {
+      // 不存在 parent，直接在根目录下创建
+      const newFile: DirTree = {
+        name: '',
+        isFile: true,
+        isSymlink: false,
+        parent: undefined,
+        isEditing: true,
+        isDirectory: false,
+        isLocale: true,
+      }
+      const fileTree = get().fileTree
+      fileTree.unshift(newFile)
+      set({ fileTree })
     }
-    const fileTree = get().fileTree
-    fileTree.unshift(newDir)
-    set({ fileTree })
   },
 
   collapsibleList: [],

@@ -1,7 +1,6 @@
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { Input } from "@/components/ui/input";
 import useArticleStore, { DirTree } from "@/stores/article";
-import { invoke } from "@tauri-apps/api/core";
 import { BaseDirectory, mkdir, remove, rename } from "@tauri-apps/plugin-fs";
 import { appDataDir } from '@tauri-apps/api/path';
 import { ChevronRight, Cloud, Folder, FolderDown } from "lucide-react"
@@ -9,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "@/hooks/use-toast";
 import { cloneDeep } from "lodash-es";
+import { open } from "@tauri-apps/plugin-shell";
 
 export function FolderItem({ item }: { item: DirTree }) {
   const [isEditing, setIsEditing] = useState(item.isEditing)
@@ -84,7 +84,7 @@ export function FolderItem({ item }: { item: DirTree }) {
 
   async function handleShowFileManager() {
     const appDir = await appDataDir()
-    invoke('show_in_folder', { path: `${appDir}/article/${path}` })
+    open(`${appDir}/article/${path}`)
   }
 
   async function handleDrop(e: React.DragEvent<HTMLDivElement>) {
@@ -166,7 +166,7 @@ export function FolderItem({ item }: { item: DirTree }) {
         </ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuItem inset onClick={handleShowFileManager}>
-            查看
+            查看目录
           </ContextMenuItem>
           <ContextMenuSeparator />
           <ContextMenuItem inset>

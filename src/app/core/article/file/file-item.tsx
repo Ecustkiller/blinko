@@ -86,7 +86,7 @@ export function FileItem({ item }: { item: DirTree }) {
       if (index !== -1) {
         cacheTree.splice(index, 1, {
           name,
-          parent: undefined,
+          parent: item.parent,
           isEditing: false,
           isLocale: true,
           isDirectory: false,
@@ -98,19 +98,35 @@ export function FileItem({ item }: { item: DirTree }) {
       setActiveFilePath(name)
     } else if (name) {
       if (!name.endsWith('.md')) name = name + '.md'
-      await writeTextFile(`article/${name}`, '', { baseDir: BaseDirectory.AppData })
       const cacheTree = cloneDeep(fileTree)
-      cacheTree.splice(0, 1, {
-        name,
-        parent: undefined,
-        isEditing: false,
-        isLocale: true,
-        isDirectory: false,
-        isFile: true,
-        isSymlink: false
-      })
-      setFileTree(cacheTree)
-      setActiveFilePath(name)
+      if (item.parent) {
+        await writeTextFile(`article/${item.parent.name}/${name}`, '', { baseDir: BaseDirectory.AppData })
+        const parentIndex = cacheTree.findIndex(file => file.name === item.parent?.name)
+        cacheTree[parentIndex].children?.splice(0, 1, {
+          name,
+          parent: item.parent,
+          isEditing: false,
+          isLocale: true,
+          isDirectory: false,
+          isFile: true,
+          isSymlink: false
+        })
+        setFileTree(cacheTree)
+        setActiveFilePath(item.parent.name + '/' + name)
+      } else {
+        await writeTextFile(`article/${name}`, '', { baseDir: BaseDirectory.AppData })
+        cacheTree.push({
+          name,
+          parent: item.parent,
+          isEditing: false,
+          isLocale: true,
+          isDirectory: false,
+          isFile: true,
+          isSymlink: false
+        })
+        setFileTree(cacheTree)
+        setActiveFilePath(name)
+      }
       setCurrentArticle('')
       setIsEditing(false)
     }
