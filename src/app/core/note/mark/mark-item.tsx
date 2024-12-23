@@ -20,12 +20,12 @@ import { LocalImage } from "@/components/local-image";
 import { fetchAiDesc } from "@/lib/ai";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { appDataDir } from "@tauri-apps/api/path";
-import { invoke } from "@tauri-apps/api/core";
+// import { invoke } from "@tauri-apps/api/core";
 import { ImageUp } from "lucide-react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import { convertImage } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
-
+import { open } from "@tauri-apps/plugin-shell";
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
@@ -185,7 +185,17 @@ export function MarkItem({mark}: {mark: Mark}) {
   async function handelShowInFolder() {
     const appDir = await appDataDir()
     const path = mark.type === 'scan' ? 'screenshot' : 'image'
-    invoke('show_in_folder', { path: `${appDir}/${path}/${mark.url}` })
+    open(`${appDir}/${path}`)
+  }
+
+  async function handelShowInFile() {
+    const appDir = await appDataDir()
+    const path = mark.type === 'scan' ? 'screenshot' : 'image'
+    let filename = mark.url
+    if (mark.url.includes('http')) {
+      filename = mark.url.split('/').pop() || '';
+    }
+    open(`${appDir}/${path}/${filename}`)
   }
 
   async function handleCopyLink() {
@@ -229,6 +239,9 @@ export function MarkItem({mark}: {mark: Mark}) {
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem inset disabled={mark.type === 'text'} onClick={handelShowInFolder}>
+          查看目录
+        </ContextMenuItem>
+        <ContextMenuItem inset disabled={mark.type === 'text'} onClick={handelShowInFile}>
           查看原文件
         </ContextMenuItem>
         {

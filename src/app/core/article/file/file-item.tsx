@@ -1,7 +1,6 @@
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { Input } from "@/components/ui/input";
 import useArticleStore, { DirTree } from "@/stores/article";
-import { invoke } from "@tauri-apps/api/core";
 import { BaseDirectory, remove, rename, writeTextFile } from "@tauri-apps/plugin-fs";
 import { appDataDir } from '@tauri-apps/api/path';
 import { Cloud, CloudDownload, File } from "lucide-react"
@@ -10,6 +9,8 @@ import { ask } from '@tauri-apps/plugin-dialog';
 import { deleteFile } from "@/lib/github";
 import { RepoNames } from "@/lib/github.types";
 import { cloneDeep } from "lodash-es";
+import { open } from "@tauri-apps/plugin-shell";
+
 export function FileItem({ item }: { item: DirTree }) {
   const [isEditing, setIsEditing] = useState(item.isEditing)
   const [name, setName] = useState(item.name)
@@ -117,7 +118,7 @@ export function FileItem({ item }: { item: DirTree }) {
 
   async function handleShowFileManager() {
     const appDir = await appDataDir()
-    invoke('show_in_folder', { path: `${appDir}/article/${path}` })
+    open(`${appDir}/article${item.parent? '/'+item.parent.name : ''}`)
   }
 
   async function handleDragStart(ev: React.DragEvent<HTMLDivElement>) {
@@ -175,7 +176,7 @@ export function FileItem({ item }: { item: DirTree }) {
       </ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuItem inset onClick={handleShowFileManager}>
-          查看原文件
+          查看目录
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem inset>

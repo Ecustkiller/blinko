@@ -2,8 +2,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 mod screenshot;
 use screenshot::{screenshot, screenshot_save};
-mod showfile;
-use showfile::show_in_folder;
 
 fn main() {
     tauri::Builder::default()
@@ -15,7 +13,6 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             screenshot,
             screenshot_save,
-            show_in_folder
         ])
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_store::Builder::new().build())
