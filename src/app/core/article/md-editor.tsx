@@ -7,6 +7,7 @@ import useSettingStore from '@/stores/setting';
 import CustomToolbar from './custom-toolbar/index';
 import { fileToBase64, uploadFile } from '@/lib/github';
 import { RepoNames } from '@/lib/github.types';
+import { toast } from '@/hooks/use-toast';
 
 export function MdEditor() {
   const ref = useRef<ExposeParam>(null);
@@ -26,9 +27,20 @@ export function MdEditor() {
   }
 
   async function onUploadImg(files: File[], callback: (res: string[]) => void) {
-    const res = await Promise.all(
+    const res = await uploadImages(files);
+    callback(res);
+  };
+
+  async function uploadImages(files: File[]) {
+    const list = await Promise.all(
       files.map((file) => {
         return new Promise<string>(async(resolve, reject) => {
+          if (!file.type.includes('image')) return
+          const t = toast({
+            title: '正在上传图片',
+            description: file.name,
+            duration: 600000,
+          })
           const fileBase64 = await fileToBase64(file)
           await uploadFile({
             ext: file.name.split('.')[1],
@@ -40,12 +52,31 @@ export function MdEditor() {
             resolve(url)
           }).catch(err => {
             reject(err)
+          }).finally(() => {
+            t.dismiss()
           })
         });
       })
     );
-    callback(res);
-  };
+    return list
+  }
+
+  async function dropHandler(e: DragEvent) {
+    e.preventDefault();
+    const files = e.dataTransfer?.files;
+    if (!files) return;
+    const fileArray = Array.from(files);
+    const res = await uploadImages(fileArray)
+    res.forEach(item => {
+      ref.current?.insert(() => {
+        return {
+          targetValue: `![](${item})\n\n`,
+          select: false,
+        };
+      })
+    })
+  }
+   
 
   useEffect(() => {
     setMdTheme(theme as Themes)
@@ -77,6 +108,7 @@ export function MdEditor() {
       value={value}
       onChange={handleSave}
       onUploadImg={onUploadImg}
+      onDrop={dropHandler}
     />;
   </div>
 }
