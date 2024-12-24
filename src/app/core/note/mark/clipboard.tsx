@@ -40,7 +40,6 @@ export function Clipboard() {
 
   async function handleImage() {
     const image = await readImageBase64()
-    await clear()
     const uint8Array = Uint8Array.from(atob(image), c => c.charCodeAt(0))
     await writeFile('clipboard.png', uint8Array, { baseDir: BaseDirectory.AppData })
     setFileSize(convertBytesToSize(uint8Array.length))
@@ -49,11 +48,11 @@ export function Clipboard() {
 
   async function handleText() {
     const text = await readText()
-    await clear()
     setText(text)
   }
 
   async function handleInset() {
+    await clear()
     setImage('')
     const queueId = uuid()
     // 获取文件后缀
@@ -91,7 +90,7 @@ export function Clipboard() {
       if (res) {
         setQueue(queueId, { progress: '通知 jsdelivr 缓存' });
         await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`)
-        mark.url = `https://fastly.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`
+        mark.url = `https://cdn.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`
       } else {
         mark.url = `${queueId}.png}`
       }
@@ -103,7 +102,8 @@ export function Clipboard() {
     getCurrentTag()
   }
 
-  function handleTextInset() {
+  async function handleTextInset() {
+    await clear()
     setText('')
     const mark: Partial<Mark> = {
       tagId: currentTagId,
@@ -117,10 +117,11 @@ export function Clipboard() {
     getCurrentTag()
   }
 
-  function handleCancle() {
+  async function handleCancle() {
     setImage('')
     setText('')
     setFileSize('')
+    await clear()
   }
 
   useEffect(() => {
