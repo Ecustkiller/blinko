@@ -5,7 +5,7 @@ import { Plus, TicketPlus } from "lucide-react";
 import { ExposeParam } from "md-editor-rt";
 import { RefObject } from "react";
 import { MarkWrapper } from "../../note/mark/mark-item";
-import { ClipboardImage } from "../../note/mark/clipboard-image";
+import { Clipboard } from "../../note/mark/clipboard";
 import { MarkLoading } from "../../note/mark/mark-loading";
 import useMarkStore from "@/stores/mark";
 import { Button } from "@/components/ui/button";
@@ -64,7 +64,7 @@ export default function MarkInsert({mdRef}: {mdRef: RefObject<ExposeParam>}) {
           <span className="text-xs text-zinc-500 font-normal ml-2 leading-5">消耗记录转化为内容插入到文章。</span>
         </div>
         <div className="max-h-[calc(100vh/1.5)] overflow-y-auto border-t">
-          <ClipboardImage />
+          <Clipboard />
           {
             queues.map(mark => {
               return (

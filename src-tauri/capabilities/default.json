@@ -88,6 +88,8 @@
     "global-shortcut:allow-unregister-all",
     "clipboard:allow-read-image-base64",
     "clipboard:read-all",
-    "clipboard:allow-clear"
+    "clipboard:allow-clear",
+    "clipboard:allow-write-text",
+    "clipboard:allow-start-monitor"
   ]
 }

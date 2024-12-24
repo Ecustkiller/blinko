@@ -26,8 +26,7 @@ tauri-plugin-store = "=2"
 tauri-plugin-fs = "=2.0.2"
 xcap = "=0.0.14"
 chrono = "=0.4.38"
-tauri-plugin-clipboard-manager = "=2.0.2"
-tauri-plugin-clipboard = "=2.1.11"
+tauri-plugin-clipboard = "=2.1.9"
 tauri-plugin-dialog = "=2"
 
 [dependencies.tauri-plugin-sql]

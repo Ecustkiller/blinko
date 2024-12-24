@@ -9,7 +9,7 @@ import React, { useEffect } from "react"
 import { MarkItem } from "./mark-item";
 import useMarkStore from "@/stores/mark";
 import { MarkLoading } from "./mark-loading";
-import { ClipboardImage } from "./clipboard-image";
+import { Clipboard } from "./clipboard";
 
 export function MarkList() {
   const { marks, fetchMarks, queues } = useMarkStore()
@@ -22,7 +22,7 @@ export function MarkList() {
     <SidebarContent>
       <SidebarGroup className="px-0">
         <SidebarGroupContent>
-          <ClipboardImage />
+          <Clipboard />
           {
             queues.map(mark => {
               return (
