@@ -173,7 +173,7 @@ export function FileItem({ item }: { item: DirTree }) {
         >
           {
             isEditing ? 
-            <div className="flex gap-1 items-center w-full">
+            <div className="flex gap-1 items-center w-full select-none">
               <span className={item.parent ? 'size-0' : 'size-4 ml-1'} />
               <File className="size-4" />
               <Input
