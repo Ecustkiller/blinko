@@ -12,8 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Store } from "@tauri-apps/plugin-store"
-import { useEffect, useState } from "react"
-import { toast } from "@/hooks/use-toast"
+import { useCallback, useEffect, useState } from "react"
 import { debounce, upperFirst } from 'lodash-es'
 import { SettingTab } from "./setting-tab"
 import { SettingTitle } from "./setting-title"
@@ -22,6 +21,7 @@ import { SettingRender } from "./setting-render"
 import { Separator } from "@/components/ui/separator"
 import useSettingStore from "@/stores/setting"
 import { useSearchParams } from "next/navigation";
+import { toast } from "@/hooks/use-toast"
 
 const flatConfig = config.flatMap(item => item.settings)
 
@@ -32,8 +32,9 @@ const formSchema = z.object(flatConfig.reduce((acc, item) => {
   };
 }, {}))
 
+let isInit = false
+
 export default function Page() {
-  const [isInitialRender, setIsInitialRender] = useState(false)
   const [currentAnchor, setCurrentAnchor] = useState('about')
   const [showOutline, setShowOutline] = useState(false)
   const settingStore = useSettingStore()
@@ -54,13 +55,18 @@ export default function Page() {
     for (const [key] of Object.entries(form.getValues())) {
       const value = await store.get(key)
       if (key && value !== undefined) {
+        console.log(key, value);
         form.setValue(key as keyof z.infer<typeof formSchema>, value as never)
+        const storeKey = `set${upperFirst(key)}` as keyof typeof settingStore
+        (settingStore[storeKey] as (value: unknown) => void)(value)
       }
     }
-    setIsInitialRender(true)
+    setTimeout(() => {
+      isInit = true
+    }, 500);
   }
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function submitHandler(values: z.infer<typeof formSchema>) {
     for (const [key, value] of Object.entries(values)) {
       const checkKey = key as keyof typeof settingStore
       const checkValue = settingStore[checkKey]
@@ -70,14 +76,9 @@ export default function Page() {
         const storeKey = `set${upperFirst(key)}` as keyof typeof settingStore
         (settingStore[storeKey] as (value: unknown) => void)(value)
         await store.save()
-        if (isInitialRender) {
-          toast({ title: "设置已保存", description: `${flatConfig.find(item => item.key === key)?.title}已更新。`, duration: 1000 })
-        }
       }
     }
   }
-
-  const debounceSubmit = debounce(() => form.handleSubmit(onSubmit)(), 2000)
 
   useEffect(() => {
     initFormDefaultValues()
@@ -94,10 +95,24 @@ export default function Page() {
     }
   }, [parmas])
 
+  const debounceToast = useCallback(debounce(() => {
+    toast({
+      title: '设置已保存',
+      variant: 'default',
+      duration: 1000,
+    })
+  }, 1000), [])
+
+  useEffect(() => {
+    if (isInit) {
+      debounceToast()
+    }
+  }, [settingStore])
+
   return <div className="flex">
     <SettingTab />
     <Form {...form}>
-      <form onChange={debounceSubmit} id="setting-form" className="space-y-4 p-2 flex-1 h-screen overflow-y-scroll">
+      <form onChange={() => form.handleSubmit(submitHandler)()} id="setting-form" className="space-y-4 p-2 flex-1 h-screen overflow-y-scroll">
         {
           config.map(item => {
             return (

@@ -56,7 +56,7 @@ const useSettingStore = create<SettingState>((set, get) => ({
     Object.entries(get()).forEach(async([key, value]) => {
       const res = await store.get(key)
       if (typeof value === 'function') return
-      if (res && key!== 'version') {
+      if (res !== undefined && key!== 'version') {
         set({ [key]: res })
       } else {
         await store.set(key, value)

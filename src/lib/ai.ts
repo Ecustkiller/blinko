@@ -43,7 +43,8 @@ export async function fetchAiModels() {
     method: 'GET',
     headers,
   };
-  return (await fetch('https://api.chatanywhere.tech/v1/models', requestOptions)).json()
+  return await fetch('https://api.chatanywhere.tech/v1/models', requestOptions)
+    .then(response => response.json())
 }
 
 export async function fetchAiStream(text: string, callback: (text: string) => void) {
