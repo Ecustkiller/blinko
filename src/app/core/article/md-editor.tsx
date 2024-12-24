@@ -15,7 +15,7 @@ export function MdEditor() {
   const { currentArticle, setCurrentArticle , saveCurrentArticle, activeFilePath } = useArticleStore()
   const [mdTheme, setMdTheme] = useState<Themes>('light')
   const { theme } = useTheme()
-  const { codeTheme, previewTheme, githubUsername } = useSettingStore()
+  const { codeTheme, previewTheme, githubUsername, jsdelivr } = useSettingStore()
   const [toolbar, setToolbar] = useState<ToolbarNames[]>([])
 
   async function handleSave(value: string) {
@@ -47,8 +47,11 @@ export function MdEditor() {
             file: fileBase64,
             repo: RepoNames.image
           }).then(async res => {
-            await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res?.data.content.name}`)
-            const url = `https://fastly.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res?.data.content.name}`
+            let url = res?.data.content.download_url
+            if (jsdelivr) {
+              await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res?.data.content.name}`)
+              url = `https://cdn.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res?.data.content.name}`
+            }
             resolve(url)
           }).catch(err => {
             reject(err)

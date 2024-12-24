@@ -33,19 +33,19 @@ export function ImageCard({file}: {file: GithubFile}) {
   }
 
   async function handleCopyLink() {
-    const fileLink = `https://fastly.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${file.name}`
+    const fileLink = `https://cdn.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${file.name}`
     navigator.clipboard.writeText(fileLink)
     toast({ title: '已复制 URL 到剪切板', description: fileLink })
   }
 
   async function handleCopyMarkdown() {
-    const fileLink = `![${file.name}](https://fastly.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${file.name})`
+    const fileLink = `![${file.name}](https://cdn.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${file.name})`
     navigator.clipboard.writeText(fileLink)
     toast({ title: '已复制 Markdown 到剪切板', description: fileLink })
   }
 
   async function handleCopyHTML() {
-    const fileLink = `<img src="https://fastly.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${file.name}" />`
+    const fileLink = `<img src="https://cdn.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${file.name}" />`
     navigator.clipboard.writeText(fileLink)
     toast({ title: '已复制 HTML 到剪切板', description: fileLink })
   }

@@ -71,7 +71,7 @@ export function ControlImage() {
       if (res) {
         setQueue(queueId, { progress: '通知 jsdelivr 缓存' });
         await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`)
-        mark.url = `https://fastly.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`
+        mark.url = `https://cdn.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`
       } else {
         mark.url = filename
       }

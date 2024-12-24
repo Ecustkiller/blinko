@@ -43,6 +43,9 @@ interface SettingState {
 
   accessToken: string
   setAccessToken: (accessToken: string) => void
+
+  jsdelivr: boolean
+  setJsdelivr: (jsdelivr: boolean) => void
 }
 
 
@@ -106,6 +109,9 @@ const useSettingStore = create<SettingState>((set, get) => ({
 
   accessToken: '',
   setAccessToken: (accessToken: string) => set({ accessToken }),
+
+  jsdelivr: true,
+  setJsdelivr: (jsdelivr: boolean) => set({ jsdelivr }),
 }))
 
 export default useSettingStore

@@ -111,6 +111,16 @@ export const config = [
         layout: 'vertical',
         type: 'input',
       },
+      {
+        title: 'jsDelivr 加速',
+        key: 'jsdelivr',
+        value: true,
+        desc: <>开启后，将使用 jsDelivr 加速图床，图片链接将替换为 jsDelivr 的链接，否则将使用 raw.githubusercontent.com。</>,
+        schema: z.boolean(),
+        disabled: false,
+        layout: 'horizontal',
+        type: 'switch',
+      },
     ],
   },
   {
