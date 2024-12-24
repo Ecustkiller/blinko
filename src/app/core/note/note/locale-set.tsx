@@ -2,7 +2,7 @@ import { TooltipButton } from "@/components/tooltip-button";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Globe } from "lucide-react";
+import { Languages } from "lucide-react";
 import React, { useEffect } from "react";
 import useNoteStore from "@/stores/note";
 import { locales } from "@/lib/locales";
@@ -22,7 +22,7 @@ export function LocaleSet() {
     <Popover>
       <PopoverTrigger asChild>
         <div>
-          <TooltipButton icon={<Globe />} tooltipText="语言" />
+          <TooltipButton icon={<Languages />} tooltipText="语言" />
         </div>
       </PopoverTrigger>
       <PopoverContent className="w-56" side="bottom" align="start">

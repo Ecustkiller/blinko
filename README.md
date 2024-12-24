@@ -132,3 +132,7 @@ Github 基于 Git 实现，所以天然支持版本管理，你可以在历史�
 - [ChatGPT GPT-API-free](https://github.com/chatanywhere/GPT_API_free)
 
 欢迎提交 PR 或 issue。
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=codexu/note-gen&type=Date)](https://star-history.com/#codexu/note-gen&Date)
