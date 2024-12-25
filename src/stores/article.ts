@@ -17,6 +17,10 @@ interface NoteState {
   activeFilePath: string 
   setActiveFilePath: (name: string) => void
 
+  html2md: boolean
+  initHtml2md: () => Promise<void>
+  setHtml2md: (html2md: boolean) => Promise<void>
+
   fileTree: DirTree[]
   fileTreeLoading: boolean
   setFileTree: (tree: DirTree[]) => void
@@ -55,6 +59,18 @@ const useArticleStore = create<NoteState>((set, get) => ({
     set({ activeFilePath: path })
     const store = await Store.load('store.json');
     await store.set('activeFilePath', path)
+  },
+
+  html2md: false,
+  initHtml2md: async () => {
+    const store = await Store.load('store.json');
+    const res = await store.get<boolean>('html2md')
+    set({ html2md: res || false })
+  },
+  setHtml2md: async (html2md: boolean) => {
+    set({ html2md })
+    const store = await Store.load('store.json');
+    store.set('html2md', html2md)
   },
 
   fileTree: [],

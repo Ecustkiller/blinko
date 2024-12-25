@@ -8,16 +8,24 @@ import CustomToolbar from './custom-toolbar/index';
 import { fileToBase64, uploadFile } from '@/lib/github';
 import { RepoNames } from '@/lib/github.types';
 import { toast } from '@/hooks/use-toast';
+import { hasHTML, readHtml, writeText } from "tauri-plugin-clipboard-api";
+import { listen, UnlistenFn } from '@tauri-apps/api/event';
+import TurndownService from 'turndown/lib/turndown.browser.es.js';
+import { gfm } from 'turndown-plugin-gfm/lib/turndown-plugin-gfm.browser.es.js';
+import CustomFooter from './custom-footer';
 
 export function MdEditor() {
   const ref = useRef<ExposeParam>(null);
   const [value, setValue] = useState('')
-  const { currentArticle, setCurrentArticle , saveCurrentArticle, activeFilePath } = useArticleStore()
+  const { currentArticle, setCurrentArticle , saveCurrentArticle, activeFilePath, html2md } = useArticleStore()
   const [mdTheme, setMdTheme] = useState<Themes>('light')
   const { theme } = useTheme()
   const { codeTheme, previewTheme, githubUsername, jsdelivr } = useSettingStore()
   const [toolbar, setToolbar] = useState<ToolbarNames[]>([])
+  const footers = [0];
 
+  const defFooters = [<CustomFooter key={"foot"} mdRef={ref} />];
+  
   async function handleSave(value: string) {
     if (value !== currentArticle) {
       setValue(value)
@@ -79,6 +87,19 @@ export function MdEditor() {
       })
     })
   }
+
+  async function revertHtml2Md() {
+    const hasHtml = await hasHTML()
+    if (hasHtml && html2md) {
+      const html = await readHtml()
+      const turndownService = new (TurndownService as any)({
+        bulletListMarker: '-',
+      })
+      turndownService.use(gfm)
+      const md = turndownService.turndown(html)
+      await writeText(md)
+    }
+  }
    
 
   useEffect(() => {
@@ -90,6 +111,17 @@ export function MdEditor() {
       setValue(currentArticle)
     }
   }, [currentArticle])
+
+  useEffect(() => {
+    let unlisten: UnlistenFn;
+    async function init() {
+      unlisten = await listen('tauri://focus', revertHtml2Md)
+    }
+    init()
+    return () => {
+      unlisten()
+    }
+  }, [html2md])
 
   return <div className='flex-1'>
     <CustomToolbar mdRef={ref} settings={{
@@ -108,6 +140,8 @@ export function MdEditor() {
       className='!border-none'
       noImgZoomIn
       toolbars={toolbar}
+      footers={footers}
+      defFooters={defFooters}
       value={value}
       onChange={handleSave}
       onUploadImg={onUploadImg}
