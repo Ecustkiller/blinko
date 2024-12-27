@@ -17,7 +17,7 @@ export function LocalImage({ onLoad, src, ...props }: React.ComponentProps<typeo
 
   React.useEffect(() => {
     getAppDataDir()
-  }, [])
+  }, [src])
 
   // 如果 loaclSrc 存在
   return (

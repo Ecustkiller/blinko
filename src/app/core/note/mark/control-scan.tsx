@@ -20,7 +20,7 @@ export function ControlScan() {
 
   async function createScreenShot() {
     const currentWindow = getCurrentWebviewWindow()
-    await currentWindow.minimize()
+    await currentWindow.hide()
 
     await invoke('screenshot')
     
@@ -36,7 +36,11 @@ export function ControlScan() {
     });
 
     webview.onCloseRequested(async () => {
-      await currentWindow.show()
+      if (!await currentWindow.isVisible()) {
+        await currentWindow.show()
+      } else {
+        await currentWindow.setFocus()
+      }
       unlisten()
     })
 
