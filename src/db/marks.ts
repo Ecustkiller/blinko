@@ -91,3 +91,8 @@ export async function delMark(id: number) {
   }
   return await db.execute(`update marks set deleted = 1, createdAt = ${Date.now()} where id = ${id}`)
 }
+
+export async function delMarkForever(id: number) {
+  const db = await getDb();
+  return await db.execute(`delete from marks where id = ${id}`)
+}

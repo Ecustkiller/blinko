@@ -1,5 +1,5 @@
 'use client'
-import { delMark, Mark, MarkType, restoreMark, updateMark } from "@/db/marks";
+import { delMark, delMarkForever, Mark, MarkType, restoreMark, updateMark } from "@/db/marks";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -160,6 +160,11 @@ export function MarkItem({mark}: {mark: Mark}) {
     getCurrentTag()
   }
 
+  async function handleDelForever() {
+    await delMarkForever(mark.id)
+    await fetchAllTrashMarks()
+  }
+
   async function handleRestore() {
     await restoreMark(mark.id)
     if (trashState) {
@@ -246,9 +251,14 @@ export function MarkItem({mark}: {mark: Mark}) {
         </ContextMenuItem>
         {
           trashState ? 
-          <ContextMenuItem inset onClick={handleRestore}>
-            <span className="text-red-900">还原</span>
-          </ContextMenuItem> :
+          <>
+            <ContextMenuItem inset onClick={handleRestore}>
+              还原
+            </ContextMenuItem>
+            <ContextMenuItem inset onClick={handleDelForever}>
+              <span className="text-red-900">彻底删除</span>
+            </ContextMenuItem>
+          </> :
           <ContextMenuItem inset onClick={handleDelMark}>
             <span className="text-red-900">删除</span>
           </ContextMenuItem>

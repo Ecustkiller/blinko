@@ -12,7 +12,7 @@ import { MarkLoading } from "./mark-loading";
 import { Clipboard } from "./clipboard";
 
 export function MarkList() {
-  const { marks, fetchMarks, queues } = useMarkStore()
+  const { marks, fetchMarks, queues, trashState } = useMarkStore()
 
   useEffect(() => {
     fetchMarks()
@@ -22,7 +22,10 @@ export function MarkList() {
     <SidebarContent>
       <SidebarGroup className="px-0">
         <SidebarGroupContent>
-          <Clipboard />
+          {
+            trashState ?
+            null : <Clipboard />
+          }
           {
             queues.map(mark => {
               return (
