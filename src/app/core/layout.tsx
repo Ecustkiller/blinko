@@ -5,6 +5,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import useSettingStore from "@/stores/setting"
 import { useEffect } from "react";
+import createTray from '../tray'
 
 export default function RootLayout({
   children,
@@ -14,6 +15,7 @@ export default function RootLayout({
   const { initSettingData } = useSettingStore()
   useEffect(() => {
     initSettingData()
+    createTray()
   }, [])
   return (
     <ThemeProvider

@@ -90,6 +90,7 @@
     "clipboard:read-all",
     "clipboard:allow-clear",
     "clipboard:allow-write-text",
-    "clipboard:allow-start-monitor"
+    "clipboard:allow-start-monitor",
+    "core:app:allow-default-window-icon"
   ]
 }

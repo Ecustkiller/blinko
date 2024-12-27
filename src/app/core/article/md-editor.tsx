@@ -119,7 +119,9 @@ export function MdEditor() {
     }
     init()
     return () => {
-      unlisten()
+      if (unlisten) {
+        unlisten()
+      }
     }
   }, [html2md])
 
