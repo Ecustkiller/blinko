@@ -20,7 +20,7 @@ export function FileToolbar() {
       <div>
         <TooltipButton
           icon={fileTreeLoading ? <LoaderCircle className="animate-spin size-4" /> : <FolderGit2 />}
-          tooltipText={fileTreeLoading ? '正在加载同步信息' : '打开文件夹'}
+          tooltipText={fileTreeLoading ? '正在加载同步信息' : '访问仓库'}
           disabled={githubUsername? false : true}
           onClick={openFolder}
         />
