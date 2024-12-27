@@ -96,3 +96,8 @@ export async function delMarkForever(id: number) {
   const db = await getDb();
   return await db.execute(`delete from marks where id = ${id}`)
 }
+
+export async function clearTrash() {
+  const db = await getDb();
+  return await db.execute(`delete from marks where deleted = 1`)
+}

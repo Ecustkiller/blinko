@@ -14,6 +14,7 @@ interface MarkState {
   setTrashState: (flag: boolean) => void
 
   marks: Mark[]
+  setMarks: (marks: Mark[]) => void
   fetchMarks: () => Promise<void>
   fetchAllTrashMarks: () => Promise<void>
 
@@ -33,6 +34,9 @@ const useMarkStore = create<MarkState>((set) => ({
   },
 
   marks: [],
+  setMarks: (marks) => {
+    set({ marks })
+  },
   fetchMarks: async () => {
     const store = await Store.load('store.json');
     const currentTagId = await store.get<number>('currentTagId')
