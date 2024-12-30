@@ -1,10 +1,25 @@
-# NoteGen
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 24px;">
+  <img src="https://cdn.jsdelivr.net/gh/codexu/note-gen@dev/app-icon.png" width="128" height="128" style="margin-bottom: 24px" />
+  <div style="display: flex; gap: 4px;">
+    <a href="https://github.com/codexu/note-gen/actions/workflows/release.yml">
+      <img src="https://github.com/codexu/note-gen/actions/workflows/release.yml/badge.svg?branch=release" />
+    </a>
+    <a href="https://github.com/codexu/note-gen/releases/latest">
+      <img src="https://img.shields.io/github/v/release/codexu/note-gen" />
+    </a>
+    <a href="https://img.shields.io/badge/version-alpha-orange">
+      <img src="https://img.shields.io/badge/version-alpha-orange" />
+    </a>
+    <a href="https://github.com/codexu/note-gen/releases/latest">
+      <img src="https://img.shields.io/github/downloads/codexu/note-gen/total" />
+    </a>
+    <a href="https://github.com/codexu/note-gen/commits/dev/">
+      <img src="https://img.shields.io/github/commit-activity/m/codexu/note-gen" />
+    </a>
+  </div>
+</div>
 
-[![publish](https://github.com/codexu/note-gen/actions/workflows/release.yml/badge.svg?branch=release)](https://github.com/codexu/note-gen/actions/workflows/release.yml)
-[![GitHub Release](https://img.shields.io/github/v/release/codexu/note-gen)](https://github.com/codexu/note-gen/releases/latest)
-[![Vsersion](https://img.shields.io/badge/version-alpha-orange)](https://img.shields.io/badge/version-alpha-orange)
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/codexu/note-gen/total)
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/codexu/note-gen)](https://github.com/codexu/note-gen/commits/dev/)
+# NoteGen
 
 NoteGen 是一个基于 Tauri + ChatGPT 的免费开源笔记 App，旨在帮助用户以**截图**、插图、文本的记录方式，快捷的保存碎片化知识，通过 AI 自动整理为一篇可读的笔记，通过内置的 Markdown 编辑器将 AI 笔记进行二次创作。笔记最终形态以文件存储于本地，同时也支持`同步`与`图床`功能，其基于 Github 实现，保证数据安全。
 
