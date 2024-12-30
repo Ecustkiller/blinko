@@ -16,22 +16,26 @@ import { extractTitle } from "@/lib/markdown"
 import useNoteStore from "@/stores/note"
 import useTagStore from "@/stores/tag"
 import { CheckedState } from "@radix-ui/react-checkbox"
-import { BaseDirectory, writeTextFile } from "@tauri-apps/plugin-fs"
+import { BaseDirectory, readDir, writeTextFile } from "@tauri-apps/plugin-fs"
 import { Store } from "@tauri-apps/plugin-store"
 import { FolderInput, TriangleAlert } from "lucide-react"
 import { useEffect, useState } from "react"
 import { redirect } from 'next/navigation'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
  
 export function NoteOutput() {
   const { currentNote } = useNoteStore()
   const { deleteTag, currentTagId } = useTagStore()
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('')
+  const [path, setPath] = useState('/')
+  const [folders, setFolders] = useState<string[]>([])
   const [isRemove, setIsRemove] = useState<CheckedState>(true)
 
   async function handleTransform() {
     const content = decodeURIComponent(currentNote?.content || '')
-    await writeTextFile(`article/${title.replace(/ /g, '_')}`, content, { baseDir: BaseDirectory.AppData })
+    const writeTo = `article${path}/${title.replace(/ /g, '_')}`
+    await writeTextFile(writeTo, content, { baseDir: BaseDirectory.AppData })
     const store = await Store.load('store.json');
     await store.set('activeFilePath', title)
     if (isRemove) {
@@ -41,9 +45,15 @@ export function NoteOutput() {
     redirect('/core/article')
   }
 
+  async function readArticleDir() {
+    const dirs = (await readDir('article', { baseDir: BaseDirectory.AppData })).filter(dir => dir.isDirectory).map(dir => `/${dir.name}`)
+    setFolders(dirs)
+  }
+
   useEffect(() => {
     setIsRemove(currentNote?.tagId !== 1)
     setTitle(extractTitle(currentNote?.content || '') + '.md')
+    readArticleDir()
   }, [currentNote])
 
   return (
@@ -60,7 +70,24 @@ export function NoteOutput() {
         </DialogHeader>
         <div className="flex flex-col gap-2 mt-2">
           <Label>文件名</Label>
-          <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+          <div className="flex border rounded-lg">
+            <Select value={path} onValueChange={setPath}>
+              <SelectTrigger className="w-[180px] border-none outline-none">
+                <SelectValue placeholder="选择文件夹" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="/">根目录</SelectItem>
+                  {
+                    folders.map((folder, index) => {
+                      return <SelectItem key={index} value={folder}>{folder}</SelectItem>
+                    })
+                  }
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Input className="border-none" value={title} onChange={(e) => setTitle(e.target.value)} />
+          </div>
           <div className="flex items-center space-x-2 mt-2">
             <Checkbox disabled={currentNote?.tagId === 1} id="terms" checked={isRemove} onCheckedChange={value => setIsRemove(value)} />
             <label
