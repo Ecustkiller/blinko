@@ -1,23 +1,22 @@
-<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 24px;">
-  <img src="https://cdn.jsdelivr.net/gh/codexu/note-gen@dev/app-icon.png" width="128" height="128" style="margin-bottom: 24px" />
-  <div style="display: flex; gap: 4px;">
-    <a href="https://github.com/codexu/note-gen/actions/workflows/release.yml">
-      <img src="https://github.com/codexu/note-gen/actions/workflows/release.yml/badge.svg?branch=release" />
-    </a>
-    <a href="https://github.com/codexu/note-gen/releases/latest">
-      <img src="https://img.shields.io/github/v/release/codexu/note-gen" />
-    </a>
-    <a href="https://img.shields.io/badge/version-alpha-orange">
-      <img src="https://img.shields.io/badge/version-alpha-orange" />
-    </a>
-    <a href="https://github.com/codexu/note-gen/releases/latest">
-      <img src="https://img.shields.io/github/downloads/codexu/note-gen/total" />
-    </a>
-    <a href="https://github.com/codexu/note-gen/commits/dev/">
-      <img src="https://img.shields.io/github/commit-activity/m/codexu/note-gen" />
-    </a>
-  </div>
-</div>
+<p align="center">
+  <img src="https://cdn.jsdelivr.net/gh/codexu/note-gen@dev/app-icon.png" width="128" height="128" />
+  <br />
+  <a href="https://github.com/codexu/note-gen/actions/workflows/release.yml">
+    <img src="https://github.com/codexu/note-gen/actions/workflows/release.yml/badge.svg?branch=release" />
+  </a>
+  <a href="https://github.com/codexu/note-gen/releases/latest">
+    <img src="https://img.shields.io/github/v/release/codexu/note-gen" />
+  </a>
+  <a href="https://img.shields.io/badge/version-alpha-orange">
+    <img src="https://img.shields.io/badge/version-alpha-orange" />
+  </a>
+  <a href="https://github.com/codexu/note-gen/releases/latest">
+    <img src="https://img.shields.io/github/downloads/codexu/note-gen/total" />
+  </a>
+  <a href="https://github.com/codexu/note-gen/commits/dev/">
+    <img src="https://img.shields.io/github/commit-activity/m/codexu/note-gen" />
+  </a>
+</p>
 
 # NoteGen
 
