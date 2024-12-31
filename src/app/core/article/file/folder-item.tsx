@@ -153,15 +153,13 @@ export function FolderItem({ item }: { item: DirTree }) {
                   onDragLeave={(e) => handleDragleave(e)}
                   className={`${item.isLocale ? '' : 'opacity-50'} flex gap-1 items-center flex-1`}
                 >
-                  {
-                    item.isLocale ?
-                      <Folder className="size-4" /> :
-                      <FolderDown className="size-4" />
-                  }
+                  <div className="relative">
+                    {item.isLocale ? <Folder className="size-4" /> : <FolderDown className="size-4" /> }
+                    {item.sha && item.isLocale && <Cloud className="size-2.5 absolute left-0 bottom-0 z-10 bg-primary-foreground" />}
+                  </div>
                   <span className="select-none text-xs line-clamp-1">{item.name}</span>
                 </div>
             }
-            {item.sha && item.isLocale && <Cloud className="size-3 mr-2 opacity-30" />}
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent>

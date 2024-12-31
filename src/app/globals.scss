@@ -91,6 +91,9 @@ html, body {
   @apply flex items-center gap-1 py-1 text-sm cursor-pointer w-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-black dark:text-white;
   &.active{
     @apply bg-third text-third-foreground dark:bg-third-foreground dark:text-white font-bold;
+    .bg-primary-foreground{
+      @apply bg-third dark:bg-third-foreground;
+    }
   }
 }
 .file-on-drop{

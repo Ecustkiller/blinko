@@ -209,16 +209,14 @@ export function FileItem({ item }: { item: DirTree }) {
             </div> :
             <span draggable onDragStart={handleDragStart}
               className={`${item.isLocale ? '' : 'opacity-50'} flex justify-between flex-1 select-none items-center gap-1 dark:hover:text-white`}>
-              <div className="flex flex-1 gap-1 select-none">
-                <span className={item.parent ? 'size-0' : 'size-4 ml-1'} />
-                {
-                  item.isLocale ? 
-                    <File className="size-4" /> :
-                    <CloudDownload className="size-4" />
-                }
+              <div className="flex flex-1 gap-1 select-none relative">
+                <span className={item.parent ? 'size-0' : 'size-4 ml-1'}></span>
+                <div className="relative">
+                  { item.isLocale ? <File className="size-4" /> : <CloudDownload className="size-4" /> }
+                  { item.sha && item.isLocale && <Cloud className="size-2.5 absolute left-0 bottom-0 z-10 bg-primary-foreground" /> }
+                </div>
                 <span className="text-xs flex-1 line-clamp-1">{item.name.slice(0, -3)}</span>
-              </div>
-              { item.sha && item.isLocale && <Cloud className="size-3 mr-2 opacity-30" /> } 
+              </div> 
             </span>
           }
         </div>
