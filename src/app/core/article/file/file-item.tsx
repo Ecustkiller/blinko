@@ -81,22 +81,40 @@ export function FileItem({ item }: { item: DirTree }) {
     let name = inputRef.current?.value.replace(/ /g, '_')
     const cacheTree = cloneDeep(fileTree)
     if (name && item.name && name !== item.name) {
-      await rename(`article/${item.name}`, `article/${name}` ,{ newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData})
-      const cacheTree = cloneDeep(fileTree)
-      const index = cacheTree.findIndex(file => file.name === item.name)
-      if (index !== -1) {
-        cacheTree.splice(index, 1, {
-          name,
-          parent: item.parent,
-          isEditing: false,
-          isLocale: true,
-          isDirectory: false,
-          isFile: true,
-          isSymlink: false
-        })
-        setFileTree(cacheTree)
+      if (item.parent) {
+        const parentIndex = cacheTree.findIndex(file => file.name === item.parent?.name)
+        const index = cacheTree[parentIndex].children?.findIndex(file => file.name === item.name)
+        if (index!== undefined && index!== -1) {
+          cacheTree[parentIndex].children?.splice(index, 1, {
+            name,
+            parent: item.parent,
+            isEditing: false,
+            isLocale: true,
+            isDirectory: false,
+            isFile: true,
+            isSymlink: false
+          })
+          setFileTree(cacheTree)
+          setActiveFilePath(item.parent.name + '/' + name)
+        }
+      } else {
+        await rename(`article/${item.name}`, `article/${name}` ,{ newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData})
+        const cacheTree = cloneDeep(fileTree)
+        const index = cacheTree.findIndex(file => file.name === item.name)
+        if (index !== -1) {
+          cacheTree.splice(index, 1, {
+            name,
+            parent: item.parent,
+            isEditing: false,
+            isLocale: true,
+            isDirectory: false,
+            isFile: true,
+            isSymlink: false
+          })
+          setFileTree(cacheTree)
+          setActiveFilePath(name)
+        }
       }
-      setActiveFilePath(name)
     } else if (name) {
       if (!name.endsWith('.md')) name = name + '.md'
       if (item.parent) {
