@@ -1,8 +1,6 @@
 'use client'
 import { fetchAiStream } from "@/lib/ai"
 import { useEffect, useState } from "react"
-import { MdPreview, Themes } from 'md-editor-rt';
-import { useTheme } from 'next-themes'
 import useMarkStore from "@/stores/mark";
 import { NoteHeader } from './note-header'
 import { NoteFooter } from "./note-footer";
@@ -10,18 +8,13 @@ import { initNotesDb, insertNote } from "@/db/notes";
 import useNoteStore from "@/stores/note";
 import { convertImage } from "@/lib/utils";
 import useTagStore from "@/stores/tag";
-import useSettingStore from "@/stores/setting";
+import Chat from "./chat";
 
 export function Note() {
   const [text, setText] = useState("")
-  const [mdTheme, setMdTheme] = useState<Themes>('light')
-  const { theme } = useTheme()
-  const [id] = useState('preview-only');
-
   const { fetchMarks, marks } = useMarkStore()
   const { currentTagId } = useTagStore()
   const { currentNote, fetchCurrentNote, setLoading, loading, clearCurrentNote, locale, count, fetchCurrentNotes } = useNoteStore()
-  const { codeTheme, previewTheme } = useSettingStore()
   
   useEffect(() => {
     initNotesDb()
@@ -30,10 +23,6 @@ export function Note() {
   useEffect(() => {
     fetchCurrentNote()
   }, [fetchCurrentNote])
-
-  useEffect(() => {
-    setMdTheme(theme as Themes)
-  }, [theme])
 
   useEffect(() => {
     const decodedText = decodeURIComponent(currentNote?.content || '')
@@ -107,16 +96,9 @@ export function Note() {
     await fetchAiStream(request_content, aiResponse)
   }
 
-  return <div className="flex flex-col flex-1">
+  return <div className="flex flex-col flex-1 relative items-center">
     <NoteHeader text={text} />
-    <MdPreview
-      id={id}
-      className="flex-1"
-      value={text}
-      theme={mdTheme}
-      codeTheme={codeTheme}
-      previewTheme={previewTheme}
-    />
+    <Chat />
     <NoteFooter gen={handleAi} />
   </div>
 }
