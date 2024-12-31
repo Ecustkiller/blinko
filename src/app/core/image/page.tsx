@@ -16,7 +16,7 @@ export default function Page() {
   const { fetchAllMarks } = useMarkStore()
 
   useEffect(() => {
-    if (checkSetting) {
+    if (checkSetting && images.length === 0) {
       getImages()
       fetchAllMarks()
     }
@@ -29,22 +29,23 @@ export default function Page() {
   }, [githubUsername, accessToken])
   
   return (
-    <div className="h-screen overflow-auto">
+    <div className="h-screen overflow-hidden flex flex-col">
       <ImageHeader />
-      {
-        checkSetting ? 
-        (
-          <div className="p-2 grid md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2">
-            {
-              images.map((file: GithubFile) => (
-                <ImageCard key={file.path} file={file} />
-              )) 
-            }
-          </div>
-        ): 
-        <NoData />
-      }
-      
+      <div className="flex-1 overflow-y-auto">
+        {
+          checkSetting ? 
+          (
+            <div className="p-2 grid md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2">
+              {
+                images.map((file: GithubFile) => (
+                  <ImageCard key={file.path} file={file} />
+                )) 
+              }
+            </div>
+          ): 
+          <NoData />
+        }
+      </div>
     </div>
   )
 }

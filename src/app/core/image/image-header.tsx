@@ -18,7 +18,7 @@ export function ImageHeader() {
   }
 
   return (
-    <header className="h-12 flex items-center justify-between gap-2 border-b px-4">
+    <header className="h-12 flex items-center justify-between gap-2 border-b px-4 bg-primary-foreground">
       <div className="flex items-center h-6 gap-1">
         <TooltipButton icon={<Link />} tooltipText="打开仓库" onClick={handleOpenBroswer} />
       </div>
