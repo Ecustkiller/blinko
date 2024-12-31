@@ -77,7 +77,9 @@ export function FileManager() {
   }
 
   useEffect(() => {
-    loadFileTree()
+    if (fileTree.length === 0) {
+      loadFileTree()
+    }
   }, [loadFileTree])
 
   return (
