@@ -1,55 +1,66 @@
-import { ChatType, Role } from '@/db/chats'
-import { Bot } from 'lucide-react'
+import useChatStore from '@/stores/chat'
+import useTagStore from '@/stores/tag'
+import { Bot, LoaderPinwheel } from 'lucide-react'
+import Image from 'next/image'
+import { useEffect } from 'react'
+import { Chat } from '@/db/chats'
 
-function Message({ role, type = 'chat', content }: { role: Role, type?: ChatType, content: string }) {
-  return (
-    <div className="flex w-full gap-4">
-      { role === 'system' && <Bot className="size-6" /> }
-      <div className='text-sm leading-6 flex-1'>
-        {
-          role === 'system' ? 
-          <div className="">
-            {type}{content}
-          </div> :
-          <div className="bg-primary text-primary-foreground px-4 py-2 rounded-lg float-right">
-            {content}
-          </div>
-        }
-      </div>
-    </div>
-  )
+export default function ChatWrapper() {
+  const { chats, init } = useChatStore()
+  const { currentTagId } = useTagStore()
+
+  useEffect(() => {
+    if (chats.length === 0) {
+      init(currentTagId)
+    }
+  }, [])
+
+  useEffect(() => {
+    const md = document.querySelector('#chats-wrapper')
+    if (md) md.scroll(0, md.scrollHeight)
+  }, [chats])
+
+  return <div id="chats-wrapper" className="flex-1 overflow-y-auto overflow-x-hidden w-full flex flex-col p-4 gap-6">
+    {
+      chats.map((chat, index) => {
+        return <Message key={index} chat={chat} />
+      })
+    }
+  </div>
 }
 
-export default function Chat() {
-  return <div className="flex-1 w-full flex flex-col p-4 gap-6">
-    <Message role='system' content={`Here are some of the recent pull requests in the microsoft/vscode repository:
-      Add character speed and attack
+function Message({ chat }: { chat: Chat }) {
+  const { chats, loading } = useChatStore()
+  const index = chats.findIndex(item => item.id === chat.id)
 
-      Author: faraon-bot
-      Created At: 2024-12-31T07:02:27Z
-      State: Open
-      Description: Add character class with speed and attack properties and methods to increase them.
-      Fix max call stack error when closing large outline
+  switch (chat.type) {
+    case 'clipboard-image':
+      return <ImageMessage image={chat.image} />
+  
+    default:
+      return (
+        <div className="flex w-full gap-4">
+          { chat.role === 'system' && (
+            loading && index === chats.length - 1 ? <LoaderPinwheel className="animate-spin" /> : <Bot />
+          ) }
+          <div className='text-sm leading-6 flex-1'>
+            {
+              chat.role === 'system' ? 
+              <div className="">
+                {chat.content}
+              </div> :
+              <div className="bg-primary text-primary-foreground px-4 py-2 rounded-lg float-right">
+                {chat.content}
+              </div>
+            }
+          </div>
+        </div>
+      )
+  }
+}
 
-      Author: faraon-bot
-      Created At: 2024-12-31T06:54:02Z
-      State: Open
-      Description: Related to #235889`} 
-    />
-    <Message role='user' content='Retrieve pull requests in microsoft/vscode.' />
-    <Message role='system' content={`Here are some of the recent pull requests in the microsoft/vscode repository:
-      Add character speed and attack
-
-      Author: faraon-bot
-      Created At: 2024-12-31T07:02:27Z
-      State: Open
-      Description: Add character class with speed and attack properties and methods to increase them.
-      Fix max call stack error when closing large outline
-
-      Author: faraon-bot
-      Created At: 2024-12-31T06:54:02Z
-      State: Open
-      Description: Related to #235889`} 
-    />
+function ImageMessage({ image = '' }: { image?: string }) {
+  return <div>
+    <Image src={image} width={0} height={0} alt="clipboard image" className="w-full object-cover" />
   </div>
 }
