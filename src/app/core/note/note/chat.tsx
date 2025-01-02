@@ -4,6 +4,8 @@ import { Bot, LoaderPinwheel } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect } from 'react'
 import { Chat } from '@/db/chats'
+import NotePreview from './note-preview'
+import './chat.scss'
 
 export default function ChatWrapper() {
   const { chats, init } = useChatStore()
@@ -17,7 +19,12 @@ export default function ChatWrapper() {
 
   useEffect(() => {
     const md = document.querySelector('#chats-wrapper')
-    if (md) md.scroll(0, md.scrollHeight)
+    if (md) {
+      md.scroll(0, md.scrollHeight)
+      setTimeout(() => {
+        md.scroll(0, md.scrollHeight)
+      }, 500)
+    }
   }, [chats])
 
   return <div id="chats-wrapper" className="flex-1 overflow-y-auto overflow-x-hidden w-full flex flex-col p-4 gap-6">
@@ -47,7 +54,7 @@ function Message({ chat }: { chat: Chat }) {
             {
               chat.role === 'system' ? 
               <div className="">
-                {chat.content}
+                <NotePreview text={chat.content || ''} />
               </div> :
               <div className="bg-primary text-primary-foreground px-4 py-2 rounded-lg float-right">
                 {chat.content}

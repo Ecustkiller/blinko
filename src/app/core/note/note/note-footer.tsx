@@ -2,10 +2,8 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
-import { CircleAlert, Link, Loader2, Package, Send } from "lucide-react"
-import useNoteStore from "@/stores/note"
+import { Link, Loader2, Send } from "lucide-react"
 import useSettingStore from "@/stores/setting"
-import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input"
 import useChatStore from "@/stores/chat"
 import useTagStore from "@/stores/tag"
@@ -14,13 +12,10 @@ import { fetchAiStream } from "@/lib/ai"
 
 export function NoteFooter({gen}: {gen: (text: string) => void}) {
   const [text, setText] = useState("")
-  const { locale } = useNoteStore()
-  const { apiKey, model } = useSettingStore()
+  const { apiKey } = useSettingStore()
   const { currentTagId } = useTagStore()
-  const { insert, updateChat, loading, setLoading, saveChat } = useChatStore()
+  const { insert, updateChat, loading, setLoading, saveChat, locale } = useChatStore()
   const { fetchMarks, marks } = useMarkStore()
-
-  const router = useRouter()
 
   async function handleSuccess() {
     gen(text)
@@ -55,13 +50,13 @@ export function NoteFooter({gen}: {gen: (text: string) => void}) {
     const imageMarks = marks.filter(item => item.type === 'image')
 
     const request_content = `
-      请你扮演一个笔记软件的智能助手，可以参考以下内容笔记的碎片记录，
+      请你扮演一个笔记软件的智能助手，可以参考以下内容笔记的记录，
       以下是通过截图后，使用OCR识别出的文字片段：
-      ${scanMarks.map(item => item.content).join(';\n\n')}。
+      ${scanMarks.map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')}。
       以下是通过文本复制记录的片段：
-      ${textMarks.map(item => item.content).join(';\n\n')}。
+      ${textMarks.map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')}。
       以下是插图记录的片段描述：
-      ${imageMarks.map(item => item.content).join(';\n\n')}。
+      ${imageMarks.map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')}。
       使用 ${locale} 语言，不许使用 markdown 语法，回复用户的信息：
       ${text}
     `
@@ -86,11 +81,6 @@ export function NoteFooter({gen}: {gen: (text: string) => void}) {
     setLoading(false)
   }
 
-
-  function handleSetting() {
-    router.push('/core/setting?anchor=ai', { scroll: false });
-  }
-
   return (
     <footer className="mb-4 border px-4 py-4 shadow-lg rounded-xl min-w-[500px] w-2/3 max-w-[800px] flex bg-primary-foreground h-14 gap-2 items-center">
       <Input
@@ -100,18 +90,6 @@ export function NoteFooter({gen}: {gen: (text: string) => void}) {
         onChange={(e) => setText(e.target.value)}
         placeholder="关联你的记录或笔记回答你的任何问题..."
       />
-      {
-        (model && apiKey) ?
-        <div className="flex items-center gap-1 text-sm text-zinc-500 cursor-pointer hover:underline" onClick={handleSetting}>
-          <Package className="size-4" />
-          {model}
-        </div> :
-        <div className="flex gap-1 items-center">
-          <Button variant="destructive" onClick={handleSetting}>
-            <CircleAlert /> 配置 API KEY
-          </Button>
-        </div>
-      }
       <Button variant={"ghost"} size={"icon"} disabled={loading} onClick={handleSuccess}>
         <Link />
       </Button>

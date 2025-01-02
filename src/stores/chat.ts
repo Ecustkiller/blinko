@@ -1,5 +1,7 @@
 import { create } from 'zustand'
 import { Chat, getChats, insertChat, updateChat } from '@/db/chats'
+import { Store } from '@tauri-apps/plugin-store';
+import { locales } from '@/lib/locales';
 
 interface ChatState {
   loading: boolean
@@ -10,6 +12,10 @@ interface ChatState {
   insert: (chat: Omit<Chat, 'id' | 'createdAt'>) => Promise<Chat | null> // 插入一条 chat
   updateChat: (chat: Chat) => void // 更新一条 chat
   saveChat: (chat: Chat) => Promise<void> // 保存一条 chat，用于动态 AI 回复结束后保存数据库
+
+  locale: string
+  getLocale: () => Promise<void>
+  setLocale: (locale: string) => void
 }
 
 const useChatStore = create<ChatState>((set, get) => ({
@@ -51,6 +57,18 @@ const useChatStore = create<ChatState>((set, get) => ({
   },
   saveChat: async (chat: Chat) => {
     updateChat(chat)
+  },
+
+  locale: locales[0],
+  getLocale: async () => {
+    const store = await Store.load('store.json');
+    const res = (await store.get<string>('note_locale')) || locales[0]
+    set({ locale: res })
+  },
+  setLocale: async (locale: string) => {
+    set({ locale })
+    const store = await Store.load('store.json');
+    await store.set('note_locale', locale)
   },
 }))
 

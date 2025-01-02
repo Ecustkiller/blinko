@@ -1,0 +1,11 @@
+#chats-wrapper{
+  .md-editor{
+    @apply text-xs;
+    .md-editor-preview-wrapper{
+      @apply p-0;
+      p, ul, ol, li {
+        @apply text-sm mb-1 leading-6;
+      }
+    }
+  }
+}

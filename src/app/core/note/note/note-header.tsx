@@ -1,44 +1,52 @@
 "use client"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import * as React from "react"
-import { Separator } from "@/components/ui/separator"
 import { LocaleSet } from './locale-set'
-import { CountSet } from './count-set'
-import { NoteHistory } from './note-history'
-import wordsCount from 'words-count';
-import useNoteStore from "@/stores/note"
 import dayjs from "dayjs"
 import { NoteOutput } from "./note-output"
 import relativeTime from 'dayjs/plugin/relativeTime'
 import zh from 'dayjs/locale/zh'
+import { ChevronDown, CircleAlert } from "lucide-react"
+import { useRouter } from "next/navigation";
+import useSettingStore from "@/stores/setting"
+import { Button } from "@/components/ui/button"
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
 
-export function NoteHeader({text}: {text: string}) {
-  const { currentNote } = useNoteStore()
+export function NoteHeader() {
+  const { apiKey, model } = useSettingStore()
+  const router = useRouter()
+
+  function handleSetting() {
+    router.push('/core/setting?anchor=ai', { scroll: false });
+  }
+
   return (
-    <header className="h-12 w-full flex items-center justify-between gap-2 border-b px-4">
+    <header className="h-12 w-full grid grid-cols-3 items-center border-b gap-2 px-4">
       <div className="flex items-center h-6 gap-1">
         <TooltipProvider>
           <LocaleSet />
-          <CountSet />
         </TooltipProvider>
       </div>
-      <div className="flex items-center h-6 gap-1">
-        <TooltipProvider>
-          <div className="flex items-center h-6 gap-1">
-            <span className="text-sm px-2">{wordsCount(text)} 字</span>
-            <Separator orientation="vertical" />
-            {
-              currentNote?.createdAt ? 
-              <>
-                <time className="text-sm px-2" suppressHydrationWarning>{dayjs(currentNote?.createdAt).fromNow()}</time>
-                <Separator orientation="vertical" />
-              </> : null
-            }
+      <div>
+      <div className="flex justify-center">
+        {
+          (model && apiKey) ?
+          <div className="flex items-center gap-1 text-sm text-zinc-500 cursor-pointer hover:underline" onClick={handleSetting}>
+            {model.toUpperCase()}
+            <ChevronDown className="size-4" />
+          </div> :
+          <div className="flex gap-1 items-center">
+            <Button variant="destructive" onClick={handleSetting}>
+              <CircleAlert /> 配置 API KEY
+            </Button>
           </div>
-          <NoteHistory />
+        }
+      </div>
+      </div>
+      <div className="flex justify-end items-center h-6 gap-1">
+        <TooltipProvider>
           <NoteOutput />
         </TooltipProvider>
       </div>
