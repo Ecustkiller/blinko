@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { Chat, getChats, insertChat, updateChat } from '@/db/chats'
+import { Chat, clearChatsByTagId, getChats, insertChat, updateChat } from '@/db/chats'
 import { Store } from '@tauri-apps/plugin-store';
 import { locales } from '@/lib/locales';
 
@@ -16,6 +16,8 @@ interface ChatState {
   locale: string
   getLocale: () => Promise<void>
   setLocale: (locale: string) => void
+
+  clearChats: (tagId: number) => Promise<void> // 清空 chats
 }
 
 const useChatStore = create<ChatState>((set, get) => ({
@@ -29,7 +31,7 @@ const useChatStore = create<ChatState>((set, get) => ({
     const data = await getChats(tagId)
     set({ chats: data })
   },
-  insert: async (chat: Omit<Chat, 'id' | 'createdAt'>) => {
+  insert: async (chat) => {
     const res = await insertChat(chat)
     let data: Chat
     if (res.lastInsertId) {
@@ -45,7 +47,7 @@ const useChatStore = create<ChatState>((set, get) => ({
     }
     return null
   },
-  updateChat: (chat: Chat) => {
+  updateChat: (chat) => {
     const chats = get().chats
     const newChats = chats.map(item => {
       if (item.id === chat.id) {
@@ -55,7 +57,7 @@ const useChatStore = create<ChatState>((set, get) => ({
     })
     set({ chats: newChats })
   },
-  saveChat: async (chat: Chat) => {
+  saveChat: async (chat) => {
     updateChat(chat)
   },
 
@@ -65,11 +67,16 @@ const useChatStore = create<ChatState>((set, get) => ({
     const res = (await store.get<string>('note_locale')) || locales[0]
     set({ locale: res })
   },
-  setLocale: async (locale: string) => {
+  setLocale: async (locale) => {
     set({ locale })
     const store = await Store.load('store.json');
     await store.set('note_locale', locale)
   },
+
+  clearChats: async (tagId) => {
+    set({ chats: [] })
+    await clearChatsByTagId(tagId)
+  }
 }))
 
 export default useChatStore

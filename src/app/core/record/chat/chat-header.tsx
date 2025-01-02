@@ -3,23 +3,31 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import * as React from "react"
 import { LocaleSet } from './locale-set'
 import dayjs from "dayjs"
-import { NoteOutput } from "./note-output"
 import relativeTime from 'dayjs/plugin/relativeTime'
 import zh from 'dayjs/locale/zh'
-import { ChevronDown, CircleAlert } from "lucide-react"
+import { ChevronDown, CircleAlert, Eraser } from "lucide-react"
 import { useRouter } from "next/navigation";
 import useSettingStore from "@/stores/setting"
 import { Button } from "@/components/ui/button"
+import { TooltipButton } from "@/components/tooltip-button"
+import useChatStore from "@/stores/chat"
+import useTagStore from "@/stores/tag"
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
 
-export function NoteHeader() {
+export function ChatHeader() {
   const { apiKey, model } = useSettingStore()
+  const { clearChats } = useChatStore()
+  const { currentTagId } = useTagStore()
   const router = useRouter()
 
   function handleSetting() {
     router.push('/core/setting?anchor=ai', { scroll: false });
+  }
+
+  function clearHandler() {
+    clearChats(currentTagId)
   }
 
   return (
@@ -38,7 +46,7 @@ export function NoteHeader() {
             <ChevronDown className="size-4" />
           </div> :
           <div className="flex gap-1 items-center">
-            <Button variant="destructive" onClick={handleSetting}>
+            <Button variant="ghost" onClick={handleSetting}>
               <CircleAlert /> 配置 API KEY
             </Button>
           </div>
@@ -47,7 +55,7 @@ export function NoteHeader() {
       </div>
       <div className="flex justify-end items-center h-6 gap-1">
         <TooltipProvider>
-          <NoteOutput />
+          <TooltipButton icon={<Eraser />} tooltipText="清空对话" onClick={clearHandler}/>
         </TooltipProvider>
       </div>
     </header>

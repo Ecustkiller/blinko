@@ -3,7 +3,7 @@ import useSettingStore from "@/stores/setting";
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes'
 
-export default function NotePreview({text}: {text: string}) {
+export default function ChatPreview({text}: {text: string}) {
   const [id] = useState('preview-only');
   const { theme } = useTheme()
   const [mdTheme, setMdTheme] = useState<Themes>('light')

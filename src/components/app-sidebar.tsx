@@ -21,7 +21,7 @@ import AppStatus from "./app-status"
 const items = [
   {
     title: "记录",
-    url: "/core/note",
+    url: "/core/record",
     icon: Highlighter,
     isActive: true,
   },

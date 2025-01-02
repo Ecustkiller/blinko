@@ -55,3 +55,11 @@ export async function updateChat(chat: Chat) {
     update chats set content = ?, role = ?, type = ?, image = ?, inserted = ? where id = ?
   `, [chat.content, chat.role, chat.type, chat.image, chat.inserted, chat.id])
 }
+
+// 清空 tagId 下的所有 chats
+export async function clearChatsByTagId(tagId: number) {
+  const db = await getDb()
+  return await db.execute(`
+    delete from chats where tagId = ${tagId}
+  `)
+}

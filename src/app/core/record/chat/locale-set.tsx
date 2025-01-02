@@ -25,13 +25,10 @@ export function LocaleSet() {
           <TooltipButton icon={<Languages />} tooltipText="语言" />
         </div>
       </PopoverTrigger>
-      <PopoverContent className="w-56" side="bottom" align="start">
+      <PopoverContent className="w-36" side="bottom" align="start">
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="font-medium leading-none">选择语言</h4>
-            <p className="text-sm text-muted-foreground">
-              此设置只对当前笔记生效。
-            </p>
           </div>
           <RadioGroup defaultValue={locale} onValueChange={localeChange}>
             {

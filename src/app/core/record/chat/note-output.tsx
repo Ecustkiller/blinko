@@ -1,4 +1,4 @@
-import { TooltipButton } from "@/components/tooltip-button"
+'use client'
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -13,18 +13,17 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { extractTitle } from "@/lib/markdown"
-import useNoteStore from "@/stores/note"
 import useTagStore from "@/stores/tag"
 import { CheckedState } from "@radix-ui/react-checkbox"
 import { BaseDirectory, readDir, writeTextFile } from "@tauri-apps/plugin-fs"
 import { Store } from "@tauri-apps/plugin-store"
-import { FolderInput, TriangleAlert } from "lucide-react"
+import { SquarePen, TriangleAlert } from "lucide-react"
 import { useEffect, useState } from "react"
 import { redirect } from 'next/navigation'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Chat } from "@/db/chats"
  
-export function NoteOutput() {
-  const { currentNote } = useNoteStore()
+export function NoteOutput({chat}: {chat: Chat}) {
   const { deleteTag, currentTagId } = useTagStore()
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('')
@@ -33,7 +32,7 @@ export function NoteOutput() {
   const [isRemove, setIsRemove] = useState<CheckedState>(true)
 
   async function handleTransform() {
-    const content = decodeURIComponent(currentNote?.content || '')
+    const content = decodeURIComponent(chat?.content || '')
     const writeTo = `article${path}/${title.replace(/ /g, '_')}`
     await writeTextFile(writeTo, content, { baseDir: BaseDirectory.AppData })
     const store = await Store.load('store.json');
@@ -51,15 +50,18 @@ export function NoteOutput() {
   }
 
   useEffect(() => {
-    setIsRemove(currentNote?.tagId !== 1)
-    setTitle(extractTitle(currentNote?.content || '') + '.md')
+    setIsRemove(chat?.tagId !== 1)
+    setTitle(extractTitle(chat?.content || '') + '.md')
     readArticleDir()
-  }, [currentNote])
+  }, [chat])
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <TooltipButton icon={<FolderInput />} disabled={!currentNote} tooltipText="转化文章" />
+        <a className="font-bold text-blue-500 cursor-pointer flex items-center gap-1 hover:underline">
+          <SquarePen className="size-4" />
+          在写作中继续编辑
+        </a>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
@@ -89,7 +91,7 @@ export function NoteOutput() {
             <Input className="border-none" value={title} onChange={(e) => setTitle(e.target.value)} />
           </div>
           <div className="flex items-center space-x-2 mt-2">
-            <Checkbox disabled={currentNote?.tagId === 1} id="terms" checked={isRemove} onCheckedChange={value => setIsRemove(value)} />
+            <Checkbox disabled={chat?.tagId === 1} id="terms" checked={isRemove} onCheckedChange={value => setIsRemove(value)} />
             <label
               htmlFor="terms"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
