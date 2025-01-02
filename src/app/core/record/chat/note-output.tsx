@@ -58,9 +58,9 @@ export function NoteOutput({chat}: {chat: Chat}) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <a className="font-bold text-blue-500 cursor-pointer flex items-center gap-1 hover:underline">
+        <a className="cursor-pointer flex items-center gap-1 hover:underline">
           <SquarePen className="size-4" />
-          在写作中继续编辑
+          写作
         </a>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[525px]">

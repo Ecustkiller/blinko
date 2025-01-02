@@ -1,12 +1,20 @@
 import useChatStore from '@/stores/chat'
 import useTagStore from '@/stores/tag'
-import { Bot, LoaderPinwheel } from 'lucide-react'
+import { Bot, Clock, LoaderPinwheel, TypeIcon } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect } from 'react'
 import { Chat } from '@/db/chats'
 import ChatPreview from './chat-preview'
 import './chat.scss'
 import { NoteOutput } from './note-output'
+import { MarkText } from './mark-text'
+import { Separator } from '@/components/ui/separator'
+import dayjs from 'dayjs'
+import relativeTime from "dayjs/plugin/relativeTime";
+import zh from "dayjs/locale/zh-cn";
+
+dayjs.extend(relativeTime)
+dayjs.locale(zh)
 
 export default function ChatContent() {
   const { chats, init } = useChatStore()
@@ -72,7 +80,11 @@ function Message({ chat }: { chat: Chat }) {
           <div className='note-wrapper border w-full overflow-y-auto overflow-x-hidden my-2 p-4 rounded-lg'>
             <ChatPreview text={chat.content || ''} />
           </div>
-          <div className='flex items-center justify-center'>
+          <div className='flex items-center gap-4 h-4 my-1'>
+            <p className='flex items-center gap-1'><Clock className='size-4' />{ dayjs(chat.createdAt).fromNow() }</p>
+            <Separator orientation="vertical" />
+            <p className='flex items-center gap-1'><TypeIcon className='size-4' />{ chat.content?.length }字</p>
+            <Separator orientation="vertical" />
             <NoteOutput chat={chat} />
           </div>
         </div>
@@ -81,6 +93,13 @@ function Message({ chat }: { chat: Chat }) {
     default:
       return <MessageWrapper chat={chat}>
         <ChatPreview text={chat.content || ''} />
+        <div className='flex items-center gap-4 h-4 my-1'>
+          <p className='flex items-center gap-1'><Clock className='size-4' />{ dayjs(chat.createdAt).fromNow() }</p>
+          <Separator orientation="vertical" />
+          <p className='flex items-center gap-1'><TypeIcon className='size-4' />{ chat.content?.length }字</p>
+          <Separator orientation="vertical" />
+          <MarkText chat={chat} />
+        </div>
       </MessageWrapper>
   }
 }

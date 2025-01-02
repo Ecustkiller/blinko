@@ -2,7 +2,7 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
-import { Link, Loader2, NotebookPen, Send } from "lucide-react"
+import { Link, NotebookPen, Send } from "lucide-react"
 import useSettingStore from "@/stores/setting"
 import { Input } from "@/components/ui/input"
 import useChatStore from "@/stores/chat"
@@ -158,10 +158,10 @@ export function ChatInput() {
         }}
       />
       <Button variant={"ghost"} size={"icon"} disabled={loading} onClick={handleGen}>
-        { loading ? <Loader2 className="animate-spin" /> : <NotebookPen /> }
+        <NotebookPen />
       </Button>
       <Button variant={"ghost"} size={"icon"} disabled={loading} onClick={handleSubmit}>
-        { loading ? <Loader2 className="animate-spin" /> : <Send /> }
+        <Send />
       </Button>
     </footer>
   )
