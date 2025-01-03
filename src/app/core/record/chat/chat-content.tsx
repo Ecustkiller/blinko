@@ -9,6 +9,7 @@ import { NoteOutput } from './note-output'
 import { MarkText } from './mark-text'
 import { ChatClipboard } from './chat-clipboard'
 import MessageControl from './message-control'
+import ChatEmpty from './chat-empty'
 
 export default function ChatContent() {
   const { chats, init } = useChatStore()
@@ -32,9 +33,9 @@ export default function ChatContent() {
 
   return <div id="chats-wrapper" className="flex-1 overflow-y-auto overflow-x-hidden w-full flex flex-col items-end p-4 gap-6">
     {
-      chats.map((chat, index) => {
+      chats.length ? chats.map((chat, index) => {
         return <Message key={index} chat={chat} />
-      })
+      }) : <ChatEmpty />
     }
   </div>
 }
