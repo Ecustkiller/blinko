@@ -1,20 +1,14 @@
 import useChatStore from '@/stores/chat'
 import useTagStore from '@/stores/tag'
-import { Bot, Clock, LoaderPinwheel, TypeIcon } from 'lucide-react'
-import Image from 'next/image'
+import { Bot, LoaderPinwheel } from 'lucide-react'
 import { useEffect } from 'react'
 import { Chat } from '@/db/chats'
 import ChatPreview from './chat-preview'
 import './chat.scss'
 import { NoteOutput } from './note-output'
 import { MarkText } from './mark-text'
-import { Separator } from '@/components/ui/separator'
-import dayjs from 'dayjs'
-import relativeTime from "dayjs/plugin/relativeTime";
-import zh from "dayjs/locale/zh-cn";
-
-dayjs.extend(relativeTime)
-dayjs.locale(zh)
+import { ChatClipboard } from './chat-clipboard'
+import MessageControl from './message-control'
 
 export default function ChatContent() {
   const { chats, init } = useChatStore()
@@ -64,11 +58,10 @@ function MessageWrapper({ chat, children }: { chat: Chat, children: React.ReactN
 
 function Message({ chat }: { chat: Chat }) {
 
-
   switch (chat.type) {
-    case 'clipboard-image':
+    case 'clipboard':
       return <MessageWrapper chat={chat}>
-        <ImageMessage image={chat.image} />
+        <ChatClipboard chat={chat} />
       </MessageWrapper>
 
     case 'note':
@@ -94,23 +87,4 @@ function Message({ chat }: { chat: Chat }) {
         </MessageControl>
       </MessageWrapper>
   }
-}
-
-function MessageControl({chat, children}: {chat: Chat, children: React.ReactNode}) {
-  const { loading } = useChatStore()
-  if (!loading) {
-    return <div className='flex items-center gap-4 h-4 my-1  text-zinc-500'>
-      <p className='flex items-center gap-1'><Clock className='size-4' />{ dayjs(chat.createdAt).fromNow() }</p>
-      <Separator orientation="vertical" />
-      <p className='flex items-center gap-1'><TypeIcon className='size-4' />{ chat.content?.length } 字</p>
-      <Separator orientation="vertical" />
-      {children}
-    </div>
-  }
-}
-
-function ImageMessage({ image = '' }: { image?: string }) {
-  return <div>
-    <Image src={image} width={0} height={0} alt="clipboard image" className="w-full object-cover" />
-  </div>
 }

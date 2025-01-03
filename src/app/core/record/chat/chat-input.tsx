@@ -149,7 +149,7 @@ export function ChatInput() {
         disabled={!apiKey}
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="请输入关于记录的任何问题..."
+        placeholder="你可以提问或将记录整理为文章..."
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault()
