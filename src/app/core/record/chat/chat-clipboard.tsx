@@ -10,18 +10,22 @@ import { fetchAiDesc } from "@/lib/ai";
 import { insertMark, Mark } from "@/db/marks";
 import { uint8ArrayToBase64, uploadFile } from "@/lib/github";
 import { RepoNames } from "@/lib/github.types";
-import { Highlighter, ImagePlus } from "lucide-react";
+import { CheckCircle, Highlighter, ImagePlus, LoaderCircle } from "lucide-react";
 import { Chat } from "@/db/chats";
 import { LocalImage } from '@/components/local-image';
 import MessageControl from './message-control';
+import useChatStore from '@/stores/chat';
 
 export function ChatClipboard({chat}: { chat: Chat }) {
+  const [loading, setLoading] = useState(false)
   const [type] = useState<'image' | 'text'>(chat.image ? 'image' : 'text')
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
   const { apiKey, githubUsername } = useSettingStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
+  const { updateInsert } = useChatStore()
 
   async function handleInset() {
+    setLoading(true)
     const queueId = uuid()
     // 获取文件后缀
     addQueue({ queueId, progress: '保存图片', type: 'image', startTime: Date.now() })
@@ -67,6 +71,8 @@ export function ChatClipboard({chat}: { chat: Chat }) {
       }
     }
     removeQueue(queueId)
+    await updateInsert(chat.id)
+    setLoading(false)
     await insertMark(mark)
     await fetchMarks()
     await fetchTags()
@@ -74,11 +80,12 @@ export function ChatClipboard({chat}: { chat: Chat }) {
   }
 
   async function handleTextInset() {
+    await updateInsert(chat.id)
     const mark: Partial<Mark> = {
       tagId: currentTagId,
       type: 'text',
       content: chat.content,
-      desc: chat.content,
+      desc: '',
     }
     insertMark(mark)
     fetchMarks()
@@ -90,22 +97,36 @@ export function ChatClipboard({chat}: { chat: Chat }) {
     type === 'image' && chat.image ? 
       <div className="flex-col leading-6">
         <p>检测到剪贴板存在图片：</p>
-        <LocalImage src={chat.image} alt="" width={0} height={0} className="max-h-96 max-w-96 w-auto mt-2 mb-3 border-8" />
+        <LocalImage src={chat.image} alt="" width={0} height={0} className="max-h-96 max-w-96 w-auto mt-2 mb-3 border-8 rounded" />
         <MessageControl chat={chat}>
-          <a className="flex items-center cursor-pointer gap-1 hover:underline" onClick={handleInset}>
-            <ImagePlus className="size-4" />
-            记录
-          </a>
+          {
+            loading ? <p className='flex items-center gap-1'>
+              <LoaderCircle className='size-4 animate-spin' />
+              正在记录中
+            </p> : (
+              chat.inserted?
+                <p className="flex gap-1 items-center"><CheckCircle className="size-4" />已记录</p> :
+                <a className="flex items-center cursor-pointer gap-1 hover:underline" onClick={handleInset}>
+                  <ImagePlus className="size-4" />
+                  记录
+                </a>
+            )
+          }
+          
         </MessageControl>
       </div> :
       <div className="flex-col leading-6">
         <p>检测到剪贴板存在文本：</p>
-        <p>{chat.content}</p>
+        <p className='mt-2 mb-3'>{chat.content}</p>
         <MessageControl chat={chat}>
-          <a className="flex items-center cursor-pointer gap-1 hover:underline" onClick={handleTextInset}>
-            <Highlighter className="size-4" />
-            记录
-          </a>
+          {
+            chat.inserted ? 
+              <p className="flex gap-1 items-center"><CheckCircle className="size-4" />已记录</p> :
+              <a className="flex items-center cursor-pointer gap-1 hover:underline" onClick={handleTextInset}>
+                <Highlighter className="size-4" />
+                记录
+              </a>
+          }
         </MessageControl>
       </div>
   )

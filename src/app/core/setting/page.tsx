@@ -55,7 +55,6 @@ export default function Page() {
     for (const [key] of Object.entries(form.getValues())) {
       const value = await store.get(key)
       if (key && value !== undefined) {
-        console.log(key, value);
         form.setValue(key as keyof z.infer<typeof formSchema>, value as never)
         const storeKey = `set${upperFirst(key)}` as keyof typeof settingStore
         (settingStore[storeKey] as (value: unknown) => void)(value)

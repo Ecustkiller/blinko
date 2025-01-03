@@ -44,18 +44,19 @@ export function ClipboardListener() {
 
   async function handleText() {
     const text = await readText()
-    await clear()
-    await insert({
-      role: 'system',
-      content: text,
-      type: 'clipboard',
-      tagId: currentTagId,
-      inserted: false
-    })
+    if (text.length > 10) {
+      await clear()
+      await insert({
+        role: 'system',
+        content: text,
+        type: 'clipboard',
+        tagId: currentTagId,
+        inserted: false
+      })
+    }
   }
 
   useEffect(() => {
-    console.log('1');
     listen('tauri://focus', readHandler)
   }, [])
 

@@ -25,7 +25,7 @@ export async function initChatsDb() {
       role text not null,
       type text not null,
       image text default null,
-      inserted integer default 0,
+      inserted boolean default false,
       createdAt integer not null
     )
   `)
@@ -37,7 +37,7 @@ export async function insertChat(chat: Omit<Chat, 'id' | 'createdAt'>) {
   return await db.execute(`
     insert into chats (tagId, content, role, type, image, inserted, createdAt)
     values (?, ?, ?, ?, ?, ?, ?)
-  `, [chat.tagId, chat.content, chat.role, chat.type, chat.image, chat.inserted, Date.now()])
+  `, [chat.tagId, chat.content, chat.role, chat.type, chat.image, chat.inserted ? 1 : 0, Date.now()])
 }
 
 // 获取所有 chats
@@ -53,7 +53,7 @@ export async function updateChat(chat: Chat) {
   const db = await getDb()
   return await db.execute(`
     update chats set content = ?, role = ?, type = ?, image = ?, inserted = ? where id = ?
-  `, [chat.content, chat.role, chat.type, chat.image, chat.inserted, chat.id])
+  `, [chat.content, chat.role, chat.type, chat.image, chat.inserted ? 1 : 0, chat.id])
 }
 
 // 清空 tagId 下的所有 chats
@@ -61,5 +61,13 @@ export async function clearChatsByTagId(tagId: number) {
   const db = await getDb()
   return await db.execute(`
     delete from chats where tagId = ${tagId}
+  `)
+}
+
+// 已插入
+export async function updateChatsInsertedById(id: number) {
+  const db = await getDb()
+  return await db.execute(`
+    update chats set inserted = true where id = ${id}
   `)
 }
