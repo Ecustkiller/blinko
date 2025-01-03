@@ -80,27 +80,32 @@ function Message({ chat }: { chat: Chat }) {
           <div className='note-wrapper border w-full overflow-y-auto overflow-x-hidden my-2 p-4 rounded-lg'>
             <ChatPreview text={chat.content || ''} />
           </div>
-          <div className='flex items-center gap-4 h-4 my-1'>
-            <p className='flex items-center gap-1'><Clock className='size-4' />{ dayjs(chat.createdAt).fromNow() }</p>
-            <Separator orientation="vertical" />
-            <p className='flex items-center gap-1'><TypeIcon className='size-4' />{ chat.content?.length }字</p>
-            <Separator orientation="vertical" />
+          <MessageControl chat={chat}>
             <NoteOutput chat={chat} />
-          </div>
+          </MessageControl>
         </div>
       </MessageWrapper>
   
     default:
       return <MessageWrapper chat={chat}>
         <ChatPreview text={chat.content || ''} />
-        <div className='flex items-center gap-4 h-4 my-1'>
-          <p className='flex items-center gap-1'><Clock className='size-4' />{ dayjs(chat.createdAt).fromNow() }</p>
-          <Separator orientation="vertical" />
-          <p className='flex items-center gap-1'><TypeIcon className='size-4' />{ chat.content?.length }字</p>
-          <Separator orientation="vertical" />
+        <MessageControl chat={chat}>
           <MarkText chat={chat} />
-        </div>
+        </MessageControl>
       </MessageWrapper>
+  }
+}
+
+function MessageControl({chat, children}: {chat: Chat, children: React.ReactNode}) {
+  const { loading } = useChatStore()
+  if (!loading) {
+    return <div className='flex items-center gap-4 h-4 my-1  text-zinc-500'>
+      <p className='flex items-center gap-1'><Clock className='size-4' />{ dayjs(chat.createdAt).fromNow() }</p>
+      <Separator orientation="vertical" />
+      <p className='flex items-center gap-1'><TypeIcon className='size-4' />{ chat.content?.length } 字</p>
+      <Separator orientation="vertical" />
+      {children}
+    </div>
   }
 }
 
