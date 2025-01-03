@@ -34,10 +34,11 @@ export function NoteOutput() {
 
   async function handleTransform() {
     const content = decodeURIComponent(currentNote?.content || '')
-    const writeTo = `article${path}/${title.replace(/ /g, '_')}`
+    const filename = title.replace(/ /g, '_')
+    const writeTo = `article${path}/${filename}`
     await writeTextFile(writeTo, content, { baseDir: BaseDirectory.AppData })
     const store = await Store.load('store.json');
-    await store.set('activeFilePath', title)
+    await store.set('activeFilePath', filename)
     if (isRemove) {
       deleteTag(currentTagId)
     }

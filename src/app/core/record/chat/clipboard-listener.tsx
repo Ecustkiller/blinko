@@ -6,6 +6,7 @@ import { listen } from "@tauri-apps/api/event";
 import { v4 as uuid } from "uuid";
 import useChatStore from "@/stores/chat";
 import useTagStore from "@/stores/tag";
+import wordsCount from "words-count";
 
 export function ClipboardListener() {
   const { insert } = useChatStore()
@@ -44,7 +45,7 @@ export function ClipboardListener() {
 
   async function handleText() {
     const text = await readText()
-    if (text.length > 10) {
+    if (wordsCount(text) > 30) {
       await clear()
       await insert({
         role: 'system',

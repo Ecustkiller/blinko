@@ -22,7 +22,9 @@
 
 NoteGen 是一个基于 Tauri + ChatGPT 的免费开源笔记 App，旨在帮助用户以**截图**、插图、文本的记录方式，快捷的保存碎片化知识，通过 AI 自动整理为一篇可读的笔记，通过内置的 Markdown 编辑器将 AI 笔记进行二次创作。笔记最终形态以文件存储于本地，同时也支持`同步`与`图床`功能，其基于 Github 实现，保证数据安全。
 
-![4b0cbac8-dacd-4334-8b5b-7446728248c8.png](https://cdn.jsdelivr.net/gh/codexu/note-gen-image-sync@main/4b0cbac8-dacd-4334-8b5b-7446728248c8.png)
+![](https://cdn.jsdelivr.net/gh/codexu/note-gen-image-sync@main/725a365d-3b44-419d-9f92-598727f6de5e.png)
+
+https://github.com/user-attachments/assets/0d7ea538-838a-49f0-866d-ae1962e0dfd9
 
 ## 下载
 
@@ -38,7 +40,7 @@ NoteGen 是一个跨平台的笔记 APP，目前支持 `Mac`、`Windows`、`Linu
 
 ### 1. 配置 ChatGPT API Key
 
-NoteGen 使用了国内代理[GPT-API-free](https://github.com/chatanywhere/GPT_API_free)，可[申请领取内测免费API Key](https://api.chatanywhere.org/v1/oauth/free/render)，限制200请求/天，基本够用。
+NoteGen 使用了国内代理[GPT-API-free](https://github.com/chatanywhere/GPT_API_free)，可[申请领取内测免费API Key](https://api.chatanywhere.org/v1/oauth/free/render)，限制200请求/天。
 
 软件安装完毕后，请先在设置页面配置 API Key 后即可正常使用。
 
@@ -94,6 +96,14 @@ flowchart LR
 
 用户可以创建的标签，以便更好地归类和区分不同的记录场景。在文章生成时，这些标签及其对应的记录将会被删除（可选），从而保持内容的整洁和专注，当然其内容将在回收站中找回。
 
+**AI 对话**
+
+在你与 AI 对话时，默认关联当前标签下的记录，你也可以手动去关联写作内的任何文章。
+
+**剪贴板识别**
+
+在你进行图片或文本复制后，切回到软件界面时，软件会自动识别剪贴板中的图片或文本，此条内容将在 AI 对话中出现，你可以将其插图到记录中。
+
 **整理**
 
 当你在不断的记录中，积攒了足够的内容，你可以使用整理功能，自动将所有记录整理成一篇可读的笔记，有效节省了手动整理所需的时间，此功能具备以下几个特点：
@@ -101,8 +111,6 @@ flowchart LR
 - 支持输入个性化的需求。
 - 无需关心记录顺序，由 ChatGPT 辅助你整理。
 - 支持多种语言。
-- 支持控制笔记长度。
-- 可多次整理，支持生成记录管理。
 
 当你整理出一篇满意的笔记后，你可以将其转换为文章进行写作，它将笔记转换为 `.md` 文件存储于本地，并跳转至写作页面进行后续的完善工作。
 
@@ -120,9 +128,20 @@ flowchart LR
 
 Github 基于 Git 实现，所以天然支持版本管理，你可以在历史记录中回溯任何时刻的记录。
 
+**AI 辅助**
+
+基于 AI 实现在写作时支持问答、续写、优化、精简、翻译，并且可以随时将记录插入到文章任何位置。
+
+**图床**
+
+你可以直接复制图片粘贴在 Markdown 编辑器中，软件将自动将此图片上传至图床，并转换为 Markdown 图片链接。
+
+**HTML 转 Markdown**
+
+你可以更加方便的将网页上的内容复制到 Markdown 编辑器中，软件将自动将此内容转换为 Markdown 格式。
+
 ## 辅助功能
 
-- [x] **写作辅助**，基于 AI 实现在写作时支持问答、续写、优化、精简、翻译，并且可以随时将记录插入到文章任何位置。
 - [x] **图床**，基于 Github 仓库实现，需要配置密钥，支持图床管理。
 - [x] **全局搜索**，支持全局模糊搜索，快速查询记录或文章，支持跳转。
 - [x] **深色模式**，完全支持深色模式，支持自动跟随系统。
