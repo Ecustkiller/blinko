@@ -15,12 +15,12 @@ import { TagItem } from './tag-item'
 import { initTagsDb, insertTag, Tag } from "@/db/tags"
 import useTagStore from "@/stores/tag"
 import useMarkStore from "@/stores/mark"
-import useNoteStore from "@/stores/note"
+import useChatStore from "@/stores/chat"
 
 export function TagManage() {
   const [open, setOpen] = React.useState(false)
   const [name, setName] = React.useState<string>("")
-  const { fetchCurrentNote, fetchCurrentNotes } = useNoteStore()
+  const { init } = useChatStore()
 
   const {
     currentTag,
@@ -37,8 +37,6 @@ export function TagManage() {
     const res = await insertTag({ name })
     await setCurrentTagId(res.lastInsertId as number)
     await fetchTags()
-    await fetchCurrentNotes()
-    await fetchCurrentNote()
     getCurrentTag()
     setOpen(false)
     fetchMarks()
@@ -49,8 +47,7 @@ export function TagManage() {
     getCurrentTag()
     setOpen(false)
     await fetchMarks()
-    await fetchCurrentNotes()
-    await fetchCurrentNote()
+    await init(tag.id)
   }
 
   React.useEffect(() => {

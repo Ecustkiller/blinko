@@ -16,7 +16,7 @@ export function ChatInput() {
   const [text, setText] = useState("")
   const { apiKey } = useSettingStore()
   const { currentTagId } = useTagStore()
-  const { insert, updateChat, loading, setLoading, saveChat, locale } = useChatStore()
+  const { insert, updateChat, loading, setLoading, saveChat, locale, chats } = useChatStore()
   const { fetchMarks, marks } = useMarkStore()
 
   async function handleGen() {
@@ -116,6 +116,10 @@ export function ChatInput() {
       ${textMarks.map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')}。
       以下是插图记录的片段描述：
       ${imageMarks.map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')}。
+      以下聊天记录：
+      ${
+        chats.filter((item) => item.tagId === currentTagId && item.type === "chat").map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')
+      }。
       使用 ${locale} 语言，不许使用 markdown 语法，回复用户的信息：
       ${text}
     `

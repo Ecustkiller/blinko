@@ -27,9 +27,7 @@ const useTagStore = create<TagState>((set, get) => ({
   initTags: async () => {
     const store = await Store.load('store.json');
     const currentTagId = await store.get<number>('currentTagId')
-    if (currentTagId) {
-      set({ currentTagId: currentTagId })
-    }
+    if (currentTagId) set({ currentTagId })
     get().getCurrentTag()
   },
 

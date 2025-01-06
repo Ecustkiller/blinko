@@ -2,11 +2,10 @@
 import { clear, hasImage, hasText, readImageBase64, readText } from "tauri-plugin-clipboard-api";
 import { useEffect } from 'react';
 import { BaseDirectory, exists, mkdir, writeFile } from '@tauri-apps/plugin-fs';
-import { listen } from "@tauri-apps/api/event";
+import { listen, UnlistenFn } from "@tauri-apps/api/event";
 import { v4 as uuid } from "uuid";
 import useChatStore from "@/stores/chat";
 import useTagStore from "@/stores/tag";
-import wordsCount from "words-count";
 
 export function ClipboardListener() {
   const { insert } = useChatStore()
@@ -45,7 +44,7 @@ export function ClipboardListener() {
 
   async function handleText() {
     const text = await readText()
-    if (wordsCount(text) > 30) {
+    if (text.length > 30) {
       await clear()
       await insert({
         role: 'system',
@@ -58,8 +57,17 @@ export function ClipboardListener() {
   }
 
   useEffect(() => {
-    listen('tauri://focus', readHandler)
-  }, [])
+    let unlisten: UnlistenFn;
+
+    async function initListen() {
+      unlisten = await listen('tauri://focus', readHandler)
+    }
+    initListen()
+
+    return () => {
+      unlisten();
+    }
+  }, [currentTagId])
 
   return <></>
 }
