@@ -5,7 +5,6 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import useSettingStore from "@/stores/setting"
 import { useEffect } from "react";
-import createTray from '../tray'
 import { initChatsDb } from "@/db/chats"
 
 export default function RootLayout({
@@ -17,7 +16,6 @@ export default function RootLayout({
   useEffect(() => {
     initSettingData()
     initChatsDb()
-    createTray()
   }, [])
   return (
     <ThemeProvider

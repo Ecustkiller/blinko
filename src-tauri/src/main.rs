@@ -1,10 +1,35 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 mod screenshot;
+use tauri::{
+    Manager,
+    tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent}
+};
 use screenshot::{screenshot, screenshot_save};
 
 fn main() {
     tauri::Builder::default()
+        .setup(|app| {
+            let _tray = TrayIconBuilder::new()
+                .icon(app.default_window_icon().unwrap().clone())
+                .on_tray_icon_event(|tray, event| match event {
+                    TrayIconEvent::Click {
+                      button: MouseButton::Left,
+                      button_state: MouseButtonState::Up,
+                      ..
+                    } => {
+                      let app = tray.app_handle();
+                      if let Some(window) = app.get_webview_window("main") {
+                        let _ = window.show();
+                        let _ = window.set_focus();
+                      }
+                    }
+                    _ => {
+                    }
+                })
+                .build(app)?;
+            Ok(())
+        })
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_window_state::Builder::new().build())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
