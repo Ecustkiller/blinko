@@ -1,8 +1,7 @@
 "use client"
 import * as React from "react"
-import { Button } from "@/components/ui/button"
 import { useState } from "react"
-import { Link, NotebookPen, Send } from "lucide-react"
+import { NotebookPen, Send } from "lucide-react"
 import useSettingStore from "@/stores/setting"
 import { Input } from "@/components/ui/input"
 import useChatStore from "@/stores/chat"
@@ -10,7 +9,7 @@ import useTagStore from "@/stores/tag"
 import useMarkStore from "@/stores/mark"
 import { fetchAiStream } from "@/lib/ai"
 import { convertImage } from "@/lib/utils"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { TooltipButton } from "@/components/tooltip-button"
 
 export function ChatInput() {
   const [text, setText] = useState("")
@@ -146,19 +145,6 @@ export function ChatInput() {
 
   return (
     <footer className="my-4 border px-4 py-4 shadow-lg rounded-xl min-w-[500px] w-2/3 max-w-[800px] flex bg-primary-foreground h-14 items-center">
-       <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant={"ghost"} size={"icon"} disabled={loading}>
-              <Link />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>关联</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-      
       <Input
         className="flex-1 border-none focus-visible:ring-0 shadow-none"
         disabled={!apiKey}
@@ -172,28 +158,8 @@ export function ChatInput() {
           }
         }}
       />
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant={"ghost"} size={"icon"} disabled={loading} onClick={handleGen}>
-              <NotebookPen />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>整理</p>
-          </TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant={"ghost"} size={"icon"} disabled={loading} onClick={handleSubmit}>
-              <Send />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>发送</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <TooltipButton icon={<NotebookPen />} disabled={loading} tooltipText="整理" onClick={handleGen} />
+      <TooltipButton icon={<Send />} disabled={loading} tooltipText="发送" onClick={handleSubmit} />
     </footer>
   )
 }
