@@ -17,6 +17,7 @@ export function ChatInput() {
   const { currentTagId } = useTagStore()
   const { insert, updateChat, loading, setLoading, saveChat, locale, chats } = useChatStore()
   const { fetchMarks, marks } = useMarkStore()
+  const [isComposing, setIsComposing] = useState(false)
 
   async function handleGen() {
     setLoading(true)
@@ -152,11 +153,15 @@ export function ChatInput() {
         onChange={(e) => setText(e.target.value)}
         placeholder="你可以提问或将记录整理为文章..."
         onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
+          if (e.key === "Enter" && !isComposing) {
             e.preventDefault()
             handleSubmit()
           }
         }}
+        onCompositionStart={() => setIsComposing(true)}
+        onCompositionEnd={() => setTimeout(() => {
+          setIsComposing(false)
+        }, 0)}
       />
       <TooltipButton icon={<NotebookPen />} disabled={loading} tooltipText="整理" onClick={handleGen} />
       <TooltipButton icon={<Send />} disabled={loading} tooltipText="发送" onClick={handleSubmit} />
