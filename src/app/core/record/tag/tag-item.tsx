@@ -52,7 +52,7 @@ export function TagItem(
 {
   const [isEditing, setIsEditing] = React.useState(false)
 
-  const { fetchTags, getCurrentTag } = useTagStore()
+  const { fetchTags, getCurrentTag, currentTagId } = useTagStore()
 
   async function handleDel() {
     await delTag(tag.id)
@@ -81,8 +81,8 @@ export function TagItem(
   return (
     <ContextMenu>
       <ContextMenuTrigger onClick={handleSelect}>
-        <CommandItem className="flex justify-between items-center w-full">
-          <div className="flex gap-2 items-center">
+        <CommandItem className={`${tag.id === currentTagId && '!bg-primary'} data-[selected=true]:bg-transparent flex justify-between items-center w-full cursor-pointer`}>
+          <div className={`${tag.id === currentTagId && 'text-primary-foreground'} flex gap-2 items-center`}>
             <ItemIcon isLocked={tag.isLocked} isPin={tag.isPin} />
             <ItemContent value={tag.name} isEditing={isEditing} onChange={updateName} />
           </div>
