@@ -16,10 +16,8 @@ export default function ChatContent() {
   const { currentTagId } = useTagStore()
 
   useEffect(() => {
-    if (chats.length === 0) {
-      init(currentTagId)
-    }
-  }, [])
+    init(currentTagId)
+  }, [currentTagId])
 
   useEffect(() => {
     const md = document.querySelector('#chats-wrapper')

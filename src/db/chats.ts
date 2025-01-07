@@ -71,3 +71,11 @@ export async function updateChatsInsertedById(id: number) {
     update chats set inserted = true where id = ${id}
   `)
 }
+
+// 删除一条 chat
+export async function deleteChat(id: number) {
+  const db = await getDb()
+  return await db.execute(`
+    delete from chats where id = ${id}
+  `)
+}

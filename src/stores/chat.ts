@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { Chat, clearChatsByTagId, getChats, insertChat, updateChat, updateChatsInsertedById } from '@/db/chats'
+import { Chat, clearChatsByTagId, deleteChat, getChats, insertChat, updateChat, updateChatsInsertedById } from '@/db/chats'
 import { Store } from '@tauri-apps/plugin-store';
 import { locales } from '@/lib/locales';
 
@@ -12,6 +12,7 @@ interface ChatState {
   insert: (chat: Omit<Chat, 'id' | 'createdAt'>) => Promise<Chat | null> // 插入一条 chat
   updateChat: (chat: Chat) => void // 更新一条 chat
   saveChat: (chat: Chat) => Promise<void> // 保存一条 chat，用于动态 AI 回复结束后保存数据库
+  deleteChat: (id: number) => Promise<void> // 删除一条 chat
 
   locale: string
   getLocale: () => Promise<void>
@@ -61,6 +62,13 @@ const useChatStore = create<ChatState>((set, get) => ({
   saveChat: async (chat) => {
     updateChat(chat)
   },
+  deleteChat: async (id) => {
+    const chats = get().chats
+    const newChats = chats.filter(item => item.id !== id)
+    set({ chats: newChats })
+    await deleteChat(id)
+  },
+
 
   locale: locales[0],
   getLocale: async () => {
