@@ -32,10 +32,15 @@ export default function MessageControl({chat, children}: {chat: Chat, children: 
         </> : null
       }
       {children}
-      <Separator orientation="vertical" />
-      <p className='flex items-center gap-1 cursor-pointer hover:underline' onClick={deleteHandler}>
-        <Trash className='size-4' />删除
-      </p>
+      {
+        chat.type !== "chat" && 
+        <>
+          <Separator orientation="vertical" />
+          <p className='flex items-center gap-1 cursor-pointer hover:underline' onClick={deleteHandler}>
+            <Trash className='size-4' />删除
+          </p>
+        </>
+      }
     </div>
   }
 }
