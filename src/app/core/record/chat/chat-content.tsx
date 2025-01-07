@@ -1,6 +1,6 @@
 import useChatStore from '@/stores/chat'
 import useTagStore from '@/stores/tag'
-import { Bot, LoaderPinwheel } from 'lucide-react'
+import { BotMessageSquare, ClipboardCheck, LoaderPinwheel } from 'lucide-react'
 import { useEffect } from 'react'
 import { Chat } from '@/db/chats'
 import ChatPreview from './chat-preview'
@@ -43,7 +43,9 @@ function MessageWrapper({ chat, children }: { chat: Chat, children: React.ReactN
   const index = chats.findIndex(item => item.id === chat.id)
   if (chat.role === 'system') {
     return <div className="flex w-full gap-4">
-      { loading && index === chats.length - 1 ? <LoaderPinwheel className="animate-spin" /> : <Bot />}
+      { loading && index === chats.length - 1 ? <LoaderPinwheel className="animate-spin" /> : 
+        chat.type === 'clipboard' ? <ClipboardCheck /> : <BotMessageSquare />
+      }
       <div className='text-sm leading-6 flex-1'>
         {children}
       </div>

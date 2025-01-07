@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button"
 import { Chat } from "@/db/chats"
 import { insertMark } from "@/db/marks"
 import useChatStore from "@/stores/chat"
@@ -22,10 +23,13 @@ export function MarkText({chat}: {chat: Chat}) {
 
   return (
     chat.inserted ? 
-      <p className="flex gap-1 items-center"><CheckCircle className="size-4" />已记录</p> :
-      <a className="flex items-center cursor-pointer gap-1 hover:underline" onClick={handleSuccess}>
+      <Button variant={"ghost"} size="sm" disabled>
+        <CheckCircle className="size-4" />
+        已记录
+      </Button> :
+      <Button variant={"ghost"} size="sm" onClick={handleSuccess}>
         <Highlighter className="size-4" />
         记录
-      </a>
+      </Button>
   )
 }

@@ -15,6 +15,7 @@ import { Chat } from "@/db/chats";
 import { LocalImage } from '@/components/local-image';
 import MessageControl from './message-control';
 import useChatStore from '@/stores/chat';
+import { Button } from '@/components/ui/button';
 
 export function ChatClipboard({chat}: { chat: Chat }) {
   const [loading, setLoading] = useState(false)
@@ -100,16 +101,20 @@ export function ChatClipboard({chat}: { chat: Chat }) {
         <LocalImage src={chat.image} alt="" width={0} height={0} className="max-h-96 max-w-96 w-auto mt-2 mb-3 border-8 rounded" />
         <MessageControl chat={chat}>
           {
-            loading ? <p className='flex items-center gap-1'>
-              <LoaderCircle className='size-4 animate-spin' />
-              正在记录中
-            </p> : (
+            loading ? 
+              <Button variant={"ghost"} size="sm" disabled>
+                <LoaderCircle className="size-4 animate-spin" />
+                正在记录
+              </Button> : (
               chat.inserted?
-                <p className="flex gap-1 items-center"><CheckCircle className="size-4" />已记录</p> :
-                <a className="flex items-center cursor-pointer gap-1 hover:underline" onClick={handleInset}>
+                <Button variant={"ghost"} size="sm" disabled>
+                  <CheckCircle className="size-4" />
+                  已记录
+                </Button> :
+                <Button variant={"ghost"} size="sm" onClick={handleInset}>
                   <ImagePlus className="size-4" />
                   记录
-                </a>
+                </Button>
             )
           }
           
@@ -117,15 +122,18 @@ export function ChatClipboard({chat}: { chat: Chat }) {
       </div> :
       <div className="flex-col leading-6">
         <p>检测到剪贴板存在文本：</p>
-        <p className='mt-2 mb-3'>{chat.content}</p>
+        <p className='text-zinc-500'>{chat.content}</p>
         <MessageControl chat={chat}>
           {
             chat.inserted ? 
-              <p className="flex gap-1 items-center"><CheckCircle className="size-4" />已记录</p> :
-              <a className="flex items-center cursor-pointer gap-1 hover:underline" onClick={handleTextInset}>
+              <Button variant={"ghost"} size="sm" disabled>
+                <CheckCircle className="size-4" />
+                已记录
+              </Button> :
+              <Button variant={"ghost"} size="sm" onClick={handleTextInset}>
                 <Highlighter className="size-4" />
                 记录
-              </a>
+              </Button>
           }
         </MessageControl>
       </div>
