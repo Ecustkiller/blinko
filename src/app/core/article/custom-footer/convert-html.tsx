@@ -17,7 +17,7 @@ export default function ConvertHTML({mdRef}: {mdRef: RefObject<ExposeParam>}) {
   }, [])
 
   return (
-    <div className="flex items-center space-x-1">
+    <div className="flex items-center space-x-1 h-3.5">
       <Checkbox id="HTML2MD" className="scale-[80%]" checked={html2md} onCheckedChange={switchChangeHandler} />
       <Label htmlFor="HTML2MD" className="text-xs cursor-pointer">HTML2MD</Label>
     </div>

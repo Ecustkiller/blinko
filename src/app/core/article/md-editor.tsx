@@ -1,5 +1,5 @@
 'use client'
-import { MdEditor as MdEditorRT, ExposeParam, Themes, ToolbarNames } from 'md-editor-rt';
+import { MdEditor as MdEditorRT, ExposeParam, Themes } from 'md-editor-rt';
 import useArticleStore from '@/stores/article';
 import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
@@ -21,13 +21,16 @@ export function MdEditor() {
   const [mdTheme, setMdTheme] = useState<Themes>('light')
   const { theme } = useTheme()
   const { codeTheme, previewTheme, githubUsername, jsdelivr } = useSettingStore()
-  const [toolbar, setToolbar] = useState<ToolbarNames[]>([])
   const footers = [0];
+  let isChangeFile = false;
 
   const defFooters = [<CustomFooter key={"foot"} mdRef={ref} />];
   
   async function handleSave(value: string) {
+    if (isChangeFile) return
     if (value !== currentArticle) {
+      console.log(activeFilePath);
+      console.log('save');
       setValue(value)
       setCurrentArticle(value)
       await saveCurrentArticle(value)
@@ -113,6 +116,13 @@ export function MdEditor() {
   }, [currentArticle])
 
   useEffect(() => {
+    isChangeFile = true
+    setTimeout(() => {
+      isChangeFile = false
+    }, 100);
+  }, [activeFilePath])
+
+  useEffect(() => {
     let unlisten: UnlistenFn;
     async function init() {
       unlisten = await listen('tauri://focus', revertHtml2Md)
@@ -126,10 +136,7 @@ export function MdEditor() {
   }, [html2md])
 
   return <div className='flex-1'>
-    <CustomToolbar mdRef={ref} settings={{
-      toolbar,
-      setToolbar
-    }} />
+    <CustomToolbar mdRef={ref} />
     <MdEditorRT
       id="aritcle-md-editor"
       ref={ref}
@@ -141,7 +148,7 @@ export function MdEditor() {
       preview={false}
       className='!border-none'
       noImgZoomIn
-      toolbars={toolbar}
+      toolbars={[]}
       footers={footers}
       defFooters={defFooters}
       value={value}

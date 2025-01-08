@@ -27,8 +27,8 @@ export default function SyncState() {
 
   return (
     <div className="flex items-center gap-1">
-      {file?.sha ? <Cloud className="size-4" /> : <CloudOff className="size-4" />}
-      <span>{file?.sha ? '已同步' : '未同步'}</span>
+      {file?.sha ? <Cloud className="size-3.5" /> : <CloudOff className="size-3.5" />}
+      <span className="h-3.5">{file?.sha ? '已同步' : '未同步'}</span>
     </div>
   )
 }

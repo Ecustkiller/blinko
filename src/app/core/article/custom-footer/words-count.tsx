@@ -6,7 +6,7 @@ export default function ConvertHTML() {
 
   return (
     <div className="flex items-center gap-1">
-      <span>{wordsCount(currentArticle)} 字</span>
+      <span className="h-3.5">{wordsCount(currentArticle)} 字</span>
     </div>
   )
 }
