@@ -65,9 +65,11 @@ export function ClipboardListener() {
     initListen()
 
     return () => {
-      unlisten();
+      if (unlisten) {
+        unlisten()
+      }
     }
-  }, [currentTagId, chats])
+  }, [currentTagId, chats.length])
 
   return <></>
 }

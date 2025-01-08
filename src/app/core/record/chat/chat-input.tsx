@@ -1,6 +1,6 @@
 "use client"
 import * as React from "react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { NotebookPen, Send } from "lucide-react"
 import useSettingStore from "@/stores/setting"
 import { Input } from "@/components/ui/input"
@@ -16,8 +16,9 @@ export function ChatInput() {
   const { apiKey } = useSettingStore()
   const { currentTagId } = useTagStore()
   const { insert, updateChat, loading, setLoading, saveChat, locale, chats } = useChatStore()
-  const { fetchMarks, marks } = useMarkStore()
+  const { fetchMarks, marks, trashState } = useMarkStore()
   const [isComposing, setIsComposing] = useState(false)
+  const [placeholder, setPlaceholder] = useState('你可以提问或将记录整理为文章...')
 
   async function handleGen() {
     setLoading(true)
@@ -144,6 +145,48 @@ export function ChatInput() {
     setLoading(false)
   }
 
+  async function genInputPlaceholder() {
+    if (!apiKey) return
+    if (trashState) return
+    const scanMarks = marks.filter(item => item.type === 'scan')
+    const textMarks = marks.filter(item => item.type === 'text')
+    const imageMarks = marks.filter(item => item.type === 'image')
+    const request_content = `
+      请你扮演一个笔记软件的智能助手，可以参考以下内容笔记的记录，
+      以下是通过截图后，使用OCR识别出的文字片段：
+      ${scanMarks.map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')}。
+      以下是通过文本复制记录的片段：
+      ${textMarks.map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')}。
+      以下是插图记录的片段描述：
+      ${imageMarks.map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')}。
+      以下聊天记录：
+      ${
+        chats.filter((item) => item.tagId === currentTagId && item.type === "chat").map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')
+      }。
+      使用 ${locale} 语言，分析这些记录的内容，编写一个可能会向你提问的问题，用于辅助用户向你提问，不许超过 20 个字，可以参考以下内容：
+      - 什么是 ** ？
+      - 如何解决 ** 问题？
+      - 总结 ** 。
+    `
+    let textChunks = ''
+    await fetchAiStream(request_content, (res) => {
+      if (res!== '[DONE]') {
+        textChunks += res
+      }
+    })
+    if (textChunks.length < 30) {
+      setPlaceholder(textChunks + '[Tab]')
+    }
+  }
+
+  useEffect(() => {
+    if (marks.length === 0) {
+      setPlaceholder('你可以提问或将记录整理为文章...')
+    } else {
+      genInputPlaceholder()
+    }
+  }, [marks])
+
   return (
     <footer className="my-4 border px-4 py-4 shadow-lg rounded-xl min-w-[500px] w-2/3 max-w-[800px] flex bg-primary-foreground h-14 items-center">
       <Input
@@ -151,11 +194,16 @@ export function ChatInput() {
         disabled={!apiKey}
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="你可以提问或将记录整理为文章..."
+        placeholder={placeholder}
         onKeyDown={(e) => {
           if (e.key === "Enter" && !isComposing) {
             e.preventDefault()
             handleSubmit()
+            genInputPlaceholder()
+          }
+          if (e.key === "Tab") {
+            e.preventDefault()
+            setText(placeholder.replace('[Tab]', ''))
           }
         }}
         onCompositionStart={() => setIsComposing(true)}

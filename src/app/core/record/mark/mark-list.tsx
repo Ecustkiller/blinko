@@ -5,18 +5,14 @@ import {
   SidebarGroup,
   SidebarGroupContent,
 } from "@/components/ui/sidebar"
-import React, { useEffect } from "react"
+import React from "react"
 import { MarkItem } from "./mark-item";
 import useMarkStore from "@/stores/mark";
 import { MarkLoading } from "./mark-loading";
 import MarkEmpty from "./mark-empty";
 
 export function MarkList() {
-  const { marks, fetchMarks, queues } = useMarkStore()
-
-  useEffect(() => {
-    fetchMarks()
-  }, [fetchMarks])
+  const { marks, queues } = useMarkStore()
 
   return (
     <SidebarContent>
