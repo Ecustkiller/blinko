@@ -6,16 +6,18 @@ import Translation from "./translation";
 import Sync from "./sync";
 import History from "./history";
 import { Separator } from "@/components/ui/separator";
-import Toggle from "./toggle";
-import { Settings } from "./settings.type";
 import Continue from "./continue";
 import Mark from "./mark";
 import Eraser from "./eraser";
+import Undo from "./undo";
+import Redo from './redo'
+import Preview from "./preview"
 
-export default function CustomToolbar({mdRef, settings}: {mdRef: RefObject<ExposeParam>, settings: Settings}) {
+export default function CustomToolbar({mdRef}: {mdRef: RefObject<ExposeParam>}) {
   return <div className="h-12 w-full border-b flex items-center px-2 gap-1 justify-between">
     <div className="flex h-4 items-center gap-1">
-      <Toggle mdRef={mdRef} settings={settings} />
+      <Undo mdRef={mdRef} />
+      <Redo mdRef={mdRef} />
       <Separator orientation="vertical" />
       <Question mdRef={mdRef} />
       <Continue mdRef={mdRef} />
@@ -26,7 +28,9 @@ export default function CustomToolbar({mdRef, settings}: {mdRef: RefObject<Expos
       <Translation mdRef={mdRef} />
     </div>
 
-    <div>
+    <div className="flex h-4 items-center gap-1">
+      <Preview mdRef={mdRef} />
+      <Separator orientation="vertical" />
       <History mdRef={mdRef} />
       <Sync mdRef={mdRef} />
     </div>
