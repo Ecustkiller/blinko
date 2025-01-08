@@ -42,7 +42,7 @@ export function ChatHeader() {
         {
           (model && apiKey) ?
           <div className="flex items-center gap-1 text-sm text-zinc-500 cursor-pointer hover:underline" onClick={handleSetting}>
-            {model.toUpperCase()}
+            {model.replace(/gpt/, 'GPT')}
             <ChevronDown className="size-4" />
           </div> :
           <div className="flex gap-1 items-center">

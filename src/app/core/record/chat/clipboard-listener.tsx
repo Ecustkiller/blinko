@@ -8,7 +8,7 @@ import useChatStore from "@/stores/chat";
 import useTagStore from "@/stores/tag";
 
 export function ClipboardListener() {
-  const { insert } = useChatStore()
+  const { insert, chats } = useChatStore()
   const { currentTagId } = useTagStore()
 
   async function readHandler() {
@@ -44,8 +44,8 @@ export function ClipboardListener() {
 
   async function handleText() {
     const text = await readText()
-    if (text.length > 30) {
-      await clear()
+    const chatsContent = chats.map(item => item.content)
+    if (!chatsContent.includes(text)) {
       await insert({
         role: 'system',
         content: text,
@@ -67,7 +67,7 @@ export function ClipboardListener() {
     return () => {
       unlisten();
     }
-  }, [currentTagId])
+  }, [currentTagId, chats])
 
   return <></>
 }
