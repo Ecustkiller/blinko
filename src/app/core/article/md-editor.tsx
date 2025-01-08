@@ -29,8 +29,6 @@ export function MdEditor() {
   async function handleSave(value: string) {
     if (isChangeFile) return
     if (value !== currentArticle) {
-      console.log(activeFilePath);
-      console.log('save');
       setValue(value)
       setCurrentArticle(value)
       await saveCurrentArticle(value)

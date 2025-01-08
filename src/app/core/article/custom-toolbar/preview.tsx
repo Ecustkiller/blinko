@@ -7,7 +7,7 @@ export default function Preview({mdRef}: {mdRef: RefObject<ExposeParam>}) {
 
   const previewTypes = [
     {type: 'code', name: '编辑模式', icon: <SquareMIcon />},
-    {type: 'preview', name: '分屏预览', icon: <SquareSplitHorizontal />},
+    {type: 'preview', name: '分屏模式', icon: <SquareSplitHorizontal />},
     {type: 'preview-only', name: '预览模式', icon: <ViewIcon />},
   ]
 

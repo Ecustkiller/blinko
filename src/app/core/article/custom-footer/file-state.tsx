@@ -1,6 +1,6 @@
 import { convertBytesToSize } from "@/lib/utils";
 import useArticleStore from "@/stores/article";
-import { BaseDirectory, FileInfo, stat } from '@tauri-apps/plugin-fs'
+import { BaseDirectory, exists, FileInfo, stat } from '@tauri-apps/plugin-fs'
 import dayjs from "dayjs";
 import { SaveIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -12,6 +12,8 @@ export default function FileState() {
   async function getFileState() {
     if (!activeFilePath) return
     const path = `article/${activeFilePath}`
+    const isExists = await exists(path, { baseDir: BaseDirectory.AppData })
+    if (!isExists) return
     const state = await stat(path, { baseDir: BaseDirectory.AppData })
     setFileState(state)
   }
