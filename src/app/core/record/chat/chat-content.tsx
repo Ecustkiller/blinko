@@ -31,8 +31,8 @@ export default function ChatContent() {
 
   return <div id="chats-wrapper" className="flex-1 overflow-y-auto overflow-x-hidden w-full flex flex-col items-end p-4 gap-6">
     {
-      chats.length ? chats.map((chat, index) => {
-        return <Message key={index} chat={chat} />
+      chats.length ? chats.map((chat) => {
+        return <Message key={chat.id} chat={chat} />
       }) : <ChatEmpty />
     }
   </div>
