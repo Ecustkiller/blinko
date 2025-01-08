@@ -5,8 +5,8 @@ export default function ConvertHTML() {
   const { currentArticle } = useArticleStore()
 
   return (
-    <div className="flex items-center space-x-2">
-      <span className="text-xs">{wordsCount(currentArticle)} 字</span>
+    <div className="flex items-center gap-1">
+      <span>{wordsCount(currentArticle)} 字</span>
     </div>
   )
 }

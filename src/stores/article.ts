@@ -284,7 +284,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
       }
     }
   },
-  
+
   allArticle: [],
   loadAllArticle: async () => {
     const res = await readDir('article', { baseDir: BaseDirectory.AppData })
