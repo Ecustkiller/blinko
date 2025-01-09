@@ -11,11 +11,12 @@ import useMarkStore from "@/stores/mark";
 import { Button } from "@/components/ui/button";
 import { Mark, delMark } from "@/db/marks";
 import { TooltipButton } from "@/components/tooltip-button";
+import useSettingStore from "@/stores/setting";
 
 export default function MarkInsert({mdRef}: {mdRef: RefObject<ExposeParam>}) {
 
   const { loading, setLoading } = useArticleStore()
-
+  const { apiKey } = useSettingStore()
   const { allMarks, queues, fetchAllMarks } = useMarkStore()
 
   async function handleBlock(mark: Mark) {
@@ -35,14 +36,20 @@ export default function MarkInsert({mdRef}: {mdRef: RefObject<ExposeParam>}) {
         }))
         break;
       default:
-        const req = `这是一段 OCR 识别的结果：${mark.content}进行整理，直接返回整理后的结果。`
-        let res = ''
-        await fetchAiStream(req, text => {
-          if (text === '[DONE]') return
+        if (apiKey) {
+          const req = `这是一段 OCR 识别的结果：${mark.content}进行整理，直接返回整理后的结果。`
+          let res = ''
+          await fetchAiStream(req, text => {
+            if (text === '[DONE]') return
+            mdRef.current?.insert(() => ({
+              targetValue: res += text,
+            }))
+          })
+        } else {
           mdRef.current?.insert(() => ({
-            targetValue: res += text,
+            targetValue: mark.content || 'OCR 未识别到任何内容',
           }))
-        })
+        }
         break;
     }
     setLoading(false)
