@@ -211,8 +211,8 @@ export function ChatInput() {
           setIsComposing(false)
         }, 0)}
       />
-      <TooltipButton icon={<NotebookPen />} disabled={loading} tooltipText="整理" onClick={handleGen} />
-      <TooltipButton icon={<Send />} disabled={loading} tooltipText="发送" onClick={handleSubmit} />
+      <TooltipButton icon={<NotebookPen />} disabled={loading || !apiKey} tooltipText="整理" onClick={handleGen} />
+      <TooltipButton icon={<Send />} disabled={loading || !apiKey} tooltipText="发送" onClick={handleSubmit} />
     </footer>
   )
 }

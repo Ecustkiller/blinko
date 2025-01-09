@@ -46,7 +46,7 @@ export function ChatHeader() {
             <ChevronDown className="size-4" />
           </div> :
           <div className="flex gap-1 items-center">
-            <Button variant="ghost" onClick={handleSetting}>
+            <Button variant="ghost" className="text-red-800" onClick={handleSetting}>
               <CircleAlert /> 配置 API KEY
             </Button>
           </div>
