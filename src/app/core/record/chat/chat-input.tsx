@@ -151,6 +151,7 @@ export function ChatInput() {
     const scanMarks = marks.filter(item => item.type === 'scan')
     const textMarks = marks.filter(item => item.type === 'text')
     const imageMarks = marks.filter(item => item.type === 'image')
+    const userQuestionHistorys = chats.filter((item) => item.tagId === currentTagId && item.type === "chat" && item.role === 'user').map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')
     const request_content = `
       请你扮演一个笔记软件的智能助手，可以参考以下内容笔记的记录，
       以下是通过截图后，使用OCR识别出的文字片段：
@@ -163,10 +164,12 @@ export function ChatInput() {
       ${
         chats.filter((item) => item.tagId === currentTagId && item.type === "chat").map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')
       }。
-      使用 ${locale} 语言，分析这些记录的内容，编写一个可能会向你提问的问题，用于辅助用户向你提问，不许超过 20 个字，可以参考以下内容：
-      - 什么是 ** ？
-      - 如何解决 ** 问题？
-      - 总结 ** 。
+      以下是用户之前的提问记录：
+      ${userQuestionHistorys}。
+      使用 ${locale} 语言，分析这些记录的内容，编写一个可能会向你提问的问题，用于辅助用户向你提问，不要返回用户已经提过的类似问题，不许超过 20 个字，可以参考以下内容：
+      什么是 ** ？
+      如何解决 ** 问题？
+      总结 ** 。
     `
     let textChunks = ''
     await fetchAiStream(request_content, (res) => {
@@ -199,7 +202,6 @@ export function ChatInput() {
           if (e.key === "Enter" && !isComposing) {
             e.preventDefault()
             handleSubmit()
-            genInputPlaceholder()
           }
           if (e.key === "Tab") {
             e.preventDefault()
