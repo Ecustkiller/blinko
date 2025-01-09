@@ -1,29 +1,41 @@
 "use client"
 import {TooltipProvider } from "@/components/ui/tooltip"
-import { FilePlus, FolderGit2, FolderPlus, FolderSync, LoaderCircle } from "lucide-react"
+import { CloudCog, FilePlus, FolderGit2, FolderPlus, FolderSync, LoaderCircle } from "lucide-react"
 import * as React from "react"
 import { TooltipButton } from "@/components/tooltip-button"
 import useArticleStore from "@/stores/article"
 import { open } from '@tauri-apps/plugin-shell';
 import useSettingStore from "@/stores/setting"
+import { useRouter } from "next/navigation";
 
 export function FileToolbar() {
   const { newFolder, loadFileTree, newFile, fileTreeLoading } = useArticleStore()
-  const { githubUsername } = useSettingStore()
-  
+  const { githubUsername, accessToken } = useSettingStore()
+  const router = useRouter()
+
   async function openFolder() {
     open(`https://github.com/${githubUsername}/note-gen-article-sync`)
+  }
+
+  function handleSetting() {
+    router.push('/core/setting?anchor=sync', { scroll: false });
   }
 
   return (
     <div className="flex justify-between items-center h-12 border-b px-2">
       <div>
-        <TooltipButton
-          icon={fileTreeLoading ? <LoaderCircle className="animate-spin size-4" /> : <FolderGit2 />}
-          tooltipText={fileTreeLoading ? '正在加载同步信息' : '访问仓库'}
-          disabled={githubUsername? false : true}
-          onClick={openFolder}
-        />
+        {
+          accessToken ? (
+            <TooltipButton
+              icon={fileTreeLoading ? <LoaderCircle className="animate-spin size-4" /> : <FolderGit2 />}
+              tooltipText={fileTreeLoading ? '正在加载同步信息' : '访问仓库'}
+              disabled={githubUsername? false : true}
+              onClick={openFolder}
+            />
+          ) : (
+            <TooltipButton icon={<CloudCog className="text-red-800" />} tooltipText="配置同步" onClick={handleSetting} />
+          )
+        }
       </div>
       <div>
         <TooltipProvider>
