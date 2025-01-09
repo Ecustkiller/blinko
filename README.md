@@ -1,7 +1,5 @@
 <img src="https://cdn.jsdelivr.net/gh/codexu/note-gen@dev/app-icon.png" width="128" height="128" />
 
-<br>
-
 ![](https://github.com/codexu/note-gen/actions/workflows/release.yml/badge.svg?branch=release)
 ![](https://img.shields.io/github/v/release/codexu/note-gen)
 ![](https://img.shields.io/badge/version-alpha-orange)
@@ -12,7 +10,7 @@
 
 NoteGen 是一个基于 Tauri + ChatGPT 的免费开源笔记 App，旨在帮助用户以**截图**、插图、文本的记录方式，快捷的保存碎片化知识，通过 AI 自动整理为一篇可读的笔记，通过内置的 Markdown 编辑器将 AI 笔记进行二次创作。笔记最终形态以文件存储于本地，同时也支持`同步`与`图床`功能，其基于 Github 实现，保证数据安全。
 
-https://github.com/user-attachments/assets/0d7ea538-838a-49f0-866d-ae1962e0dfd9
+![](https://cdn.jsdelivr.net/gh/codexu/note-gen-image-sync@main/2c3c6211-0905-43ba-8769-4d13fd30baf4.png)
 
 ## 下载
 
