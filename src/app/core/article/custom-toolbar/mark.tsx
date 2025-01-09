@@ -1,7 +1,7 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { fetchAiStream } from "@/lib/ai";
 import useArticleStore from "@/stores/article";
-import { Plus, TicketPlus } from "lucide-react";
+import { Highlighter, Plus } from "lucide-react";
 import { ExposeParam } from "md-editor-rt";
 import { RefObject } from "react";
 import { MarkWrapper } from "../../record/mark/mark-item";
@@ -10,6 +10,7 @@ import { MarkLoading } from "../../record/mark/mark-loading";
 import useMarkStore from "@/stores/mark";
 import { Button } from "@/components/ui/button";
 import { Mark, delMark } from "@/db/marks";
+import { TooltipButton } from "@/components/tooltip-button";
 
 export default function MarkInsert({mdRef}: {mdRef: RefObject<ExposeParam>}) {
 
@@ -56,7 +57,9 @@ export default function MarkInsert({mdRef}: {mdRef: RefObject<ExposeParam>}) {
   return (
     <Popover onOpenChange={openChangeHandler}>
       <PopoverTrigger asChild>
-        <Button disabled={loading} variant="ghost" size="icon" title="记录"><TicketPlus /></Button>
+        <div>
+          <TooltipButton tooltipText="使用记录" icon={<Highlighter />} disabled={loading} />
+        </div>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-96 p-0">
         <div className="px-2 py-2 flex items-end">

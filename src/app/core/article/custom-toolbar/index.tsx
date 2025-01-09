@@ -19,10 +19,9 @@ export default function CustomToolbar({mdRef}: {mdRef: RefObject<ExposeParam>}) 
       <Undo mdRef={mdRef} />
       <Redo mdRef={mdRef} />
       <Separator orientation="vertical" />
+      <Mark mdRef={mdRef} />
       <Question mdRef={mdRef} />
       <Continue mdRef={mdRef} />
-      <Mark mdRef={mdRef} />
-      <Separator orientation="vertical" />
       <Optimize mdRef={mdRef} />
       <Eraser mdRef={mdRef} />
       <Translation mdRef={mdRef} />

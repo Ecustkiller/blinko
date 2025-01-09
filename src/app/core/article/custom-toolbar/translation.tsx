@@ -4,9 +4,9 @@ import { Languages } from "lucide-react";
 import { ExposeParam } from "md-editor-rt";
 import { RefObject } from "react";
 import { locales } from "@/lib/locales";
-import { Button } from "@/components/ui/button";
 import useArticleStore from "@/stores/article";
 import { toast } from "@/hooks/use-toast";
+import { TooltipButton } from "@/components/tooltip-button";
 
 export default function Translation({mdRef}: {mdRef: RefObject<ExposeParam>}) {
   const { loading, setLoading } = useArticleStore()
@@ -35,7 +35,9 @@ export default function Translation({mdRef}: {mdRef: RefObject<ExposeParam>}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="outline-none">
-        <Button disabled={loading} variant="ghost" size="icon" title="翻译"><Languages /></Button>
+        <div>
+          <TooltipButton tooltipText="翻译" icon={<Languages />} disabled={loading} />
+        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>将选中的文本进行翻译</DropdownMenuLabel>
