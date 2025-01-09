@@ -1,28 +1,16 @@
-<p align="center">
-  <img src="https://cdn.jsdelivr.net/gh/codexu/note-gen@dev/app-icon.png" width="128" height="128" />
-  <br />
-  <a href="https://github.com/codexu/note-gen/actions/workflows/release.yml">
-    <img src="https://github.com/codexu/note-gen/actions/workflows/release.yml/badge.svg?branch=release" />
-  </a>
-  <a href="https://github.com/codexu/note-gen/releases/latest">
-    <img src="https://img.shields.io/github/v/release/codexu/note-gen" />
-  </a>
-  <a href="https://img.shields.io/badge/version-alpha-orange">
-    <img src="https://img.shields.io/badge/version-alpha-orange" />
-  </a>
-  <a href="https://github.com/codexu/note-gen/releases/latest">
-    <img src="https://img.shields.io/github/downloads/codexu/note-gen/total" />
-  </a>
-  <a href="https://github.com/codexu/note-gen/commits/dev/">
-    <img src="https://img.shields.io/github/commit-activity/m/codexu/note-gen" />
-  </a>
-</p>
+<img src="https://cdn.jsdelivr.net/gh/codexu/note-gen@dev/app-icon.png" width="128" height="128" />
+
+<br>
+
+![](https://github.com/codexu/note-gen/actions/workflows/release.yml/badge.svg?branch=release)
+![](https://img.shields.io/github/v/release/codexu/note-gen)
+![](https://img.shields.io/badge/version-alpha-orange)
+![](https://img.shields.io/github/downloads/codexu/note-gen/total)
+![](https://img.shields.io/github/commit-activity/m/codexu/note-gen)
 
 # NoteGen
 
 NoteGen 是一个基于 Tauri + ChatGPT 的免费开源笔记 App，旨在帮助用户以**截图**、插图、文本的记录方式，快捷的保存碎片化知识，通过 AI 自动整理为一篇可读的笔记，通过内置的 Markdown 编辑器将 AI 笔记进行二次创作。笔记最终形态以文件存储于本地，同时也支持`同步`与`图床`功能，其基于 Github 实现，保证数据安全。
-
-![](https://cdn.jsdelivr.net/gh/codexu/note-gen-image-sync@main/725a365d-3b44-419d-9f92-598727f6de5e.png)
 
 https://github.com/user-attachments/assets/0d7ea538-838a-49f0-866d-ae1962e0dfd9
 
@@ -84,7 +72,7 @@ flowchart LR
 
 支持截图、插图和文本的多种记录方式，用户可以根据不同场景灵活选择最适合的记录形式。借助 ChatGPT 的强大功能，您无需担心记录的顺序和完整性，轻松捕捉灵感与信息，提升记录效率。
 
-![b8df1739-09db-4f0f-bc6d-6b322f7f6f95.jpg](https://cdn.jsdelivr.net/gh/codexu/note-gen-image-sync@main/b8df1739-09db-4f0f-bc6d-6b322f7f6f95.jpg)
+![](https://cdn.jsdelivr.net/gh/codexu/note-gen-image-sync@main/7db2ca4b-f316-4e76-91bc-b824c2206748.png)
 
 **记录方式**
 
@@ -118,7 +106,7 @@ flowchart LR
 
 写作模式是基于文件管理器和 Markdown 编辑器组合实现的，即使你不使用记录功能，它也可以完全独立使用。
 
-![35370027-b170-497a-8b91-d788824183ff.jpg](https://cdn.jsdelivr.net/gh/codexu/note-gen-image-sync@main/35370027-b170-497a-8b91-d788824183ff.jpg)
+![](https://cdn.jsdelivr.net/gh/codexu/note-gen-image-sync@main/1694ac59-0692-4ee4-8121-de67bc3b1fbc.png)
 
 **文件管理器**
 
