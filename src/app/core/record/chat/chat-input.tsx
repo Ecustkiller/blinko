@@ -18,7 +18,7 @@ export function ChatInput() {
   const { insert, updateChat, loading, setLoading, saveChat, locale, chats } = useChatStore()
   const { fetchMarks, marks, trashState } = useMarkStore()
   const [isComposing, setIsComposing] = useState(false)
-  const [placeholder, setPlaceholder] = useState('你可以提问或将记录整理为文章...')
+  const [placeholder, setPlaceholder] = useState('')
 
   async function handleGen() {
     setLoading(true)
@@ -189,6 +189,14 @@ export function ChatInput() {
       genInputPlaceholder()
     }
   }, [marks])
+
+  useEffect(() => {
+    if (!apiKey) {
+      setPlaceholder('未配置 API Key，无法使用 AI 对话功能...')
+    } else {
+      setPlaceholder('你可以提问或将记录整理为文章...')
+    }
+  }, [apiKey])
 
   return (
     <footer className="my-4 border px-4 py-4 shadow-lg rounded-xl min-w-[500px] w-2/3 max-w-[800px] flex bg-primary-foreground h-14 items-center">
