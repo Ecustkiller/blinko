@@ -79,15 +79,15 @@ function DetailViewer({mark, content, path}: {mark: Mark, content: string, path?
             null
           }
           <SheetDescription>
-            <span className="block my-4 text-md text-zinc-900 font-bold">描述</span>
-            <span className="leading-6">{mark.desc}</span>
             {
-              mark.type === 'text' ? null :
+              mark.type === 'text' || mark.desc === mark.content ? null :
               <>
-                <span className="block my-4 text-md text-zinc-900 font-bold">OCR</span>
-                <span className="leading-6">{mark.content}</span>
+                <span className="block my-4 text-md text-zinc-900 font-bold">描述</span>
+                <span className="leading-6">{mark.desc}</span>
               </>
             }
+            <span className="block my-4 text-md text-zinc-900 font-bold">内容</span>
+            <span className="leading-6">{mark.content}</span>
           </SheetDescription>
         </div>
       </SheetContent>
