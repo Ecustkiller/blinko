@@ -108,7 +108,10 @@ const useSettingStore = create<SettingState>((set, get) => ({
   },
 
   accessToken: '',
-  setAccessToken: (accessToken: string) => set({ accessToken }),
+  setAccessToken: (accessToken: string) => {
+    set({ githubUsername: '' })
+    set({ accessToken })
+  },
 
   jsdelivr: true,
   setJsdelivr: (jsdelivr: boolean) => set({ jsdelivr }),

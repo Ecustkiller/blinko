@@ -38,7 +38,6 @@ const useMarkStore = create<MarkState>((set) => ({
     set({ marks })
   },
   fetchMarks: async () => {
-    console.log('fetchMarks');
     const store = await Store.load('store.json');
     const currentTagId = await store.get<number>('currentTagId')
     if (!currentTagId) {
