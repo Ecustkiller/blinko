@@ -97,6 +97,12 @@ const useArticleStore = create<NoteState>((set, get) => ({
       }
     }
     set({ fileTree: cacheTree })
+    const store = await Store.load('store.json');
+    const accessToken = await store.get<string>('accessToken')
+    if (!accessToken) {
+      set({ fileTreeLoading: false })
+      return
+    }
     const githubFiles = await getFiles({ path: '', repo: RepoNames.article })
     if (githubFiles) {
       githubFiles.forEach((file: GithubContent) => {

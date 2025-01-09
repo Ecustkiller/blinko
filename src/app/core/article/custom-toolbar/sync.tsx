@@ -9,9 +9,11 @@ import { CloudUpload, LoaderCircle } from "lucide-react";
 import { ExposeParam } from "md-editor-rt";
 import { RefObject, useState } from "react";
 import { diffWordsWithSpace } from 'diff';
+import useSettingStore from "@/stores/setting";
 
 export default function Sync({mdRef}: {mdRef: RefObject<ExposeParam>}) {
   const { activeFilePath, currentArticle } = useArticleStore()
+  const { accessToken } = useSettingStore()
   const [loading, setLoading] = useState(false)
   async function handleSync() {
     setLoading(true)
@@ -63,6 +65,7 @@ export default function Sync({mdRef}: {mdRef: RefObject<ExposeParam>}) {
       icon={loading ? <LoaderCircle className="animate-spin size-4" /> : <CloudUpload />}
       tooltipText="同步"
       onClick={handleSync}
+      disabled={!accessToken}
     >
     </TooltipButton>
   )

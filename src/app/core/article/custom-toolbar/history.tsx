@@ -12,6 +12,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TooltipButton } from "@/components/tooltip-button";
 import { open } from "@tauri-apps/plugin-shell";
+import useSettingStore from "@/stores/setting";
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
@@ -19,6 +20,7 @@ dayjs.locale(zh)
 export default function History({mdRef}: {mdRef: RefObject<ExposeParam>}) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const { activeFilePath, setCurrentArticle, currentArticle } = useArticleStore()
+  const { accessToken } = useSettingStore()
   const [commits, setCommits] = useState<ResCommit[]>([])
   const [loading, setLoading] = useState(false)
   const [commitsLoading, setCommitsLoading] = useState(false)
@@ -54,7 +56,7 @@ export default function History({mdRef}: {mdRef: RefObject<ExposeParam>}) {
   return (
     <Sheet open={sheetOpen} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" title="历史记录">
+        <Button variant="ghost" size="icon" title="历史记录" disabled={!accessToken}>
           {
             loading ? <LoaderCircle className="animate-spin size-4" /> : <HistoryIcon />
           }
