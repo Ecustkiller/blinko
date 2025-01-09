@@ -125,7 +125,7 @@ export function MarkWrapper({mark}: {mark: Mark}) {
             {mark.url.includes('http') ? <ImageUp className="size-3 text-zinc-400" /> : null}
             <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
           </div>
-          <DetailViewer mark={mark} content={mark.desc || ''} />
+          <DetailViewer mark={mark} content={mark.desc || ''} path="image" />
         </div>
         <div className="bg-zinc-900 flex items-center justify-center">
           <ImageViewer mark={mark} path="image" />
