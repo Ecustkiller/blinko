@@ -109,7 +109,7 @@ const useSettingStore = create<SettingState>((set, get) => ({
 
   accessToken: '',
   setAccessToken: async (accessToken: string) => {
-    get().setGithubUsername('')
+    await get().setGithubUsername('')
     set({ accessToken })
   },
 
