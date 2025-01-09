@@ -1,6 +1,7 @@
 import { TooltipButton } from "@/components/tooltip-button";
 import { fetchAiStream } from "@/lib/ai";
 import useArticleStore from "@/stores/article";
+import useSettingStore from "@/stores/setting";
 import { ListPlus } from "lucide-react";
 import { ExposeParam } from "md-editor-rt";
 import { RefObject } from "react";
@@ -8,6 +9,7 @@ import { RefObject } from "react";
 export default function Continue({mdRef}: {mdRef: RefObject<ExposeParam>}) {
 
   const { currentArticle, loading, setLoading } = useArticleStore()
+  const { apiKey } = useSettingStore()
   async function handler() {
     const index = mdRef.current?.getEditorView()?.state.selection.ranges[0].to;
     setLoading(true)
@@ -29,7 +31,7 @@ export default function Continue({mdRef}: {mdRef: RefObject<ExposeParam>}) {
     setLoading(false)
   }
   return (
-    <TooltipButton disabled={loading} icon={<ListPlus />} tooltipText="续写" onClick={handler}>
+    <TooltipButton disabled={loading || !apiKey} icon={<ListPlus />} tooltipText="续写" onClick={handler}>
     </TooltipButton>
   )
 }

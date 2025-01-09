@@ -7,9 +7,11 @@ import { locales } from "@/lib/locales";
 import useArticleStore from "@/stores/article";
 import { toast } from "@/hooks/use-toast";
 import { TooltipButton } from "@/components/tooltip-button";
+import useSettingStore from "@/stores/setting";
 
 export default function Translation({mdRef}: {mdRef: RefObject<ExposeParam>}) {
   const { loading, setLoading } = useArticleStore()
+  const { apiKey } = useSettingStore()
   async function handleBlock(locale: string) {
     const selectedText = mdRef.current?.getSelectedText()
     if (selectedText) {
@@ -34,9 +36,9 @@ export default function Translation({mdRef}: {mdRef: RefObject<ExposeParam>}) {
   }
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild className="outline-none">
+      <DropdownMenuTrigger asChild className="outline-none" disabled={loading || !apiKey}>
         <div>
-          <TooltipButton tooltipText="翻译" icon={<Languages />} disabled={loading} />
+          <TooltipButton tooltipText="翻译" icon={<Languages />} disabled={loading || !apiKey} />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
