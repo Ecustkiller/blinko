@@ -14,6 +14,7 @@ import Redo from './redo'
 import Preview from "./preview"
 import Toggle from "./toggle";
 import { Settings } from "./settings.type";
+import Check from "./check";
 
 export default function CustomToolbar({mdRef, settings}: {mdRef: RefObject<ExposeParam>, settings: Settings}) {
   return <div className="h-12 w-full border-b flex items-center px-2 gap-1 justify-between">
@@ -29,6 +30,7 @@ export default function CustomToolbar({mdRef, settings}: {mdRef: RefObject<Expos
       <Optimize mdRef={mdRef} />
       <Eraser mdRef={mdRef} />
       <Translation mdRef={mdRef} />
+      <Check mdRef={mdRef} />
     </div>
 
     <div className="flex h-4 items-center gap-1">
