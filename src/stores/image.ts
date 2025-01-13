@@ -4,6 +4,7 @@ import { create } from 'zustand'
 
 interface MarkState {
   images: GithubFile[]
+  pushImage: (image: GithubFile) => void
   deleteImage: (name: string) => void
   getImages: () => Promise<void>
 }
@@ -11,6 +12,11 @@ interface MarkState {
 const useImageStore = create<MarkState>((set) => ({
   images: [],
 
+  pushImage: (image) => {
+    set(state => ({
+      images: [image, ...state.images]
+    }))
+  },
   deleteImage: (name) => {
     set(state => ({
       images: state.images.filter(item => item.name !== name)

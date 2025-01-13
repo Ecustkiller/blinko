@@ -14,6 +14,7 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSub, Conte
 import useSettingStore from '@/stores/setting'
 import { useState } from 'react'
 import { LoaderCircle } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 
 export function ImageCard({file}: {file: GithubFile}) {
   const [loading, setLoading] = useState(false)
@@ -55,6 +56,9 @@ export function ImageCard({file}: {file: GithubFile}) {
       <ContextMenuTrigger>
         <Card className={`w-full h-36 overflow-hidden p-0 rounded-lg shadow-none relative group hover:outline outline-2`}>
           <CardContent className="p-0 h-full">
+            {
+              file.isNew && <Badge className='absolute top-2 right-2'>最近上传</Badge>
+            }
             <PhotoProvider>
               <PhotoView src={file.download_url}>
                 {

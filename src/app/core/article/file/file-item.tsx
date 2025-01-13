@@ -29,10 +29,7 @@ export function FileItem({ item }: { item: DirTree }) {
     if (path.includes('/')) {
       const dirIndex = cacheTree.findIndex(item => item.name === path.split('/')[0])
       const fileIndex = cacheTree[dirIndex].children?.findIndex(file => file.name === path.split('/')[1])
-      console.log(fileIndex);
       const file = cacheTree[dirIndex].children?.find(file => file.name === path.split('/')[1])
-      console.log(file);
-      console.log(fileTree);
       if (file && fileIndex !== undefined && fileIndex !== -1) {
         if (file.sha) {
           file.isLocale = false
@@ -45,7 +42,6 @@ export function FileItem({ item }: { item: DirTree }) {
       const index = cacheTree.findIndex(file => file.name === activeFilePath)
       cacheTree.splice(index, 1)
     }
-    console.log(cacheTree);
     setFileTree(cacheTree)
     setActiveFilePath('')
     setCurrentArticle('')

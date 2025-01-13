@@ -39,6 +39,7 @@ export interface GithubFile {
   download_url: string;
   type: string;
   _links: Links;
+  isNew?: boolean;
 }
 
 interface Links {
