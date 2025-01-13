@@ -1,5 +1,5 @@
 'use client'
-import { MdEditor as MdEditorRT, ExposeParam, Themes } from 'md-editor-rt';
+import { MdEditor as MdEditorRT, ExposeParam, Themes, ToolbarNames } from 'md-editor-rt';
 import useArticleStore from '@/stores/article';
 import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
@@ -21,6 +21,7 @@ export function MdEditor() {
   const [mdTheme, setMdTheme] = useState<Themes>('light')
   const { theme } = useTheme()
   const { codeTheme, previewTheme, githubUsername, jsdelivr } = useSettingStore()
+  const [toolbar, setToolbar] = useState<ToolbarNames[]>([])
   const footers = [0];
   let isChangeFile = false;
 
@@ -134,7 +135,10 @@ export function MdEditor() {
   }, [html2md])
 
   return <div className='flex-1'>
-    <CustomToolbar mdRef={ref} />
+    <CustomToolbar mdRef={ref} settings={{
+      toolbar,
+      setToolbar
+    }}  />
     <MdEditorRT
       id="aritcle-md-editor"
       ref={ref}
@@ -146,7 +150,7 @@ export function MdEditor() {
       preview={false}
       className='!border-none'
       noImgZoomIn
-      toolbars={[]}
+      toolbars={toolbar}
       footers={footers}
       defFooters={defFooters}
       value={value}

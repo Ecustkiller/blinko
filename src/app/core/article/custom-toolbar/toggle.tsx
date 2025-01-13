@@ -25,14 +25,9 @@ const toolbars: ToolbarNames[] = [
   'table',
   'mermaid',
   'katex',
-  '-',
-  'revoke',
-  'next',
   '=',
-  'pageFullscreen',
-  'preview',
-  'previewOnly',
   'htmlPreview',
+  'pageFullscreen',
 ]
 export default function Toggle({mdRef, settings}: {mdRef: RefObject<ExposeParam>, settings: Settings}) {
 
@@ -42,7 +37,11 @@ export default function Toggle({mdRef, settings}: {mdRef: RefObject<ExposeParam>
     const store = await Store.load('store.json')
     const toolbarState = await store.get<boolean>('toolbarState') || false
     setValue(toolbarState)
-    handleSet()
+    if (toolbarState) {
+      settings.setToolbar(toolbars)
+    } else {
+      settings.setToolbar([])
+    }
   }
 
   useEffect(() => {
