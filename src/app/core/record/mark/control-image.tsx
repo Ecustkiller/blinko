@@ -15,7 +15,7 @@ import { open } from '@tauri-apps/plugin-dialog';
 export function ControlImage() {
 
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
-  const { apiKey, markDescGen, githubUsername } = useSettingStore()
+  const { apiKey, githubUsername } = useSettingStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
 
   async function selectImages() {
@@ -48,8 +48,8 @@ export function ControlImage() {
     const content = await ocr(`image/${filename}`)
     setQueue(queueId, { progress: ' AI 内容识别' });
     let desc = ''
-    if (apiKey && markDescGen) {
-      desc = await fetchAiDesc(content).then(res => res ? res.choices[0].message.content : content)
+    if (apiKey) {
+      desc = await fetchAiDesc(content).then(res => res ? res.choices[0].message.content : content) || content
     } else {
       desc = content
     }

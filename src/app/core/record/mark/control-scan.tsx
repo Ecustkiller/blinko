@@ -16,7 +16,7 @@ import useSettingStore from "@/stores/setting"
 export function ControlScan() {
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
-  const { apiKey, markDescGen } = useSettingStore()
+  const { apiKey } = useSettingStore()
 
   async function createScreenShot() {
     const currentWindow = getCurrentWebviewWindow()
@@ -50,9 +50,9 @@ export function ControlScan() {
         addQueue({ queueId, progress: ' OCR 识别', type: 'scan', startTime: Date.now() })
         const content = await ocr(`screenshot/${e.payload}`)
         let desc = ''
-        if (apiKey && markDescGen) {
+        if (apiKey) {
           setQueue(queueId, { progress: ' AI 内容识别' });
-          desc = await fetchAiDesc(content).then(res => res ? res.choices[0].message.content : content)
+          desc = await fetchAiDesc(content).then(res => res ? res.choices[0].message.content : content) || content
         } else {
           desc = content
         }

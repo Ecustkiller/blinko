@@ -14,14 +14,17 @@ interface SettingState {
   language: string
   setLanguage: (language: string) => void
 
+  aiType: string
+  setAiType: (aiType: string) => void
+
+  baseURL: string
+  setBaseURL: (baseURL: string) => void
+
   apiKey: string
   setApiKey: (apiKey: string) => void
 
   model: string
   setModel: (language: string) => void
-
-  markDescGen: boolean
-  setMarkDescGen: (markDescGen: boolean) => void
 
   darkMode: string
   setDarkMode: (darkMode: string) => void
@@ -71,44 +74,47 @@ const useSettingStore = create<SettingState>((set, get) => ({
   },
 
   autoUpdate: true,
-  setAutoUpdate: (autoUpdate: boolean) => set({ autoUpdate }),
+  setAutoUpdate: (autoUpdate) => set({ autoUpdate }),
 
   language: '简体中文',
-  setLanguage: (language: string) => set({ language }),
+  setLanguage: (language) => set({ language }),
+
+  aiType: 'openai',
+  setAiType: (aiType) => set({ aiType }),
+
+  baseURL: '',
+  setBaseURL: (baseURL) => set({ baseURL }),
 
   apiKey: '',
-  setApiKey: (apiKey: string) => set({ apiKey }),
+  setApiKey: (apiKey) => set({ apiKey }),
 
   model: 'gpt-4o-mini',
-  setModel: (model: string) => set({ model }),
-
-  markDescGen: true,
-  setMarkDescGen: (markDescGen: boolean) => set({ markDescGen }),
+  setModel: (model) => set({ model }),
 
   darkMode: 'system',
-  setDarkMode: (darkMode: string) => set({ darkMode }),
+  setDarkMode: (darkMode) => set({ darkMode }),
 
   previewTheme: 'atom',
-  setPreviewTheme: (previewTheme: string) => set({ previewTheme }),
+  setPreviewTheme: (previewTheme) => set({ previewTheme }),
 
   codeTheme: 'atom',
-  setCodeTheme: (codeTheme: string) => set({ codeTheme }),
+  setCodeTheme: (codeTheme) => set({ codeTheme }),
 
   tesseractList: 'eng,chi_sim',
-  setTesseractList: (tesseractList: string) => set({ tesseractList }),
+  setTesseractList: (tesseractList) => set({ tesseractList }),
 
   screenshotShortcut: 'Command+Shift+R',
-  setScreenshotShortcut: (screenshotShortcut: string) => set({ screenshotShortcut }),
+  setScreenshotShortcut: (screenshotShortcut) => set({ screenshotShortcut }),
 
   githubUsername: '',
-  setGithubUsername: async(githubUsername: string) => {
+  setGithubUsername: async(githubUsername) => {
     set({ githubUsername })
     const store = await Store.load('store.json');
     store.set('githubUsername', githubUsername)
   },
 
   accessToken: '',
-  setAccessToken: async (accessToken: string) => {
+  setAccessToken: async (accessToken) => {
     await get().setGithubUsername('')
     set({ accessToken })
   },
