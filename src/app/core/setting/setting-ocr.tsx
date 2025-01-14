@@ -3,9 +3,9 @@ import { FormItem, SettingRow, SettingType } from "./setting-base";
 import { useEffect } from "react";
 import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
-import { OpenBroswer } from "./open-broswer";
+import { OpenBroswer } from "@/components/open-broswer";
 
-export function SettingOCR() {
+export function SettingOCR({id, icon}: {id: string, icon?: React.ReactNode}) {
   const { tesseractList, setTesseractList } = useSettingStore()
 
   async function changeHandler(e: React.ChangeEvent<HTMLInputElement>) {
@@ -28,7 +28,7 @@ export function SettingOCR() {
   }, [])
 
   return (
-    <SettingType title="OCR">
+    <SettingType id={id} icon={icon} title="OCR">
       <SettingRow>
         <FormItem title="语言包">
           <Input value={tesseractList} onChange={changeHandler} />

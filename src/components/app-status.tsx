@@ -7,7 +7,7 @@ import { CircleUserRound, LoaderPinwheel, Power } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { UserInfo } from "@/lib/github.types";
 import { Button } from "./ui/button";
-import { OpenBroswer } from "@/app/core/setting/open-broswer";
+import { OpenBroswer } from "@/components/open-broswer";
 import { useRouter } from "next/navigation";
 
 export default function AppStatus() {

@@ -1,20 +1,16 @@
 'use client'
-import { SettingAbout } from "./setting-about"
 import { SettingTab } from "./setting-tab"
-import { SettingAI } from "./setting-ai"
-import { SettingSync } from "./setting-sync"
-import { SettingOCR } from "./setting-ocr"
-import { SettingShortcut } from "./setting-shortcut"
+import config from "./config"
 
 export default function Page() {
   return <div className="flex">
     <SettingTab />
-    <div className="flex-1 p-4 overflow-y-auto h-screen">
-      <SettingAbout />
-      <SettingAI />
-      <SettingSync />
-      <SettingOCR />
-      <SettingShortcut />
+    <div id="setting-form" className="flex-1 p-4 overflow-y-auto h-screen">
+      {
+        config.map((item) => {
+          return <div key={item.anchor}>{item.children({id: item.anchor, icon: item.icon})}</div>
+        })
+      }
     </div>
   </div>
 }

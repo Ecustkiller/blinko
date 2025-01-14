@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
 
-export function SettingSync() {
+export function SettingSync({id, icon}: {id: string, icon?: React.ReactNode}) {
   const { accessToken, setAccessToken } = useSettingStore()
 
   async function tokenChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
@@ -27,7 +27,7 @@ export function SettingSync() {
   }, [])
 
   return (
-    <SettingType title="同步">
+    <SettingType id={id} icon={icon} title="同步">
       <SettingRow>
         <FormItem title="Github Access Token">
           <Input value={accessToken} onChange={tokenChangeHandler} />

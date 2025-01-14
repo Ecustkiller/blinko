@@ -1,12 +1,12 @@
 import useSettingStore from "@/stores/setting";
-import { OpenBroswer } from "./open-broswer";
+import { OpenBroswer } from "@/components/open-broswer";
 import { SettingRow, SettingType } from "./setting-base";
 import { Button } from "@/components/ui/button";
-export function SettingAbout() {
+export function SettingAbout({id, icon}: {id: string, icon?: React.ReactNode}) {
   const { version } = useSettingStore()
 
   return (
-    <SettingType title="关于">
+    <SettingType id={id} icon={icon} title="关于">
       <SettingRow>
         <span>
           NoteGen v{version}，<OpenBroswer title="查询历史版本" url="https://github.com/codexu/note-gen/releases" />。

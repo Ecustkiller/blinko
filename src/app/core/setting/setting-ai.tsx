@@ -23,7 +23,7 @@ const config = [
   }
 ]
 
-export function SettingAI() {
+export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   const [tab, setTab] = useState('custom')
   const { apiKey, setApiKey, baseURL, setBaseURL, model, setModel } = useSettingStore()
 
@@ -107,7 +107,7 @@ export function SettingAI() {
   }, [])
 
   return (
-    <SettingType title="AI">
+    <SettingType id={id} icon={icon} title="AI">
       <SettingRow>
         <Tabs className="mb-2" value={tab} onValueChange={tabChangeHandler}>
           <TabsList>
