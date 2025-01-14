@@ -3,6 +3,7 @@ import { SettingAbout } from "./setting-about"
 import { SettingTab } from "./setting-tab"
 import { SettingAI } from "./setting-ai"
 import { SettingSync } from "./setting-sync"
+import { SettingOCR } from "./setting-ocr"
 
 export default function Page() {
   return <div className="flex">
@@ -11,6 +12,7 @@ export default function Page() {
       <SettingAbout />
       <SettingAI />
       <SettingSync />
+      <SettingOCR />
     </div>
   </div>
 }
