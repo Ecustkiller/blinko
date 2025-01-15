@@ -24,7 +24,7 @@ NoteGen 是一款专注于`记录`和`写作`的跨端 AI 笔记应用，基于 
 
 如果你还不了解 NoteGen，你可以阅读使用文档，其中包含了快速上手指南：
 
-[NoteGen 使用文档](https://github.com/codexu/note-gen/wiki)
+[NoteGen 使用文档](https://codexu.github.io/note-gen-help/)
 
 ### AI 模型接入
 
