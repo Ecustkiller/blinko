@@ -19,8 +19,23 @@ const config = [
   {
     key: 'chatanywhere',
     title: 'ChatAnyWhere',
-    baseURL: 'https://api.chatanywhere.tech/v1/chat/completions',
-  }
+    baseURL: 'https://api.chatanywhere.tech/v1',
+  },
+  {
+    key: 'volcengine',
+    title: '豆包',
+    baseURL: 'https://ark.cn-beijing.volces.com/api/v3',
+  },
+  {
+    key: 'aliyun',
+    title: '通义千问',
+    baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+  },
+  {
+    key: 'moonshot',
+    title: 'Kimi',
+    baseURL: 'https://api.moonshot.cn/v1',
+  },
 ]
 
 export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
@@ -119,11 +134,13 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
           </TabsList>
         </Tabs>
       </SettingRow>
-      <SettingRow>
-        <FormItem title="BaseURL">
-          <Input value={baseURL} onChange={baseURLChangeHandler} disabled={tab !== 'custom'} />
-        </FormItem>
-      </SettingRow>
+      { tab === 'custom' &&
+        <SettingRow>
+          <FormItem title="BaseURL">
+            <Input value={baseURL} onChange={baseURLChangeHandler} disabled={tab !== 'custom'} />
+          </FormItem>
+        </SettingRow>
+      }
       <SettingRow>
         <FormItem title="API Key">
           <Input value={apiKey} onChange={apiKeyChangeHandler} />

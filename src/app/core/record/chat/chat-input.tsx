@@ -15,7 +15,7 @@ export function ChatInput() {
   const [text, setText] = useState("")
   const { apiKey } = useSettingStore()
   const { currentTagId } = useTagStore()
-  const { insert, loading, setLoading, updateChat, locale, chats } = useChatStore()
+  const { insert, loading, setLoading, saveChat, locale, chats } = useChatStore()
   const { fetchMarks, marks, trashState } = useMarkStore()
   const [isComposing, setIsComposing] = useState(false)
   const [placeholder, setPlaceholder] = useState('')
@@ -63,7 +63,7 @@ export function ChatInput() {
       请满足用户输入的自定义需求：${text}
     `
     const content = await fetchAi(request_content)
-    updateChat({
+    await saveChat({
       ...message,
       content,
     })
@@ -115,7 +115,7 @@ export function ChatInput() {
       ${text}
     `
     const content = await fetchAi(request_content)
-    updateChat({
+    await saveChat({
       ...message,
       content,
     })

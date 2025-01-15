@@ -60,6 +60,7 @@ const useChatStore = create<ChatState>((set, get) => ({
     set({ chats: newChats })
   },
   saveChat: async (chat) => {
+    get().updateChat(chat)
     await updateChat(chat)
   },
   deleteChat: async (id) => {

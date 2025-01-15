@@ -2,6 +2,8 @@ import { toast } from "@/hooks/use-toast";
 import { Store } from "@tauri-apps/plugin-store";
 import { fetch } from '@tauri-apps/plugin-http'
 
+const chatURL = '/chat/completions'
+
 async function createAi(text: string) {
   const store = await Store.load('store.json')
   const apiKey = await store.get('apiKey')
@@ -33,7 +35,7 @@ async function createAi(text: string) {
 export async function fetchAi(text: string): Promise<string> {
   const requestOptions = await createAi(text)
   const store = await Store.load('store.json')
-  const url = await store.get<string>('baseURL')
+  const url = await store.get<string>('baseURL') + chatURL
   if (!url) {
     toast({
       title: 'AI 错误',
@@ -42,7 +44,6 @@ export async function fetchAi(text: string): Promise<string> {
     })
   } else {
     const res = await (await fetch(url, requestOptions)).json()
-    console.log(res);
     if (res.error) {
       toast({
         title: 'AI 错误',
@@ -59,7 +60,7 @@ export async function fetchAi(text: string): Promise<string> {
 
 export async function fetchAiDesc(text: string) {
   const store = await Store.load('store.json')
-  const url = await store.get<string>('baseURL')
+  const url = await store.get<string>('baseURL') + chatURL
   if (!url) return;
   const descContent = `
     根据内容：${text}，返回一段关于截图的描述，不要超过50字，不要包含特殊字符。
