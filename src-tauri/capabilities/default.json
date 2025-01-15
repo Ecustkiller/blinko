@@ -22,7 +22,14 @@
     "fs:default",
     {
       "identifier": "fs:scope",
-      "allow": [{ "path": "$APPDATA" }, { "path": "$APPDATA/**" }]
+      "allow": [
+        {
+          "path": "$APPDATA"
+        },
+        {
+          "path": "$APPDATA/**"
+        }
+      ]
     },
     {
       "identifier": "fs:read-all",
@@ -95,6 +102,14 @@
     "clipboard:allow-clear",
     "clipboard:allow-write-text",
     "clipboard:allow-start-monitor",
-    "core:app:allow-default-window-icon"
+    "core:app:allow-default-window-icon",
+    {
+      "identifier": "http:allow-fetch",
+      "allow": [
+        {
+          "url": "https://*"
+        }
+      ]
+    }
   ]
 }

@@ -1,5 +1,5 @@
 import { TooltipButton } from "@/components/tooltip-button";
-import { fetchAiStream } from "@/lib/ai";
+import { fetchAi } from "@/lib/ai";
 import useArticleStore from "@/stores/article";
 import useSettingStore from "@/stores/setting";
 import { ListPlus } from "lucide-react";
@@ -21,13 +21,10 @@ export default function Continue({mdRef}: {mdRef: RefObject<ExposeParam>}) {
       在目前的位置上续写一些内容，直接返回结果，内容不要超过100字。
       可以参考后文：${endContent}，尽量不要于其重复。
     `
-    let res = ''
-    await fetchAiStream(req, text => {
-      if (text === '[DONE]') return
-      mdRef.current?.insert(() => ({
-        targetValue: res += text,
-      }))
-    })
+    const res = await fetchAi(req)
+    mdRef.current?.insert(() => ({
+      targetValue: res,
+    }))
     setLoading(false)
   }
   return (

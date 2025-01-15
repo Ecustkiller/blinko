@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import useChatStore from "@/stores/chat"
 import useTagStore from "@/stores/tag"
 import useMarkStore from "@/stores/mark"
-import { fetchAiStream } from "@/lib/ai"
+import { fetchAi } from "@/lib/ai"
 import { convertImage } from "@/lib/utils"
 import { TooltipButton } from "@/components/tooltip-button"
 
@@ -15,7 +15,7 @@ export function ChatInput() {
   const [text, setText] = useState("")
   const { apiKey } = useSettingStore()
   const { currentTagId } = useTagStore()
-  const { insert, updateChat, loading, setLoading, saveChat, locale, chats } = useChatStore()
+  const { insert, loading, setLoading, updateChat, locale, chats } = useChatStore()
   const { fetchMarks, marks, trashState } = useMarkStore()
   const [isComposing, setIsComposing] = useState(false)
   const [placeholder, setPlaceholder] = useState('')
@@ -62,22 +62,12 @@ export function ChatInput() {
       }
       请满足用户输入的自定义需求：${text}
     `
-    let textChunks = ''
-    await fetchAiStream(request_content, (res) => {
-      if (res!== '[DONE]') {
-        textChunks += res
-        updateChat({
-         ...message,
-         content: textChunks,
-        })
-      } else if (res === '[DONE]') {
-        setLoading(false)
-        saveChat({
-         ...message,
-         content: textChunks,
-        })
-      }
+    const content = await fetchAi(request_content)
+    updateChat({
+      ...message,
+      content,
     })
+    setLoading(false)
   }
 
   async function handleSubmit() {
@@ -124,23 +114,10 @@ export function ChatInput() {
       使用 ${locale} 语言，不许使用 markdown 语法，回复用户的信息：
       ${text}
     `
-
-    let textChunks = ''
-
-    await fetchAiStream(request_content, (res) => {
-      if (res!== '[DONE]') {
-        textChunks += res
-        updateChat({
-          ...message,
-         content: textChunks,
-        })
-      } else if (res === '[DONE]') {
-        setLoading(false)
-        saveChat({
-          ...message,
-         content: textChunks,
-        })
-      }
+    const content = await fetchAi(request_content)
+    updateChat({
+      ...message,
+      content,
     })
     setLoading(false)
   }
@@ -171,14 +148,9 @@ export function ChatInput() {
       如何解决 ** 问题？
       总结 ** 。
     `
-    let textChunks = ''
-    await fetchAiStream(request_content, (res) => {
-      if (res!== '[DONE]') {
-        textChunks += res
-      }
-    })
-    if (textChunks.length < 30) {
-      setPlaceholder(textChunks + '[Tab]')
+    const content = await fetchAi(request_content)
+    if (content.length < 30 && content.length > 10) {
+      setPlaceholder(content + '[Tab]')
     }
   }
 

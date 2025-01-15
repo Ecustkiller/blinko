@@ -1,5 +1,5 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { fetchAiStream } from "@/lib/ai";
+import { fetchAi } from "@/lib/ai";
 import { Languages } from "lucide-react";
 import { ExposeParam } from "md-editor-rt";
 import { RefObject } from "react";
@@ -18,14 +18,11 @@ export default function Translation({mdRef}: {mdRef: RefObject<ExposeParam>}) {
       setLoading(true)
       mdRef.current?.focus()
       const req = `将这段文字：${selectedText}，翻译为${locale}语言，直接返回翻译后的结果。`
-      let res = ''
-      await fetchAiStream(req, text => {
-        if (text === '[DONE]') return
-        mdRef.current?.insert(() => ({
-          targetValue: res += text,
-        }))
-        mdRef.current?.rerender();
-      })
+      const res = await fetchAi(req)
+      mdRef.current?.insert(() => ({
+        targetValue: res,
+      }))
+      mdRef.current?.rerender();
       setLoading(false)
     } else {
       toast({

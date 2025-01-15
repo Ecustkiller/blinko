@@ -1,6 +1,6 @@
 import { TooltipButton } from "@/components/tooltip-button";
 import { toast } from "@/hooks/use-toast";
-import { fetchAiStream } from "@/lib/ai";
+import { fetchAi } from "@/lib/ai";
 import useArticleStore from "@/stores/article";
 import useSettingStore from "@/stores/setting";
 import { EraserIcon } from "lucide-react";
@@ -16,14 +16,11 @@ export default function Eraser({mdRef}: {mdRef: RefObject<ExposeParam>}) {
       setLoading(true)
       mdRef.current?.focus()
       const req = `精简这段文字：${selectedText}，这段文字过于臃肿，字数要求缩减一半以上，要求语言不变，直接返回优化后的结果。`
-      let res = ''
-      await fetchAiStream(req, text => {
-        if (text === '[DONE]') return
-        mdRef.current?.insert(() => ({
-          targetValue: res += text,
-        }))
-        mdRef.current?.rerender();
-      })
+      const res = await fetchAi(req)
+      mdRef.current?.insert(() => ({
+        targetValue: res,
+      }))
+      mdRef.current?.rerender();
       setLoading(false)
     } else {
       toast({

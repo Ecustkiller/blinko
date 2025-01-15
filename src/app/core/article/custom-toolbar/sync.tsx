@@ -33,7 +33,7 @@ export default function Sync({mdRef}: {mdRef: RefObject<ExposeParam>}) {
         删除了内容：${removeDiff}
         对比后对本次修改返回一条标准的提交描述，仅返回描述内容，字数不能超过50个字。
       `
-      message = (await fetchAi(text)).choices[0].message.content
+      message = await fetchAi(text)
     }
     const res = await getFiles({path: activeFilePath, repo: RepoNames.article})
     let sha = undefined

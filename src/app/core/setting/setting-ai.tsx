@@ -19,7 +19,7 @@ const config = [
   {
     key: 'chatanywhere',
     title: 'ChatAnyWhere',
-    baseURL: 'https://api.chatanywhere.tech/v1/',
+    baseURL: 'https://api.chatanywhere.tech/v1/chat/completions',
   }
 ]
 

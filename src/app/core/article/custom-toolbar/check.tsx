@@ -1,5 +1,5 @@
 import { TooltipButton } from "@/components/tooltip-button";
-import { fetchAiStream } from "@/lib/ai";
+import { fetchAi } from "@/lib/ai";
 import useArticleStore from "@/stores/article";
 import useSettingStore from "@/stores/setting";
 import { SquareActivity } from "lucide-react";
@@ -31,14 +31,12 @@ export default function Check({mdRef}: {mdRef: RefObject<ExposeParam>}) {
       最后再给出文章的整体分析
       注意不要使用 markdown 语法进行输出
     `
-    let res = ''
-    await fetchAiStream(req, text => {
-      if (text === '[DONE]') return
-      res += text
-      mdRef.current?.insert(() => ({
-        targetValue: res,
-      }))
-    })
+    const res = (await fetchAi(req))
+
+    mdRef.current?.insert(() => ({
+      targetValue: res,
+    }))
+
     blockComment(codemirror)
     setLoading(false)
   }

@@ -1,5 +1,5 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { fetchAiStream } from "@/lib/ai";
+import { fetchAi } from "@/lib/ai";
 import useArticleStore from "@/stores/article";
 import { Highlighter, Plus } from "lucide-react";
 import { ExposeParam } from "md-editor-rt";
@@ -38,13 +38,10 @@ export default function MarkInsert({mdRef}: {mdRef: RefObject<ExposeParam>}) {
       default:
         if (apiKey) {
           const req = `这是一段 OCR 识别的结果：${mark.content}进行整理，直接返回整理后的结果。`
-          let res = ''
-          await fetchAiStream(req, text => {
-            if (text === '[DONE]') return
-            mdRef.current?.insert(() => ({
-              targetValue: res += text,
-            }))
-          })
+          const res = await fetchAi(req)
+          mdRef.current?.insert(() => ({
+            targetValue: res,
+          }))
         } else {
           mdRef.current?.insert(() => ({
             targetValue: mark.content || 'OCR 未识别到任何内容',

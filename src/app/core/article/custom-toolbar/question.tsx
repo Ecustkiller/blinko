@@ -1,6 +1,6 @@
 import { TooltipButton } from "@/components/tooltip-button";
 import { toast } from "@/hooks/use-toast";
-import { fetchAiStream } from "@/lib/ai";
+import { fetchAi } from "@/lib/ai";
 import useArticleStore from "@/stores/article";
 import useSettingStore from "@/stores/setting";
 import { MessageCircleQuestion } from "lucide-react";
@@ -21,13 +21,10 @@ export default function Question({mdRef}: {mdRef: RefObject<ExposeParam>}) {
         参考原文：${currentArticle}
         根据体温：${selectedText}，直接返回回答内容。
       `
-      let res = ''
-      await fetchAiStream(req, text => {
-        if (text === '[DONE]') return
-        mdRef.current?.insert(() => ({
-          targetValue: res += text,
-        }))
-      })
+      const res = await fetchAi(req)
+      mdRef.current?.insert(() => ({
+        targetValue: res,
+      }))
       setLoading(false)
     } else {
       toast({
