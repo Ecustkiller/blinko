@@ -31,7 +31,7 @@ export default function History({mdRef}: {mdRef: RefObject<ExposeParam>}) {
     setCommitsLoading(true)
     setCommits([])
     mdRef.current?.focus()
-    const res = await getFileCommits({ path: activeFilePath, repo: RepoNames.article })
+    const res = await getFileCommits({ path: activeFilePath, repo: RepoNames.sync })
     setCommits(res)
     setCommitsLoading(false)
   }
@@ -41,7 +41,7 @@ export default function History({mdRef}: {mdRef: RefObject<ExposeParam>}) {
     setSheetOpen(false)
     const cacheArticle = currentArticle;
     setCurrentArticle('正在读取历史记录...')
-    const res = await getFiles({path: `${activeFilePath}?ref=${sha}`, repo: RepoNames.article})
+    const res = await getFiles({path: `${activeFilePath}?ref=${sha}`, repo: RepoNames.sync})
     if (res.content) {
       setCurrentArticle(decodeBase64ToString(res.content))
     } else {

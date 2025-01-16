@@ -1,6 +1,12 @@
 export enum RepoNames {
   image = 'note-gen-image-sync',
-  article = 'note-gen-article-sync'
+  sync = 'note-gen-sync'
+}
+
+export interface GithubError {
+  message: string
+  documentation_url: string
+  status: number
 }
 
 export interface UserInfo {

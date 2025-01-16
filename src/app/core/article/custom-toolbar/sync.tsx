@@ -20,10 +20,10 @@ export default function Sync({mdRef}: {mdRef: RefObject<ExposeParam>}) {
     mdRef.current?.focus()
     // 获取上一次提交的记录内容
     let message = `Upload ${activeFilePath}`
-    const commits = await getFileCommits({ path: activeFilePath, repo: RepoNames.article })
+    const commits = await getFileCommits({ path: activeFilePath, repo: RepoNames.sync })
     if (commits?.length > 0) {
       const lastCommit = commits[0]
-      const latContent = await getFiles({path: `${activeFilePath}?ref=${lastCommit.sha}`, repo: RepoNames.article})
+      const latContent = await getFiles({path: `${activeFilePath}?ref=${lastCommit.sha}`, repo: RepoNames.sync})
       const diff = diffWordsWithSpace(decodeBase64ToString(latContent?.content || ''), currentArticle)
       const addDiff = diff.filter(item => item.added).map(item => item.value).join('')
       const removeDiff = diff.filter(item => item.removed).map(item => item.value).join('')
@@ -35,7 +35,7 @@ export default function Sync({mdRef}: {mdRef: RefObject<ExposeParam>}) {
       `
       message = await fetchAi(text)
     }
-    const res = await getFiles({path: activeFilePath, repo: RepoNames.article})
+    const res = await getFiles({path: activeFilePath, repo: RepoNames.sync})
     let sha = undefined
     if (res) {
       sha = res.sha
@@ -49,7 +49,7 @@ export default function Sync({mdRef}: {mdRef: RefObject<ExposeParam>}) {
       filename: `${_path && _path + '/'}${filename}`,
       sha,
       message,
-      repo: RepoNames.article
+      repo: RepoNames.sync
     })
     if (uploadRes?.status === 200 || uploadRes?.status === 201) {
       if (uploadRes.data.content?.sha === sha) {

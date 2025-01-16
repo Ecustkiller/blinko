@@ -53,7 +53,7 @@ export function FileItem({ item }: { item: DirTree }) {
       kind: 'warning',
     });
     if (answer) {
-      await deleteFile({ path: activeFilePath, sha: item.sha as string, repo: RepoNames.article })
+      await deleteFile({ path: activeFilePath, sha: item.sha as string, repo: RepoNames.sync })
       const cacheTree = cloneDeep(fileTree)
       if (item.parent) {
         const parentIndex = cacheTree.findIndex(file => file.name === item.parent?.name)

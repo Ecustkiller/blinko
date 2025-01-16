@@ -7,6 +7,7 @@ import useArticleStore from "@/stores/article"
 import { open } from '@tauri-apps/plugin-shell';
 import useSettingStore from "@/stores/setting"
 import { useRouter } from "next/navigation";
+import { RepoNames } from "@/lib/github.types"
 
 export function FileToolbar() {
   const { newFolder, loadFileTree, newFile, fileTreeLoading } = useArticleStore()
@@ -14,7 +15,7 @@ export function FileToolbar() {
   const router = useRouter()
 
   async function openFolder() {
-    open(`https://github.com/${githubUsername}/note-gen-article-sync`)
+    open(`https://github.com/${githubUsername}/${RepoNames.sync}`)
   }
 
   function handleSetting() {

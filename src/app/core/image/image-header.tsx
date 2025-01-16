@@ -8,6 +8,7 @@ import {Separator} from "@/components/ui/separator"
 import {convertBytesToSize} from "@/lib/utils"
 import {open} from '@tauri-apps/plugin-shell';
 import useSettingStore from "@/stores/setting"
+import { RepoNames } from '@/lib/github.types'
 
 
 export function ImageHeader() {
@@ -15,7 +16,7 @@ export function ImageHeader() {
   const {githubUsername} = useSettingStore()
   const checkSetting = githubUsername && githubUsername.length > 0
   const handleOpenBroswer = () => {
-    const url = `https://github.com/${githubUsername}/note-gen-image-sync`
+    const url = `https://github.com/${githubUsername}/${RepoNames.image}`
     open(url)
   }
 

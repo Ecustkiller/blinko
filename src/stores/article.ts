@@ -104,7 +104,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
       set({ fileTreeLoading: false })
       return
     }
-    const githubFiles = await getFiles({ path: '', repo: RepoNames.article })
+    const githubFiles = await getFiles({ path: '', repo: RepoNames.sync })
     if (githubFiles) {
       githubFiles.forEach((file: GithubContent) => {
         const index = cacheTree.findIndex(item => item.name === file.path.replace('article/', ''))
@@ -136,7 +136,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
     const cacheTree: DirTree[] = get().fileTree
     const cacheFolderIndex = cacheTree.findIndex(item => item.name === folderName)
     const cacheFolder = cacheTree.find(item => item.name === folderName)
-    const githubFiles = await getFiles({ path: folderName, repo: RepoNames.article })
+    const githubFiles = await getFiles({ path: folderName, repo: RepoNames.sync })
     if (githubFiles && cacheFolder) {
       githubFiles.forEach((file: GithubContent) => {
         const index = cacheFolder.children?.findIndex(item => item.name === file.path.replace(`${folderName}/`, ''))
@@ -226,10 +226,8 @@ const useArticleStore = create<NoteState>((set, get) => ({
         isLocale: true,
       }
       fileTree[dirIndex].children?.unshift(newFile)
-      console.log(newFile);
       set({ fileTree })
       set({ collapsibleList: [...get().collapsibleList, path]})
-      console.log(fileTree);
     }
   },
 
@@ -266,14 +264,14 @@ const useArticleStore = create<NoteState>((set, get) => ({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         try{
-          res = decodeBase64ToString(await getFiles({ path, repo: RepoNames.article }))
+          res = decodeBase64ToString(await getFiles({ path, repo: RepoNames.sync }))
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
         }
       }
       set({ currentArticle: res })
     } else {
-      const res = await getFiles({ path, repo: RepoNames.article })
+      const res = await getFiles({ path, repo: RepoNames.sync })
       set({ currentArticle: decodeBase64ToString(res.content) })
     }
   },

@@ -2,7 +2,7 @@ import { toast } from '@/hooks/use-toast';
 import { Octokit } from '@octokit/core'
 import { Store } from '@tauri-apps/plugin-store';
 import { v4 as uuid } from 'uuid';
-import { RepoNames } from './github.types';
+import { GithubError, RepoNames } from './github.types';
 
 export function uint8ArrayToBase64(data: Uint8Array) {
   return Buffer.from(data).toString('base64');
@@ -76,11 +76,10 @@ export async function uploadFile(
       },
     })
     return res;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     toast({
-      title: '上传失败',
-      description: '请检查网络或配置是否正确。',
+      title: '同步失败',
+      description: (error as GithubError).message,
       variant: 'destructive',
     })
   }
@@ -101,15 +100,15 @@ export async function getFiles({ path, repo }: { path: string, repo: RepoNames }
         'If-None-Match': ''
       }
     })
-    return res.data;
+    return res.data
   } catch (error) {
-    console.log(error);
-    toast({
-      title: '同步失败',
-      description: '请检查网络或配置是否正确。',
-      variant: 'destructive',
-    })
-    return [];
+    if ((error as GithubError).status !== 404) {
+      toast({
+        title: '查询失败',
+        description: (error as GithubError).message,
+        variant: 'destructive',
+      })
+    }
   }
 }
 
@@ -178,7 +177,7 @@ export async function getUserInfo() {
 }
 
 // 检查 Github 仓库
-export async function checkyncRepo(name: string) {
+export async function checkSyncRepoState(name: string) {
   const store = await Store.load('store.json');
   const githubUsername = await store.get('githubUsername')
   const accessToken = await store.get('accessToken')
@@ -189,7 +188,7 @@ export async function checkyncRepo(name: string) {
 }
 
 // 创建 Github 仓库
-export async function createSyncRepo(name: string) {
+export async function createSyncRepo(name: string, isPrivate?: boolean) {
   const store = await Store.load('store.json');
   const accessToken = await store.get('accessToken')
   const octokit = new Octokit({
@@ -198,6 +197,7 @@ export async function createSyncRepo(name: string) {
   const res = await octokit.request(`POST /user/repos`, {
     name,
     description: 'This is a NoteGen sync repository.',
+    private: isPrivate
   })
   .then(() => {
     toast({

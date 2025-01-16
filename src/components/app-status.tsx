@@ -1,5 +1,5 @@
 import { SidebarMenuButton } from "./ui/sidebar";
-import { createSyncRepo, checkyncRepo, getUserInfo } from "@/lib/github";
+import { createSyncRepo, checkSyncRepoState, getUserInfo } from "@/lib/github";
 import { useEffect, useState } from "react";
 import useSettingStore from "@/stores/setting";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -9,6 +9,7 @@ import { UserInfo } from "@/lib/github.types";
 import { Button } from "./ui/button";
 import { OpenBroswer } from "@/components/open-broswer";
 import { useRouter } from "next/navigation";
+import { RepoNames } from "@/lib/github.types";
 
 export default function AppStatus() {
   const { accessToken, setGithubUsername } = useSettingStore()
@@ -28,17 +29,17 @@ export default function AppStatus() {
     } else {
       setUserInfo(undefined)
     }
-    await checkyncRepo('note-gen-image-sync').then(() => {
+    await checkSyncRepoState(RepoNames.image).then(() => {
       setImageRepoStatus(true)
     }).catch(async () => {
-      await createSyncRepo('note-gen-image-sync')
+      await createSyncRepo(RepoNames.image)
       setImageRepoStatus(true)
     })
     
-    await checkyncRepo('note-gen-article-sync').then(() => {
+    await checkSyncRepoState(RepoNames.sync).then(() => {
       setArticleRepoStatus(true)
     }).catch(async () => {
-      await createSyncRepo('note-gen-article-sync')
+      await createSyncRepo(RepoNames.sync, true)
       setImageRepoStatus(true)
     })
     setLoading(false)
@@ -77,11 +78,11 @@ export default function AppStatus() {
             <div className="flex gap-2">
               <span className="flex items-center gap-1">
                 <Power className={`${imageRepoStatus ? 'text-green-500' : 'text-red-500'} size-3`} />
-                <OpenBroswer title="图床仓库" url={`https://github.com/${userInfo?.login}/note-gen-image-sync`} />
+                <OpenBroswer title="图床仓库" url={`https://github.com/${userInfo?.login}/${RepoNames.image}`} />
               </span>
               <span className="flex items-center gap-1">
                 <Power className={`${articleRepoStatus ? 'text-green-500' : 'text-red-500'} size-3`} />
-                <OpenBroswer title="文章仓库" url={`https://github.com/${userInfo?.login}/note-gen-article-sync`} />
+                <OpenBroswer title="文章仓库" url={`https://github.com/${userInfo?.login}/${RepoNames.sync}`} />
               </span>
             </div>
           </div>
