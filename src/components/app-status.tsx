@@ -10,18 +10,26 @@ import { Button } from "./ui/button";
 import { OpenBroswer } from "@/components/open-broswer";
 import { useRouter } from "next/navigation";
 import { RepoNames } from "@/lib/github.types";
+import useSyncStore, { SyncStateEnum } from "@/stores/sync";
 
 export default function AppStatus() {
   const { accessToken, setGithubUsername } = useSettingStore()
   const [loading, setLoading] = useState(false)
   const [userInfo, setUserInfo] = useState<UserInfo>()
-  const [imageRepoStatus, setImageRepoStatus] = useState(false)
-  const [articleRepoStatus, setArticleRepoStatus] = useState(false)
+  const {
+    imageRepoState,
+    setImageRepoState,
+    setImageRepoInfo,
+    syncRepoState,
+    setSyncRepoState,
+    setSyncRepoInfo
+  } = useSyncStore()
 
   const router = useRouter()
 
   async function handleGetUserInfo() {
-    setLoading(true)
+    setImageRepoState(SyncStateEnum.checking)
+    setSyncRepoState(SyncStateEnum.checking)
     const res = await getUserInfo()
     if (res) {
       setUserInfo(res.data as UserInfo)
@@ -29,18 +37,28 @@ export default function AppStatus() {
     } else {
       setUserInfo(undefined)
     }
-    await checkSyncRepoState(RepoNames.image).then(() => {
-      setImageRepoStatus(true)
+    await checkSyncRepoState(RepoNames.image).then((res) => {
+      if (res) {
+        setImageRepoInfo(res.data)
+      }
+      setImageRepoState(SyncStateEnum.success)
     }).catch(async () => {
-      await createSyncRepo(RepoNames.image)
-      setImageRepoStatus(true)
+      setImageRepoState(SyncStateEnum.creating)
+      const info = await createSyncRepo(RepoNames.image)
+      setImageRepoInfo(info)
+      setImageRepoState(SyncStateEnum.success)
     })
     
-    await checkSyncRepoState(RepoNames.sync).then(() => {
-      setArticleRepoStatus(true)
+    await checkSyncRepoState(RepoNames.sync).then((res) => {
+      if (res) {
+        setSyncRepoInfo(res.data)
+      }
+      setSyncRepoState(SyncStateEnum.success)
     }).catch(async () => {
-      await createSyncRepo(RepoNames.sync, true)
-      setImageRepoStatus(true)
+      setSyncRepoState(SyncStateEnum.creating)
+      const info = await createSyncRepo(RepoNames.sync, true)
+      setSyncRepoInfo(info)
+      setSyncRepoState(SyncStateEnum.success)
     })
     setLoading(false)
   }
@@ -77,11 +95,11 @@ export default function AppStatus() {
             <span className="mr-4 font-bold">同步仓库状态</span>
             <div className="flex gap-2">
               <span className="flex items-center gap-1">
-                <Power className={`${imageRepoStatus ? 'text-green-500' : 'text-red-500'} size-3`} />
+                <Power className={`${imageRepoState === SyncStateEnum.success ? 'text-green-500' : 'text-red-500'} size-3`} />
                 <OpenBroswer title="图床仓库" url={`https://github.com/${userInfo?.login}/${RepoNames.image}`} />
               </span>
               <span className="flex items-center gap-1">
-                <Power className={`${articleRepoStatus ? 'text-green-500' : 'text-red-500'} size-3`} />
+                <Power className={`${syncRepoState === SyncStateEnum.success ? 'text-green-500' : 'text-red-500'} size-3`} />
                 <OpenBroswer title="文章仓库" url={`https://github.com/${userInfo?.login}/${RepoNames.sync}`} />
               </span>
             </div>
