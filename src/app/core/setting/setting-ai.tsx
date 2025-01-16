@@ -4,6 +4,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useEffect, useState } from "react";
 import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
+import { InfoIcon } from "lucide-react";
 
 const config = [
   {
@@ -134,21 +135,28 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
           </TabsList>
         </Tabs>
       </SettingRow>
+      {
+        tab === 'custom' && (
+          <SettingRow>
+            <span className="my-2 flex items-center gap-2"><InfoIcon className="size-4" />仅支持 openai 协议的 AI 模型。</span>
+          </SettingRow>
+        )
+      }
       { tab === 'custom' &&
         <SettingRow>
           <FormItem title="BaseURL">
-            <Input value={baseURL} onChange={baseURLChangeHandler} disabled={tab !== 'custom'} />
+            <Input placeholder="请输入 BaseURL，如 https://api.chatanywhere.tech/v1" value={baseURL} onChange={baseURLChangeHandler} disabled={tab !== 'custom'} />
           </FormItem>
         </SettingRow>
       }
       <SettingRow>
         <FormItem title="API Key">
-          <Input value={apiKey} onChange={apiKeyChangeHandler} />
+          <Input placeholder="请输入 API Key" value={apiKey} onChange={apiKeyChangeHandler} />
         </FormItem>
       </SettingRow>
       <SettingRow>
         <FormItem title="Model">
-          <Input value={model} onChange={modelChangeHandler} />
+          <Input placeholder="请输入 Model" value={model} onChange={modelChangeHandler} />
         </FormItem>
       </SettingRow>
     </SettingType>
