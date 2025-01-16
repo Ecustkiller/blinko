@@ -20,7 +20,8 @@ async function createAi(text: string) {
         role: 'user',
         content: text
       }
-    ]
+    ],
+    stream: false
   });
 
   const requestOptions = {
@@ -35,7 +36,9 @@ async function createAi(text: string) {
 export async function fetchAi(text: string): Promise<string> {
   const requestOptions = await createAi(text)
   const store = await Store.load('store.json')
-  const url = await store.get<string>('baseURL') + chatURL
+  const baseURL = await store.get<string>('baseURL')
+  const aiType = await store.get<string>('aiType')
+  const url = baseURL + `${aiType === 'ollama' ? '/api/chat' : chatURL}`
   if (!url) {
     toast({
       title: 'AI 错误',
@@ -52,7 +55,11 @@ export async function fetchAi(text: string): Promise<string> {
       })
       return res.error.message
     } else {
-      return res.choices[0].message.content
+      if (aiType === 'ollama') {
+        return res.message.content
+      } else {
+        return res.choices[0].message.content
+      }
     }
   }
   return ''
@@ -60,7 +67,9 @@ export async function fetchAi(text: string): Promise<string> {
 
 export async function fetchAiDesc(text: string) {
   const store = await Store.load('store.json')
-  const url = await store.get<string>('baseURL') + chatURL
+  const baseURL = await store.get<string>('baseURL')
+  const aiType = await store.get<string>('aiType')
+  const url = baseURL + `${aiType === 'ollama' ? '/api/chat' : chatURL}`
   if (!url) return;
   const descContent = `
     根据内容：${text}，返回一段关于截图的描述，不要超过50字，不要包含特殊字符。
@@ -75,6 +84,10 @@ export async function fetchAiDesc(text: string) {
     })
     return null
   } else {
-    return res
+    if (aiType === 'ollama') {
+      return res.message.content
+    } else {
+      return res.choices[0].message.content
+    }
   }
 }

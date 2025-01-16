@@ -108,6 +108,9 @@
       "allow": [
         {
           "url": "https://*"
+        },
+        {
+          "url": "http://localhost:11434"
         }
       ]
     }

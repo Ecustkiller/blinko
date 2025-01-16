@@ -67,7 +67,7 @@ export function Clipboard() {
     let desc = ''
     if (apiKey) {
       setQueue(queueId, { progress: ' AI 内容识别' });
-      desc = await fetchAiDesc(content).then(res => res ? res.choices[0].message.content : content)
+      desc = await fetchAiDesc(content).then(res => res ? res : content)
     } else {
       desc = content
     }

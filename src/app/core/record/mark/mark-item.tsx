@@ -182,7 +182,7 @@ export function MarkItem({mark}: {mark: Mark}) {
   }
 
   async function regenerateDesc() {
-    const desc = await fetchAiDesc(mark.content || '').then(res => res.choices[0].message.content)
+    const desc = await fetchAiDesc(mark.content || '').then(res => res)
     await updateMark({ ...mark, desc })
     fetchMarks()
   }
