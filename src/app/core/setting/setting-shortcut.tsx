@@ -6,7 +6,7 @@ import emitter from "@/lib/emitter";
 import { EmitterShortcutEvents } from "@/config/emitters"
 import { ShortcutDefault, ShortcutSettings } from "@/config/shortcut"
 import { Store } from "@tauri-apps/plugin-store";
-import { ScanText } from "lucide-react";
+import { CopySlash, ScanText } from "lucide-react";
 
 const keyMap = {
   Backquote: '`',
@@ -58,12 +58,13 @@ const shortcutMap: ShortcutMap[] = [
     icon: <ScanText className="size-4" />,
     defaultKey: ShortcutDefault.screenshot,
   },
-  // {
-  //   id: ShortcutSettings.text,
-  //   mittId: EmitterShortcutEvents.text,
-  //   title: '文本记录',
-  //   defaultKey: ShortcutDefault.text,
-  // }
+  {
+    id: ShortcutSettings.text,
+    mittId: EmitterShortcutEvents.text,
+    title: '文本记录',
+    icon: <CopySlash className="size-4" />,
+    defaultKey: ShortcutDefault.text,
+  }
 ]
 
 export function SettingShortcut({id, icon}: {id: string, icon?: React.ReactNode}) {
@@ -74,7 +75,7 @@ export function SettingShortcut({id, icon}: {id: string, icon?: React.ReactNode}
         shortcutMap.map((item) => {
           return (
             <SettingRow border key={item.mittId}>
-              <div className="flex gap-2 items-end items-center">
+              <div className="flex gap-2 items-center">
                 {item.icon}
                 <span>{item.title}</span>
                 <span className="text-zinc-500 text-xs">{item.description}</span>

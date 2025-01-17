@@ -93,7 +93,6 @@ export function ControlScan() {
     if (!key) return
     const store = await Store.load('store.json')
     const lastKey = await store.get<string>(ShortcutSettings.screenshot)
-    console.log(lastKey);
     if (lastKey) {
       const isEscRegistered = await isRegistered(lastKey);
       if (isEscRegistered) {
