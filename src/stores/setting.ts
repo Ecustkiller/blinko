@@ -38,9 +38,6 @@ interface SettingState {
   tesseractList: string
   setTesseractList: (tesseractList: string) => void
 
-  screenshotShortcut: string
-  setScreenshotShortcut: (screenshotShortcut: string) => void
-
   githubUsername: string
   setGithubUsername: (githubUsername: string) => Promise<void>
 
@@ -102,9 +99,6 @@ const useSettingStore = create<SettingState>((set, get) => ({
 
   tesseractList: 'eng,chi_sim',
   setTesseractList: (tesseractList) => set({ tesseractList }),
-
-  screenshotShortcut: 'Command+Shift+R',
-  setScreenshotShortcut: (screenshotShortcut) => set({ screenshotShortcut }),
 
   githubUsername: '',
   setGithubUsername: async(githubUsername) => {

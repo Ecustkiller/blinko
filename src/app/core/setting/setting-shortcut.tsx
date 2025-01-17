@@ -1,18 +1,154 @@
+import { Input } from "@/components/ui/input";
 import { SettingRow, SettingType } from "./setting-base";
-import { Badge } from "@/components/ui/badge";
+import { useEffect, useState } from "react";
+import { platform } from '@tauri-apps/plugin-os';
+import emitter from "@/lib/emitter";
+import { EmitterShortcutEvents } from "@/config/emitters"
+import { ShortcutDefault, ShortcutSettings } from "@/config/shortcut"
+import { Store } from "@tauri-apps/plugin-store";
+
+const keyMap = {
+  Backquote: '`',
+  Backslash: '\\',
+  BracketLeft: '[',
+  BracketRight: ']',
+  Comma: ',',
+  Equal: '=',
+  Minus: '-',
+  Plus: 'PLUS',
+  Period: '.',
+  Quote: "'",
+  Semicolon: ';',
+  Slash: '/',
+  Backspace: 'Backspace',
+  CapsLock: 'Capslock',
+  ContextMenu: 'Contextmenu',
+  Space: 'Space',
+  Tab: 'Tab',
+  Convert: 'Convert',
+  Delete: 'Delete',
+  End: 'End',
+  Help: 'Help',
+  Home: 'Home',
+  PageDown: 'Pagedown',
+  PageUp: 'Pageup',
+  Escape: 'Esc',
+  PrintScreen: 'Printscreen',
+  ScrollLock: 'Scrolllock',
+  Pause: 'Pause',
+  Insert: 'Insert',
+  Suspend: 'Suspend',
+};
+
+interface ShortcutMap {
+  id: string
+  mittId: string
+  title: string
+  description?: string
+  defaultKey: string
+}
+
+const shortcutMap: ShortcutMap[] = [
+  {
+    id: ShortcutSettings.screenshot,
+    mittId: EmitterShortcutEvents.screenshot,
+    title: '截图记录',
+    defaultKey: ShortcutDefault.screenshot,
+  },
+  // {
+  //   id: ShortcutSettings.text,
+  //   mittId: EmitterShortcutEvents.text,
+  //   title: '文本记录',
+  //   defaultKey: ShortcutDefault.text,
+  // }
+]
 
 export function SettingShortcut({id, icon}: {id: string, icon?: React.ReactNode}) {
 
   return (
     <SettingType id={id} icon={icon} title="快捷键">
-      <SettingRow>
-        <span>
-          截图是快速记录的最佳方式，可以通过全局快捷键快速截图，无需打开主页面。
-        </span>
-        <Badge>
-          CommandOrControl + Shift + S
-        </Badge>
-      </SettingRow>
+      {
+        shortcutMap.map((item) => {
+          return (
+            <SettingRow border key={item.mittId}>
+              <div className="flex gap-2 items-end">
+                <span>{item.title}</span>
+                <span className="text-zinc-500 text-xs">{item.description}</span>
+              </div>
+              <ShortcutInput id={item.id} mittId={item.mittId} defaultKey={item.defaultKey} />
+            </SettingRow>
+          )
+        })
+      }
     </SettingType>
   )
+}
+
+function ShortcutInput({id, mittId, defaultKey}: {id: string, mittId: string, defaultKey: string}) {
+  const [shortcut, setShortcut] = useState<string>('')
+
+  useEffect(() => {
+    async function init() {
+      const store = await Store.load('store.json');
+      const shortcut = await store.get<string>(id)
+      if (shortcut) {
+        setShortcut(shortcut)
+      } else {
+        setShortcut(defaultKey)
+      }
+    }
+    init()
+  }, [])
+
+  function keyDownHandler(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.code === 'Backspace') {
+      setShortcut('')
+    } else {
+      let newValue = '';
+      if (e.ctrlKey) {
+        newValue = 'Ctrl';
+      }
+      if (e.shiftKey) {
+        newValue = `${newValue}${newValue.length > 0 ? '+' : ''}Shift`;
+      }
+      if (e.metaKey) {
+        const currentPlatform = platform();
+        newValue = `${newValue}${newValue.length > 0 ? '+' : ''}${currentPlatform === 'macos' ? 'Command' : 'Super'}`;
+      }
+      if (e.altKey) {
+        newValue = `${newValue}${newValue.length > 0 ? '+' : ''}Alt`;
+      }
+      let code = e.code;
+      if (code.startsWith('Key')) {
+        code = code.substring(3);
+      } else if (code.startsWith('Digit')) {
+        code = code.substring(5);
+      } else if (code.startsWith('Numpad')) {
+        code = 'Num' + code.substring(6);
+      } else if (code.startsWith('Arrow')) {
+        code = code.substring(5);
+      } else if (code.startsWith('Intl')) {
+        code = code.substring(4);
+      } else if (/F\d+/.test(code)) {
+      } else if (code in keyMap) {
+        code = keyMap[code as keyof typeof keyMap];
+      } else {
+        code = '';
+      }
+      const res = `${newValue}${newValue.length > 0 && code.length > 0 ? '+' : ''}${code}`
+      setShortcut(res);
+    }
+  }
+
+  function changeHandler(e: React.ChangeEvent<HTMLInputElement>) {
+    e.stopPropagation();
+  }
+
+  function blurHandler() {
+    emitter.emit(mittId, shortcut);
+  }
+
+  return <div>
+    <Input className="w-auto" value={shortcut} onKeyDown={keyDownHandler} onBlur={blurHandler} onChange={changeHandler} />
+  </div>
 }

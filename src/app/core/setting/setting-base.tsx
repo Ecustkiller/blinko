@@ -10,8 +10,8 @@ export function SettingType(
     {children}
   </div>
 }
-export function SettingRow({border = false, children}: { border?: boolean, children: React.ReactNode}) {
-  return <div className={`${border ? "border-b py-4 my-4" : ""} flex justify-between text-sm items-center`}>
+export function SettingRow({border = false, children, className}: { border?: boolean, children: React.ReactNode, className?: string}) {
+  return <div className={`${border ? "border-b py-4" : ""} flex justify-between text-sm items-center ${className}`}>
     {children}
   </div>
 }

@@ -29,6 +29,7 @@ chrono = "=0.4.38"
 tauri-plugin-clipboard = "=2.1.9"
 tauri-plugin-dialog = "=2"
 tauri-plugin-http = "2"
+tauri-plugin-os = "2"
 
 [dependencies.tauri-plugin-sql]
 features = ["sqlite"]

@@ -9,6 +9,7 @@ use tauri::{
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_http::init())
         .setup(|app| {
             let _tray = TrayIconBuilder::new()

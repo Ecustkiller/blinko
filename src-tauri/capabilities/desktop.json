@@ -12,6 +12,7 @@
     "global-shortcut:default",
     "window-state:default",
     "dialog:default",
-    "http:default"
+    "http:default",
+    "os:default"
   ]
 }

@@ -12,6 +12,10 @@ import { isRegistered, register, unregister } from '@tauri-apps/plugin-global-sh
 import { useEffect } from "react"
 import { v4 as uuid } from 'uuid'
 import useSettingStore from "@/stores/setting"
+import emitter from "@/lib/emitter"
+import { EmitterShortcutEvents } from "@/config/emitters"
+import { ShortcutDefault, ShortcutSettings } from "@/config/shortcut"
+import { Store } from "@tauri-apps/plugin-store"
  
 export function ControlScan() {
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
@@ -68,11 +72,36 @@ export function ControlScan() {
   }
 
   async function initRegister() {
-    const isEscRegistered = await isRegistered('CommandOrControl+Shift+S');
-    if (isEscRegistered) {
-      await unregister('CommandOrControl+Shift+S');
+    const store = await Store.load('store.json')
+    let lastKey = await store.get<string>(ShortcutSettings.screenshot)
+    if (!lastKey) {
+      await store.set(ShortcutSettings.screenshot, ShortcutDefault.screenshot)
+      lastKey = ShortcutDefault.screenshot
     }
-    await register('CommandOrControl+Shift+S', async (e) => {
+    const isEscRegistered = await isRegistered(lastKey);
+    if (isEscRegistered) {
+      await unregister(lastKey);
+    }
+    await register(lastKey, async (e) => {
+      if (e.state === 'Pressed') {
+        await createScreenShot()
+      }
+    }).catch(e => console.log(e))
+  }
+
+  async function linstenRegister(key?: string) {
+    if (!key) return
+    const store = await Store.load('store.json')
+    const lastKey = await store.get<string>(ShortcutSettings.screenshot)
+    console.log(lastKey);
+    if (lastKey) {
+      const isEscRegistered = await isRegistered(lastKey);
+      if (isEscRegistered) {
+        await unregister(lastKey);
+      }
+    }
+    await store.set(ShortcutSettings.screenshot, key)
+    await register(key, async (e) => {
       if (e.state === 'Pressed') {
         await createScreenShot()
       }
@@ -81,6 +110,7 @@ export function ControlScan() {
 
   useEffect(() => {
     initRegister()
+    emitter.on(EmitterShortcutEvents.screenshot, (res) => linstenRegister(res as string))
   }, [])
 
   return (

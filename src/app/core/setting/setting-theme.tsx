@@ -91,7 +91,7 @@ export function SettingTheme({id, icon}: {id: string, icon?: React.ReactNode}) {
         <span>预览内容主题。</span>
         <PreviewThemeSelect />
       </SettingRow>
-      <SettingRow>
+      <SettingRow border>
         <span>代码块高亮主题。</span>
         <CodeThemeSelect />
       </SettingRow>
