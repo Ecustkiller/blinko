@@ -6,7 +6,8 @@ import emitter from "@/lib/emitter";
 import { EmitterShortcutEvents } from "@/config/emitters"
 import { ShortcutDefault, ShortcutSettings } from "@/config/shortcut"
 import { Store } from "@tauri-apps/plugin-store";
-import { CopySlash, ScanText } from "lucide-react";
+import { CopySlash, RotateCcw, ScanText } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const keyMap = {
   Backquote: '`',
@@ -75,7 +76,7 @@ export function SettingShortcut({id, icon}: {id: string, icon?: React.ReactNode}
         shortcutMap.map((item) => {
           return (
             <SettingRow border key={item.mittId}>
-              <div className="flex gap-2 items-center">
+              <div className="flex flex-1 gap-2 items-center">
                 {item.icon}
                 <span>{item.title}</span>
                 <span className="text-zinc-500 text-xs">{item.description}</span>
@@ -153,7 +154,20 @@ function ShortcutInput({id, mittId, defaultKey}: {id: string, mittId: string, de
     emitter.emit(mittId, shortcut);
   }
 
-  return <div>
-    <Input className="w-auto" value={shortcut} onKeyDown={keyDownHandler} onBlur={blurHandler} onChange={changeHandler} />
+  async function resetHandler() {
+    const store = await Store.load('store.json');
+    await store.set(id, defaultKey)
+    emitter.emit(mittId, defaultKey);
+    setShortcut(defaultKey)
+  }
+
+  return <div className="flex gap-2 items-center">
+    <Input
+      value={shortcut}
+      onKeyDown={keyDownHandler}
+      onBlur={blurHandler}
+      onChange={changeHandler}
+    />
+    <Button size={"icon"} variant="ghost" onClick={resetHandler}><RotateCcw /></Button>
   </div>
 }
