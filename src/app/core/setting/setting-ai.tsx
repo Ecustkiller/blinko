@@ -28,6 +28,11 @@ const config = [
     baseURL: 'http://localhost:11434',
   },
   {
+    key: 'lmstudio',
+    title: 'LM Studio',
+    baseURL: 'http://localhost:1234/v1',
+  },
+  {
     key: 'volcengine',
     title: '豆包',
     baseURL: 'https://ark.cn-beijing.volces.com/api/v3',
