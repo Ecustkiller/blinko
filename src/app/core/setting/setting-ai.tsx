@@ -47,6 +47,11 @@ const config = [
     title: 'Kimi',
     baseURL: 'https://api.moonshot.cn/v1',
   },
+  {
+    key: 'deepseek',
+    title: 'DeepSeek',
+    baseURL: 'https://api.deepseek.com',
+  },
 ]
 
 export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
