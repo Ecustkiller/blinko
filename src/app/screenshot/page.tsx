@@ -19,7 +19,6 @@ export default function Page() {
   async function setScreen() {
     const innerPosition = await getCurrentWebviewWindow().innerPosition()
     const scaleFactor = await getCurrentWebviewWindow().scaleFactor()
-
     setY(innerPosition.y / scaleFactor)
     setScale(scaleFactor)
   }

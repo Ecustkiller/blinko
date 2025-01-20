@@ -29,15 +29,16 @@ export function ControlScan() {
     await invoke('screenshot')
     
     const monitor = await currentMonitor();
+
+    if (!monitor) return;
     
     const webview = new WebviewWindow('screenshot', {
       url: '/screenshot',
       decorations: false,
-      x: 0,
-      y: 0,
-      width: monitor?.size.width,
-      height: monitor?.size.height,
     });
+
+    webview.setPosition(monitor?.position)
+    webview.setSize(monitor?.size)
 
     webview.onCloseRequested(async () => {
       if (!await currentWindow.isVisible()) {
