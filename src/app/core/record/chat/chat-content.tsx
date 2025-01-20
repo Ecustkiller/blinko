@@ -10,6 +10,7 @@ import { MarkText } from './mark-text'
 import { ChatClipboard } from './chat-clipboard'
 import MessageControl from './message-control'
 import ChatEmpty from './chat-empty'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function ChatContent() {
   const { chats, init } = useChatStore()
@@ -43,7 +44,15 @@ function MessageWrapper({ chat, children }: { chat: Chat, children: React.ReactN
   const index = chats.findIndex(item => item.id === chat.id)
   if (chat.role === 'system') {
     return <div className="flex w-full gap-4">
-      { loading && index === chats.length - 1 ? <LoaderPinwheel className="animate-spin" /> : 
+      { loading && index === chats.length - 1 ? 
+        <div className="flex w-full">
+          <LoaderPinwheel className="animate-spin mr-4" />
+          <div className="space-y-2 flex-1 mt-0.5">
+            <Skeleton className="h-4 w-8/12" />
+            <Skeleton className="h-4 w-9/12" />
+            <Skeleton className="h-4 w-4/12" />
+          </div>
+        </div> : 
         chat.type === 'clipboard' ? <ClipboardCheck /> : <BotMessageSquare />
       }
       <div className='text-sm leading-6 flex-1'>
@@ -58,6 +67,8 @@ function MessageWrapper({ chat, children }: { chat: Chat, children: React.ReactN
 }
 
 function Message({ chat }: { chat: Chat }) {
+  const { loading, chats } = useChatStore()
+  const index = chats.findIndex(item => item.id === chat.id)
 
   switch (chat.type) {
     case 'clipboard':
@@ -67,17 +78,19 @@ function Message({ chat }: { chat: Chat }) {
 
     case 'note':
       return <MessageWrapper chat={chat}>
-        <div className='w-full overflow-x-hidden'>
-          <div className='flex justify-between'>
-            <p>将你的记录整理为文章：</p>
+        {
+          (!loading || index !== chats.length - 1) && <div className='w-full overflow-x-hidden'>
+            <div className='flex justify-between'>
+              <p>将你的记录整理为文章：</p>
+            </div>
+            <div className='note-wrapper border w-full overflow-y-auto overflow-x-hidden my-2 p-4 rounded-lg'>
+              <ChatPreview text={chat.content || ''} />
+            </div>
+            <MessageControl chat={chat}>
+              <NoteOutput chat={chat} />
+            </MessageControl>
           </div>
-          <div className='note-wrapper border w-full overflow-y-auto overflow-x-hidden my-2 p-4 rounded-lg'>
-            <ChatPreview text={chat.content || ''} />
-          </div>
-          <MessageControl chat={chat}>
-            <NoteOutput chat={chat} />
-          </MessageControl>
-        </div>
+        }
       </MessageWrapper>
   
     default:
