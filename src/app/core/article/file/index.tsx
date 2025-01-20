@@ -17,7 +17,7 @@ export function FileSidebar() {
   }, [initCollapsibleList])
 
   return (
-    <Sidebar collapsible="none" className="border-r w-[280px]">
+    <Sidebar collapsible="none" className="w-full">
       <SidebarHeader className="p-0">
         <FileToolbar />
       </SidebarHeader>
