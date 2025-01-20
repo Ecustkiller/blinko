@@ -157,6 +157,6 @@ export function MdEditor() {
       onChange={handleSave}
       onUploadImg={onUploadImg}
       onDrop={dropHandler}
-    />;
+    />
   </div>
 }
