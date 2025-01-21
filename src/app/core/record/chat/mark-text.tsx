@@ -10,10 +10,16 @@ export function MarkText({chat}: {chat: Chat}) {
 
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
   const { fetchMarks } = useMarkStore()
-  const { updateInsert } = useChatStore()
+  const { updateInsert, chats } = useChatStore()
 
   async function handleSuccess() {
-    const resetText = chat.content?.replace(/'/g, '')
+    const currentIndex = chats.findIndex(item => item.id === chat.id)
+    const prevChat = chats[currentIndex - 1]
+    const res = `
+${prevChat?.content}
+${chat.content}
+`
+    const resetText = res.replace(/'/g, '')
     await insertMark({ tagId: currentTagId, type: 'text', desc: resetText, content: resetText })
     updateInsert(chat.id)
     await fetchMarks()
