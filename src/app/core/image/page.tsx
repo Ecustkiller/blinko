@@ -18,7 +18,6 @@ interface FileUploader {
 }
  
 export default function Page() {
-  const [checkSetting, setCheckSetting] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [files, setFiles] = useState<FileUploader[]>([])
@@ -92,17 +91,11 @@ export default function Page() {
   }
 
   useEffect(() => {
-    if (checkSetting && images.length === 0) {
+    if (githubUsername && images.length === 0) {
       getImages()
       fetchAllMarks()
     }
-  }, [checkSetting])
-
-  useEffect(() => {
-    if (githubUsername && accessToken) {
-      setCheckSetting(true)
-    }
-  }, [githubUsername, accessToken])
+  }, [githubUsername])
   
   return (
     <div
@@ -141,7 +134,7 @@ export default function Page() {
         </div> :
         <div className="flex-1 overflow-y-auto">
           {
-            checkSetting ? 
+            accessToken ? 
             (
               <div className="p-2 grid md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2">
                 {
