@@ -74,7 +74,6 @@ export function ControlText() {
     if (!key) return
     const store = await Store.load('store.json')
     const lastKey = await store.get<string>(ShortcutSettings.text)
-    console.log(lastKey);
     if (lastKey) {
       const isEscRegistered = await isRegistered(lastKey);
       if (isEscRegistered) {

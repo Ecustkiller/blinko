@@ -72,6 +72,7 @@ export async function updateMark(mark: Mark) {
     tagId = ${mark.tagId},
     url = "${mark.url}",
     desc = "${mark.desc}",
+    content = "${mark.content}",
     createdAt = ${mark.createdAt}
     where id = ${mark.id}`
   )

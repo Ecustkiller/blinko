@@ -26,6 +26,7 @@ import { PhotoProvider, PhotoView } from "react-photo-view";
 import { convertImage } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { open } from "@tauri-apps/plugin-shell";
+import { Textarea } from "@/components/ui/textarea";
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
@@ -58,6 +59,16 @@ function ImageViewer({mark, path}: {mark: Mark, path?: string}) {
 }
 
 function DetailViewer({mark, content, path}: {mark: Mark, content: string, path?: string}) {
+  const [value, setValue] = useState('')
+  const { updateMark } = useMarkStore()
+  async function textMarkChangeHandler(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    setValue(e.target.value)
+    await updateMark({ ...mark, desc: e.target.value, content: e.target.value })
+  }
+
+  useEffect(() => {
+    setValue(mark.content || '')
+  }, [mark])
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -70,7 +81,7 @@ function DetailViewer({mark, content, path}: {mark: Mark, content: string, path?
         </SheetHeader>
         <div className="h-[calc(100vh-88px)] overflow-y-auto p-4">
           {
-            mark.url ?
+            mark.url && mark.type !== 'text' ?
             <LocalImage
               src={mark.url.includes('http') ? mark.url : `/${path}/${mark.url}`}
               alt=""
@@ -87,7 +98,11 @@ function DetailViewer({mark, content, path}: {mark: Mark, content: string, path?
               </>
             }
             <span className="block my-4 text-md text-zinc-900 font-bold">内容</span>
-            <span className="leading-6">{mark.content}</span>
+            {
+              mark.type === "text" ? 
+              <Textarea placeholder="在此输入文本记录内容..." rows={14} value={value} onChange={textMarkChangeHandler} /> :
+              <span className="leading-6">{mark.content}</span>
+            }
           </SheetDescription>
         </div>
       </SheetContent>

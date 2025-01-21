@@ -1,4 +1,4 @@
-import { getAllMarks, getMarks, Mark } from '@/db/marks'
+import { getAllMarks, getMarks, Mark, updateMark } from '@/db/marks'
 import { Store } from '@tauri-apps/plugin-store';
 import { create } from 'zustand'
 
@@ -14,6 +14,7 @@ interface MarkState {
   setTrashState: (flag: boolean) => void
 
   marks: Mark[]
+  updateMark: (mark: Mark) => Promise<void>
   setMarks: (marks: Mark[]) => void
   fetchMarks: () => Promise<void>
   fetchAllTrashMarks: () => Promise<void>
@@ -34,6 +35,22 @@ const useMarkStore = create<MarkState>((set) => ({
   },
 
   marks: [],
+  updateMark: async (mark) => {
+    set((state) => {
+      return {
+        marks: state.marks.map(item => {
+          if (item.id === mark.id) {
+            return {
+              ...item,
+              ...mark
+            }
+          }
+          return item
+        })
+      }
+    })
+    await updateMark(mark)
+  },
   setMarks: (marks) => {
     set({ marks })
   },
