@@ -26,6 +26,7 @@ const toolbars: ToolbarNames[] = [
   'mermaid',
   'katex',
   '=',
+  'catalog',
   'htmlPreview',
   'pageFullscreen',
 ]

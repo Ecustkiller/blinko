@@ -139,6 +139,18 @@ html, body {
   width: 20px !important;
 }
 
+.md-editor-catalog-active>span {
+  @apply text-primary font-bold !important;
+}
+
+.md-editor-catalog-link>span:hover{
+  @apply text-primary !important;
+}
+
+.md-editor-catalog-indicator{
+  @apply bg-primary !important;
+}
+
 .setting-anchor{
   @apply text-sm w-full hover:bg-accent px-4 py-2 rounded cursor-pointer flex gap-2 items-center;
   svg {
@@ -147,5 +159,5 @@ html, body {
 }
 
 .search-highlight{
-  @apply bg-secondary-foreground text-secondary px-1
+  @apply bg-secondary-foreground text-secondary px-1;
 }
