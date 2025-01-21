@@ -32,7 +32,7 @@ export default function History({mdRef}: {mdRef: RefObject<ExposeParam>}) {
     setCommits([])
     mdRef.current?.focus()
     const res = await getFileCommits({ path: activeFilePath, repo: RepoNames.sync })
-    setCommits(res)
+    setCommits(res || [])
     setCommitsLoading(false)
   }
 
