@@ -28,7 +28,7 @@ NoteGen 是一款专注于`记录`和`写作`的跨端 AI 笔记应用，基于 
 
 ### AI 模型接入
 
-目前已支持自定义模型配置，内置 ChatGPT、ChatAnyWhere（国内代理）、Ollama、豆包、通义千问、Kimi，支持所有以 OpenAI 协议的模型，未来将逐步支持其他协议。
+目前已支持自定义模型配置，内置 ChatGPT、ChatAnyWhere、Ollama、LM Studio、豆包、通义千问、Kimi、DeepSeek，支持所有以 OpenAI 协议的模型，未来将逐步支持其他协议。
 
 [话题讨论 - 关于模型接入](https://github.com/codexu/note-gen/discussions/26)
 
@@ -129,8 +129,6 @@ Github 基于 Git 实现，所以天然支持版本管理，你可以在历史�
 - [Tauri 2](https://v2.tauri.app/)
 - [Next.js 15](https://nextjs.org/)
 - [shadcn-ui](https://ui.shadcn.com/)
-- [Tesseract.js](https://github.com/naptha/tesseract.js)
-- [ChatGPT GPT-API-free](https://github.com/chatanywhere/GPT_API_free)
 
 欢迎提交 PR 或 issue。
 
