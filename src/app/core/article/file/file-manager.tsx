@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from "react"
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible"
 import useArticleStore, { DirTree } from "@/stores/article"
-import { BaseDirectory, rename } from "@tauri-apps/plugin-fs"
+import { BaseDirectory, rename, writeTextFile } from "@tauri-apps/plugin-fs"
 import { FileItem } from './file-item'
 import { FolderItem } from "./folder-item"
 
@@ -48,7 +48,7 @@ function Tree({ item }: { item: DirTree }) {
 
 export function FileManager() {
   const [isDragging, setIsDragging] = useState(false)
-  const { activeFilePath, fileTree, loadFileTree, setActiveFilePath } = useArticleStore()
+  const { activeFilePath, fileTree, loadFileTree, setActiveFilePath, addFile } = useArticleStore()
 
   async function handleDrop (e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault()
@@ -61,6 +61,23 @@ export function FileManager() {
       await loadFileTree()
       if (renamePath === activeFilePath) {
         setActiveFilePath(newPath.replace('article/', ''))
+      }
+    } else {
+      const files = e.dataTransfer.files
+      for (let i = 0; i < files.length; i += 1) {
+        const file = files[i]
+        if (file.name.endsWith('.md')) {
+          const text = await file.text()
+          await writeTextFile(`article/${file.name}`, text, { baseDir: BaseDirectory.AppData })
+          addFile({
+            name: file.name,
+            isEditing: false,
+            isLocale: true,
+            isDirectory: false,
+            isFile: true,
+            isSymlink: false
+          })
+        }
       }
     }
     setIsDragging(false)
@@ -83,7 +100,7 @@ export function FileManager() {
   }, [loadFileTree])
 
   return (
-    <SidebarContent className={isDragging ? 'file-on-drop' : ''}>
+    <SidebarContent className={`${isDragging && 'outline-2 outline-black outline-dotted -outline-offset-4'}`}>
       <SidebarGroup className="flex-1 p-0">
         <SidebarGroupContent className="flex-1">
           <SidebarMenu className="h-full">

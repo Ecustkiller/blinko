@@ -24,6 +24,7 @@ interface NoteState {
   fileTree: DirTree[]
   fileTreeLoading: boolean
   setFileTree: (tree: DirTree[]) => void
+  addFile: (file: DirTree) => void
   loadFileTree: () => Promise<void>
   loadCollapsibleFiles: (folderName: string) => Promise<void>
   newFolder: () => void
@@ -77,6 +78,9 @@ const useArticleStore = create<NoteState>((set, get) => ({
   fileTree: [],
   setFileTree: (tree: DirTree[]) => {
     set({ fileTree: tree })
+  },
+  addFile: (file: DirTree) => {
+    set({ fileTree: [file, ...get().fileTree] })
   },
   fileTreeLoading: false,
   loadFileTree: async () => {
