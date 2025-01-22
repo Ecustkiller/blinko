@@ -91,10 +91,10 @@ const useSettingStore = create<SettingState>((set, get) => ({
   darkMode: 'system',
   setDarkMode: (darkMode) => set({ darkMode }),
 
-  previewTheme: 'atom',
+  previewTheme: 'github',
   setPreviewTheme: (previewTheme) => set({ previewTheme }),
 
-  codeTheme: 'atom',
+  codeTheme: 'github',
   setCodeTheme: (codeTheme) => set({ codeTheme }),
 
   tesseractList: 'eng,chi_sim',

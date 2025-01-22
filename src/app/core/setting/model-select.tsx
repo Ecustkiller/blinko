@@ -19,7 +19,6 @@ export default function ModelSelect() {
   }
 
   async function initModelList() {
-    console.log(apiKey, url);
     if (!apiKey) return
     if (!url) return
 
