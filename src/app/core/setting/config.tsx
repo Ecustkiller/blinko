@@ -46,3 +46,74 @@ const config = [
 ]
 
 export default config
+
+export interface AiConfig {
+  key: string
+  title: string
+  baseURL?: string
+  modelURL?: string
+}
+
+export interface Model {
+  id: string
+  object: string
+  created: number
+  owned_by: string
+}
+
+const aiConfig = [
+  {
+    key: 'custom',
+    title: '自定义',
+    baseURL: null,
+  },
+  {
+    key: 'chatgpt',
+    title: 'ChatGPT',
+    baseURL: 'https://api.openai.com/v1',
+    modelURL: 'https://api.openai.com/v1/models',
+  },
+  {
+    key: 'chatanywhere',
+    title: 'ChatAnyWhere',
+    baseURL: 'https://api.chatanywhere.tech/v1',
+    modelURL: 'https://api.chatanywhere.tech/v1/models',
+  },
+  {
+    key: 'ollama',
+    title: 'Ollama',
+    baseURL: 'http://localhost:11434',
+    modelURL: 'http://localhost:11434/v1/models',
+  },
+  {
+    key: 'lmstudio',
+    title: 'LM Studio',
+    baseURL: 'http://localhost:1234/v1',
+    modelURL: 'http://localhost:1234/v1/models',
+  },
+  {
+    key: 'volcengine',
+    title: '豆包',
+    baseURL: 'https://ark.cn-beijing.volces.com/api/v3',
+  },
+  {
+    key: 'aliyun',
+    title: '通义千问',
+    baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+    modelURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1/models',
+  },
+  {
+    key: 'moonshot',
+    title: 'Kimi',
+    baseURL: 'https://api.moonshot.cn/v1',
+    modelURL: 'https://api.moonshot.cn/v1/models',
+  },
+  {
+    key: 'deepseek',
+    title: 'DeepSeek',
+    baseURL: 'https://api.deepseek.com',
+    modelURL: 'https://api.deepseek.com/models',
+  },
+]
+
+export { aiConfig }

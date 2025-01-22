@@ -5,57 +5,12 @@ import { useEffect } from "react";
 import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
 import { InfoIcon } from "lucide-react";
+import ModelSelect from "./model-select";
+import { aiConfig } from "./config";
 
-const config = [
-  {
-    key: 'custom',
-    title: '自定义',
-    baseURL: null,
-  },
-  {
-    key: 'chatgpt',
-    title: 'ChatGPT',
-    baseURL: 'https://api.openai.com/v1',
-  },
-  {
-    key: 'chatanywhere',
-    title: 'ChatAnyWhere',
-    baseURL: 'https://api.chatanywhere.tech/v1',
-  },
-  {
-    key: 'ollama',
-    title: 'Ollama',
-    baseURL: 'http://localhost:11434',
-  },
-  {
-    key: 'lmstudio',
-    title: 'LM Studio',
-    baseURL: 'http://localhost:1234/v1',
-  },
-  {
-    key: 'volcengine',
-    title: '豆包',
-    baseURL: 'https://ark.cn-beijing.volces.com/api/v3',
-  },
-  {
-    key: 'aliyun',
-    title: '通义千问',
-    baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
-  },
-  {
-    key: 'moonshot',
-    title: 'Kimi',
-    baseURL: 'https://api.moonshot.cn/v1',
-  },
-  {
-    key: 'deepseek',
-    title: 'DeepSeek',
-    baseURL: 'https://api.deepseek.com',
-  },
-]
 
 export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
-  const { aiType, setAiType, apiKey, setApiKey, baseURL, setBaseURL, model, setModel } = useSettingStore()
+  const { aiType, setAiType, apiKey, setApiKey, baseURL, setBaseURL, setModel } = useSettingStore()
 
   async function tabChangeHandler(tab: string) {
     setAiType(tab)
@@ -67,7 +22,7 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
       await store.set(`baseURL`, baseURL)
 
     } else {
-      const defaultBaseURL = config.find((item) => item.key === tab)?.baseURL
+      const defaultBaseURL = aiConfig.find((item) => item.key === tab)?.baseURL
       if (defaultBaseURL) {
         setBaseURL(defaultBaseURL)
         await store.set(`baseURL`, defaultBaseURL)
@@ -83,13 +38,8 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
       setApiKey(apiKey)
       await store.set(`apiKey`, apiKey)
     } else {
-      if (tab !== 'ollama') {
-        setApiKey('')
-        await store.set(`apiKey`, '')
-      } else {
-        setApiKey(' ')
-        await store.set(`apiKey`, ' ')
-      }
+      setApiKey('')
+      await store.set(`apiKey`, '')
     }
     // model
     const model = await store.get<string>(`model-${tab}`)
@@ -116,13 +66,6 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
     await store.set(`apiKey-${aiType}`, e.target.value)
   }
 
-  async function modelChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
-    setModel(e.target.value)
-    const store = await Store.load('store.json');
-    await store.set(`model`, e.target.value)
-    await store.set(`model-${aiType}`, e.target.value)
-  }
-
   useEffect(() => {
     async function init() {
       const store = await Store.load('store.json');
@@ -138,7 +81,7 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
       if (baseURL) {
         setBaseURL(baseURL)
       } else {
-        const baseURL = config.find((item) => item.key === tab)?.baseURL
+        const baseURL = aiConfig.find((item) => item.key === tab)?.baseURL
         if (baseURL) {
           setBaseURL(baseURL)
         }
@@ -157,7 +100,7 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
         <Tabs className="mb-2" value={aiType} onValueChange={tabChangeHandler}>
           <TabsList>
             {
-              config.map((item) => (
+              aiConfig.map((item) => (
                 <TabsTrigger value={item.key} key={item.key}>{item.title}</TabsTrigger>
               ))
             }
@@ -183,7 +126,7 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
       </SettingRow>
       <SettingRow>
         <FormItem title="Model">
-          <Input value={model} onChange={modelChangeHandler} />
+          <ModelSelect />
         </FormItem>
       </SettingRow>
     </SettingType>
