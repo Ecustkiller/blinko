@@ -6,6 +6,7 @@ import { initMarksDb } from "@/db/marks"
 import { ControlScan } from "./control-scan"
 import { ControlText } from "./control-text"
 import { ControlImage } from "./control-image"
+import { ControlFile } from "./control-file"
 import { Toggle } from "@/components/ui/toggle"
 import useMarkStore from "@/stores/mark"
 
@@ -31,6 +32,7 @@ export function MarkToolbar() {
         <TooltipProvider>
           <ControlScan />
           <ControlImage />
+          <ControlFile />
           <ControlText />
         </TooltipProvider>
       </div>
