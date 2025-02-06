@@ -1,16 +1,19 @@
 <img src="https://cdn.jsdelivr.net/gh/codexu/note-gen@dev/app-icon.png" width="128" height="128" />
 
+# NoteGen
+
 ![](https://github.com/codexu/note-gen/actions/workflows/release.yml/badge.svg?branch=release)
 ![](https://img.shields.io/github/v/release/codexu/note-gen)
 ![](https://img.shields.io/badge/version-alpha-orange)
 ![](https://img.shields.io/github/downloads/codexu/note-gen/total)
 ![](https://img.shields.io/github/commit-activity/m/codexu/note-gen)
 
-# NoteGen
-
 NoteGen 是一款专注于`记录`和`写作`的跨端 AI 笔记应用，基于 `Tauri` 开发。
 
 ![](https://cdn.jsdelivr.net/gh/codexu/note-gen-image-sync@main/2c3c6211-0905-43ba-8769-4d13fd30baf4.png)
+
+> [!IMPORTANT]
+> NoteGen 目前还处于开发阶段，还存在着许多的不足和缺陷。
 
 ## 快速开始
 
@@ -29,6 +32,8 @@ NoteGen 是一款专注于`记录`和`写作`的跨端 AI 笔记应用，基于 
 ### AI 模型接入
 
 目前已支持自定义模型配置，内置 ChatGPT、ChatAnyWhere、Ollama、LM Studio、豆包、通义千问、Kimi、DeepSeek，支持所有以 OpenAI 协议的模型，未来将逐步支持其他协议。
+
+> 本地模型目前调用可能存在 403 报错，目前在等待 http-plugin 的解决办法，开发环境中不会出现此问题。
 
 [话题讨论 - 关于模型接入](https://github.com/codexu/note-gen/discussions/26)
 
@@ -129,6 +134,8 @@ Github 基于 Git 实现，所以天然支持版本管理，你可以在历史�
 - [Tauri 2](https://v2.tauri.app/)
 - [Next.js 15](https://nextjs.org/)
 - [shadcn-ui](https://ui.shadcn.com/)
+
+rustc >= 1.82.0
 
 欢迎提交 PR 或 issue。
 
