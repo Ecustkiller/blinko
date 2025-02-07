@@ -102,7 +102,24 @@ export function MdEditor() {
       await writeText(md)
     }
   }
-   
+
+  function bindPreviewLink() {
+    // 等待 #aritcle-md-editor-preview-wrapper 加载完毕
+    
+    setTimeout(() => {
+      const previewDom = document.querySelector('#aritcle-md-editor-preview-wrapper')
+      if (!previewDom) return
+      previewDom.querySelectorAll('a').forEach(item => {
+        item.setAttribute('target', '_blank')
+        item.setAttribute('rel', 'noopener noreferrer')
+      })
+    }, 100);
+  }
+
+  useEffect(() => {
+    ref.current?.on('preview', () => bindPreviewLink());
+    ref.current?.on('previewOnly', () => bindPreviewLink());
+  }, [])
 
   useEffect(() => {
     setMdTheme(theme as Themes)
@@ -112,6 +129,7 @@ export function MdEditor() {
     if (value !== currentArticle) {
       setValue(currentArticle)
     }
+    bindPreviewLink()
   }, [currentArticle])
 
   useEffect(() => {
