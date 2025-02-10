@@ -25,7 +25,7 @@ const useImageStore = create<MarkState>((set) => ({
   async getImages() {
     set({ images: [] })
     const images = await getFiles({ path: '', repo: RepoNames.image })
-    set({ images })
+    set({ images: images || [] })
   },
 }))
 
