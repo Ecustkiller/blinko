@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { Chat, clearChatsByTagId, deleteChat, getChats, insertChat, updateChat, updateChatsInsertedById } from '@/db/chats'
+import { Chat, clearChatsByTagId, deleteChat, getChats, initChatsDb, insertChat, updateChat, updateChatsInsertedById } from '@/db/chats'
 import { Store } from '@tauri-apps/plugin-store';
 import { locales } from '@/lib/locales';
 
@@ -24,12 +24,14 @@ interface ChatState {
 
 const useChatStore = create<ChatState>((set, get) => ({
   loading: false,
+
   setLoading: (loading: boolean) => {
     set({ loading })
   },
 
   chats: [],
   init: async (tagId: number) => {
+    await initChatsDb()
     const data = await getChats(tagId)
     set({ chats: data })
   },
