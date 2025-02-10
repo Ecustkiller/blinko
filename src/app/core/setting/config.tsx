@@ -1,10 +1,11 @@
-import { BotMessageSquare, Command, FileUp, Palette, ScanText, Store } from "lucide-react"
+import { BotMessageSquare, Command, FileUp, Palette, ScanText, Store, UserRoundCog } from "lucide-react"
 import { SettingAbout } from "./setting-about"
 import { SettingAI } from "./setting-ai"
 import { SettingSync } from "./setting-sync"
 import { SettingOCR } from "./setting-ocr"
 import { SettingShortcut } from "./setting-shortcut"
 import { SettingTheme } from "./setting-theme"
+import { SettingDev } from "./setting-dev"
 
 const config = [
   {
@@ -42,6 +43,12 @@ const config = [
     icon: <Palette />,
     anchor: 'theme',
     children: SettingTheme,
+  },
+  {
+    title: '开发者',
+    icon: <UserRoundCog />,
+    anchor: 'dev',
+    children: SettingDev,
   },
 ]
 
