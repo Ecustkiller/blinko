@@ -76,7 +76,7 @@ const useSettingStore = create<SettingState>((set, get) => ({
   language: '简体中文',
   setLanguage: (language) => set({ language }),
 
-  aiType: 'openai',
+  aiType: 'custom',
   setAiType: (aiType) => set({ aiType }),
 
   baseURL: '',
@@ -85,7 +85,7 @@ const useSettingStore = create<SettingState>((set, get) => ({
   apiKey: '',
   setApiKey: (apiKey) => set({ apiKey }),
 
-  model: 'gpt-4o-mini',
+  model: '',
   setModel: (model) => set({ model }),
 
   darkMode: 'system',
