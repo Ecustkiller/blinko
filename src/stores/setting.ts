@@ -2,6 +2,14 @@ import { Store } from '@tauri-apps/plugin-store'
 import { create } from 'zustand'
 import { getVersion } from '@tauri-apps/api/app'
 
+export interface GenTemplate {
+  id: number
+  title: string
+  status: boolean
+  content: string
+  range: string
+}
+
 interface SettingState {
   initSettingData: () => Promise<void>
 
@@ -25,6 +33,9 @@ interface SettingState {
 
   model: string
   setModel: (language: string) => void
+
+  templateList: GenTemplate[]
+  setTemplateList: (templateList: GenTemplate[]) => Promise<void>
 
   darkMode: string
   setDarkMode: (darkMode: string) => void
@@ -57,7 +68,14 @@ const useSettingStore = create<SettingState>((set, get) => ({
       const res = await store.get(key)
       if (typeof value === 'function') return
       if (res !== undefined && key!== 'version') {
-        set({ [key]: res })
+        if (key === 'templateList') {
+          set({ [key]: [] })
+          setTimeout(() => {
+            set({ [key]: res as GenTemplate[] })
+          }, 0);
+        } else {
+          set({ [key]: res })
+        }
       } else {
         await store.set(key, value)
       }
@@ -87,6 +105,28 @@ const useSettingStore = create<SettingState>((set, get) => ({
 
   model: '',
   setModel: (model) => set({ model }),
+
+  templateList: [
+    {
+      id: 0,
+      title: '笔记',
+      content: '整理成一篇详细完整的笔记',
+      status: true,
+      range: 'All'
+    },
+    {
+      id: 1,
+      title: '周报',
+      content: '将最近一周的记录整理成一篇周报',
+      status: true,
+      range: 'Week'
+    }
+  ],
+  setTemplateList: async (templateList) => {
+    set({ templateList })
+    const store = await Store.load('store.json')
+    await store.set('templateList', templateList)
+  },
 
   darkMode: 'system',
   setDarkMode: (darkMode) => set({ darkMode }),

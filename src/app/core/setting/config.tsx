@@ -1,4 +1,4 @@
-import { BotMessageSquare, Command, FileUp, Palette, ScanText, Store, UserRoundCog } from "lucide-react"
+import { BotMessageSquare, LayoutTemplate, Command, FileUp, Palette, ScanText, Store, UserRoundCog } from "lucide-react"
 import { SettingAbout } from "./setting-about"
 import { SettingAI } from "./setting-ai"
 import { SettingSync } from "./setting-sync"
@@ -6,6 +6,7 @@ import { SettingOCR } from "./setting-ocr"
 import { SettingShortcut } from "./setting-shortcut"
 import { SettingTheme } from "./setting-theme"
 import { SettingDev } from "./setting-dev"
+import { SettingTemplate } from "./setting-template"
 
 const config = [
   {
@@ -31,6 +32,12 @@ const config = [
     icon: <ScanText />,
     anchor: 'ocr',
     children: SettingOCR,
+  },
+  {
+    title: '整理模板',
+    icon: <LayoutTemplate />,
+    anchor: 'template',
+    children: SettingTemplate,
   },
   {
     title: '快捷键',
