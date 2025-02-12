@@ -2,12 +2,21 @@ import { Store } from '@tauri-apps/plugin-store'
 import { create } from 'zustand'
 import { getVersion } from '@tauri-apps/api/app'
 
+export enum GenTemplateRange {
+  All = '全部',
+  Today = '今天',
+  Week = '近一周',
+  Month = '近一月',
+  ThreeMonth = '近三个月',
+  Year = '近一年',
+}
+
 export interface GenTemplate {
-  id: number
+  id: string
   title: string
   status: boolean
   content: string
-  range: string
+  range: GenTemplateRange
 }
 
 interface SettingState {
@@ -108,18 +117,21 @@ const useSettingStore = create<SettingState>((set, get) => ({
 
   templateList: [
     {
-      id: 0,
+      id: '0',
       title: '笔记',
-      content: '整理成一篇详细完整的笔记',
+      content: `整理成一篇详细完整的笔记。
+满足以下格式要求：
+- 如果是代码，必须完整保留，不要随意生成。
+- 文字复制的内容尽量不要修改，只处理格式化后的内容。`,
       status: true,
-      range: 'All'
+      range: GenTemplateRange.All
     },
     {
-      id: 1,
+      id: '1',
       title: '周报',
-      content: '将最近一周的记录整理成一篇周报',
+      content: '最近一周的记录整理成一篇周报，将每条记录形成一句总结，每条不超过50字。',
       status: true,
-      range: 'Week'
+      range: GenTemplateRange.Week
     }
   ],
   setTemplateList: async (templateList) => {

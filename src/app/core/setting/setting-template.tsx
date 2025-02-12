@@ -1,4 +1,4 @@
-import useSettingStore, { GenTemplate } from "@/stores/setting";
+import useSettingStore, { GenTemplate, GenTemplateRange } from "@/stores/setting";
 import { SettingRow, SettingType } from "./setting-base";
 import {
   Table,
@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect } from "react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { confirm } from '@tauri-apps/plugin-dialog';
 
 export function SettingTemplate({id, icon}: {id: string, icon?: React.ReactNode}) {
   const { templateList, setTemplateList } = useSettingStore()
@@ -32,12 +33,20 @@ export function SettingTemplate({id, icon}: {id: string, icon?: React.ReactNode}
 
   function createTemplateHandler() {
     setTemplateList([...templateList, {
-      id: templateList.length + 1,
+      id: `${templateList.length + 1}`,
       status: true,
       title: '自定义模板',
       content: '',
-      range: 'All',
+      range: GenTemplateRange.All,
     }])
+  }
+
+  function deleteTemplateHandler(id: string) {
+    confirm(`确认删除模板吗?`).then(async (res) => {
+      if (res) {
+        setTemplateList(templateList.filter(item => item.id !== id))
+      }
+    })
   }
 
   useEffect(() => {
@@ -67,7 +76,7 @@ export function SettingTemplate({id, icon}: {id: string, icon?: React.ReactNode}
                     <TableCell>
                       <Switch
                         className="transform scale-75 translate-y-0.5"
-                        disabled={item.id === 0}
+                        disabled={item.id === '0'}
                         checked={item.status}
                         onCheckedChange={(checked) => changeHandler(item, 'status', checked)}
                       />
@@ -81,7 +90,7 @@ export function SettingTemplate({id, icon}: {id: string, icon?: React.ReactNode}
                     </TableCell>
                     <TableCell>
                       <Textarea
-                        rows={1}
+                        rows={3}
                         className="setting-input"
                         defaultValue={item.content}
                         onBlur={(e) => changeHandler(item, 'content', e.target.value)}
@@ -94,23 +103,22 @@ export function SettingTemplate({id, icon}: {id: string, icon?: React.ReactNode}
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="All">全部</SelectItem>
-                          <SelectItem value="Today">今天</SelectItem>
-                          <SelectItem value="Week">近一周</SelectItem>
-                          <SelectItem value="Month">近一月</SelectItem>
-                          <SelectItem value="ThreeMonth">近三个月</SelectItem>
-                          <SelectItem value="Year">近一年</SelectItem>
+                          {
+                            Object.values(GenTemplateRange).map((value) => {
+                              return <SelectItem key={value} value={value}>{value}</SelectItem>
+                            })
+                          }
                         </SelectGroup>
                       </SelectContent>
                     </Select>
                     </TableCell>
                     <TableCell className="text-right">
                       <Button
-                        disabled={item.id === 0}
+                        disabled={item.id === '0'}
                         variant={"ghost"}
                         size={"icon"}
                         className="text-red-500"
-                        onClick={() => setTemplateList(templateList.filter(t => t.id !== item.id))}
+                        onClick={() => deleteTemplateHandler(item.id)}
                       ><XIcon /></Button>
                     </TableCell>
                   </TableRow>

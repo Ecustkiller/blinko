@@ -1,15 +1,15 @@
 "use client"
 import * as React from "react"
 import { useEffect, useState } from "react"
-import { NotebookPen, Send } from "lucide-react"
+import { Send } from "lucide-react"
 import useSettingStore from "@/stores/setting"
 import { Input } from "@/components/ui/input"
 import useChatStore from "@/stores/chat"
 import useTagStore from "@/stores/tag"
 import useMarkStore from "@/stores/mark"
 import { fetchAi } from "@/lib/ai"
-import { convertImage } from "@/lib/utils"
 import { TooltipButton } from "@/components/tooltip-button"
+import { MarkGen } from "./mark-gen"
 
 export function ChatInput() {
   const [text, setText] = useState("")
@@ -19,56 +19,6 @@ export function ChatInput() {
   const { fetchMarks, marks, trashState } = useMarkStore()
   const [isComposing, setIsComposing] = useState(false)
   const [placeholder, setPlaceholder] = useState('')
-
-  async function handleGen() {
-    setLoading(true)
-    const message = await insert({
-      tagId: currentTagId,
-      role: 'system',
-      content: '',
-      type: 'note',
-      inserted: false,
-      image: undefined,
-    })
-    if (!message) return
-    await fetchMarks()
-    const scanMarks = marks.filter(item => item.type === 'scan')
-    const textMarks = marks.filter(item => item.type === 'text')
-    const imageMarks = marks.filter(item => item.type === 'image')
-    for (const image of imageMarks) {
-      if (!image.url.includes('http')) {
-        image.url = await convertImage(`/image/${image.url}`)
-      }
-    }
-    const request_content = `
-      以下是通过截图后，使用OCR识别出的文字片段：
-      ${scanMarks.map(item => item.content).join(';\n\n')}。
-      以下是通过文本复制记录的片段：
-      ${textMarks.map(item => item.content).join(';\n\n')}。
-      以下是插图记录的片段描述：
-      ${imageMarks.map(item => `
-        描述：${item.content}，
-        图片地址：${item.url}
-      `).join(';\n\n')}。
-      请将这些片段整理成一篇详细完整的笔记，要满足以下要求：
-      - 使用 ${locale} 语言。
-      - 使用 Markdown 语法。
-      - 如果是代码，必须完整保留，不要随意生成。
-      - 笔记顺序可能是错误的，要按照正确顺序排列。
-      - 文字复制的内容尽量不要修改，只处理格式化后的内容。
-      ${
-        imageMarks.length > 0 &&
-        '- 如果存在插图记录，通过插图记录的描述，将图片链接放在笔记中的适合位置，图片地址包含 uuid，请完整返回，并对插图附带简单的描述。'
-      }
-      请满足用户输入的自定义需求：${text}
-    `
-    const content = await fetchAi(request_content)
-    await saveChat({
-      ...message,
-      content,
-    })
-    setLoading(false)
-  }
 
   async function handleSubmit() {
     if (text === '') return
@@ -193,7 +143,7 @@ export function ChatInput() {
           setIsComposing(false)
         }, 0)}
       />
-      <TooltipButton icon={<NotebookPen />} disabled={loading || !apiKey} tooltipText="整理" onClick={handleGen} />
+      <MarkGen />
       <TooltipButton icon={<Send />} disabled={loading || !apiKey} tooltipText="发送" onClick={handleSubmit} />
     </footer>
   )
