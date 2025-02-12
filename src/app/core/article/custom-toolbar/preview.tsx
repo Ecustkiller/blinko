@@ -1,13 +1,16 @@
 import { SquareMIcon, SquareSplitHorizontal, ViewIcon } from "lucide-react";
 import { ExposeParam } from "md-editor-rt";
-import { RefObject } from "react";
+import { RefObject, useEffect, useState } from "react";
 import {
   Tabs,
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { Store } from "@tauri-apps/plugin-store";
 
 export default function Preview({mdRef}: {mdRef: RefObject<ExposeParam>}) {
+
+  const [defaultType, setDefaultType] = useState('code')
 
   const previewTypes = [
     {type: 'code', name: '编辑模式', icon: <SquareMIcon className="size-4" />},
@@ -15,7 +18,17 @@ export default function Preview({mdRef}: {mdRef: RefObject<ExposeParam>}) {
     {type: 'preview-only', name: '预览模式', icon: <ViewIcon className="size-4" />},
   ]
 
+  async function initType() {
+    const store = await Store.load('store.json')
+    const type = await store.get<string>('previewType') || 'code'
+    setDefaultType(type)
+    handler(type)
+  }
+
   async function handler(tab: string) {
+    setDefaultType(tab)
+    const store = await Store.load('store.json')
+    await store.set('previewType', tab)
     switch (tab) {
       case 'code':
         mdRef.current?.togglePreview(false)
@@ -31,8 +44,13 @@ export default function Preview({mdRef}: {mdRef: RefObject<ExposeParam>}) {
     }
     mdRef.current?.focus()
   }
+
+  useEffect(() => {
+    initType()
+  }, [])
+
   return (
-    <Tabs defaultValue="code" className="mx-2" onValueChange={handler}>
+    <Tabs value={defaultType} className="mx-2" onValueChange={handler}>
       <TabsList className="grid w-full grid-cols-3 gap-0.5">
         {
           previewTypes.map((item, index) => (
