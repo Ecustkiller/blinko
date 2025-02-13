@@ -10,7 +10,7 @@
 
 NoteGen 是一款专注于`记录`和`写作`的跨端 AI 笔记应用，基于 `Tauri` 开发。
 
-![](https://cdn.jsdelivr.net/gh/codexu/note-gen-image-sync@main/2c3c6211-0905-43ba-8769-4d13fd30baf4.png)
+![v2-23d087a7f66d15f0100dae47341fe8e1_1440w](https://github.com/user-attachments/assets/191bdf6c-fc61-4ca8-91d8-0f62a5f399ed)
 
 > [!IMPORTANT]
 > NoteGen 目前还处于开发阶段，还存在着许多的不足和缺陷。
