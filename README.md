@@ -139,6 +139,14 @@ rustc >= 1.82.0
 
 欢迎提交 PR 或 issue。
 
-## Star History
+### Contributors
+
+欢迎加入 NoteGen，让我们一起将它变得更好。
+
+<a href="https://github.com/codexu/note-gen/graphs/contributors">
+   <img src="https://contrib.rocks/image?repo=codexu/note-gen" />
+</a>
+
+### Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=codexu/note-gen&type=Date)](https://star-history.com/#codexu/note-gen&Date)
