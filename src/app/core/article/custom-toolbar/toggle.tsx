@@ -1,66 +1,39 @@
 import { TooltipButton } from "@/components/tooltip-button";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { ExposeParam, ToolbarNames } from "md-editor-rt";
-import { RefObject, useEffect, useState } from "react";
-import { Settings } from "./settings.type";
+import { useEffect, useState } from "react";
 import { Store } from "@tauri-apps/plugin-store";
+import Vditor from "vditor";
 
-const toolbars: ToolbarNames[] = [
-  'bold',
-  'underline',
-  'italic',
-  '-',
-  'strikeThrough',
-  'sub',
-  'sup',
-  'quote',
-  'unorderedList',
-  'orderedList',
-  'task',
-  '-',
-  'codeRow',
-  'code',
-  'link',
-  'image',
-  'table',
-  'mermaid',
-  'katex',
-  '=',
-  'catalog',
-  'htmlPreview',
-  'pageFullscreen',
-]
-export default function Toggle({mdRef, settings}: {mdRef: RefObject<ExposeParam>, settings: Settings}) {
-
+export default function Toggle({editor}: {editor?: Vditor}) {
   const [value, setValue] = useState(false)
-
+  
   async function initValue() {
     const store = await Store.load('store.json')
     const toolbarState = await store.get<boolean>('toolbarState') || false
     setValue(toolbarState)
     if (toolbarState) {
-      settings.setToolbar(toolbars)
+      editor?.updateToolbarConfig({hide: false})
     } else {
-      settings.setToolbar([])
+      editor?.updateToolbarConfig({hide: true})
     }
   }
 
   useEffect(() => {
     initValue()
-  }, [])
+  }, [editor])
 
   async function handleSet() {
     const store = await Store.load('store.json')
     if (value) {
-      settings.setToolbar([])
       await store.set('toolbarState', false)
+      editor?.updateToolbarConfig({hide: true})
     } else {
-      settings.setToolbar(toolbars)
       await store.set('toolbarState', true)
+      editor?.updateToolbarConfig({hide: false})
     }
   }
   async function handleToggle() {
-    mdRef.current?.focus()
+    editor?.focus()
     setValue(!value)
     handleSet()
   }
