@@ -1,23 +1,18 @@
-import { TooltipButton } from "@/components/tooltip-button";
 import { fetchAi } from "@/lib/ai";
 import emitter from "@/lib/emitter";
-import useArticleStore from "@/stores/article";
-import useSettingStore from "@/stores/setting";
-import { ListPlus } from "lucide-react";
 import { useEffect } from "react";
 import Vditor from "vditor";
 
 export default function Continue({editor}: {editor?: Vditor}) {
 
-  const { loading, setLoading } = useArticleStore()
-  const { apiKey } = useSettingStore()
   async function handler() {
+    const button = (editor?.vditor.toolbar?.elements?.continue.childNodes[0] as HTMLButtonElement)
+    button.classList.add('vditor-menu--disabled')
     const content = editor?.getValue()
     editor?.focus()
     if (!content) return
     const currentLineContent = editor?.vditor.ir?.range?.startContainer.nodeValue || ''
     const currentCursorIndex = content?.indexOf(currentLineContent) + currentLineContent.length
-    setLoading(true)
     const startContent = content.slice(0, currentCursorIndex);
     const endContent = content.slice(currentCursorIndex, content.length);
     const req = `
@@ -36,7 +31,7 @@ export default function Continue({editor}: {editor?: Vditor}) {
     `
     const res = await fetchAi(req)
     editor?.insertValue(res)
-    setLoading(false)
+    button.classList.remove('vditor-menu--disabled')
   }
 
   useEffect(() => {
@@ -44,7 +39,6 @@ export default function Continue({editor}: {editor?: Vditor}) {
   }, [])
 
   return (
-    <TooltipButton disabled={loading || !apiKey} icon={<ListPlus />} tooltipText="续写" onClick={handler}>
-    </TooltipButton>
+    <></>
   )
 }

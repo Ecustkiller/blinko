@@ -14,6 +14,8 @@ export default function Question({editor}: {editor?: Vditor}) {
   const { apiKey } = useSettingStore()
   
   async function handleBlock() {
+    const button = (editor?.vditor.toolbar?.elements?.question.childNodes[0] as HTMLButtonElement)
+    button.classList.add('vditor-menu--disabled')
     const selectedText = editor?.getSelection()
     if (selectedText) {
       const req = `
@@ -28,6 +30,7 @@ export default function Question({editor}: {editor?: Vditor}) {
         variant: 'destructive'
       })
     }
+    button.classList.remove('vditor-menu--disabled')
   }
 
   useEffect(() => {
