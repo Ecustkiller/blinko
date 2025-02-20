@@ -4,11 +4,11 @@ import { Label } from "@/components/ui/label";
 import useArticleStore from "@/stores/article";
 import { Checkbox } from "@/components/ui/checkbox";
 
-export default function ConvertHTML({mdRef}: {mdRef: RefObject<ExposeParam>}) {
+export default function ConvertHTML({editor}: {editor?: Vditor}) {
   const { html2md, setHtml2md, initHtml2md } = useArticleStore()
 
   async function switchChangeHandler(isChecked: boolean) {
-    mdRef.current?.focus()
+    editor?.focus()
     setHtml2md(isChecked)
   }
 

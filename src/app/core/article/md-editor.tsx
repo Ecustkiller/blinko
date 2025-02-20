@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Vditor from 'vditor'
 import "vditor/dist/index.css"
 import CustomToolbar from './custom-toolbar'
+import './style.scss'
 import toolbarConfig from './custom-toolbar/config'
 
 export function MdEditor() {
@@ -13,6 +14,8 @@ export function MdEditor() {
   function init() {
     const vditor = new Vditor('aritcle-md-editor', {
       height: document.documentElement.clientHeight - 100,
+      icon: 'material',
+      cdn: '',
       toolbar: toolbarConfig,
       after: () => {
         setEditor(vditor);
@@ -37,7 +40,7 @@ export function MdEditor() {
     setContent(currentArticle)
   }, [currentArticle])
 
-  return <div className='flex-1 h-full flex overflow-hidden flex-col'>
+  return <div className='flex-1 h-full flex flex-col'>
     <CustomToolbar editor={editor} />
     <div id="aritcle-md-editor" className='flex-1'></div>
   </div>

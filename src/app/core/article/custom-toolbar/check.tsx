@@ -7,13 +7,13 @@ import { ExposeParam } from "md-editor-rt";
 import { RefObject } from "react";
 import { cursorDocEnd, insertNewline, blockComment } from "@codemirror/commands";
 
-export default function Check({mdRef}: {mdRef: RefObject<ExposeParam>}) {
+export default function Check({editor}: {editor?: Vditor}) {
 
   const { currentArticle, loading, setLoading } = useArticleStore()
   const { apiKey } = useSettingStore()
   async function handler() {
     setLoading(true)
-    mdRef.current?.focus()
+    editor?.focus()
     const codemirror = mdRef.current?.getEditorView()
     if (!codemirror) return
     cursorDocEnd(codemirror)
@@ -33,9 +33,7 @@ export default function Check({mdRef}: {mdRef: RefObject<ExposeParam>}) {
     `
     const res = (await fetchAi(req))
 
-    mdRef.current?.insert(() => ({
-      targetValue: res,
-    }))
+    editor?.insertValue(res)
 
     blockComment(codemirror)
     setLoading(false)

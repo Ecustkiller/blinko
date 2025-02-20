@@ -4,23 +4,19 @@ import { fetchAi } from "@/lib/ai";
 import useArticleStore from "@/stores/article";
 import useSettingStore from "@/stores/setting";
 import { EraserIcon } from "lucide-react";
-import { ExposeParam } from "md-editor-rt";
-import { RefObject } from "react";
+import Vditor from "vditor";
 
-export default function Eraser({mdRef}: {mdRef: RefObject<ExposeParam>}) {
+export default function Eraser({editor}: {editor?: Vditor}) {
   const { loading, setLoading } = useArticleStore()
   const { apiKey } = useSettingStore()
   async function handleBlock() {
-    const selectedText = mdRef.current?.getSelectedText()
+    const selectedText = editor?.getSelection()
     if (selectedText) {
       setLoading(true)
-      mdRef.current?.focus()
+      editor?.focus()
       const req = `精简这段文字：${selectedText}，这段文字过于臃肿，字数要求缩减一半以上，要求语言不变，直接返回优化后的结果。`
       const res = await fetchAi(req)
-      mdRef.current?.insert(() => ({
-        targetValue: res,
-      }))
-      mdRef.current?.rerender();
+      editor?.updateValue(res)
       setLoading(false)
     } else {
       toast({

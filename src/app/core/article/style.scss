@@ -1,0 +1,23 @@
+.vditor {
+  @apply border-none;
+}
+
+.vditor-toolbar{
+  @apply border-b bg-transparent !px-4 h-12 flex items-center;
+  .vditor-toolbar__item{
+    @apply h-9 w-9;
+    .vditor-tooltipped {
+      @apply p-0;
+    }
+  }
+}
+
+.vditor-toolbar__item svg {
+  @apply size-4;
+}
+
+.vditor-tooltipped {
+  &[data-type="upload"] svg {
+    @apply translate-x-1.5 translate-y-2.5;
+  }
+}

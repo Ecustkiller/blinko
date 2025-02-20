@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/tabs"
 import { Store } from "@tauri-apps/plugin-store";
 
-export default function Preview({mdRef}: {mdRef: RefObject<ExposeParam>}) {
+export default function Preview({editor}: {editor?: Vditor}) {
 
   const [defaultType, setDefaultType] = useState('code')
 
@@ -42,7 +42,7 @@ export default function Preview({mdRef}: {mdRef: RefObject<ExposeParam>}) {
       default:
         break;
     }
-    mdRef.current?.focus()
+    editor?.focus()
   }
 
   useEffect(() => {

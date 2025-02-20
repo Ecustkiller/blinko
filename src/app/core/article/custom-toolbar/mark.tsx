@@ -2,8 +2,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { fetchAi } from "@/lib/ai";
 import useArticleStore from "@/stores/article";
 import { Highlighter, Plus } from "lucide-react";
-import { ExposeParam } from "md-editor-rt";
-import { RefObject } from "react";
 import { MarkWrapper } from "../../record/mark/mark-item";
 import { Clipboard } from "../../record/mark/clipboard";
 import { MarkLoading } from "../../record/mark/mark-loading";
@@ -12,8 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Mark, delMark } from "@/db/marks";
 import { TooltipButton } from "@/components/tooltip-button";
 import useSettingStore from "@/stores/setting";
+import Vditor from "vditor";
 
-export default function MarkInsert({mdRef}: {mdRef: RefObject<ExposeParam>}) {
+export default function MarkInsert({editor}: {editor?: Vditor}) {
 
   const { loading, setLoading } = useArticleStore()
   const { apiKey } = useSettingStore()
@@ -23,29 +22,21 @@ export default function MarkInsert({mdRef}: {mdRef: RefObject<ExposeParam>}) {
     setLoading(true)
     await delMark(mark.id)
     allMarks.splice(allMarks.findIndex(mark => mark.id === mark.id), 1)
-    mdRef.current?.focus()
+    editor?.focus()
     switch (mark.type) {
       case 'text':
-        mdRef.current?.insert(() => ({
-          targetValue: mark.content || '',
-        }))
+        editor?.insertValue(mark.content || '')
         break;
       case 'image':
-        mdRef.current?.insert(() => ({
-          targetValue: `![${mark.desc}](${mark.url})`,
-        }))
+        editor?.insertValue(`![${mark.desc}](${mark.url})`)
         break;
       default:
         if (apiKey) {
           const req = `这是一段 OCR 识别的结果：${mark.content}进行整理，直接返回整理后的结果。`
           const res = await fetchAi(req)
-          mdRef.current?.insert(() => ({
-            targetValue: res,
-          }))
+          editor?.insertValue(res)
         } else {
-          mdRef.current?.insert(() => ({
-            targetValue: mark.content || 'OCR 未识别到任何内容',
-          }))
+          editor?.insertValue(mark.content || 'OCR 未识别到任何内容')
         }
         break;
     }

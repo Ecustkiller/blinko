@@ -17,7 +17,7 @@ import useSettingStore from "@/stores/setting";
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
 
-export default function History({mdRef}: {mdRef: RefObject<ExposeParam>}) {
+export default function History({editor}: {editor?: Vditor}) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const { activeFilePath, setCurrentArticle, currentArticle } = useArticleStore()
   const { accessToken } = useSettingStore()
@@ -30,7 +30,7 @@ export default function History({mdRef}: {mdRef: RefObject<ExposeParam>}) {
     if (!e) return
     setCommitsLoading(true)
     setCommits([])
-    mdRef.current?.focus()
+    editor?.focus()
     const res = await getFileCommits({ path: activeFilePath, repo: RepoNames.sync })
     setCommits(res || [])
     setCommitsLoading(false)

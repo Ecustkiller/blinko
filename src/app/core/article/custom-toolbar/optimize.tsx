@@ -4,23 +4,19 @@ import { fetchAi } from "@/lib/ai";
 import useArticleStore from "@/stores/article";
 import useSettingStore from "@/stores/setting";
 import { Sparkles } from "lucide-react";
-import { ExposeParam } from "md-editor-rt";
-import { RefObject } from "react";
+import Vditor from "vditor";
 
-export default function Optimize({mdRef}: {mdRef: RefObject<ExposeParam>}) {
+export default function Optimize({editor}: {editor?: Vditor}) {
   const { loading, setLoading } = useArticleStore()
   const { apiKey } = useSettingStore()
   async function handleBlock() {
-    const selectedText = mdRef.current?.getSelectedText()
+    const selectedText = editor?.getSelection()
     if (selectedText) {
       setLoading(true)
-      mdRef.current?.focus()
+      editor?.focus()
       const req = `完善这段文字：${selectedText}，要求语言不变，注意这不是提问，直接返回优化后的结果。`
       const res = await fetchAi(req)
-      mdRef.current?.insert(() => ({
-        targetValue: res,
-      }))
-      mdRef.current?.rerender();
+      editor?.updateValue(res)
       setLoading(false)
     } else {
       toast({

@@ -3,28 +3,37 @@ import { fetchAi } from "@/lib/ai";
 import useArticleStore from "@/stores/article";
 import useSettingStore from "@/stores/setting";
 import { ListPlus } from "lucide-react";
-import { ExposeParam } from "md-editor-rt";
-import { RefObject } from "react";
+import Vditor from "vditor";
 
-export default function Continue({mdRef}: {mdRef: RefObject<ExposeParam>}) {
+export default function Continue({editor}: {editor?: Vditor}) {
 
-  const { currentArticle, loading, setLoading } = useArticleStore()
+  const { loading, setLoading } = useArticleStore()
   const { apiKey } = useSettingStore()
   async function handler() {
-    const index = mdRef.current?.getEditorView()?.state.selection.ranges[0].to;
+    const content = editor?.getValue()
+    editor?.focus()
+    if (!content) return
+    const currentLineContent = editor?.vditor.ir?.range?.startContainer.nodeValue || ''
+    const currentCursorIndex = content?.indexOf(currentLineContent) + currentLineContent.length
     setLoading(true)
-    mdRef.current?.focus()
-    const startContent = currentArticle.slice(0, index);
-    const endContent = currentArticle.slice(index, currentArticle.length);
+    const startContent = content.slice(0, currentCursorIndex);
+    const endContent = content.slice(currentCursorIndex, content.length);
     const req = `
-      参考前文：${startContent}，
-      在目前的位置上续写一些内容，直接返回结果，内容不要超过100字。
-      可以参考后文：${endContent}，尽量不要于其重复。
+      参考前文：
+      --- 前文开始 ---
+      ${startContent}，
+      --- 前文结束 ---
+
+      参考后文：
+      -- 后文开始 --
+      ${endContent}
+      -- 后文结束 --
+
+      要求在前文和后文中间续写一些内容，直接返回结果，内容不要超过100字。
+      不要与前文或后文内容出现重复的内容。
     `
     const res = await fetchAi(req)
-    mdRef.current?.insert(() => ({
-      targetValue: res,
-    }))
+    editor?.insertValue(res)
     setLoading(false)
   }
   return (

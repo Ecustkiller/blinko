@@ -11,13 +11,13 @@ import { RefObject, useState } from "react";
 import { diffWordsWithSpace } from 'diff';
 import useSettingStore from "@/stores/setting";
 
-export default function Sync({mdRef}: {mdRef: RefObject<ExposeParam>}) {
+export default function Sync({editor}: {editor?: Vditor}) {
   const { activeFilePath, currentArticle } = useArticleStore()
   const { accessToken } = useSettingStore()
   const [loading, setLoading] = useState(false)
   async function handleSync() {
     setLoading(true)
-    mdRef.current?.focus()
+    editor?.focus()
     // 获取上一次提交的记录内容
     let message = `Upload ${activeFilePath}`
     const commits = await getFileCommits({ path: activeFilePath, repo: RepoNames.sync })

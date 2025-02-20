@@ -4,27 +4,24 @@ import { fetchAi } from "@/lib/ai";
 import useArticleStore from "@/stores/article";
 import useSettingStore from "@/stores/setting";
 import { MessageCircleQuestion } from "lucide-react";
-import { ExposeParam } from "md-editor-rt";
-import { RefObject } from "react";
+import Vditor from "vditor";
 
-export default function Question({mdRef}: {mdRef: RefObject<ExposeParam>}) {
+export default function Question({editor}: {editor?: Vditor}) {
 
   const { currentArticle, loading, setLoading } = useArticleStore()
   const { apiKey } = useSettingStore()
   
   async function handleBlock() {
-    const selectedText = mdRef.current?.getSelectedText()
+    const selectedText = editor?.getSelection()
     if (selectedText) {
       setLoading(true)
-      mdRef.current?.focus()
+      editor?.focus()
       const req = `
         参考原文：${currentArticle}
         根据提问：${selectedText}，直接返回回答内容。
       `
       const res = await fetchAi(req)
-      mdRef.current?.insert(() => ({
-        targetValue: res,
-      }))
+      editor?.updateValue(res)
       setLoading(false)
     } else {
       toast({
