@@ -1,8 +1,10 @@
 import { TooltipButton } from "@/components/tooltip-button";
 import { fetchAi } from "@/lib/ai";
+import emitter from "@/lib/emitter";
 import useArticleStore from "@/stores/article";
 import useSettingStore from "@/stores/setting";
 import { ListPlus } from "lucide-react";
+import { useEffect } from "react";
 import Vditor from "vditor";
 
 export default function Continue({editor}: {editor?: Vditor}) {
@@ -36,6 +38,11 @@ export default function Continue({editor}: {editor?: Vditor}) {
     editor?.insertValue(res)
     setLoading(false)
   }
+
+  useEffect(() => {
+    emitter.on('toolbar-continue', handler)
+  }, [])
+
   return (
     <TooltipButton disabled={loading || !apiKey} icon={<ListPlus />} tooltipText="续写" onClick={handler}>
     </TooltipButton>

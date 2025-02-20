@@ -15,7 +15,7 @@ import Translation from "./translation";
 // import Check from "./check";
 
 export default function CustomToolbar({editor}: {editor?: Vditor}) {
-  return <div className="h-12 w-full border-b flex items-center px-2 gap-1 justify-between">
+  return <div className="h-12 w-full border-b items-center px-2 gap-1 justify-between hidden">
     <div className="flex h-4 items-center gap-1">
       <Toggle editor={editor} />
       <Separator orientation="vertical" />

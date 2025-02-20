@@ -5,15 +5,19 @@
 .vditor-toolbar{
   @apply border-b bg-transparent !px-4 h-12 flex items-center;
   .vditor-toolbar__item{
-    @apply h-9 w-9;
+    @apply h-9 w-9 flex items-center justify-center;
+    svg {
+      @apply size-4;
+    }
     .vditor-tooltipped {
       @apply p-0;
     }
   }
-}
-
-.vditor-toolbar__item svg {
-  @apply size-4;
+  .bottom {
+    .vditor-hint{
+      top: 40px;
+    }
+  }
 }
 
 .vditor-tooltipped {

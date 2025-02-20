@@ -11,23 +11,13 @@ import Vditor from "vditor";
 export default function Translation({editor}: {editor?: Vditor}) {
   const { loading, setLoading } = useArticleStore()
   const { apiKey } = useSettingStore()
-  let selectedText = ''
-  let range: Range | undefined
-  let selection: Selection | null
 
   function openHander(isOpen: boolean) {
     if (!isOpen) return
-    selectedText = editor?.getSelection() || ''
-    selection = window.getSelection();
-    range = selection?.getRangeAt(0);
   }
   async function handleBlock(locale: string) {
     editor?.focus()
-    if (selection && range) {
-      console.log(selection);
-      console.log(range);
-      selection.addRange(range)
-    }
+    const selectedText = editor?.getSelection()
     if (selectedText) {
       setLoading(true)
       const req = `将这段文字：${selectedText}，翻译为${locale}语言，直接返回翻译后的结果。`

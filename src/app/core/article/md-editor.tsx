@@ -5,7 +5,7 @@ import Vditor from 'vditor'
 import "vditor/dist/index.css"
 import CustomToolbar from './custom-toolbar'
 import './style.scss'
-import toolbarConfig from './custom-toolbar/config'
+import config from './custom-toolbar/config'
 
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
@@ -16,7 +16,7 @@ export function MdEditor() {
       height: document.documentElement.clientHeight - 100,
       icon: 'material',
       cdn: '',
-      toolbar: toolbarConfig,
+      toolbar: config as any,
       after: () => {
         setEditor(vditor);
       },
@@ -41,7 +41,9 @@ export function MdEditor() {
   }, [currentArticle])
 
   return <div className='flex-1 h-full flex flex-col'>
-    <CustomToolbar editor={editor} />
+    {
+      editor && <CustomToolbar editor={editor} />
+    }
     <div id="aritcle-md-editor" className='flex-1'></div>
   </div>
 }
