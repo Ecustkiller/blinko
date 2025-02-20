@@ -6,10 +6,11 @@ import { RepoNames } from "@/lib/github.types";
 import useArticleStore from "@/stores/article";
 import { BaseDirectory, readFile } from "@tauri-apps/plugin-fs";
 import { CloudUpload, LoaderCircle } from "lucide-react";
-import { ExposeParam } from "md-editor-rt";
-import { RefObject, useState } from "react";
+import { useEffect, useState } from "react";
 import { diffWordsWithSpace } from 'diff';
 import useSettingStore from "@/stores/setting";
+import Vditor from "vditor";
+import emitter from "@/lib/emitter";
 
 export default function Sync({editor}: {editor?: Vditor}) {
   const { activeFilePath, currentArticle } = useArticleStore()
@@ -60,6 +61,10 @@ export default function Sync({editor}: {editor?: Vditor}) {
     }
     setLoading(false)
   }
+
+  useEffect(() => {
+    emitter.on('toolbar-sync', handleSync)
+  }, [])
   return (
     <TooltipButton
       icon={loading ? <LoaderCircle className="animate-spin size-4" /> : <CloudUpload />}

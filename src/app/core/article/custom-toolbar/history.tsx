@@ -1,6 +1,5 @@
 import { GitPullRequestArrow, HistoryIcon, LoaderCircle } from "lucide-react";
-import { ExposeParam } from "md-editor-rt";
-import { RefObject, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { decodeBase64ToString, getFileCommits, getFiles } from "@/lib/github";
 import useArticleStore from "@/stores/article";
@@ -13,6 +12,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TooltipButton } from "@/components/tooltip-button";
 import { open } from "@tauri-apps/plugin-shell";
 import useSettingStore from "@/stores/setting";
+import Vditor from "vditor";
+import emitter from "@/lib/emitter";
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
@@ -53,6 +54,13 @@ export default function History({editor}: {editor?: Vditor}) {
   function openHandler(url: string) {
     open(url)
   }
+
+  useEffect(() => {
+    emitter.on('toolbar-history', () => {
+      onOpenChange(true)
+    })
+  }, [])
+
   return (
     <Sheet open={sheetOpen} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>

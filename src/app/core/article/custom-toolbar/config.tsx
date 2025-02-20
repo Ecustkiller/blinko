@@ -36,19 +36,28 @@ const config= [
     icon: '<svg><use xlink:href="#vditor-icon-list-plus"></svg>',
     click: () => emitter.emit('toolbar-continue'),
   },
-  {
-    name: 'translation',
-    tipPosition: 's',
-    tip: '翻译',
-    icon: '<svg><use xlink:href="#vditor-icon-translation"></svg>',
-    className: 'bottom',
-  },
   '|',
   { name: 'edit-mode', tipPosition: 's', className: 'bottom' },
-  { name: 'both', tipPosition: 's' },
   { name: 'preview', tipPosition: 's' },
   { name: 'outline', tipPosition: 's' },
   { name: 'export', tipPosition: 's', className: 'bottom' },
+  '|',
+  {
+    name: 'history',
+    tipPosition: 's',
+    tip: '历史记录',
+    className: 'right',
+    icon: '<svg><use xlink:href="#vditor-icon-history"></svg>',
+    click: () => emitter.emit('toolbar-history'),
+  },
+  {
+    name: 'sync',
+    tipPosition: 's',
+    tip: '同步',
+    className: 'right',
+    icon: '<svg><use xlink:href="#vditor-icon-sync"></svg>',
+    click: () => emitter.emit('toolbar-sync'),
+  },
 ]
 
 export default config
