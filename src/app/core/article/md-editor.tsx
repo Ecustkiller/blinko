@@ -6,16 +6,19 @@ import "vditor/dist/index.css"
 import CustomToolbar from './custom-toolbar'
 import './style.scss'
 import config from './custom-toolbar/config'
+import { useTheme } from 'next-themes'
 
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
   const { currentArticle, saveCurrentArticle } = useArticleStore()
+  const { theme } = useTheme()
   
   function init() {
     const vditor = new Vditor('aritcle-md-editor', {
       height: document.documentElement.clientHeight - 100,
       icon: 'material',
       cdn: '',
+      theme: theme === 'dark' ? 'dark' : 'classic',
       toolbar: config as any,
       after: () => {
         setEditor(vditor);
@@ -35,6 +38,12 @@ export function MdEditor() {
   useEffect(() => {
     init()
   }, [])
+
+  useEffect(() => {
+    if (editor) {
+      editor.setTheme(theme === 'dark' ? 'dark' : 'classic')
+    }
+  }, [theme])
 
   useEffect(() => {
     setContent(currentArticle)

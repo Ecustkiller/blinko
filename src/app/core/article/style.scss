@@ -25,3 +25,9 @@
     @apply translate-x-1.5 translate-y-2.5;
   }
 }
+
+.vditor--dark .vditor-reset{
+  h1, h2, h3, h4, h5, h6, p, span, li {
+    color: #fff !important;
+  }
+}
