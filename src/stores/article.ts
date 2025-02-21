@@ -32,6 +32,7 @@ interface NoteState {
   newFolder: () => void
   newFile: () => void
   newFileOnFolder: (path: string) => void
+  newFolderInFolder: (path: string) => void
 
   collapsibleList: string[]
   initCollapsibleList: () => Promise<void>
@@ -254,21 +255,38 @@ const useArticleStore = create<NoteState>((set, get) => ({
   },
 
   newFileOnFolder: async (path: string) => {
-    const dirIndex = get().fileTree.findIndex(item => item.name === path)
-    if (dirIndex!== undefined && dirIndex!== -1) {
-      const fileTree = get().fileTree
-      fileTree[dirIndex].isEditing = true
+    const cacheTree: DirTree[] = get().fileTree
+    const currentFolder = getCurrentFolder(path, cacheTree)
+    if (currentFolder) {
       const newFile: DirTree = {
         name: '',
         isFile: true,
         isSymlink: false,
-        parent: fileTree[dirIndex],
+        parent: currentFolder,
         isEditing: true,
         isDirectory: false,
         isLocale: true,
       }
-      fileTree[dirIndex].children?.unshift(newFile)
-      set({ fileTree })
+      currentFolder.children?.unshift(newFile)
+      set({ fileTree: cacheTree })
+      set({ collapsibleList: [...get().collapsibleList, path]})
+    }
+  },
+  newFolderInFolder: async (path: string) => {
+    const cacheTree: DirTree[] = get().fileTree
+    const currentFolder = getCurrentFolder(path, cacheTree)
+    if (currentFolder) {
+      const newDir: DirTree = {
+        name: '',
+        isFile: false,
+        isSymlink: false,
+        parent: currentFolder,
+        isEditing: true,
+        isDirectory: true,
+        isLocale: true,
+      }
+      currentFolder.children?.unshift(newDir)
+      set({ fileTree: cacheTree })
       set({ collapsibleList: [...get().collapsibleList, path]})
     }
   },

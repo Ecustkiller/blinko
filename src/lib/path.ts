@@ -28,7 +28,8 @@ export function getCurrentFolder(path: string, fileTree: DirTree[]) {
     if (index === 0) {
       currentIndex = fileTree.findIndex(item => item.name === level)
     } else {
-      currentIndex = currentFolder?.children?.findIndex(item => item.name === level) || -1
+      const _index = currentFolder?.children?.findIndex(item => item.name === level)
+      currentIndex = _index === undefined ? -1 : _index
     }
     if (index === 0) {
       currentFolder = fileTree[currentIndex]

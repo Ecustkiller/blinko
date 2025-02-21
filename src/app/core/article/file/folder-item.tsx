@@ -16,7 +16,18 @@ export function FolderItem({ item }: { item: DirTree }) {
   const [name, setName] = useState(item.name)
   const [isDragging, setIsDragging] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
-  const { activeFilePath, loadFileTree, setActiveFilePath, collapsibleList, setCollapsibleList, fileTree, setFileTree, newFileOnFolder } = useArticleStore()
+
+  const { 
+    activeFilePath,
+    loadFileTree,
+    setActiveFilePath,
+    collapsibleList,
+    setCollapsibleList,
+    fileTree,
+    setFileTree,
+    newFileOnFolder,
+    newFolderInFolder
+  } = useArticleStore()
 
   const path = computedParentPath(item)
   const cacheTree = cloneDeep(fileTree)
@@ -120,7 +131,11 @@ export function FolderItem({ item }: { item: DirTree }) {
   }
 
   function newFileHandler() {
-    newFileOnFolder(item.name)
+    newFileOnFolder(path)
+  }
+
+  function newFolderHandler() {
+    newFolderInFolder(path)
   }
 
   useEffect(() => {
@@ -177,6 +192,9 @@ export function FolderItem({ item }: { item: DirTree }) {
         <ContextMenuContent>
           <ContextMenuItem inset onClick={newFileHandler}>
             新建文件
+          </ContextMenuItem>
+          <ContextMenuItem inset onClick={newFolderHandler}>
+            新建文件夹
           </ContextMenuItem>
           <ContextMenuItem inset onClick={handleShowFileManager}>
             查看目录
