@@ -128,30 +128,59 @@ const useArticleStore = create<NoteState>((set, get) => ({
     if (!accessToken) {
       set({ fileTreeLoading: false })
       return
-    } else {
-      const githubFiles = await getFiles({ path: '', repo: RepoNames.sync })
+    }
+    const collapsibleList = ['', ...get().collapsibleList];
+    collapsibleList.forEach(async path => {
+      const githubFiles = await getFiles({ path, repo: RepoNames.sync })
       if (githubFiles) {
         githubFiles.forEach((file: GithubContent) => {
-          const index = dirs.findIndex(item => item.name === file.path.replace('article/', ''))
-          if (index !== -1) {
-            dirs[index].sha = file.sha
+          const itemPath = file.path;
+          let currentFolder: DirTree | undefined
+          if (file.type === 'dir') {
+            currentFolder = getCurrentFolder(itemPath, dirs)?.parent
           } else {
-            dirs.push({
-              name: file.path,
-              isFile: file.type === 'file',
-              isSymlink: false,
-              parent: undefined,
-              isEditing: false,
-              isDirectory: file.type === 'dir',
-              sha: file.sha,
-              isLocale: false,
-            })
+            const filePath = itemPath.split('/').slice(0, -1).join('/')
+            currentFolder = getCurrentFolder(filePath, dirs)
+          }
+          if (itemPath.includes('/')) {
+            const index = currentFolder?.children?.findIndex(item => item.name === file.name)
+            if (index !== -1 && index !== undefined && currentFolder?.children) {
+              currentFolder.children[index].sha = file.sha
+            } else {
+              currentFolder?.children?.push({
+                name: file.name,
+                isFile: file.type === 'file',
+                isSymlink: false,
+                parent: undefined,
+                isEditing: false,
+                isDirectory: file.type === 'dir',
+                sha: file.sha,
+                isLocale: false,
+              })
+            }
+          } else {
+            const index = dirs.findIndex(item => item.name === file.name)
+            if (index !== -1 && index !== undefined) {
+              dirs[index].sha = file.sha
+            } else {
+              dirs.push({
+                name: file.name,
+                isFile: file.type === 'file',
+                isSymlink: false,
+                parent: undefined,
+                isEditing: false,
+                isDirectory: file.type === 'dir',
+                sha: file.sha,
+                isLocale: false,
+              })
+            }
           }
         });
         set({ fileTree: dirs })
         set({ fileTreeLoading: false })
       }
-    }
+    })
+    
   },
   // 加载文件夹内部的 Github 仓库文件
   loadCollapsibleFiles: async (fullpath: string) => {

@@ -100,6 +100,8 @@ export async function getFiles({ path, repo }: { path: string, repo: RepoNames }
         'X-GitHub-Api-Version': '2022-11-28',
         'If-None-Match': ''
       }
+    }).catch(() => {
+      return { data: null }
     })
     return res.data
   } catch (error) {
