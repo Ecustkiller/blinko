@@ -130,11 +130,13 @@ export function FolderItem({ item }: { item: DirTree }) {
     setIsDragging(false)
   }
 
-  function newFileHandler() {
+  function newFileHandler(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.stopPropagation()
     newFileOnFolder(path)
   }
 
-  function newFolderHandler() {
+  function newFolderHandler(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.stopPropagation()
     newFolderInFolder(path)
   }
 

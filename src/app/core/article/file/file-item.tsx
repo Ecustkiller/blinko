@@ -74,7 +74,7 @@ export function FileItem({ item }: { item: DirTree }) {
         }
       } else {
         const fileIndex = cacheTree.findIndex(file => file.name === item.name)
-        cacheTree[fileIndex].name = name + '.md'
+        cacheTree[fileIndex].name = name
         cacheTree[fileIndex].isEditing = false
       }
       const oldPath = `article/${path}` 
