@@ -26,8 +26,8 @@ export function FileItem({ item }: { item: DirTree }) {
   const currentFolder = getCurrentFolder(folderPath, cacheTree)
 
   function handleSelectFile() {
-    setActiveFilePath(path)
-    readArticle(path, item.sha, item.isLocale)
+    setActiveFilePath(computedParentPath(item))
+    readArticle(computedParentPath(item), item.sha, item.isLocale)
   }
 
   async function handleDeleteFile() {

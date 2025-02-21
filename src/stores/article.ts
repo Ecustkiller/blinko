@@ -151,7 +151,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
                 name: file.name,
                 isFile: file.type === 'file',
                 isSymlink: false,
-                parent: undefined,
+                parent: currentFolder,
                 isEditing: false,
                 isDirectory: file.type === 'dir',
                 sha: file.sha,
@@ -345,6 +345,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
 
   currentArticle: '',
   readArticle: async (path: string, sha?: string, isLocale = true) => {
+    console.log(path);
     if (!path) return
     if (isLocale) {
       let res = ''
@@ -361,6 +362,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
       set({ currentArticle: res })
     } else {
       const res = await getFiles({ path, repo: RepoNames.sync })
+      console.log(res);
       set({ currentArticle: decodeBase64ToString(res.content) })
     }
   },
