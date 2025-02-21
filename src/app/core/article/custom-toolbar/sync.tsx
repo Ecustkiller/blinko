@@ -8,12 +8,15 @@ import { useEffect } from "react";
 import { diffWordsWithSpace } from 'diff';
 import Vditor from "vditor";
 import emitter from "@/lib/emitter";
+import { Store } from "@tauri-apps/plugin-store";
 
 export default function Sync({editor}: {editor?: Vditor}) {
-  const { activeFilePath, currentArticle } = useArticleStore()
+  const { currentArticle } = useArticleStore()
 
   async function handleSync() {
     editor?.focus();
+    const store = await Store.load('store.json');
+    const activeFilePath = await store.get<string>('activeFilePath') || ''
     const button = (editor?.vditor.toolbar?.elements?.sync.childNodes[0] as HTMLButtonElement)
     button.classList.add('vditor-menu--disabled')
     // 获取上一次提交的记录内容

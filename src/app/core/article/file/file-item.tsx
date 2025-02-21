@@ -91,6 +91,8 @@ export function FileItem({ item }: { item: DirTree }) {
           await writeTextFile(newPath + '.md', '', { baseDir: BaseDirectory.AppData })
         }
       }
+      console.log(newPath.replace('article/', ''));
+      setActiveFilePath(newPath.replace('article/', ''))
     }
     setFileTree(cacheTree)
     setIsEditing(false)

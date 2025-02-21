@@ -345,7 +345,6 @@ const useArticleStore = create<NoteState>((set, get) => ({
 
   currentArticle: '',
   readArticle: async (path: string, sha?: string, isLocale = true) => {
-    console.log(path);
     if (!path) return
     if (isLocale) {
       let res = ''
