@@ -107,7 +107,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
       for (const entry of entries) {
         if (entry.isDirectory) {
           const dir = await join(parent, entry.name);
-          const children = (await readDir(dir, { baseDir: BaseDirectory.AppLocalData }))
+          const children = (await readDir(dir, { baseDir: BaseDirectory.AppData }))
             .filter(file => file.name !== '.DS_Store')
             .map(file => ({
               ...file,
