@@ -91,8 +91,17 @@ export function FileItem({ item }: { item: DirTree }) {
           await writeTextFile(newPath + '.md', '', { baseDir: BaseDirectory.AppData })
         }
       }
-      console.log(newPath.replace('article/', ''));
       setActiveFilePath(newPath.replace('article/', ''))
+    } else {
+      if (currentFolder && currentFolder.children) {
+        const index = currentFolder?.children?.findIndex(item => item.name === '')
+        if (index !== undefined && index !== -1 && currentFolder?.children) {
+          currentFolder?.children?.splice(index, 1)
+        }
+      } else {
+        const index = cacheTree.findIndex(item => item.name === '')
+        cacheTree.splice(index, 1)
+      }
     }
     setFileTree(cacheTree)
     setIsEditing(false)

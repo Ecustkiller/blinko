@@ -83,20 +83,51 @@ export function FolderItem({ item }: { item: DirTree }) {
         cacheTree[folderIndex].isEditing = false
       }
       await rename(`article/${path}`, `article/${path.split('/').slice(0, -1).join('/')}/${name}`, { newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData })
-      setFileTree(cacheTree)
-      setIsEditing(false)
     } else {
       // 新建文件夹
-      const isExists = await exists(`article/${path}/${name}`, { baseDir: BaseDirectory.AppData })
-      if (isExists) {
-        toast({ title: '文件夹名已存在' })
-        setTimeout(() => inputRef.current?.focus(), 300);
+      if (name !== '') {
+        const isExists = await exists(`article/${path}/${name}`, { baseDir: BaseDirectory.AppData })
+        if (isExists) {
+          toast({ title: '文件夹名已存在' })
+          setTimeout(() => inputRef.current?.focus(), 300);
+        } else {
+          await mkdir(`article/${path}/${name}`, { baseDir: BaseDirectory.AppData })
+          if (parentFolder && parentFolder.children) {
+            parentFolder.children.push({
+              name,
+              isEditing: false,
+              children: [],
+              isLocale: false,
+              isDirectory: true,
+              isFile: false,
+              isSymlink: false
+            })
+          } else {
+            cacheTree.push({
+              name,
+              isEditing: false,
+              children: [],
+              isLocale: false,
+              isDirectory: true,
+              isFile: false,
+              isSymlink: false
+            })
+          }
+        }
       } else {
-        await mkdir(`article/${path}/${name}`, { baseDir: BaseDirectory.AppData })
-        loadFileTree()
-        setIsEditing(false)
+        if (currentFolder?.parent) {
+          const index = currentFolder?.parent?.children?.findIndex(item => item.name === '')
+          if (index !== undefined && index !== -1 && currentFolder?.parent?.children) {
+            currentFolder.parent?.children?.splice(index, 1)
+          }
+        } else {
+          const index = cacheTree.findIndex(item => item.name === '')
+          cacheTree.splice(index, 1)
+        }
       }
-    }
+    } 
+    setIsEditing(false)
+    setFileTree(cacheTree)
   }
 
   async function handleShowFileManager() {
