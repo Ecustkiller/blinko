@@ -361,7 +361,6 @@ const useArticleStore = create<NoteState>((set, get) => ({
       set({ currentArticle: res })
     } else {
       const res = await getFiles({ path, repo: RepoNames.sync })
-      console.log(res);
       set({ currentArticle: decodeBase64ToString(res.content) })
     }
   },

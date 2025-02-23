@@ -17,6 +17,7 @@ import { ModeToggle } from "./mode-toggle"
 import Link from "next/link"
 import AppStatus from "./app-status"
 import { Store } from "@tauri-apps/plugin-store"
+import { PinToggle } from "./pin-toggle"
  
 // Menu items.
 const items = [
@@ -94,6 +95,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
+        <PinToggle />
         <ModeToggle />
         <SidebarMenuButton isActive={pathname === '/core/setting'} asChild className="md:h-8 md:p-0"
           tooltip={{

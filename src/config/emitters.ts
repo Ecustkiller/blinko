@@ -1,4 +1,5 @@
 export enum EmitterShortcutEvents {
   screenshot = "screenshot-shortcut-register",
-  text = "text-shortcut-register"
+  text = "text-shortcut-register",
+  pin = "window-pin-register"
 }

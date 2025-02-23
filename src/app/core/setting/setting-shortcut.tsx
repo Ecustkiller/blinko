@@ -6,7 +6,7 @@ import emitter from "@/lib/emitter";
 import { EmitterShortcutEvents } from "@/config/emitters"
 import { ShortcutDefault, ShortcutSettings } from "@/config/shortcut"
 import { Store } from "@tauri-apps/plugin-store";
-import { CopySlash, RotateCcw, ScanText } from "lucide-react";
+import { CopySlash, Pin, RotateCcw, ScanText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const keyMap = {
@@ -65,6 +65,13 @@ const shortcutMap: ShortcutMap[] = [
     title: '文本记录',
     icon: <CopySlash className="size-4" />,
     defaultKey: ShortcutDefault.text,
+  },
+  {
+    id: ShortcutSettings.pin,
+    mittId: EmitterShortcutEvents.pin,
+    title: '窗口置顶',
+    icon: <Pin className="size-4" />,
+    defaultKey: ShortcutDefault.pin,
   }
 ]
 

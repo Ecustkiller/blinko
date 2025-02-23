@@ -70,7 +70,6 @@ export function FolderItem({ item }: { item: DirTree }) {
     setName(name.replace(/ /g, '_')) // github 存储空格会报错，替换为下划线
     // 修改文件夹名称
     if (name && name !== item.name && item.name !== '') {
-      console.log('rename');
       if (parentFolder && parentFolder.children) {
         const folderIndex = parentFolder?.children?.findIndex(folder => folder.name === item.name)
         if (folderIndex !== undefined && folderIndex !== -1) {
