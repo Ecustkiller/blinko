@@ -348,6 +348,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
   currentArticle: '',
   readArticle: async (path: string, sha?: string, isLocale = true) => {
     if (!path) return
+    get().setLoading(true)
     if (isLocale) {
       let res = ''
       try {
@@ -365,6 +366,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
       const res = await getFiles({ path, repo: RepoNames.sync })
       set({ currentArticle: decodeBase64ToString(res.content) })
     }
+    get().setLoading(false)
   },
 
   setCurrentArticle: (content: string) => {

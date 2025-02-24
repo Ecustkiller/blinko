@@ -10,7 +10,7 @@ import { useTheme } from 'next-themes'
 
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
-  const { currentArticle, saveCurrentArticle } = useArticleStore()
+  const { currentArticle, saveCurrentArticle, loading } = useArticleStore()
   const { theme } = useTheme()
   
   function init() {
@@ -38,6 +38,16 @@ export function MdEditor() {
   useEffect(() => {
     init()
   }, [])
+
+  useEffect(() => {
+    if (editor) {
+      if (loading) {
+        editor.disabled()
+      } else {
+        editor.enable()
+      }
+    }
+  }, [loading])
 
   useEffect(() => {
     if (editor) {
