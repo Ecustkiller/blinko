@@ -156,6 +156,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
                 isDirectory: file.type === 'dir',
                 sha: file.sha,
                 isLocale: false,
+                children: file.type === 'dir' ? [] : undefined
               })
             }
           } else {
@@ -163,7 +164,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
             if (index !== -1 && index !== undefined) {
               dirs[index].sha = file.sha
             } else {
-              dirs.push({
+              (dirs as any).push({
                 name: file.name,
                 isFile: file.type === 'file',
                 isSymlink: false,
@@ -172,11 +173,12 @@ const useArticleStore = create<NoteState>((set, get) => ({
                 isDirectory: file.type === 'dir',
                 sha: file.sha,
                 isLocale: false,
+                children: file.type === 'dir' ? [] : undefined
               })
             }
           }
+          set({ fileTree: dirs })
         });
-        set({ fileTree: dirs })
         set({ fileTreeLoading: false })
       }
     })
