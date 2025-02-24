@@ -375,28 +375,22 @@ const useArticleStore = create<NoteState>((set, get) => ({
       const path = get().activeFilePath
       const isLocale = await exists(`article/${path}`, { baseDir: BaseDirectory.AppData })
       if (path.includes('/')) {
-        const dirPath = path.split('/')[0]
-        if (!await exists(`article/${dirPath}`, { baseDir: BaseDirectory.AppData })) {
-          await mkdir(`article/${dirPath}`, { baseDir: BaseDirectory.AppData })
-        } 
+        let dir = ''
+        const dirPath = path.split('/')
+        for (let index = 0; index < dirPath.length - 1; index += 1) {
+          dir += `${dirPath[index]}/`
+          if (!await exists(`article/${dir}`, { baseDir: BaseDirectory.AppData })) {
+            await mkdir(`article/${dir}`, { baseDir: BaseDirectory.AppData })
+          }
+        }
       }
       await writeTextFile(`article/${path}`, content, { baseDir: BaseDirectory.AppData })
+      
       if (!isLocale) {
         const cacheTree = cloneDeep(get().fileTree)
-        if (path.includes('/')) {
-          const dirPath = path.split('/')[0]
-          const dirIndex = get().fileTree.findIndex(item => item.name === dirPath)
-          const fileIndex = get().fileTree[dirIndex].children?.findIndex(item => item.name === path.split('/')[1])
-          if (fileIndex !== undefined && fileIndex !== -1) {
-            const file = get().fileTree[dirIndex].children?.[fileIndex]
-            if (file) {
-              file.isLocale = true
-              cacheTree[dirIndex]?.children?.splice(fileIndex, 1, file)
-            }
-          }
-        } else {
-          const index = get().fileTree.findIndex(item => item.name === path)
-          cacheTree[index].isLocale = true
+        const current = path.includes('/') ? getCurrentFolder(path, cacheTree) : cacheTree.find(item => item.name === path)
+        if (current) {
+          current.isLocale = true
         }
         set({ fileTree: cacheTree })
       }
