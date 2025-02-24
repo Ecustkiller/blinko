@@ -33,10 +33,25 @@ export function FileItem({ item }: { item: DirTree }) {
   async function handleDeleteFile() {
     await remove(`article/${path}`, { baseDir: BaseDirectory.AppData })
     if (currentFolder) {
-      currentFolder?.children?.splice(currentFolder.children.findIndex(file => file.name === item.name), 1)
+      const index = currentFolder.children?.findIndex(file => file.name === item.name)
+      if (index !== undefined && index !== -1 && currentFolder.children) {
+        const current = currentFolder.children[index]
+        if (current.sha) {
+          current.isLocale = false
+        } else {
+          currentFolder.children.splice(index, 1)
+        }
+      }
     } else {
       const index = cacheTree.findIndex(file => file.name === item.name)
-      cacheTree.splice(index, 1)
+      if (index !== undefined && index !== -1) {
+        const current = cacheTree[index]
+        if (current.sha) {
+          current.isLocale = false
+        } else {
+          cacheTree.splice(index, 1)
+        }
+      }
     }
     setFileTree(cacheTree)
     setActiveFilePath('')
