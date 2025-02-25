@@ -44,7 +44,7 @@ function MessageWrapper({ chat, children }: { chat: Chat, children: React.ReactN
   const index = chats.findIndex(item => item.id === chat.id)
   if (chat.role === 'system') {
     return <div className="flex w-full gap-4">
-      { loading && index === chats.length - 1 ? 
+      { loading && index === chats.length - 1 && chat.type === 'chat' ? 
         <div className="flex w-full">
           <LoaderPinwheel className="animate-spin mr-4" />
           <div className="space-y-2 flex-1 mt-0.5">

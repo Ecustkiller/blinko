@@ -8,10 +8,11 @@ import useChatStore from "@/stores/chat";
 import useTagStore from "@/stores/tag";
 
 export function ClipboardListener() {
-  const { insert, chats } = useChatStore()
+  const { insert, chats, loading } = useChatStore()
   const { currentTagId } = useTagStore()
 
   async function readHandler() {
+    if (loading) return
     const hasImageRes = await hasImage()
     const hasTextRes = await hasText()
 
@@ -69,7 +70,7 @@ export function ClipboardListener() {
         unlisten()
       }
     }
-  }, [currentTagId, chats.length])
+  }, [currentTagId, chats.length, loading])
 
   return <></>
 }
