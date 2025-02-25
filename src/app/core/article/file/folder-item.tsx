@@ -92,25 +92,13 @@ export function FolderItem({ item }: { item: DirTree }) {
         } else {
           await mkdir(`article/${path}/${name}`, { baseDir: BaseDirectory.AppData })
           if (parentFolder && parentFolder.children) {
-            parentFolder.children.push({
-              name,
-              isEditing: false,
-              children: [],
-              isLocale: false,
-              isDirectory: true,
-              isFile: false,
-              isSymlink: false
-            })
+            const index = parentFolder.children?.findIndex(item => item.name === '')
+            parentFolder.children[index].name = name
+            parentFolder.children[index].isEditing = false
           } else {
-            cacheTree.push({
-              name,
-              isEditing: false,
-              children: [],
-              isLocale: false,
-              isDirectory: true,
-              isFile: false,
-              isSymlink: false
-            })
+            const index = cacheTree?.findIndex(item => item.name === '')
+            cacheTree[index].name = name
+            cacheTree[index].isEditing = false
           }
         }
       } else {
