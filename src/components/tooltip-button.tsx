@@ -8,7 +8,7 @@ export function TooltipButton(
   return (
     <Tooltip {...props}>
       <TooltipTrigger asChild>
-        <Button disabled={disabled} size="icon" variant="ghost" onClick={onClick}>
+        <Button className="relative" disabled={disabled} size="icon" variant="ghost" onClick={onClick}>
           {icon}
         </Button>
       </TooltipTrigger>

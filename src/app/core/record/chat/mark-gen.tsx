@@ -127,7 +127,7 @@ export function MarkGen() {
 
   return (
     <AlertDialog onOpenChange={initGenTemplates}>
-      <AlertDialogTrigger asChild>
+      <AlertDialogTrigger className="relative" asChild>
         <TooltipButton icon={<NotebookPen />} disabled={loading || !apiKey} tooltipText="整理" />
       </AlertDialogTrigger>
       <AlertDialogContent>

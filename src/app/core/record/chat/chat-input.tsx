@@ -121,30 +121,33 @@ export function ChatInput() {
   }, [apiKey])
 
   return (
-    <footer className="my-4 border px-4 py-4 shadow-lg rounded-xl min-w-[500px] w-2/3 max-w-[800px] flex bg-primary-foreground h-14 items-center">
-      <Input
-        className="flex-1 border-none focus-visible:ring-0 shadow-none"
-        disabled={!apiKey}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder={placeholder}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !isComposing) {
-            e.preventDefault()
-            handleSubmit()
-          }
-          if (e.key === "Tab") {
-            e.preventDefault()
-            setText(placeholder.replace('[Tab]', ''))
-          }
-        }}
-        onCompositionStart={() => setIsComposing(true)}
-        onCompositionEnd={() => setTimeout(() => {
-          setIsComposing(false)
-        }, 0)}
-      />
-      <MarkGen />
-      <TooltipButton icon={<Send />} disabled={loading || !apiKey} tooltipText="发送" onClick={handleSubmit} />
+    <footer className="relative flex shadow-lg rounded-xl overflow-hidden min-w-[500px] w-2/3 max-w-[800px] my-4">
+      <div className={`${loading ? 'bg-gradient-to-r' : 'bg-border'} absolute border border-transparent inset-0 rounded-xl from-blue-500 to-purple-500 animate-gradient`}></div>
+      <div className={`m-[1px] relative px-4 py-4 rounded-[11px] w-full flex bg-primary-foreground h-14 items-center`}>
+        <Input
+          className="flex-1 relative border-none focus-visible:ring-0 shadow-none"
+          disabled={!apiKey || loading}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder={placeholder}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !isComposing) {
+              e.preventDefault()
+              handleSubmit()
+            }
+            if (e.key === "Tab") {
+              e.preventDefault()
+              setText(placeholder.replace('[Tab]', ''))
+            }
+          }}
+          onCompositionStart={() => setIsComposing(true)}
+          onCompositionEnd={() => setTimeout(() => {
+            setIsComposing(false)
+          }, 0)}
+        />
+        <MarkGen />
+        <TooltipButton icon={<Send />} disabled={loading || !apiKey} tooltipText="发送" onClick={handleSubmit} />
+      </div>
     </footer>
   )
 }
