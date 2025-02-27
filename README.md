@@ -96,3 +96,5 @@ NoteGen 使用以下技术栈实现：
 - [更新计划](https://github.com/codexu/note-gen/issues/46)
 - [提交 Bug 或改进建议](https://github.com/codexu/note-gen/issues)
 - [讨论](https://github.com/codexu/note-gen/discussions)
+
+如果你是以学习 Tauri 为目地，可以关注我的专题 [《Tauri 开源日记》](https://juejin.cn/column/7451402575066546211)。
