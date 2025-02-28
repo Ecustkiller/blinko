@@ -1,7 +1,6 @@
 "use client"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import * as React from "react"
-import { LocaleSet } from './locale-set'
 import dayjs from "dayjs"
 import relativeTime from 'dayjs/plugin/relativeTime'
 import zh from 'dayjs/locale/zh'
@@ -13,6 +12,7 @@ import { TooltipButton } from "@/components/tooltip-button"
 import useChatStore from "@/stores/chat"
 import useTagStore from "@/stores/tag"
 import { useTranslations } from 'next-intl'
+import { LanguageSwitch } from "@/components/LanguageSwitch";
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
@@ -35,9 +35,7 @@ export function ChatHeader() {
   return (
     <header className="h-12 w-full grid grid-cols-3 items-center border-b gap-2 px-4">
       <div className="flex items-center h-6 gap-1">
-        <TooltipProvider>
-          <LocaleSet />
-        </TooltipProvider>
+        <LanguageSwitch />
       </div>
       <div>
       <div className="flex justify-center">

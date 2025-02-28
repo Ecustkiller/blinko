@@ -11,16 +11,18 @@ import { fetchAi } from "@/lib/ai"
 import { TooltipButton } from "@/components/tooltip-button"
 import { MarkGen } from "./mark-gen"
 import { useTranslations } from 'next-intl'
+import { useI18n } from "@/hooks/useI18n"
 
 export function ChatInput() {
   const [text, setText] = useState("")
   const { apiKey } = useSettingStore()
   const { currentTagId } = useTagStore()
-  const { insert, loading, setLoading, saveChat, locale, chats } = useChatStore()
+  const { insert, loading, setLoading, saveChat, chats } = useChatStore()
   const { fetchMarks, marks, trashState } = useMarkStore()
   const [isComposing, setIsComposing] = useState(false)
   const [placeholder, setPlaceholder] = useState('')
   const t = useTranslations()
+  const { currentLocale } = useI18n()
 
   async function handleSubmit() {
     if (text === '') return
@@ -63,7 +65,7 @@ export function ChatInput() {
       ${
         chats.filter((item) => item.tagId === currentTagId && item.type === "chat").map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')
       }。
-      使用 ${locale} 语言，不许使用 markdown 语法，回复用户的信息：
+      使用 ${currentLocale} 语言，不许使用 markdown 语法，回复用户的信息：
       ${text}
     `
     const content = await fetchAi(request_content)
@@ -95,7 +97,7 @@ export function ChatInput() {
       }。
       以下是用户之前的提问记录：
       ${userQuestionHistorys}。
-      使用 ${locale} 语言，分析这些记录的内容，编写一个可能会向你提问的问题，用于辅助用户向你提问，不要返回用户已经提过的类似问题，不许超过 20 个字，可以参考以下内容：
+      使用 ${currentLocale} 语言，分析这些记录的内容，编写一个可能会向你提问的问题，用于辅助用户向你提问，不要返回用户已经提过的类似问题，不许超过 20 个字，可以参考以下内容：
       什么是 ** ？
       如何解决 ** 问题？
       总结 ** 。
