@@ -16,6 +16,7 @@ import { LocalImage } from '@/components/local-image';
 import MessageControl from './message-control';
 import useChatStore from '@/stores/chat';
 import { Button } from '@/components/ui/button';
+import { useTranslations } from 'next-intl';
 
 export function ChatClipboard({chat}: { chat: Chat }) {
   const [loading, setLoading] = useState(false)
@@ -24,6 +25,7 @@ export function ChatClipboard({chat}: { chat: Chat }) {
   const { apiKey, githubUsername } = useSettingStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
   const { updateInsert } = useChatStore()
+  const t = useTranslations()
 
   async function handleInset() {
     setLoading(true)
@@ -97,23 +99,23 @@ export function ChatClipboard({chat}: { chat: Chat }) {
   return (
     type === 'image' && chat.image ? 
       <div className="flex-col leading-6">
-        <p>检测到剪贴板存在图片：</p>
+        <p>{t('record.chat.clipboard.image.detected')}</p>
         <LocalImage src={chat.image} alt="" width={0} height={0} className="max-h-96 max-w-96 w-auto mt-2 mb-3 border-8 rounded" />
         <MessageControl chat={chat}>
           {
             loading ? 
               <Button variant={"ghost"} size="sm" disabled>
                 <LoaderCircle className="size-4 animate-spin" />
-                正在记录
+                {t('record.chat.clipboard.image.recording')}
               </Button> : (
               chat.inserted?
                 <Button variant={"ghost"} size="sm" disabled>
                   <CheckCircle className="size-4" />
-                  已记录
+                  {t('record.chat.clipboard.image.recorded')}
                 </Button> :
                 <Button variant={"ghost"} size="sm" onClick={handleInset}>
                   <ImagePlus className="size-4" />
-                  记录
+                  {t('record.chat.clipboard.image.record')}
                 </Button>
             )
           }
@@ -121,18 +123,18 @@ export function ChatClipboard({chat}: { chat: Chat }) {
         </MessageControl>
       </div> :
       <div className="flex-col leading-6">
-        <p>检测到剪贴板存在文本：</p>
+        <p>{t('record.chat.clipboard.text.detected')}</p>
         <p className='text-zinc-500'>{chat.content}</p>
         <MessageControl chat={chat}>
           {
             chat.inserted ? 
               <Button variant={"ghost"} size="sm" disabled>
                 <CheckCircle className="size-4" />
-                已记录
+                {t('record.chat.clipboard.text.recorded')}
               </Button> :
               <Button variant={"ghost"} size="sm" onClick={handleTextInset}>
                 <Highlighter className="size-4" />
-                记录
+                {t('record.chat.clipboard.text.record')}
               </Button>
           }
         </MessageControl>

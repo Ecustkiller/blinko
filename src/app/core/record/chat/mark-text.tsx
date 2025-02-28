@@ -5,12 +5,14 @@ import useChatStore from "@/stores/chat"
 import useMarkStore from "@/stores/mark"
 import useTagStore from "@/stores/tag"
 import { CheckCircle, Highlighter } from "lucide-react"
- 
+import { useTranslations } from "next-intl"
+
 export function MarkText({chat}: {chat: Chat}) {
 
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
   const { fetchMarks } = useMarkStore()
   const { updateInsert, chats } = useChatStore()
+  const t = useTranslations('record.chat')
 
   async function handleSuccess() {
     const currentIndex = chats.findIndex(item => item.id === chat.id)
@@ -31,11 +33,11 @@ ${chat.content}
     chat.inserted ? 
       <Button variant={"ghost"} size="sm" disabled>
         <CheckCircle className="size-4" />
-        已记录
+        {t('mark.recorded')}
       </Button> :
       <Button variant={"ghost"} size="sm" onClick={handleSuccess}>
         <Highlighter className="size-4" />
-        记录
+        {t('mark.record')}
       </Button>
   )
 }

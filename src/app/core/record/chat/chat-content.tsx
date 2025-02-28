@@ -11,6 +11,7 @@ import { ChatClipboard } from './chat-clipboard'
 import MessageControl from './message-control'
 import ChatEmpty from './chat-empty'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useTranslations } from 'next-intl'
 
 export default function ChatContent() {
   const { chats, init } = useChatStore()
@@ -69,6 +70,7 @@ function MessageWrapper({ chat, children }: { chat: Chat, children: React.ReactN
 function Message({ chat }: { chat: Chat }) {
   const { loading, chats } = useChatStore()
   const index = chats.findIndex(item => item.id === chat.id)
+  const t = useTranslations()
 
   switch (chat.type) {
     case 'clipboard':
@@ -81,7 +83,7 @@ function Message({ chat }: { chat: Chat }) {
         {
           (!loading || index !== chats.length - 1) && <div className='w-full overflow-x-hidden'>
             <div className='flex justify-between'>
-              <p>将你的记录整理为文章：</p>
+              <p>{t('record.chat.content.organize')}</p>
             </div>
             <div className='note-wrapper border w-full overflow-y-auto overflow-x-hidden my-2 p-4 rounded-lg'>
               <ChatPreview text={chat.content || ''} />

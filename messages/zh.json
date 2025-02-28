@@ -148,6 +148,56 @@
             "configApiKey": "配置 API KEY",
             "clearChat": "清空对话"
           },
+          "clipboard": {
+            "image": {
+              "detected": "检测到剪贴板存在图片：",
+              "recording": "正在记录",
+              "recorded": "已记录",
+              "record": "记录"
+            },
+            "text": {
+              "detected": "检测到剪贴板存在文本：",
+              "recorded": "已记录",
+              "record": "记录"
+            }
+          },
+          "messageControl": {
+            "words": "字"
+          },
+          "empty": {
+            "features": [
+              {
+                "chat": "与 AI 机器人进行聊天"
+              },
+              {
+                "linked": "已与你的记录关联"
+              },
+              {
+                "clipboard": "识别剪贴板记录"
+              },
+              {
+                "organize": "将你的记录整理为笔记"
+              }
+            ]
+          },
+          "content": {
+            "organize": "将你的记录整理为文章："
+          },
+          "note": {
+            "writing": "写作",
+            "convert": "转化文章",
+            "description": "当前的笔记是由 AI 生成且无法编辑，将当前笔记转化为文章（生成本地文件），可在写作页面中进行二次创作。",
+            "filename": "文件名",
+            "selectFolder": "选择文件夹",
+            "rootDirectory": "根目录",
+            "deleteTag": "删除当前标签、记录和笔记（回收站可恢复）",
+            "warning": "转换后将跳转到写作页面。",
+            "convert_button": "转化"
+          },
+          "mark": {
+            "recorded": "已记录",
+            "record": "记录"
+          },
           "send": "发送"
         },
         "text": {
@@ -201,7 +251,22 @@
       }
     },
     "chat": {
-      "empty": "选择一条记录开始聊天",
+      "empty": {
+        "features": [
+          {
+            "chat": "与 AI 机器人进行聊天"
+          },
+          {
+            "linked": "已与你的记录关联"
+          },
+          {
+            "clipboard": "识别剪贴板记录"
+          },
+          {
+            "organize": "将你的记录整理为笔记"
+          }
+        ]
+      },
       "input": {
         "placeholder": {
           "default": "输入消息...",
@@ -212,6 +277,22 @@
       "header": {
         "configApiKey": "配置 API KEY",
         "clearChat": "清空聊天"
+      },
+      "clipboard": {
+        "image": {
+          "detected": "检测到剪贴板存在图片：",
+          "recording": "正在记录",
+          "recorded": "已记录",
+          "record": "记录"
+        },
+        "text": {
+          "detected": "检测到剪贴板存在文本：",
+          "recorded": "已记录",
+          "record": "记录"
+        }
+      },
+      "messageControl": {
+        "words": "字"
       },
       "preview": {
         "close": "关闭",
@@ -224,6 +305,24 @@
         "cancel": "取消",
         "delete": "删除",
         "deleteConfirm": "确定要删除这条消息吗？"
+      },
+      "content": {
+        "organize": "将你的记录整理为文章："
+      },
+      "note": {
+        "writing": "写作",
+        "convert": "转化文章",
+        "description": "当前的笔记是由 AI 生成且无法编辑，将当前笔记转化为文章（生成本地文件），可在写作页面中进行二次创作。",
+        "filename": "文件名",
+        "selectFolder": "选择文件夹",
+        "rootDirectory": "根目录",
+        "deleteTag": "删除当前标签、记录和笔记（回收站可恢复）",
+        "warning": "转换后将跳转到写作页面。",
+        "convert_button": "转化"
+      },
+      "mark": {
+        "recorded": "已记录",
+        "record": "记录"
       }
     },
     "tag": {
