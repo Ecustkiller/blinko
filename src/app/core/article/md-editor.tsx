@@ -13,6 +13,7 @@ import { RepoNames } from '@/lib/github.types'
 import useSettingStore from '@/stores/setting'
 import { Store } from '@tauri-apps/plugin-store'
 import { useTranslations } from 'next-intl'
+import { useI18n } from '@/hooks/useI18n'
 
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
@@ -20,9 +21,23 @@ export function MdEditor() {
   const { jsdelivr, accessToken } = useSettingStore()
   const { theme } = useTheme()
   const t = useTranslations('article.editor')
-  
+  const { currentLocale } = useI18n()
+
+  function getLang() {
+    console.log(currentLocale);
+    switch (currentLocale) {
+      case 'en':
+        return 'en_US'
+      case 'zh':
+        return 'zh_CN'
+      default:
+        return 'zh_CN'
+    }
+  }
+
   function init() {
     const vditor = new Vditor('aritcle-md-editor', {
+      lang: getLang(),
       height: document.documentElement.clientHeight - 100,
       icon: 'material',
       cdn: '',
@@ -99,7 +114,7 @@ export function MdEditor() {
 
   useEffect(() => {
     init()
-  }, [])
+  }, [currentLocale])
 
   useEffect(() => {
     if (editor) {

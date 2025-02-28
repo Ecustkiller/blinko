@@ -3,7 +3,7 @@ import {notFound} from 'next/navigation';
  
 // 支持的语言列表
 export const locales = ['en', 'zh'];
-export const defaultLocale = 'en';
+export const defaultLocale = 'zh';
  
 export default getRequestConfig(async ({locale}) => {
   // 验证语言是否支持

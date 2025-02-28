@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 const LANGUAGE_KEY = 'app-language';
 
 export function useI18n() {
-  const [currentLocale, setCurrentLocale] = useState<string>('en');
+  const [currentLocale, setCurrentLocale] = useState<string>('zh');
 
   useEffect(() => {
-    const savedLanguage = localStorage.getItem(LANGUAGE_KEY) || 'en';
+    const savedLanguage = localStorage.getItem(LANGUAGE_KEY) || 'zh';
     setCurrentLocale(savedLanguage);
   }, []);
 

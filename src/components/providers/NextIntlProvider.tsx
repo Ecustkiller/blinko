@@ -8,17 +8,17 @@ async function loadMessages(locale: string) {
   } catch (error) {
     console.error(`Failed to load messages for locale: ${locale}`, error);
     // 如果加载失败，返回英文作为后备
-    return (await import(`../../../messages/en.json`)).default;
+    return (await import(`../../../messages/zh.json`)).default;
   }
 }
 
 export function NextIntlProvider({ children }: { children: React.ReactNode }) {
   const [messages, setMessages] = useState<any>(null);
-  const [locale, setLocale] = useState<string>('en');
+  const [locale, setLocale] = useState<string>('zh');
 
   useEffect(() => {
     // 从 localStorage 获取语言设置
-    const savedLocale = localStorage.getItem('app-language') || 'en';
+    const savedLocale = localStorage.getItem('app-language') || 'zh';
     setLocale(savedLocale);
     
     // 加载对应的语言文件
