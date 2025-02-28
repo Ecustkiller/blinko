@@ -2,11 +2,19 @@
 
 import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation";
-import config from './config'
+import baseConfig from './config'
+import { useTranslations } from 'next-intl'
 
 export function SettingTab() {
   const [currentAnchor, setCurrentAnchor] = useState('about')
   const searchParams = useSearchParams()
+  const t = useTranslations('settings')
+  
+  // Add translations to the config
+  const config = baseConfig.map(item => ({
+    ...item,
+    title: t(`${item.anchor}.title`)
+  }))
 
   function handleAnchor(anchor: string) {
     setCurrentAnchor(anchor)
@@ -23,7 +31,7 @@ export function SettingTab() {
     if (anchor) {
       handleAnchor(anchor)
     } else {
-      setCurrentAnchor(config[0].anchor)
+      setCurrentAnchor(baseConfig[0].anchor)
     }
   }, [])
   return (

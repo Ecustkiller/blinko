@@ -7,12 +7,20 @@ import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
 import { InfoIcon } from "lucide-react";
 import ModelSelect from "./model-select";
-import { aiConfig } from "./config";
-
+import { baseAiConfig } from "./config";
 
 export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   const t = useTranslations();
+  const aiT = useTranslations('settings.ai');
   const { aiType, setAiType, apiKey, setApiKey, baseURL, setBaseURL, setModel } = useSettingStore()
+
+  // Add translations to the config
+  const aiConfig = baseAiConfig.map(item => ({
+    ...item,
+    title: item.key === 'custom' 
+      ? aiT('custom') 
+      : aiT(`providers.${item.key}`)
+  }))
 
   async function tabChangeHandler(tab: string) {
     setAiType(tab)
@@ -22,50 +30,42 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
     if (baseURL) {
       setBaseURL(baseURL)
       await store.set(`baseURL`, baseURL)
-
     } else {
-      const defaultBaseURL = aiConfig.find((item) => item.key === tab)?.baseURL
+      const defaultBaseURL = baseAiConfig.find((item) => item.key === tab)?.baseURL
       if (defaultBaseURL) {
         setBaseURL(defaultBaseURL)
         await store.set(`baseURL`, defaultBaseURL)
         await store.set(`baseURL-${tab}`, defaultBaseURL)
-      } else {
-        setBaseURL('')
-        await store.set(`baseURL`, '')
       }
     }
-    // api key
     const apiKey = await store.get<string>(`apiKey-${tab}`)
     if (apiKey) {
       setApiKey(apiKey)
-      await store.set(`apiKey`, apiKey)
     } else {
       setApiKey('')
-      await store.set(`apiKey`, '')
     }
-    // model
     const model = await store.get<string>(`model-${tab}`)
     if (model) {
       setModel(model)
-      await store.set(`model`, model)
     } else {
       setModel('')
-      await store.set(`model`, '')
     }
   }
 
   async function baseURLChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
-    setBaseURL(e.target.value)
+    const value = e.target.value
+    setBaseURL(value)
     const store = await Store.load('store.json');
-    await store.set('baseURL', e.target.value)
-    await store.set(`baseURL-${aiType}`, e.target.value)
+    await store.set(`baseURL`, value)
+    await store.set(`baseURL-${aiType}`, value)
   }
 
   async function apiKeyChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
-    setApiKey(e.target.value)
+    const value = e.target.value
+    setApiKey(value)
     const store = await Store.load('store.json');
-    await store.set(`apiKey`, e.target.value)
-    await store.set(`apiKey-${aiType}`, e.target.value)
+    console.log(aiType);
+    await store.set(`apiKey-${aiType}`, value)
   }
 
   useEffect(() => {
@@ -74,23 +74,23 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
       const tab = await store.get<string>('aiType')
       if (tab) {
         setAiType(tab)
-      }
-      const apiKey = await store.get<string>(`apiKey-${tab}`)
-      if (apiKey) {
-        setApiKey(apiKey)
-      }
-      const baseURL = await store.get<string>(`baseURL-${tab}`)
-      if (baseURL) {
-        setBaseURL(baseURL)
-      } else {
-        const baseURL = aiConfig.find((item) => item.key === tab)?.baseURL
+        const apiKey = await store.get<string>(`apiKey-${tab}`)
+        if (apiKey) {
+          setApiKey(apiKey)
+        }
+        const baseURL = await store.get<string>(`baseURL-${tab}`)
         if (baseURL) {
           setBaseURL(baseURL)
+        } else {
+          const baseURL = baseAiConfig.find((item) => item.key === tab)?.baseURL
+          if (baseURL) {
+            setBaseURL(baseURL)
+          }
         }
-      }
-      const model = await store.get<string>(`model-${tab}`)
-      if (model) {
-        setModel(model)
+        const model = await store.get<string>(`model-${tab}`)
+        if (model) {
+          setModel(model)
+        }
       }
     }
     init()

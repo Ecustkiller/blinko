@@ -2,19 +2,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useEffect, useState } from "react";
 import { fetch } from '@tauri-apps/plugin-http'
 import useSettingStore from "@/stores/setting";
-import { aiConfig, Model } from "./config";
+import { baseAiConfig, Model } from "./config";
 import { Input } from "@/components/ui/input";
 import { Store } from "@tauri-apps/plugin-store";
 import { toast } from "@/hooks/use-toast";
+import { useTranslations } from 'next-intl'
 
 export default function ModelSelect() {
   const { aiType, apiKey, model, setModel } = useSettingStore()
   const [list, setList] = useState<Model[]>([])
   const [url, setUrl] = useState<string | undefined>()
+  const t = useTranslations('settings.ai')
 
   function init() {
     setList([])
-    const url = aiConfig.find(item => item.key === aiType)?.modelURL
+    const url = baseAiConfig.find(item => item.key === aiType)?.modelURL
     setUrl(url)
   }
 
@@ -31,16 +33,18 @@ export default function ModelSelect() {
       headers,
     };
 
-    const res = await fetch(url, requestOptions)
-      .then(res => res.json())
-      .catch(() => {
-        toast({
-          title: '获取模型列表失败',
-          description: '请检查 API Key 或网络是否正确',
-          variant: 'destructive',
-        })
+    try {
+      const response = await fetch(url, requestOptions);
+      const result = await response.json();
+      setList(result.data)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast({
+        title: t('modelList.error.title'),
+        description: t('modelList.error.description'),
+        variant: "destructive"
       })
-    setList(res?.data || [])
+    }
   }
 
   async function modelChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
@@ -78,7 +82,7 @@ export default function ModelSelect() {
       </SelectTrigger>
       <SelectContent>
         {
-          list.map((item, index) => {
+          list?.map((item, index) => {
             return <SelectItem key={index} value={item.id}>{item.id}</SelectItem>
           })
         }

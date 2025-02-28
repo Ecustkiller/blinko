@@ -75,7 +75,14 @@
       },
       "selectModel": "请选择模型",
       "providers": {
-        "moonshot": "豆包",
+        "chatgpt": "ChatGPT",
+        "chatanywhere": "ChatAnyWhere",
+        "ollama": "Ollama",
+        "lmstudio": "LM Studio",
+        "volcengine": "豆包",
+        "aliyun": "通义千问",
+        "moonshot": "月之暗面",
+        "deepseek": "DeepSeek",
         "tongyi": "通义千问"
       }
     },

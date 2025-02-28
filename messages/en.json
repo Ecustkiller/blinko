@@ -75,7 +75,14 @@
       },
       "selectModel": "Please select a model",
       "providers": {
-        "moonshot": "Moonshot",
+        "chatgpt": "ChatGPT",
+        "chatanywhere": "ChatAnyWhere",
+        "ollama": "Ollama",
+        "lmstudio": "LM Studio",
+        "volcengine": "VolcEngine",
+        "aliyun": "TongYi QianWen",
+        "moonshot": "Kimi",
+        "deepseek": "DeepSeek",
         "tongyi": "Tongyi Qianwen"
       }
     },
