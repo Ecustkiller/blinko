@@ -70,7 +70,7 @@ export function TagManage() {
           onClick={() => setOpen(true)}
         >
           <div className="flex gap-2 items-center">
-            { name === '灵感' ? <Lightbulb className="size-4" /> : <TagIcon className="size-4" /> }
+            { name === 'Idea' ? <Lightbulb className="size-4" /> : <TagIcon className="size-4" /> }
             <span className="text-xs">{currentTag?.name} ({currentTag?.total})</span>
           </div>
           <ArrowUpDown className="size-3" />

@@ -23,11 +23,11 @@ export async function initTagsDb() {
   const hasDefaultTag = (await db.select<Tag[]>(`select * from tags`)).length === 0
   if (hasDefaultTag) {
     await db.execute(`insert into tags (name, isLocked, isPin) values (
-      '灵感',
+      'Idea',
       true,
       true
     )`)
-    const tag = (await db.select<Tag[]>(`select * from tags where name = '灵感'`))[0]
+    const tag = (await db.select<Tag[]>(`select * from tags where name = 'Idea'`))[0]
     const store = await Store.load('store.json');
     await store.set('currentTagId', tag.id)
     await store.save()
