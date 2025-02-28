@@ -1,5 +1,6 @@
 import { TooltipButton } from "@/components/tooltip-button"
 import { insertMark } from "@/db/marks"
+import { useTranslations } from 'next-intl'
 import { fetchAiDesc } from "@/lib/ai"
 import ocr from "@/lib/ocr"
 import useMarkStore from "@/stores/mark"
@@ -18,6 +19,7 @@ import { ShortcutDefault, ShortcutSettings } from "@/config/shortcut"
 import { Store } from "@tauri-apps/plugin-store"
  
 export function ControlScan() {
+  const t = useTranslations();
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
   const { apiKey } = useSettingStore()
@@ -52,16 +54,16 @@ export function ControlScan() {
     const unlisten = await webview.listen("save-success", async e => {
       if (typeof e.payload === 'string') {
         const queueId = uuid()
-        addQueue({ queueId, progress: ' OCR 识别', type: 'scan', startTime: Date.now() })
+        addQueue({ queueId, progress: t('record.mark.progress.ocr'), type: 'scan', startTime: Date.now() })
         const content = await ocr(`screenshot/${e.payload}`)
         let desc = ''
         if (apiKey) {
-          setQueue(queueId, { progress: ' AI 内容识别' });
+          setQueue(queueId, { progress: t('record.mark.progress.aiAnalysis') });
           desc = await fetchAiDesc(content).then(res => res ? res : content) || content
         } else {
           desc = content
         }
-        setQueue(queueId, { progress: '保存' });
+        setQueue(queueId, { progress: t('record.mark.progress.save') });
         await insertMark({ tagId: currentTagId, type: 'scan', content, url: e.payload, desc })
         removeQueue(queueId)
         await fetchMarks()
@@ -114,6 +116,6 @@ export function ControlScan() {
   }, [])
 
   return (
-    <TooltipButton icon={<ScanText />} tooltipText="截图" onClick={createScreenShot} />
+    <TooltipButton icon={<ScanText />} tooltipText={t('record.mark.type.screenshot')} onClick={createScreenShot} />
   )
 }

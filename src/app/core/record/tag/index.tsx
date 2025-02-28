@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useTranslations } from 'next-intl'
 import { ArrowUpDown, TagIcon, Lightbulb } from "lucide-react"
 import {
   CommandDialog,
@@ -18,6 +19,7 @@ import useMarkStore from "@/stores/mark"
 import useChatStore from "@/stores/chat"
 
 export function TagManage() {
+  const t = useTranslations();
   const [open, setOpen] = React.useState(false)
   const [name, setName] = React.useState<string>("")
   const { init } = useChatStore()
@@ -76,19 +78,19 @@ export function TagManage() {
       </div>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="创建或查询标签..." onValueChange={(name) => setName(name)} />
+        <CommandInput placeholder={t('record.mark.tag.searchPlaceholder')} onValueChange={(name) => setName(name)} />
         <CommandList>
           <CommandEmpty>
-            <p className="text-gray-600">未查询到相关标签</p>
-            <Button className="mt-4" onClick={quickAddTag}>快速创建</Button>
+            <p className="text-gray-600">{t('record.mark.tag.noResults')}</p>
+            <Button className="mt-4" onClick={quickAddTag}>{t('record.mark.tag.quickAdd')}</Button>
           </CommandEmpty>
-          <CommandGroup heading="置顶">
+          <CommandGroup heading={t('record.mark.tag.pinned')}>
             {
               tags?.filter((tag) => tag.isPin).map((tag) => 
                 <TagItem key={tag.id} tag={tag} onChange={fetchTags} onSelect={handleSelect.bind(null, tag)} />)
             }
           </CommandGroup>
-          <CommandGroup heading="其他">
+          <CommandGroup heading={t('record.mark.tag.others')}>
             {
               tags?.filter((tag) => !tag.isPin).map((tag) => 
                 <TagItem key={tag.id} tag={tag} onChange={fetchTags} onSelect={handleSelect.bind(null, tag)} />)

@@ -1,6 +1,7 @@
 "use client"
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Trash } from "lucide-react"
+import { useTranslations } from 'next-intl'
 import * as React from "react"
 import { initMarksDb } from "@/db/marks"
 import { ControlScan } from "./control-scan"
@@ -11,7 +12,7 @@ import { Toggle } from "@/components/ui/toggle"
 import useMarkStore from "@/stores/mark"
 
 export function MarkToolbar() {
-
+  const t = useTranslations();
   const { trashState, setTrashState, fetchAllTrashMarks, fetchMarks } = useMarkStore()
 
   React.useEffect(() => {
@@ -54,7 +55,7 @@ export function MarkToolbar() {
               </Toggle>
             </TooltipTrigger>
             <TooltipContent>
-              <p>回收</p>
+              <p>{t('record.mark.toolbar.trash')}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

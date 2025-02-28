@@ -86,6 +86,154 @@
       "modelInstruction": "以逗号分隔，例如：eng,chi_sim"
     }
   },
+  "record": {
+    "trash": {
+      "title": "清空回收站",
+      "confirm": "确定清空回收站吗？",
+      "records": "共 {count} 条记录可还原",
+      "empty": "清空"
+    },
+    "mark": {
+      "empty": "暂无记录",
+      "loading": "加载中...",
+      "type": {
+        "image": "插图",
+        "screenshot": "截图",
+        "text": "文本",
+        "file": "文件"
+      },
+      "progress": {
+        "cacheImage": "缓存图片",
+        "ocr": "OCR 识别",
+        "aiAnalysis": "AI 内容识别",
+        "uploadImage": "上传至图床",
+        "jsdelivrCache": "通知 jsdelivr 缓存",
+        "cacheFile": "缓存文件",
+        "cacheScreenshot": "缓存截图",
+        "textAnalysis": "文本分析",
+        "save": "保存",
+        "saveImage": "保存图片"
+      },
+      "text": {
+        "title": "记录文本",
+        "description": "记录一段文本，笔记整理时将插入到合适的位置。",
+        "characterCount": "{count} 字符",
+        "save": "记录"
+      },
+      "clipboard": {
+        "detectedImage": "检测到剪贴板图片",
+        "detectedText": "检测到剪贴板文本"
+      },
+      "tag": {
+        "searchPlaceholder": "创建或查询标签...",
+        "noResults": "未查询到相关标签",
+        "quickAdd": "快速创建",
+        "pinned": "置顶",
+        "others": "其他",
+        "rename": "重命名",
+        "delete": "删除",
+        "pin": "置顶",
+        "unpin": "取消置顶"
+      },
+      "mark": {
+        "type": {
+          "text": "文本"
+        },
+        "chat": {
+          "placeholder": {
+            "default": "你可以提问或将记录整理为文章...",
+            "noApiKey": "未配置 API Key，无法使用 AI 对话功能..."
+          },
+          "header": {
+            "configApiKey": "配置 API KEY",
+            "clearChat": "清空对话"
+          },
+          "send": "发送"
+        },
+        "text": {
+          "title": "记录文本",
+          "description": "记录一段文本，笔记整理时将插入到合适的位置。",
+          "characterCount": "{count} 字符",
+          "save": "记录"
+        },
+        "clipboard": {
+          "detectedImage": "检测到剪贴板图片",
+          "detectedText": "检测到剪贴板文本"
+        },
+        "tag": {
+          "searchPlaceholder": "创建或查询标签...",
+          "noResults": "未查询到相关标签",
+          "quickAdd": "快速创建",
+          "pinned": "置顶",
+          "others": "其他",
+          "rename": "重命名",
+          "delete": "删除",
+          "pin": "置顶",
+          "unpin": "取消置顶"
+        },
+        "progress": {
+          "cacheImage": "缓存图片",
+          "ocr": "OCR 识别",
+          "aiAnalysis": "AI 内容识别",
+          "uploadImage": "上传至图床",
+          "jsdelivrCache": "通知 jsdelivr 缓存",
+          "cacheFile": "缓存文件",
+          "cacheScreenshot": "缓存截图",
+          "textAnalysis": "文本分析",
+          "save": "保存",
+          "saveImage": "保存图片"
+        }
+      },
+      "toolbar": {
+        "search": "搜索",
+        "trash": "回收站",
+        "restore": "还原",
+        "delete": "删除",
+        "deleteConfirm": "确定要删除吗？",
+        "moveTag": "转移标签",
+        "convertTo": "转换为{type}",
+        "copyLink": "复制链接",
+        "copied": "已复制到剪切板！",
+        "regenerateDesc": "重新生成描述",
+        "viewFolder": "查看目录",
+        "viewFile": "查看原文件",
+        "deleteForever": "彻底删除"
+      }
+    },
+    "chat": {
+      "empty": "选择一条记录开始聊天",
+      "input": {
+        "placeholder": {
+          "default": "输入消息...",
+          "noApiKey": "无 API KEY 配置，无法使用 AI 聊天..."
+        },
+        "send": "发送"
+      },
+      "header": {
+        "configApiKey": "配置 API KEY",
+        "clearChat": "清空聊天"
+      },
+      "preview": {
+        "close": "关闭",
+        "copy": "复制",
+        "copied": "已复制！"
+      },
+      "control": {
+        "edit": "编辑",
+        "save": "保存",
+        "cancel": "取消",
+        "delete": "删除",
+        "deleteConfirm": "确定要删除这条消息吗？"
+      }
+    },
+    "tag": {
+      "add": "添加标签",
+      "edit": "编辑标签",
+      "delete": "删除标签",
+      "deleteConfirm": "确定要删除这个标签吗？",
+      "placeholder": "输入标签名称"
+    }
+  },
   "navigation": {
     "record": "记录",
     "write": "写作",

@@ -1,5 +1,6 @@
 'use client'
 import { delMark, delMarkForever, Mark, MarkType, restoreMark, updateMark } from "@/db/marks";
+import { useTranslations } from 'next-intl';
 import {
   ContextMenu,
   ContextMenuContent,
@@ -164,7 +165,7 @@ export function MarkWrapper({mark}: {mark: Mark}) {
 }
 
 export function MarkItem({mark}: {mark: Mark}) {
-
+  const t = useTranslations();
   const { fetchMarks, trashState, fetchAllTrashMarks } = useMarkStore()
   const { tags, currentTagId, fetchTags, getCurrentTag } = useTagStore()
 
@@ -221,7 +222,7 @@ export function MarkItem({mark}: {mark: Mark}) {
   async function handleCopyLink() {
     await navigator.clipboard.writeText(mark.url)
     toast({
-      title: '已复制到剪切板'
+      title: t('record.mark.toolbar.copied')
     })
   }
 
@@ -236,7 +237,7 @@ export function MarkItem({mark}: {mark: Mark}) {
         {
           trashState ? null :
           <ContextMenuSub>
-            <ContextMenuSubTrigger inset>转移标签</ContextMenuSubTrigger>
+            <ContextMenuSubTrigger inset>{t('record.mark.toolbar.moveTag')}</ContextMenuSubTrigger>
             <ContextMenuSubContent>
               {
                 tags.map((tag) => (
@@ -249,33 +250,33 @@ export function MarkItem({mark}: {mark: Mark}) {
           </ContextMenuSub>
         }
         <ContextMenuItem inset disabled>
-          转换为{mark.type === 'scan' ? '插图' : '截图'}
+          {t('record.mark.toolbar.convertTo', { type: mark.type === 'scan' ? t('record.mark.type.image') : t('record.mark.type.screenshot') })}
         </ContextMenuItem>
         <ContextMenuItem inset disabled={!mark.url} onClick={handleCopyLink}>
-          复制链接
+          {t('record.mark.toolbar.copyLink')}
         </ContextMenuItem>
         <ContextMenuItem inset disabled={mark.type === 'text'} onClick={regenerateDesc}>
-          重新生成描述
+          {t('record.mark.toolbar.regenerateDesc')}
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem inset disabled={mark.type === 'text'} onClick={handelShowInFolder}>
-          查看目录
+          {t('record.mark.toolbar.viewFolder')}
         </ContextMenuItem>
         <ContextMenuItem inset disabled={mark.type === 'text'} onClick={handelShowInFile}>
-          查看原文件
+          {t('record.mark.toolbar.viewFile')}
         </ContextMenuItem>
         {
           trashState ? 
           <>
             <ContextMenuItem inset onClick={handleRestore}>
-              还原
+              {t('record.mark.toolbar.restore')}
             </ContextMenuItem>
             <ContextMenuItem inset onClick={handleDelForever}>
-              <span className="text-red-900">彻底删除</span>
+              <span className="text-red-900">{t('record.mark.toolbar.deleteForever')}</span>
             </ContextMenuItem>
           </> :
           <ContextMenuItem inset onClick={handleDelMark}>
-            <span className="text-red-900">删除</span>
+            <span className="text-red-900">{t('record.mark.toolbar.delete')}</span>
           </ContextMenuItem>
         }
       </ContextMenuContent>

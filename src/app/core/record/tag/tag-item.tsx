@@ -11,6 +11,7 @@ import React from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import useTagStore from "@/stores/tag"
+import { useTranslations } from 'next-intl'
 
 function ItemIcon({ isLocked=false, isPin=false }) {
   if (isLocked) {
@@ -25,6 +26,7 @@ function ItemIcon({ isLocked=false, isPin=false }) {
 }
 
 function ItemContent({ value, isEditing, onChange }: { value: string, isEditing: boolean, onChange: (name: string) => void }) {
+  const t = useTranslations();
   const [name, setName] = React.useState(value)
   if (isEditing) {
     return (
@@ -37,7 +39,7 @@ function ItemContent({ value, isEditing, onChange }: { value: string, isEditing:
         />
         <Button type="submit" onClick={async() => { 
           onChange(name)
-        }}>重命名</Button>
+        }}>{t('record.mark.tag.rename')}</Button>
       </div>
     )
   } else {
@@ -50,6 +52,7 @@ export function TagItem(
   { tag, onChange, onSelect }:
   { tag: Tag, onChange: () => void, onSelect: () => void }) 
 {
+  const t = useTranslations();
   const [isEditing, setIsEditing] = React.useState(false)
 
   const { fetchTags, getCurrentTag, currentTagId } = useTagStore()
@@ -91,13 +94,13 @@ export function TagItem(
       </ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuItem inset disabled={tag.isLocked} onClick={togglePin}>
-          { tag.isPin ? "取消置顶" : "置顶" }
+          { tag.isPin ? t('record.mark.tag.unpin') : t('record.mark.tag.pin') }
         </ContextMenuItem>
         <ContextMenuItem inset disabled={isEditing} onClick={setIsEditing.bind(null, true)}>
-          重命名
+          {t('record.mark.tag.rename')}
         </ContextMenuItem>
         <ContextMenuItem inset disabled={tag.isLocked} onClick={handleDel}>
-          删除
+          {t('record.mark.tag.delete')}
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

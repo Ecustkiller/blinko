@@ -86,6 +86,154 @@
       "modelInstruction": "Separate with commas, e.g.: eng,chi_sim"
     }
   },
+  "record": {
+    "trash": {
+      "title": "Empty Trash",
+      "confirm": "Are you sure to empty the trash?",
+      "records": "{count} records can be restored",
+      "empty": "Empty"
+    },
+    "mark": {
+      "empty": "No records yet",
+      "loading": "Loading...",
+      "type": {
+        "image": "Image",
+        "screenshot": "Screenshot",
+        "text": "Text",
+        "file": "File"
+      },
+      "progress": {
+        "cacheImage": "Caching image",
+        "ocr": "OCR recognition",
+        "aiAnalysis": "AI content analysis",
+        "uploadImage": "Uploading to image host",
+        "jsdelivrCache": "Notifying jsdelivr cache",
+        "cacheFile": "Caching file",
+        "cacheScreenshot": "Caching screenshot",
+        "textAnalysis": "Text analysis",
+        "save": "Saving",
+        "saveImage": "Saving image"
+      },
+      "text": {
+        "title": "Record Text",
+        "description": "Record a piece of text, which will be inserted into the appropriate position when organizing notes.",
+        "characterCount": "{count} characters",
+        "save": "Save"
+      },
+      "clipboard": {
+        "detectedImage": "Clipboard image detected",
+        "detectedText": "Clipboard text detected"
+      },
+      "tag": {
+        "searchPlaceholder": "Create or search tags...",
+        "noResults": "No matching tags found",
+        "quickAdd": "Quick Create",
+        "pinned": "Pinned",
+        "others": "Others",
+        "rename": "Rename",
+        "delete": "Delete",
+        "pin": "Pin",
+        "unpin": "Unpin"
+      },
+      "mark": {
+        "type": {
+          "text": "Text"
+        },
+        "chat": {
+          "placeholder": {
+            "default": "Ask questions or organize your notes into an article...",
+            "noApiKey": "API Key not configured, AI chat feature is unavailable..."
+          },
+          "header": {
+            "configApiKey": "Configure API KEY",
+            "clearChat": "Clear Chat"
+          },
+          "send": "Send"
+        },
+        "text": {
+          "title": "Record Text",
+          "description": "Record a piece of text, which will be inserted into the appropriate position when organizing notes.",
+          "characterCount": "{count} characters",
+          "save": "Save"
+        },
+        "clipboard": {
+          "detectedImage": "Clipboard image detected",
+          "detectedText": "Clipboard text detected"
+        },
+        "tag": {
+          "searchPlaceholder": "Create or search tags...",
+          "noResults": "No matching tags found",
+          "quickAdd": "Quick Create",
+          "pinned": "Pinned",
+          "others": "Others",
+          "rename": "Rename",
+          "delete": "Delete",
+          "pin": "Pin",
+          "unpin": "Unpin"
+        },
+        "progress": {
+          "cacheImage": "Caching image",
+          "ocr": "OCR recognition",
+          "aiAnalysis": "AI content analysis",
+          "uploadImage": "Uploading to image host",
+          "jsdelivrCache": "Notifying jsdelivr cache",
+          "cacheFile": "Caching file",
+          "cacheScreenshot": "Caching screenshot",
+          "textAnalysis": "Text analysis",
+          "save": "Saving",
+          "saveImage": "Saving image"
+        }
+      },
+      "toolbar": {
+        "search": "Search",
+        "trash": "Trash",
+        "restore": "Restore",
+        "delete": "Delete",
+        "deleteConfirm": "Are you sure to delete?",
+        "moveTag": "Move to Tag",
+        "convertTo": "Convert to {type}",
+        "copyLink": "Copy Link",
+        "copied": "Copied to clipboard!",
+        "regenerateDesc": "Regenerate Description",
+        "viewFolder": "View in Folder",
+        "viewFile": "View Original File",
+        "deleteForever": "Delete Forever"
+      }
+    },
+    "chat": {
+      "empty": "Select a record to start chatting",
+      "input": {
+        "placeholder": {
+          "default": "Type a message...",
+          "noApiKey": "No API Key configured, can't use AI chat..."
+        },
+        "send": "Send"
+      },
+      "header": {
+        "configApiKey": "Configure API KEY",
+        "clearChat": "Clear Chat"
+      },
+      "preview": {
+        "close": "Close",
+        "copy": "Copy",
+        "copied": "Copied!"
+      },
+      "control": {
+        "edit": "Edit",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "deleteConfirm": "Are you sure to delete this message?"
+      }
+    },
+    "tag": {
+      "add": "Add Tag",
+      "edit": "Edit Tag",
+      "delete": "Delete Tag",
+      "deleteConfirm": "Are you sure to delete this tag?",
+      "placeholder": "Enter tag name"
+    }
+  },
   "navigation": {
     "record": "Record",
     "write": "Write",

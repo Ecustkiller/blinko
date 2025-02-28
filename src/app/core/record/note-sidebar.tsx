@@ -4,6 +4,7 @@ import {
   Sidebar,
   SidebarHeader,
 } from "@/components/ui/sidebar"
+import { useTranslations } from 'next-intl'
 import React from "react"
 import { TagManage } from './tag'
 import { MarkToolbar } from './mark/mark-toolbar'
@@ -14,11 +15,12 @@ import { clearTrash } from "@/db/marks"
 import { confirm } from '@tauri-apps/plugin-dialog';
 
 export function NoteSidebar() {
+  const t = useTranslations();
   const { trashState, marks, setMarks } = useMarkStore()
 
   async function handleClearTrash() {
-    const res = await confirm('确定清空回收站吗？', {
-      title: '清空回收站',
+    const res = await confirm(t('record.trash.confirm'), {
+      title: t('record.trash.title'),
       kind: 'warning',
     })
     if (res) {
@@ -34,10 +36,10 @@ export function NoteSidebar() {
         {
           trashState? 
           <div className="flex pb-2 relative border-b h-6 items-center justify-center">
-            <p className="absolute text-xs text-zinc-500">共 {marks.length} 条记录可还原</p>
+            <p className="absolute text-xs text-zinc-500">{t('record.trash.records', { count: marks.length })}</p>
             {
               marks.length > 0 ?
-              <Button className="text-xs text-red-900 right-8 absolute" variant="link" onClick={handleClearTrash}>清空</Button> : null
+              <Button className="text-xs text-red-900 right-8 absolute" variant="link" onClick={handleClearTrash}>{t('record.trash.empty')}</Button> : null
             }
           </div> :
           <TagManage />

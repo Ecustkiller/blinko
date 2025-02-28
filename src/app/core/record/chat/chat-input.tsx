@@ -10,6 +10,7 @@ import useMarkStore from "@/stores/mark"
 import { fetchAi } from "@/lib/ai"
 import { TooltipButton } from "@/components/tooltip-button"
 import { MarkGen } from "./mark-gen"
+import { useTranslations } from 'next-intl'
 
 export function ChatInput() {
   const [text, setText] = useState("")
@@ -19,6 +20,7 @@ export function ChatInput() {
   const { fetchMarks, marks, trashState } = useMarkStore()
   const [isComposing, setIsComposing] = useState(false)
   const [placeholder, setPlaceholder] = useState('')
+  const t = useTranslations()
 
   async function handleSubmit() {
     if (text === '') return
@@ -105,20 +107,16 @@ export function ChatInput() {
   }
 
   useEffect(() => {
-    if (marks.length === 0) {
-      setPlaceholder('你可以提问或将记录整理为文章...')
-    } else {
-      genInputPlaceholder()
-    }
-  }, [marks])
-
-  useEffect(() => {
     if (!apiKey) {
-      setPlaceholder('未配置 API Key，无法使用 AI 对话功能...')
-    } else {
-      setPlaceholder('你可以提问或将记录整理为文章...')
+      setPlaceholder(t('record.chat.input.placeholder.noApiKey'))
+      return
     }
-  }, [apiKey])
+    if (marks.length === 0) {
+      setPlaceholder(t('record.chat.input.placeholder.default'))
+      return
+    }
+    genInputPlaceholder()
+  }, [apiKey, marks, t])
 
   return (
     <footer className="relative flex shadow-lg rounded-xl overflow-hidden min-w-[500px] w-2/3 max-w-[800px] my-4">
@@ -146,7 +144,7 @@ export function ChatInput() {
           }, 0)}
         />
         <MarkGen />
-        <TooltipButton icon={<Send />} disabled={loading || !apiKey} tooltipText="发送" onClick={handleSubmit} />
+        <TooltipButton icon={<Send />} disabled={loading || !apiKey} tooltipText={t('record.chat.input.send')} onClick={handleSubmit} />
       </div>
     </footer>
   )

@@ -1,5 +1,6 @@
 'use client'
 import { clear, hasImage, hasText, readImageBase64, readText } from "tauri-plugin-clipboard-api";
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { BaseDirectory, copyFile, exists, mkdir, readFile, writeFile } from '@tauri-apps/plugin-fs';
@@ -17,6 +18,7 @@ import { listen } from "@tauri-apps/api/event";
 import { convertBytesToSize } from "@/lib/utils";
 
 export function Clipboard() {
+  const t = useTranslations();
   const [type, setType] = useState<'image' | 'text'>('image')
   const [text, setText] = useState('')
   const [image, setImage] = useState('')
@@ -56,17 +58,17 @@ export function Clipboard() {
     setImage('')
     const queueId = uuid()
     // 获取文件后缀
-    addQueue({ queueId, progress: '保存图片', type: 'image', startTime: Date.now() })
+    addQueue({ queueId, progress: t('record.mark.progress.saveImage'), type: 'image', startTime: Date.now() })
     const isImageFolderExists = await exists('image', { baseDir: BaseDirectory.AppData})
     if (!isImageFolderExists) {
       await mkdir('image', { baseDir: BaseDirectory.AppData})
     }
     await copyFile('clipboard.png', `image/${queueId}.png`, { fromPathBaseDir: BaseDirectory.AppData, toPathBaseDir: BaseDirectory.AppData})
-    setQueue(queueId, { progress: ' OCR 识别' });
+    setQueue(queueId, { progress: t('record.mark.progress.ocr') });
     const content = await ocr(`image/${queueId}.png`)
     let desc = ''
     if (apiKey) {
-      setQueue(queueId, { progress: ' AI 内容识别' });
+      setQueue(queueId, { progress: t('record.mark.progress.aiAnalysis') });
       desc = await fetchAiDesc(content).then(res => res ? res : content)
     } else {
       desc = content
@@ -80,7 +82,7 @@ export function Clipboard() {
     }
     const file = await readFile(`image/${queueId}.png`, { baseDir: BaseDirectory.AppData  })
     if (githubUsername) {
-      setQueue(queueId, { progress: '上传至图床' });
+      setQueue(queueId, { progress: t('record.mark.progress.uploadImage') });
       const res = await uploadFile({
         ext: 'png',
         file: uint8ArrayToBase64(file),
@@ -88,7 +90,7 @@ export function Clipboard() {
         repo: RepoNames.image
       })
       if (res) {
-        setQueue(queueId, { progress: '通知 jsdelivr 缓存' });
+        setQueue(queueId, { progress: t('record.mark.progress.jsdelivrCache') });
         await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`)
         mark.url = `https://cdn.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`
       } else {
@@ -133,7 +135,7 @@ export function Clipboard() {
       image && (
         <div className="relative flex justify-center items-center">
           <div className="absolute top-0 left-0 flex gap-2 justify-between items-center mb-2 w-full z-20 p-4">
-            <p className="text-sm font-bold text-white">检测到剪贴板图片</p>
+            <p className="text-sm font-bold text-white">{t('record.mark.clipboard.detectedImage')}</p>
             <div className="flex gap-2">
               <CircleX className="text-white size-4 cursor-pointer" onClick={handleCancle} />
               <CheckCircle className="text-white size-4 cursor-pointer" onClick={handleInset} />
@@ -148,14 +150,14 @@ export function Clipboard() {
       text && (
         <div className="flex-col justify-center items-center p-4 bg-primary">
           <div className="flex gap-2 justify-between items-center mb-2">
-            <p className="text-sm font-bold text-secondary">检测到剪贴板文本</p>
+            <p className="text-sm font-bold text-secondary">{t('record.mark.clipboard.detectedText')}</p>
             <div className="flex gap-2">
               <CircleX className="text-secondary size-4 cursor-pointer" onClick={handleCancle} />
               <CheckCircle className="text-secondary size-4 cursor-pointer" onClick={handleTextInset} />
             </div>
           </div>
           <p className="line-clamp-5 text-xs text-secondary mb-2">{text}</p>
-          <p className="line-clamp-5 text-xs text-secondary text-right">{text.length} 字符</p>
+          <p className="line-clamp-5 text-xs text-secondary text-right">{t('record.mark.text.characterCount', { count: text.length })}</p>
         </div>
       )
     )
