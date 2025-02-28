@@ -10,6 +10,7 @@ async function createAi(text: string) {
   const model = await store.get('model')
 
   const headers = new Headers();
+  console.log(apiKey);
   headers.append("Authorization", `Bearer ${apiKey}`);
   headers.append("Content-Type", "application/json");
 

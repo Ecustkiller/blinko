@@ -64,7 +64,7 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
     const value = e.target.value
     setApiKey(value)
     const store = await Store.load('store.json');
-    console.log(aiType);
+    await store.set(`apiKey`, value)
     await store.set(`apiKey-${aiType}`, value)
   }
 
