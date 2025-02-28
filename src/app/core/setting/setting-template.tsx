@@ -1,5 +1,6 @@
 import useSettingStore, { GenTemplate, GenTemplateRange } from "@/stores/setting";
 import { SettingRow, SettingType } from "./setting-base";
+import { useTranslations } from 'next-intl';
 import {
   Table,
   TableBody,
@@ -19,6 +20,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { confirm } from '@tauri-apps/plugin-dialog';
 
 export function SettingTemplate({id, icon}: {id: string, icon?: React.ReactNode}) {
+  const t = useTranslations();
   const { templateList, setTemplateList } = useSettingStore()
 
   function changeHandler(current: GenTemplate, key: keyof GenTemplate, value: any) {
@@ -34,14 +36,14 @@ export function SettingTemplate({id, icon}: {id: string, icon?: React.ReactNode}
     setTemplateList([...templateList, {
       id: `${templateList.length + 1}`,
       status: true,
-      title: '自定义模板',
+      title: t('settings.template.customTemplate'),
       content: '',
       range: GenTemplateRange.All,
     }])
   }
 
   function deleteTemplateHandler(id: string) {
-    confirm(`确认删除模板吗?`).then(async (res) => {
+    confirm(t('settings.template.deleteConfirm')).then(async (res) => {
       if (res) {
         setTemplateList(templateList.filter(item => item.id !== id))
       }
@@ -52,18 +54,18 @@ export function SettingTemplate({id, icon}: {id: string, icon?: React.ReactNode}
   }, [templateList])
 
   return (
-    <SettingType id={id} icon={icon} title="整理模板">
+    <SettingType id={id} icon={icon} title={t('settings.template.title')}>
       <SettingRow>
         <Table>
           <TableCaption>
-            <Button onClick={createTemplateHandler} variant={"link"}>新增自定义整理模板</Button>
+            <Button onClick={createTemplateHandler} variant={"link"}>{t('settings.template.addTemplate')}</Button>
           </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[40px] text-center">状态</TableHead>
-              <TableHead className="w-[100px] pl-3">名称</TableHead>
-              <TableHead className="pl-3">内容</TableHead>
-              <TableHead className="w-[120px]">范围</TableHead>
+              <TableHead className="w-[40px] text-center">{t('settings.template.status')}</TableHead>
+              <TableHead className="w-[100px] pl-3">{t('settings.template.name')}</TableHead>
+              <TableHead className="pl-3">{t('settings.template.content')}</TableHead>
+              <TableHead className="w-[120px]">{t('settings.template.scope')}</TableHead>
               <TableHead className="text-center w-[60px]"></TableHead>
             </TableRow>
           </TableHeader>
@@ -98,7 +100,7 @@ export function SettingTemplate({id, icon}: {id: string, icon?: React.ReactNode}
                     <TableCell>
                     <Select onValueChange={(value) => changeHandler(item, 'range', value)} defaultValue={item.range}>
                       <SelectTrigger className="w-[120px] setting-select">
-                        <SelectValue placeholder="选择范围" />
+                        <SelectValue placeholder={t('settings.template.selectScope')} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>

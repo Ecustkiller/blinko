@@ -18,39 +18,34 @@ import Link from "next/link"
 import AppStatus from "./app-status"
 import { Store } from "@tauri-apps/plugin-store"
 import { PinToggle } from "./pin-toggle"
- 
-// Menu items.
-const items = [
-  {
-    title: "记录",
-    url: "/core/record",
-    icon: Highlighter,
-    isActive: true,
-  },
-  {
-    title: "写作",
-    url: "/core/article",
-    icon: SquarePen,
-  },
-  // {
-  //   title: "绘图",
-  //   url: "#",
-  //   icon: PencilRuler,
-  // },
-  {
-    title: "搜索",
-    url: "/core/search",
-    icon: Search,
-  },
-  {
-    title: "图床",
-    url: "/core/image",
-    icon: ImageUp,
-  },
-]
+import { useTranslations } from 'next-intl'
  
 export function AppSidebar() {
   const pathname = usePathname()
+  const t = useTranslations()
+  const items = [
+    {
+      title: t('navigation.record'),
+      url: "/core/record",
+      icon: Highlighter,
+      isActive: true,
+    },
+    {
+      title: t('navigation.write'),
+      url: "/core/article",
+      icon: SquarePen,
+    },
+    {
+      title: t('navigation.search'),
+      url: "/core/search",
+      icon: Search,
+    },
+    {
+      title: t('navigation.gallery'),
+      url: "/core/image",
+      icon: ImageUp,
+    },
+  ]
   async function menuHandler(item: typeof items[0]) {
     const store = await Store.load('store.json')
     store.set('currentPage', item.url)
@@ -99,7 +94,7 @@ export function AppSidebar() {
         <ModeToggle />
         <SidebarMenuButton isActive={pathname === '/core/setting'} asChild className="md:h-8 md:p-0"
           tooltip={{
-            children: '设置',
+            children: t('common.settings'),
             hidden: false,
           }}
         >

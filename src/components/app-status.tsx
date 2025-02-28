@@ -1,6 +1,7 @@
 import { SidebarMenuButton } from "./ui/sidebar";
 import { createSyncRepo, checkSyncRepoState, getUserInfo } from "@/lib/github";
 import { useEffect, useState } from "react";
+import { useTranslations } from 'next-intl';
 import useSettingStore from "@/stores/setting";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { CircleUserRound, LoaderPinwheel, Power } from "lucide-react";
@@ -13,6 +14,7 @@ import { RepoNames } from "@/lib/github.types";
 import useSyncStore, { SyncStateEnum } from "@/stores/sync";
 
 export default function AppStatus() {
+  const t = useTranslations();
   const { accessToken, setGithubUsername } = useSettingStore()
   const [loading, setLoading] = useState(false)
   const [userInfo, setUserInfo] = useState<UserInfo>()
@@ -92,15 +94,15 @@ export default function AppStatus() {
             </div>
           </div>
           <div className="p-4 border-b text-xs flex justify-between gap-2">
-            <span className="mr-4 font-bold">同步仓库状态</span>
+            <span className="mr-4 font-bold">{t('sync.status')}</span>
             <div className="flex gap-2">
               <span className="flex items-center gap-1">
                 <Power className={`${imageRepoState === SyncStateEnum.success ? 'text-green-500' : 'text-red-500'} size-3`} />
-                <OpenBroswer title="图床仓库" url={`https://github.com/${userInfo?.login}/${RepoNames.image}`} />
+                <OpenBroswer title={t('sync.imageRepo')} url={`https://github.com/${userInfo?.login}/${RepoNames.image}`} />
               </span>
               <span className="flex items-center gap-1">
                 <Power className={`${syncRepoState === SyncStateEnum.success ? 'text-green-500' : 'text-red-500'} size-3`} />
-                <OpenBroswer title="文章仓库" url={`https://github.com/${userInfo?.login}/${RepoNames.sync}`} />
+                <OpenBroswer title={t('sync.articleRepo')} url={`https://github.com/${userInfo?.login}/${RepoNames.sync}`} />
               </span>
             </div>
           </div>

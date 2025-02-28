@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { SettingRow, SettingType } from "./setting-base";
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from "react";
 import { platform } from '@tauri-apps/plugin-os';
 import emitter from "@/lib/emitter";
@@ -51,34 +52,38 @@ interface ShortcutMap {
   defaultKey: string
 }
 
-const shortcutMap: ShortcutMap[] = [
-  {
-    id: ShortcutSettings.screenshot,
-    mittId: EmitterShortcutEvents.screenshot,
-    title: '截图记录',
-    icon: <ScanText className="size-4" />,
-    defaultKey: ShortcutDefault.screenshot,
-  },
-  {
-    id: ShortcutSettings.text,
-    mittId: EmitterShortcutEvents.text,
-    title: '文本记录',
-    icon: <CopySlash className="size-4" />,
-    defaultKey: ShortcutDefault.text,
-  },
-  {
-    id: ShortcutSettings.pin,
-    mittId: EmitterShortcutEvents.pin,
-    title: '窗口置顶',
-    icon: <Pin className="size-4" />,
-    defaultKey: ShortcutDefault.pin,
-  }
-]
+function getShortcutMap(t: any): ShortcutMap[] {
+  return [
+    {
+      id: ShortcutSettings.screenshot,
+      mittId: EmitterShortcutEvents.screenshot,
+      title: t('settings.shortcut.screenshot'),
+      icon: <ScanText className="size-4" />,
+      defaultKey: ShortcutDefault.screenshot,
+    },
+    {
+      id: ShortcutSettings.text,
+      mittId: EmitterShortcutEvents.text,
+      title: t('settings.shortcut.textRecord'),
+      icon: <CopySlash className="size-4" />,
+      defaultKey: ShortcutDefault.text,
+    },
+    {
+      id: ShortcutSettings.pin,
+      mittId: EmitterShortcutEvents.pin,
+      title: t('settings.shortcut.windowPin'),
+      icon: <Pin className="size-4" />,
+      defaultKey: ShortcutDefault.pin,
+    }
+  ];
+}
 
 export function SettingShortcut({id, icon}: {id: string, icon?: React.ReactNode}) {
+  const t = useTranslations();
+  const shortcutMap = getShortcutMap(t);
 
   return (
-    <SettingType id={id} icon={icon} title="快捷键">
+    <SettingType id={id} icon={icon} title={t('settings.shortcut.title')}>
       {
         shortcutMap.map((item) => {
           return (

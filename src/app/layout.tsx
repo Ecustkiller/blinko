@@ -5,6 +5,7 @@ import 'md-editor-rt/lib/style.css';
 import 'md-editor-rt/lib/preview.css';
 import 'react-photo-view/dist/react-photo-view.css';
 import { Suspense } from "react";
+import { NextIntlProvider } from "@/components/providers/NextIntlProvider";
 
 export default function RootLayout({
   children,
@@ -17,7 +18,9 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body suppressHydrationWarning>
           <Suspense>
-            {children}
+            <NextIntlProvider>
+              {children}
+            </NextIntlProvider>
           </Suspense>
           <Toaster />
         </body>

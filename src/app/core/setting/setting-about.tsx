@@ -1,17 +1,27 @@
+'use client';
+
 import useSettingStore from "@/stores/setting";
 import { OpenBroswer } from "@/components/open-broswer";
 import { SettingRow, SettingType } from "./setting-base";
-// import { Button } from "@/components/ui/button";
+import { useTranslations } from 'next-intl';
+import { LanguageSwitch } from "@/components/LanguageSwitch";
+
 export function SettingAbout({id, icon}: {id: string, icon?: React.ReactNode}) {
-  const { version } = useSettingStore()
+  const { version } = useSettingStore();
+  const t = useTranslations('settings.about');
 
   return (
-    <SettingType id={id} icon={icon} title="关于">
+    <SettingType id={id} icon={icon} title={t('title')}>
       <SettingRow>
         <span>
-          NoteGen v{version}，<OpenBroswer title="查询历史版本" url="https://github.com/codexu/note-gen/releases" />。
+          {t('version', { version })}，
+          <OpenBroswer title={t('checkReleases')} url="https://github.com/codexu/note-gen/releases" />。
         </span>
-        {/* <Button disabled>检查更新</Button> */}
+        {/* <Button disabled>{t('checkUpdate')}</Button> */}
+      </SettingRow>
+      <SettingRow>
+        <span>{t('language')}</span>
+        <LanguageSwitch />
       </SettingRow>
     </SettingType>
   )

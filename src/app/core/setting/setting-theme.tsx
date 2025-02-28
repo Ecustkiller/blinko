@@ -2,9 +2,11 @@ import { SettingRow, SettingType } from "./setting-base";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
+import { useTranslations } from 'next-intl';
 import { useEffect } from "react";
 
 export function PreviewThemeSelect() {
+  const t = useTranslations();
   const { previewTheme, setPreviewTheme } = useSettingStore()
 
   const themes = ['github', 'vuepress', 'mk-cute', 'smart-blue', 'cyanosis']
@@ -31,7 +33,7 @@ export function PreviewThemeSelect() {
   return (
     <Select onValueChange={changeHandler} value={previewTheme}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="选择主题" />
+        <SelectValue placeholder={t('settings.theme.selectTheme')} />
       </SelectTrigger>
       <SelectContent>
         {
@@ -45,6 +47,7 @@ export function PreviewThemeSelect() {
 }
 
 export function CodeThemeSelect() {
+  const t = useTranslations();
   const { codeTheme, setCodeTheme } = useSettingStore()
   const themes = ['github', 'atom', 'a11y', 'gradient', 'kimbie', 'paraiso', 'qtcreator', 'stackoverflow']
 
@@ -70,7 +73,7 @@ export function CodeThemeSelect() {
   return (
     <Select onValueChange={changeHandler} value={codeTheme}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="选择主题" />
+        <SelectValue placeholder={t('settings.theme.selectTheme')} />
       </SelectTrigger>
       <SelectContent>
         {
@@ -84,15 +87,16 @@ export function CodeThemeSelect() {
 }
 
 export function SettingTheme({id, icon}: {id: string, icon?: React.ReactNode}) {
+  const t = useTranslations();
 
   return (
-    <SettingType id={id} icon={icon} title="外观">
+    <SettingType id={id} icon={icon} title={t('settings.theme.title')}>
       <SettingRow border>
-        <span>预览内容主题。</span>
+        <span>{t('settings.theme.previewTheme')}。</span>
         <PreviewThemeSelect />
       </SettingRow>
       <SettingRow border>
-        <span>代码块高亮主题。</span>
+        <span>{t('settings.theme.codeTheme')}。</span>
         <CodeThemeSelect />
       </SettingRow>
     </SettingType>

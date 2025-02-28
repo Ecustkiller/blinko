@@ -1,11 +1,13 @@
 import { Input } from "@/components/ui/input";
 import { FormItem, SettingRow, SettingType } from "./setting-base";
+import { useTranslations } from 'next-intl';
 import { useEffect } from "react";
 import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
 import { OpenBroswer } from "@/components/open-broswer";
 
 export function SettingOCR({id, icon}: {id: string, icon?: React.ReactNode}) {
+  const t = useTranslations();
   const { tesseractList, setTesseractList } = useSettingStore()
 
   async function changeHandler(e: React.ChangeEvent<HTMLInputElement>) {
@@ -28,16 +30,16 @@ export function SettingOCR({id, icon}: {id: string, icon?: React.ReactNode}) {
   }, [])
 
   return (
-    <SettingType id={id} icon={icon} title="OCR">
+    <SettingType id={id} icon={icon} title={t('settings.ocr.title')}>
       <SettingRow>
-        <FormItem title="语言包">
+        <FormItem title={t('settings.ocr.languagePacks')}>
           <Input value={tesseractList} onChange={changeHandler} />
         </FormItem>
       </SettingRow>
       <SettingRow>
         <span>
-          <OpenBroswer title="在此查询全部模型" url="https://tesseract-ocr.github.io/tessdoc/Data-Files#data-files-for-version-400-november-29-2016" />
-          ，以逗号分隔，例如：eng,chi_sim。
+          <OpenBroswer title={t('settings.ocr.checkModels')} url="https://tesseract-ocr.github.io/tessdoc/Data-Files#data-files-for-version-400-november-29-2016" />
+          {t('settings.ocr.modelInstruction')}
         </span>
       </SettingRow>
     </SettingType>

@@ -1,8 +1,10 @@
+import createNextIntlPlugin from 'next-intl/plugin';
 import type { NextConfig } from "next";
 
 const isProd = process.env.NODE_ENV === 'production';
-
 const internalHost = process.env.TAURI_DEV_HOST || 'localhost';
+
+const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -20,4 +22,4 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

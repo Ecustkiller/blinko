@@ -1,0 +1,116 @@
+{
+  "app": {
+    "title": "笔记生成器",
+    "description": "你的 AI 驱动的笔记助手"
+  },
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "create": "创建",
+    "theme": "主题",
+    "pin": "置顶",
+    "unpin": "取消置顶",
+    "settings": "设置",
+    "sync": "同步"
+  },
+  "settings": {
+    "about": {
+      "title": "关于",
+      "version": "NoteGen v{version}",
+      "checkReleases": "查询历史版本",
+      "checkUpdate": "检查更新",
+      "language": "语言"
+    },
+    "sync": {
+      "title": "同步",
+      "repoStatus": "仓库状态",
+      "syncRepo": "同步仓库",
+      "syncRepoDesc": "同步写作中的 markdown 文件",
+      "imageRepo": "图床仓库",
+      "imageRepoDesc": "同步你的图片到仓库，使用 jsdelivr 加速",
+      "private": "私有",
+      "public": "公开",
+      "createdAt": "创建于 {time}",
+      "updatedAt": "最后更新于 {time}"
+    },
+    "template": {
+      "title": "整理模板",
+      "customTemplate": "自定义模板",
+      "addTemplate": "新增自定义整理模板",
+      "deleteConfirm": "确认删除模板吗?",
+      "status": "状态",
+      "name": "名称",
+      "content": "内容",
+      "scope": "范围",
+      "selectScope": "选择范围"
+    },
+    "shortcut": {
+      "title": "快捷键",
+      "screenshot": "截图记录",
+      "textRecord": "文本记录",
+      "windowPin": "窗口置顶"
+    },
+    "theme": {
+      "title": "外观",
+      "previewTheme": "预览内容主题",
+      "codeTheme": "代码块高亮主题",
+      "selectTheme": "选择主题"
+    },
+    "dev": {
+      "title": "开发者",
+      "clearData": "清理数据",
+      "clearDataConfirm": "确定清理数据吗？"
+    },
+    "ai": {
+      "title": "AI",
+      "custom": "自定义",
+      "modelSupport": "仅支持 openai 协议的 AI 模型",
+      "modelList": {
+        "error": {
+          "title": "获取模型列表失败",
+          "description": "请检查 API Key 或网络是否正确"
+        }
+      },
+      "selectModel": "请选择模型",
+      "providers": {
+        "moonshot": "豆包",
+        "tongyi": "通义千问"
+      }
+    },
+    "ocr": {
+      "title": "OCR",
+      "languagePacks": "语言包",
+      "checkModels": "在此查询全部模型",
+      "modelInstruction": "以逗号分隔，例如：eng,chi_sim"
+    }
+  },
+  "navigation": {
+    "record": "记录",
+    "write": "写作",
+    "search": "搜索",
+    "gallery": "图床"
+  },
+  "marks": {
+    "types": {
+      "screenshot": "截图",
+      "text": "文本",
+      "image": "插图"
+    }
+  },
+  "tags": {
+    "inspiration": "灵感"
+  },
+  "sync": {
+    "status": "同步仓库状态",
+    "imageRepo": "图床仓库",
+    "articleRepo": "文章仓库"
+  },
+  "ai": {
+    "error": {
+      "title": "AI 错误",
+      "noAddress": "请先设置 AI 地址"
+    }
+  }
+}

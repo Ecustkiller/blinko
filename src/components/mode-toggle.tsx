@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
+import { useTranslations } from 'next-intl'
 
 import { Button } from "@/components/ui/button"
 import { SidebarMenuButton } from "./ui/sidebar"
@@ -23,10 +24,11 @@ function Toggle() {
 }
 
 export function ModeToggle() {
+  const t = useTranslations();
   return (
     <SidebarMenuButton asChild className="md:h-8 md:p-0"
       tooltip={{
-        children: '主题',
+        children: t('common.theme'),
         hidden: false,
       }}
     >

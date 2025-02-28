@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Pin, PinOff } from "lucide-react"
+import { useTranslations } from 'next-intl'
 
 import { Button } from "@/components/ui/button"
 import { getCurrentWindow } from '@tauri-apps/api/window';
@@ -14,7 +15,7 @@ import { isRegistered, register, unregister } from "@tauri-apps/plugin-global-sh
 import emitter from "@/lib/emitter";
 
 export function PinToggle() {
-
+  const t = useTranslations();
   const [isPin, setIsPin] = useState(false)
 
   async function setPin() {
@@ -71,7 +72,7 @@ export function PinToggle() {
   return (
     <SidebarMenuButton asChild className="md:h-8 md:p-0"
       tooltip={{
-        children: isPin ? '取消置顶' : '置顶',
+        children: isPin ? t('common.unpin') : t('common.pin'),
         hidden: false,
       }}
     >

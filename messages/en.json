@@ -1,0 +1,116 @@
+{
+  "app": {
+    "title": "Note Generator",
+    "description": "Your AI-powered note taking assistant"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "theme": "Theme",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "settings": "Settings",
+    "sync": "Sync"
+  },
+  "settings": {
+    "about": {
+      "title": "About",
+      "version": "NoteGen v{version}",
+      "checkReleases": "Check Release History",
+      "checkUpdate": "Check for Updates",
+      "language": "Language"
+    },
+    "sync": {
+      "title": "Sync",
+      "repoStatus": "Repository Status",
+      "syncRepo": "Sync Repository",
+      "syncRepoDesc": "Sync markdown files in writing",
+      "imageRepo": "Image Repository",
+      "imageRepoDesc": "Sync your images to repository, using jsdelivr for acceleration",
+      "private": "Private",
+      "public": "Public",
+      "createdAt": "Created {time}",
+      "updatedAt": "Last updated {time}"
+    },
+    "template": {
+      "title": "Template",
+      "customTemplate": "Custom Template",
+      "addTemplate": "Add Custom Template",
+      "deleteConfirm": "Are you sure to delete this template?",
+      "status": "Status",
+      "name": "Name",
+      "content": "Content",
+      "scope": "Scope",
+      "selectScope": "Select Scope"
+    },
+    "shortcut": {
+      "title": "Shortcuts",
+      "screenshot": "Screenshot Record",
+      "textRecord": "Text Record",
+      "windowPin": "Window Pin"
+    },
+    "theme": {
+      "title": "Appearance",
+      "previewTheme": "Preview content theme",
+      "codeTheme": "Code block highlight theme",
+      "selectTheme": "Select Theme"
+    },
+    "dev": {
+      "title": "Developer",
+      "clearData": "Clear Data",
+      "clearDataConfirm": "Are you sure to clear data?"
+    },
+    "ai": {
+      "title": "AI",
+      "custom": "Custom",
+      "modelSupport": "Only supports AI models with OpenAI protocol",
+      "modelList": {
+        "error": {
+          "title": "Failed to get model list",
+          "description": "Please check if API Key or network is correct"
+        }
+      },
+      "selectModel": "Please select a model",
+      "providers": {
+        "moonshot": "Moonshot",
+        "tongyi": "Tongyi Qianwen"
+      }
+    },
+    "ocr": {
+      "title": "OCR",
+      "languagePacks": "Language Packs",
+      "checkModels": "Check all models here",
+      "modelInstruction": "Separate with commas, e.g.: eng,chi_sim"
+    }
+  },
+  "navigation": {
+    "record": "Record",
+    "write": "Write",
+    "search": "Search",
+    "gallery": "Gallery"
+  },
+  "marks": {
+    "types": {
+      "screenshot": "Screenshot",
+      "text": "Text",
+      "image": "Image"
+    }
+  },
+  "tags": {
+    "inspiration": "Inspiration"
+  },
+  "sync": {
+    "status": "Sync Repository Status",
+    "imageRepo": "Image Repository",
+    "articleRepo": "Article Repository"
+  },
+  "ai": {
+    "error": {
+      "title": "AI Error",
+      "noAddress": "Please set AI address first"
+    }
+  }
+}

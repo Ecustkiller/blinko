@@ -2,6 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { FormItem, SettingRow, SettingType } from "./setting-base";
 import { useEffect } from "react";
+import { useTranslations } from 'next-intl';
 import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
 import useSyncStore, { SyncStateEnum } from "@/stores/sync";
@@ -15,6 +16,7 @@ dayjs.extend(relativeTime)
 dayjs.locale(zh)
 
 export function SettingSync({id, icon}: {id: string, icon?: React.ReactNode}) {
+  const t = useTranslations();
   const { accessToken, setAccessToken } = useSettingStore()
   const {
     imageRepoState,
@@ -54,22 +56,22 @@ export function SettingSync({id, icon}: {id: string, icon?: React.ReactNode}) {
   }, [])
 
   return (
-    <SettingType id={id} icon={icon} title="同步">
+    <SettingType id={id} icon={icon} title={t('settings.sync.title')}>
       <SettingRow>
         <FormItem title="Github Access Token">
           <Input value={accessToken} onChange={tokenChangeHandler} />
         </FormItem>
       </SettingRow>
       <SettingRow>
-        <FormItem title="仓库状态">
+        <FormItem title={t('settings.sync.repoStatus')}>
           <div className="grid grid-cols-2 gap-4">
             <Card>
               <CardHeader className={`${syncRepoInfo ? 'border-b' : ''}`}>
                 <CardTitle className="flex justify-between items-center">
-                  <span>同步仓库（{ syncRepoInfo?.private ? '私有' : '公开' }）</span>
+                  <span>{t('settings.sync.syncRepo')}（{ syncRepoInfo?.private ? t('settings.sync.private') : t('settings.sync.public') }）</span>
                   <Badge className={`${syncRepoState === SyncStateEnum.success ? 'bg-green-800' : 'bg-red-800'}`}>{syncRepoState}</Badge>
                 </CardTitle>
-                <CardDescription>同步写作中的 markdown 文件</CardDescription>
+                <CardDescription>{t('settings.sync.syncRepoDesc')}</CardDescription>
               </CardHeader>
               {
                 syncRepoInfo &&
@@ -78,8 +80,8 @@ export function SettingSync({id, icon}: {id: string, icon?: React.ReactNode}) {
                     <OpenBroswer title={syncRepoInfo?.full_name || ''} url={syncRepoInfo?.html_url || ''} />
                   </h3>
                   <CardDescription className="flex">
-                    <p className="text-zinc-500 leading-6">创建于 { dayjs(syncRepoInfo?.created_at).fromNow() }，</p>
-                    <p className="text-zinc-500 leading-6">最后更新于 { dayjs(syncRepoInfo?.updated_at).fromNow() }。</p>
+                    <p className="text-zinc-500 leading-6">{t('settings.sync.createdAt', { time: dayjs(syncRepoInfo?.created_at).fromNow() })}，</p>
+                    <p className="text-zinc-500 leading-6">{t('settings.sync.updatedAt', { time: dayjs(syncRepoInfo?.updated_at).fromNow() })}。</p>
                   </CardDescription>
                 </CardContent>
               }
@@ -87,10 +89,10 @@ export function SettingSync({id, icon}: {id: string, icon?: React.ReactNode}) {
             <Card>
               <CardHeader className={`${imageRepoInfo ? 'border-b' : ''}`}>
                 <CardTitle className="flex justify-between items-center">
-                  <span>图床仓库 （{ imageRepoInfo?.private ? '私有' : '公开' }）</span>
+                  <span>{t('settings.sync.imageRepo')} （{ imageRepoInfo?.private ? t('settings.sync.private') : t('settings.sync.public') }）</span>
                   <Badge className={`${imageRepoState === SyncStateEnum.success ? 'bg-green-800' : 'bg-red-800'}`}>{imageRepoState}</Badge>
                 </CardTitle>
-                <CardDescription>同步你的图片到仓库，使用 jsdelivr 加速。</CardDescription>
+                <CardDescription>{t('settings.sync.imageRepoDesc')}</CardDescription>
               </CardHeader>
               {
                 imageRepoInfo &&

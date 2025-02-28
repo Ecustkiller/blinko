@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { FormItem, SettingRow, SettingType } from "./setting-base";
+import { useTranslations } from 'next-intl';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useEffect } from "react";
 import useSettingStore from "@/stores/setting";
@@ -10,6 +11,7 @@ import { aiConfig } from "./config";
 
 
 export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
+  const t = useTranslations();
   const { aiType, setAiType, apiKey, setApiKey, baseURL, setBaseURL, setModel } = useSettingStore()
 
   async function tabChangeHandler(tab: string) {
@@ -95,7 +97,7 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   }, [])
 
   return (
-    <SettingType id={id} icon={icon} title="AI">
+    <SettingType id={id} icon={icon} title={t('settings.ai.title')}>
       <SettingRow>
         <Tabs className="mb-2" value={aiType} onValueChange={tabChangeHandler}>
           <TabsList>
@@ -110,7 +112,7 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
       {
         aiType === 'custom' && (
           <SettingRow>
-            <span className="my-2 flex items-center gap-2"><InfoIcon className="size-4" />仅支持 openai 协议的 AI 模型。</span>
+            <span className="my-2 flex items-center gap-2"><InfoIcon className="size-4" />{t('settings.ai.modelSupport')}</span>
           </SettingRow>
         )
       }
