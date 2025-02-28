@@ -10,12 +10,14 @@ import { toast } from "@/hooks/use-toast";
 import { cloneDeep } from "lodash-es";
 import { open } from "@tauri-apps/plugin-shell";
 import { computedParentPath, getCurrentFolder } from "@/lib/path";
+import { useTranslations } from "next-intl";
 
 export function FolderItem({ item }: { item: DirTree }) {
   const [isEditing, setIsEditing] = useState(item.isEditing)
   const [name, setName] = useState(item.name)
   const [isDragging, setIsDragging] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const t = useTranslations('article.file')
 
   const { 
     activeFilePath,
@@ -136,6 +138,7 @@ export function FolderItem({ item }: { item: DirTree }) {
         setActiveFilePath(newPath.replace('article/', ''))
       }
     }
+    setIsDragging(false)
   }
 
   function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
@@ -211,30 +214,30 @@ export function FolderItem({ item }: { item: DirTree }) {
         </ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuItem inset onClick={newFileHandler}>
-            新建文件
+            {t('context.newFile')}
           </ContextMenuItem>
           <ContextMenuItem inset onClick={newFolderHandler}>
-            新建文件夹
+            {t('context.newFolder')}
           </ContextMenuItem>
           <ContextMenuItem inset onClick={handleShowFileManager}>
-            查看目录
+            {t('context.viewDirectory')}
           </ContextMenuItem>
           <ContextMenuSeparator />
           <ContextMenuItem inset disabled>
-            剪切
+            {t('context.cut')}
           </ContextMenuItem>
           <ContextMenuItem inset disabled>
-            复制
+            {t('context.copy')}
           </ContextMenuItem>
           <ContextMenuItem inset disabled>
-            粘贴
+            {t('context.paste')}
           </ContextMenuItem>
           <ContextMenuSeparator />
           <ContextMenuItem inset onClick={handleStartRename}>
-            重命名
+            {t('context.rename')}
           </ContextMenuItem>
           <ContextMenuItem inset className="text-red-900" onClick={(e) => { handleDeleteFolder(e); }}>
-            删除
+            {t('context.delete')}
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>

@@ -366,5 +366,39 @@
       "title": "AI 错误",
       "noAddress": "请先设置 AI 地址"
     }
+  },
+  "article": {
+    "file": {
+      "toolbar": {
+        "accessRepo": "访问仓库",
+        "loadingSync": "正在加载同步信息",
+        "configSync": "配置同步",
+        "newArticle": "新建文章",
+        "newFolder": "新建文件夹",
+        "refresh": "刷新"
+      },
+      "context": {
+        "viewDirectory": "查看目录",
+        "cut": "剪切",
+        "copy": "复制",
+        "paste": "粘贴",
+        "rename": "重命名",
+        "deleteSyncFile": "删除同步文件",
+        "deleteLocalFile": "删除本地文件",
+        "delete": "删除",
+        "newFile": "新建文件",
+        "newFolder": "新建文件夹"
+      },
+      "error": {
+        "fileExists": "文件名已存在"
+      }
+    },
+    "editor": {
+      "upload": {
+        "error": "上传失败",
+        "needToken": "上传图片需配置 accessToken",
+        "uploading": "正在上传图片"
+      }
+    }
   }
 }

@@ -12,12 +12,14 @@ import { fileToBase64, uploadFile } from '@/lib/github'
 import { RepoNames } from '@/lib/github.types'
 import useSettingStore from '@/stores/setting'
 import { Store } from '@tauri-apps/plugin-store'
+import { useTranslations } from 'next-intl'
 
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
   const { currentArticle, saveCurrentArticle, loading } = useArticleStore()
   const { jsdelivr, accessToken } = useSettingStore()
   const { theme } = useTheme()
+  const t = useTranslations('article.editor')
   
   function init() {
     const vditor = new Vditor('aritcle-md-editor', {
@@ -50,8 +52,8 @@ export function MdEditor() {
     if (!accessToken) {
       toast({
         variant: 'destructive',
-        title: '上传失败',
-        description: '上传图片需配置 accessToken',
+        title: t('upload.error'),
+        description: t('upload.needToken'),
       })
       return ['']
     }
@@ -59,8 +61,8 @@ export function MdEditor() {
       files.map((file) => {
         return new Promise<string>(async(resolve, reject) => {
           if (!file.type.includes('image')) return
-          const t = toast({
-            title: '正在上传图片',
+          const toastNotification = toast({
+            title: t('upload.uploading'),
             description: file.name,
             duration: 600000,
           })
@@ -81,7 +83,7 @@ export function MdEditor() {
           }).catch(err => {
             reject(err)
           }).finally(() => {
-            t.dismiss()
+            toastNotification.dismiss()
           })
         });
       })

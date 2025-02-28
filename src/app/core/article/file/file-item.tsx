@@ -12,12 +12,14 @@ import { cloneDeep } from "lodash-es";
 import { open } from "@tauri-apps/plugin-shell";
 import { computedParentPath, getCurrentFolder } from "@/lib/path";
 import { toast } from "@/hooks/use-toast";
+import { useTranslations } from "next-intl";
 
 export function FileItem({ item }: { item: DirTree }) {
   const [isEditing, setIsEditing] = useState(item.isEditing)
   const [name, setName] = useState(item.name)
   const inputRef = useRef<HTMLInputElement>(null)
   const { activeFilePath, setActiveFilePath, readArticle, setCurrentArticle, fileTree, setFileTree } = useArticleStore()
+  const t = useTranslations('article.file')
   
   const path = computedParentPath(item)
   const isRoot = path.split('/').length === 1
@@ -180,27 +182,27 @@ export function FileItem({ item }: { item: DirTree }) {
       </ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuItem inset onClick={handleShowFileManager}>
-          查看目录
+          {t('context.viewDirectory')}
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem inset disabled>
-          剪切
+          {t('context.cut')}
         </ContextMenuItem>
         <ContextMenuItem inset disabled>
-          复制
+          {t('context.copy')}
         </ContextMenuItem>
         <ContextMenuItem inset disabled>
-          粘贴
+          {t('context.paste')}
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem disabled={!item.isLocale} inset onClick={handleStartRename}>
-          重命名
+          {t('context.rename')}
         </ContextMenuItem>
         <ContextMenuItem disabled={!item.sha} inset className="text-red-900" onClick={handleDeleteSyncFile}>
-          删除同步文件
+          {t('context.deleteSyncFile')}
         </ContextMenuItem>
         <ContextMenuItem disabled={!item.isLocale} inset className="text-red-900" onClick={handleDeleteFile}>
-          删除本地文件
+          {t('context.deleteLocalFile')}
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
