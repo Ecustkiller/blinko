@@ -41,12 +41,16 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
     const apiKey = await store.get<string>(`apiKey-${tab}`)
     if (apiKey) {
       setApiKey(apiKey)
+      await store.set(`apiKey`, apiKey)
+      await store.set(`apiKey-${tab}`, apiKey)
     } else {
       setApiKey('')
     }
     const model = await store.get<string>(`model-${tab}`)
     if (model) {
       setModel(model)
+      await store.set(`model`, model)
+      await store.set(`model-${tab}`, model)
     } else {
       setModel('')
     }

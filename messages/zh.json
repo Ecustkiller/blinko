@@ -77,6 +77,7 @@
       "selectModel": "请选择模型",
       "providers": {
         "chatgpt": "ChatGPT",
+        "gemini": "Gemini",
         "chatanywhere": "ChatAnyWhere",
         "ollama": "Ollama",
         "lmstudio": "LM Studio",

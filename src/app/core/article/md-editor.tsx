@@ -24,7 +24,6 @@ export function MdEditor() {
   const { currentLocale } = useI18n()
 
   function getLang() {
-    console.log(currentLocale);
     switch (currentLocale) {
       case 'en':
         return 'en_US'

@@ -80,6 +80,10 @@ const baseAiConfig = [
     modelURL: 'https://api.openai.com/v1/models',
   },
   {
+    key: 'gemini',
+    baseURL: 'https://generativelanguage.googleapis.com/v1beta',
+  },
+  {
     key: 'chatanywhere',
     baseURL: 'https://api.chatanywhere.tech/v1',
     modelURL: 'https://api.chatanywhere.tech/v1/models',

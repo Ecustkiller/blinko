@@ -1,6 +1,6 @@
-export interface AiResult {
+export interface OpenAIResult {
   id: string;
-  choices: Choice[];
+  choices: OpenAIChoice[];
   created: number;
   model: string;
   object: string;
@@ -14,7 +14,7 @@ interface Usage {
   total_tokens: number;
 }
 
-interface Choice {
+interface OpenAIChoice {
   index: number;
   message: Message;
   logprobs: null;
@@ -31,4 +31,30 @@ export interface AiModel {
   object: string;
   created: number;
   owned_by: string;
+}
+
+export interface GeminiResult {
+  candidates: GeminiCandidate[];
+  promptFeedback: PromptFeedback;
+}
+
+interface GeminiCandidate {
+  content: {
+    parts: {
+      text: string;
+    }[];
+    role: string;
+  };
+  finishReason: string;
+  index: number;
+  safetyRatings: SafetyRating[];
+}
+
+interface SafetyRating {
+  category: string;
+  probability: string;
+}
+
+interface PromptFeedback {
+  safetyRatings: SafetyRating[];
 }
