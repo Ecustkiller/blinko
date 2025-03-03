@@ -82,7 +82,7 @@ function DetailViewer({mark, content, path}: {mark: Mark, content: string, path?
         </SheetHeader>
         <div className="h-[calc(100vh-88px)] overflow-y-auto p-4">
           {
-            mark.url && mark.type !== 'text' ?
+            mark.url && (mark.type === 'image' || mark.type === 'scan') ?
             <LocalImage
               src={mark.url.includes('http') ? mark.url : `/${path}/${mark.url}`}
               alt=""
@@ -145,6 +145,28 @@ export function MarkWrapper({mark}: {mark: Mark}) {
         </div>
         <div className="bg-zinc-900 flex items-center justify-center">
           <ImageViewer mark={mark} path="image" />
+        </div>
+      </div>
+    )
+    case 'link':
+    return (
+      <div className="p-2 flex-1">
+        <div className="flex w-full items-center gap-2 text-zinc-500 text-xs">
+          <span className="flex items-center gap-1 bg-blue-900 text-white px-1 rounded">
+            {MarkType[mark.type]}
+          </span>
+          <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
+        </div>
+        <DetailViewer mark={mark} content={mark.desc || ''} />
+        <div className="mt-1">
+          <a 
+            href={mark.url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-xs text-blue-500 hover:underline truncate block"
+          >
+            {mark.url}
+          </a>
         </div>
       </div>
     )

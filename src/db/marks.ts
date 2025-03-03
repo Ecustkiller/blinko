@@ -5,12 +5,13 @@ export enum MarkType {
   scan = '截图',
   text = '文本',
   image = '插图',
+  link = '链接',
 }
 
 export interface Mark {
   id: number
   tagId: number
-  type: 'scan' | 'text' | 'image'
+  type: 'scan' | 'text' | 'image' | 'link'
   content?: string
   desc?: string
   url: string

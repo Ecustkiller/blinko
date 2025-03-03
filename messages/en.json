@@ -49,6 +49,7 @@
     "shortcut": {
       "title": "Shortcuts",
       "screenshot": "Screenshot Record",
+      "link": "Link Record",
       "textRecord": "Text Record",
       "windowPin": "Window Pin"
     },
@@ -107,7 +108,8 @@
         "image": "Image",
         "screenshot": "Screenshot",
         "text": "Text",
-        "file": "File"
+        "file": "File",
+        "link": "Link"
       },
       "progress": {
         "cacheImage": "Caching image",
@@ -125,6 +127,11 @@
         "title": "Record Text",
         "description": "Record a piece of text, which will be inserted into the appropriate position when organizing notes.",
         "characterCount": "{count} characters",
+        "save": "Save"
+      },
+      "link": {
+        "title": "Record Link",
+        "description": "Enter a webpage link, and the system will automatically crawl the page content and save it",
         "save": "Save"
       },
       "clipboard": {

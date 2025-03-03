@@ -8,6 +8,7 @@ import { ControlScan } from "./control-scan"
 import { ControlText } from "./control-text"
 import { ControlImage } from "./control-image"
 import { ControlFile } from "./control-file"
+import { ControlLink } from "./control-link"
 import { Toggle } from "@/components/ui/toggle"
 import useMarkStore from "@/stores/mark"
 
@@ -35,6 +36,7 @@ export function MarkToolbar() {
           <ControlImage />
           <ControlFile />
           <ControlText />
+          <ControlLink />
         </TooltipProvider>
       </div>
       <div className="flex items-center gap-1">
