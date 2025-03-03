@@ -84,6 +84,7 @@ export function MarkGen() {
     const scanMarks = marksByRange.filter(item => item.type === 'scan')
     const textMarks = marksByRange.filter(item => item.type === 'text')
     const imageMarks = marksByRange.filter(item => item.type === 'image')
+    const linkMarks = marksByRange.filter(item => item.type === 'link')
     for (const image of imageMarks) {
       if (!image.url.includes('http')) {
         image.url = await convertImage(`/image/${image.url}`)
@@ -99,12 +100,22 @@ export function MarkGen() {
         描述：${item.content}，
         图片地址：${item.url}
       `).join(';\n\n')}。
+      以下是链接记录的内容：
+      ${linkMarks.map((item, index) => `第 ${index + 1} 条链接记录：
+        标题：${item.desc}
+        链接：${item.url}
+        内容：${item.content}
+        创建于：${dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}`).join(';\n\n')}。
       ---
       如果记录内容为空，则返回本次整理中不存在任何记录信息。
       满足以下格式要求：
       - 使用 ${locale} 语言。
       - 使用 Markdown 语法。
       - 笔记顺序可能是错误的，要按照正确顺序排列。
+      - 如果存在链接记录，将其作为参考链接放在文章末尾，格式如下：
+        ## 参考链接
+        1. [标题1](链接1)
+        2. [标题2](链接2)
       
       ${
         imageMarks.length > 0 ?
