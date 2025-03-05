@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider"
 import { v4 } from 'uuid';
+import { confirm } from '@tauri-apps/plugin-dialog';
 
 export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   const t = useTranslations('settings.ai');
@@ -119,6 +120,8 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
 
   // 删除自定义模型
   async function deleteCustomModelHandler() {
+    const res = await confirm(t('deleteCustomModelConfirm'))
+    if (!res) return
     const model = await getModelByStore(aiType)
     if (!model) return
     const store = await Store.load('store.json');

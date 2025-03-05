@@ -70,6 +70,7 @@
       "custom": "Custom",
       "addCustomModel": "Add Custom",
       "deleteCustomModel": "Delete Custom",
+      "deleteCustomModelConfirm": "Are you sure to delete this custom model?",
       "builtin": "Built-in",
       "modelSupport": "Only supports AI models with OpenAI protocol",
       "modelList": {
