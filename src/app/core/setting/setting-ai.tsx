@@ -80,6 +80,7 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
     if (!model) return
     model.baseURL = value
     const store = await Store.load('store.json');
+    store.set('baseURL', value)
     const aiModelList = await store.get<AiConfig[]>('aiModelList')
     if (!aiModelList) return
     aiModelList[aiModelList.findIndex(item => item.key === aiType)] = model
@@ -94,6 +95,7 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
     if (!model) return
     model.apiKey = value
     const store = await Store.load('store.json');
+    store.set('apiKey', value)
     const aiModelList = await store.get<AiConfig[]>('aiModelList')
     if (!aiModelList) return
     aiModelList[aiModelList.findIndex(item => item.key === aiType)] = model
@@ -104,11 +106,13 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   async function addCustomModelHandler() {
     const id = v4()
     setAiType(id)
-    const newModel: AiConfig = { key: id, baseURL: '', type: 'custom', title: '未命名'}
+    const newModel: AiConfig = { key: id, baseURL: '', type: 'custom', title: 'Untitled'}
     const store = await Store.load('store.json');
     await store.set('aiType', id)
     await store.set('aiModelList', [...aiConfig, newModel])
     setAiConfig([...aiConfig, newModel])
+    selectChangeHandler(id)
+    setCurrentAi(newModel)
   }
 
   // 删除自定义模型
@@ -121,6 +125,11 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
     aiModelList.splice(aiModelList.findIndex(item => item.key === aiType), 1)
     await store.set('aiModelList', aiModelList)
     setAiConfig(aiModelList)
+    const first = aiModelList[0]
+    if (!first) return
+    selectChangeHandler(first.key)
+    setCurrentAi(first)
+    setAiType(first.key)
   }
 
   useEffect(() => {
