@@ -8,7 +8,6 @@ import { InfoIcon } from "lucide-react";
 import ModelSelect from "./model-select";
 import { AiConfig, baseAiConfig } from "./config";
 import * as React from "react"
- 
 import {
   Select,
   SelectContent,
@@ -19,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
-
+import { Slider } from "@/components/ui/slider"
 import { v4 } from 'uuid';
 
 export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
@@ -28,6 +27,7 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   const [aiConfig, setAiConfig] = useState<AiConfig[]>(baseAiConfig)
   const [currentAi, setCurrentAi] = useState<AiConfig | undefined>(undefined)
   const [title, setTitle] = useState<string>('')
+  const [temperature, setTemperature] = useState<number>(0.7)
 
   // 通过本地存储查询当前的模型配置
   async function getModelByStore(key: string) {
@@ -56,6 +56,8 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
     if (model.type === 'custom') {
       setTitle(model.title || '')
     }
+    setTemperature(model.temperature)
+    store.set('temperature', model.temperature)
   }
 
   // 自定义名称
@@ -106,7 +108,7 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   async function addCustomModelHandler() {
     const id = v4()
     setAiType(id)
-    const newModel: AiConfig = { key: id, baseURL: '', type: 'custom', title: 'Untitled'}
+    const newModel: AiConfig = { key: id, baseURL: '', type: 'custom', title: 'Untitled', temperature: 0.7 }
     const store = await Store.load('store.json');
     await store.set('aiType', id)
     await store.set('aiModelList', [...aiConfig, newModel])
@@ -132,6 +134,20 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
     setAiType(first.key)
   }
 
+  // temperature 变更处理
+  async function temperatureChangeHandler(value: number[]) {
+    setTemperature(value[0])
+    const model = await getModelByStore(aiType)
+    if (!model) return
+    model.temperature = value[0]
+    const store = await Store.load('store.json');
+    const aiModelList = await store.get<AiConfig[]>('aiModelList')
+    if (!aiModelList) return
+    aiModelList[aiModelList.findIndex(item => item.key === aiType)] = model
+    await store.set('aiModelList', aiModelList)
+    await store.set('temperature', value[0])
+  }
+  
   useEffect(() => {
     async function init() {
       const store = await Store.load('store.json');
@@ -157,6 +173,8 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
       if (model.type === 'custom') {
         setTitle(model.title || '')
       }
+      setTemperature(model.temperature)
+      await store.set('temperature', model.temperature)
     }
     init()
   }, [])
@@ -230,6 +248,20 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
       <SettingRow>
         <FormItem title="Model">
           <ModelSelect />
+        </FormItem>
+      </SettingRow>
+      <SettingRow>
+        <FormItem title="Temperature">
+          <div className="flex gap-2 py-2">
+            <Slider 
+              className="w-64"
+              value={[temperature]} 
+              max={2} 
+              step={0.01} 
+              onValueChange={temperatureChangeHandler}
+            />
+            <span className="text-zinc-500">{temperature}</span>
+          </div>
         </FormItem>
       </SettingRow>
     </SettingType>
