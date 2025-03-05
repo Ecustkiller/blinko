@@ -123,7 +123,7 @@ export function ChatInput() {
   return (
     <footer className="relative flex shadow-lg rounded-xl overflow-hidden min-w-[500px] w-2/3 max-w-[800px] my-4">
       <div className={`${loading ? 'bg-gradient-to-r' : 'bg-border'} absolute border border-transparent inset-0 rounded-xl from-blue-500 to-purple-500 animate-gradient`}></div>
-      <div className={`m-[1px] relative px-4 py-4 rounded-[11px] w-full flex bg-primary-foreground h-14 items-center`}>
+      <div className={`m-[1px] mr-[2px] relative px-4 py-4 rounded-[11px] w-full flex bg-primary-foreground h-14 items-center`}>
         <Input
           className="flex-1 relative border-none focus-visible:ring-0 shadow-none"
           disabled={!apiKey || loading}
