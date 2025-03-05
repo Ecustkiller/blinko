@@ -103,7 +103,7 @@ const useSettingStore = create<SettingState>((set, get) => ({
   language: '简体中文',
   setLanguage: (language) => set({ language }),
 
-  aiType: 'custom',
+  aiType: 'chatgpt',
   setAiType: (aiType) => set({ aiType }),
 
   baseURL: '',

@@ -66,7 +66,11 @@
     },
     "ai": {
       "title": "AI",
+      "modelTitle": "Model Name",
       "custom": "Custom",
+      "addCustomModel": "Add Custom",
+      "deleteCustomModel": "Delete Custom",
+      "builtin": "Built-in",
       "modelSupport": "Only supports AI models with OpenAI protocol",
       "modelList": {
         "error": {

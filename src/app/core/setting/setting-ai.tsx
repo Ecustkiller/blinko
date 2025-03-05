@@ -1,122 +1,210 @@
 import { Input } from "@/components/ui/input";
 import { FormItem, SettingRow, SettingType } from "./setting-base";
 import { useTranslations } from 'next-intl';
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
 import { InfoIcon } from "lucide-react";
 import ModelSelect from "./model-select";
-import { baseAiConfig } from "./config";
+import { AiConfig, baseAiConfig } from "./config";
+import * as React from "react"
+ 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Button } from "@/components/ui/button";
+
+import { v4 } from 'uuid';
 
 export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
-  const t = useTranslations();
-  const aiT = useTranslations('settings.ai');
+  const t = useTranslations('settings.ai');
   const { aiType, setAiType, apiKey, setApiKey, baseURL, setBaseURL, setModel } = useSettingStore()
+  const [aiConfig, setAiConfig] = useState<AiConfig[]>(baseAiConfig)
+  const [currentAi, setCurrentAi] = useState<AiConfig | undefined>(undefined)
+  const [title, setTitle] = useState<string>('')
 
-  // Add translations to the config
-  const aiConfig = baseAiConfig.map(item => ({
-    ...item,
-    title: item.key === 'custom' 
-      ? aiT('custom') 
-      : aiT(`providers.${item.key}`)
-  }))
-
-  async function tabChangeHandler(tab: string) {
-    setAiType(tab)
+  // 通过本地存储查询当前的模型配置
+  async function getModelByStore(key: string) {
     const store = await Store.load('store.json');
-    await store.set('aiType', tab)
-    const baseURL = await store.get<string>(`baseURL-${tab}`)
-    if (baseURL) {
-      setBaseURL(baseURL)
-      await store.set(`baseURL`, baseURL)
-    } else {
-      const defaultBaseURL = baseAiConfig.find((item) => item.key === tab)?.baseURL
-      if (defaultBaseURL) {
-        setBaseURL(defaultBaseURL)
-        await store.set(`baseURL`, defaultBaseURL)
-        await store.set(`baseURL-${tab}`, defaultBaseURL)
-      }
-    }
-    const apiKey = await store.get<string>(`apiKey-${tab}`)
-    if (apiKey) {
-      setApiKey(apiKey)
-      await store.set(`apiKey`, apiKey)
-      await store.set(`apiKey-${tab}`, apiKey)
-    } else {
-      setApiKey('')
-    }
-    const model = await store.get<string>(`model-${tab}`)
-    if (model) {
-      setModel(model)
-      await store.set(`model`, model)
-      await store.set(`model-${tab}`, model)
-    } else {
-      setModel('')
+    const aiModelList = await store.get<AiConfig[]>('aiModelList')
+    if (!aiModelList) return
+    setAiType(key)
+    const model = aiModelList.find(item => item.key === key)
+    return model
+  }
+
+  // 模型选择变更
+  async function selectChangeHandler(key: string) {
+    setCurrentAi(aiConfig.find(item => item.key === key))
+    setAiType(key)
+    const store = await Store.load('store.json');
+    await store.set('aiType', key)
+    const model = await getModelByStore(key)
+    if (!model) return
+    setBaseURL(model.baseURL || '')
+    store.set('baseURL', model.baseURL || '')
+    setApiKey(model.apiKey || '')
+    store.set('apiKey', model.apiKey || '')
+    setModel(model.model || '')
+    store.set('model', model.model || '')
+    if (model.type === 'custom') {
+      setTitle(model.title || '')
     }
   }
 
+  // 自定义名称
+  async function titleChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
+    setTitle(e.target.value)
+    const model = await getModelByStore(aiType)
+    if (!model) return
+    model.title = e.target.value
+    const store = await Store.load('store.json');
+    const aiModelList = await store.get<AiConfig[]>('aiModelList')
+    if (!aiModelList) return
+    aiModelList[aiModelList.findIndex(item => item.key === aiType)] = model
+    setAiConfig(aiModelList)
+    await store.set('aiModelList', aiModelList)
+  }
+
+  // 基础 URL 变更
   async function baseURLChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value
     setBaseURL(value)
+    const model = await getModelByStore(aiType)
+    if (!model) return
+    model.baseURL = value
     const store = await Store.load('store.json');
-    await store.set(`baseURL`, value)
-    await store.set(`baseURL-${aiType}`, value)
+    const aiModelList = await store.get<AiConfig[]>('aiModelList')
+    if (!aiModelList) return
+    aiModelList[aiModelList.findIndex(item => item.key === aiType)] = model
+    await store.set('aiModelList', aiModelList)
   }
 
+  // API Key 变更
   async function apiKeyChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value
     setApiKey(value)
+    const model = await getModelByStore(aiType)
+    if (!model) return
+    model.apiKey = value
     const store = await Store.load('store.json');
-    await store.set(`apiKey`, value)
-    await store.set(`apiKey-${aiType}`, value)
+    const aiModelList = await store.get<AiConfig[]>('aiModelList')
+    if (!aiModelList) return
+    aiModelList[aiModelList.findIndex(item => item.key === aiType)] = model
+    await store.set('aiModelList', aiModelList)
+  }
+
+  // 添加自定义模型
+  async function addCustomModelHandler() {
+    const id = v4()
+    setAiType(id)
+    const newModel: AiConfig = { key: id, baseURL: '', type: 'custom', title: '未命名'}
+    const store = await Store.load('store.json');
+    await store.set('aiType', id)
+    await store.set('aiModelList', [...aiConfig, newModel])
+    setAiConfig([...aiConfig, newModel])
+  }
+
+  // 删除自定义模型
+  async function deleteCustomModelHandler() {
+    const model = await getModelByStore(aiType)
+    if (!model) return
+    const store = await Store.load('store.json');
+    const aiModelList = await store.get<AiConfig[]>('aiModelList')
+    if (!aiModelList) return
+    aiModelList.splice(aiModelList.findIndex(item => item.key === aiType), 1)
+    await store.set('aiModelList', aiModelList)
+    setAiConfig(aiModelList)
   }
 
   useEffect(() => {
     async function init() {
       const store = await Store.load('store.json');
-      const tab = await store.get<string>('aiType')
-      if (tab) {
-        setAiType(tab)
-        const apiKey = await store.get<string>(`apiKey-${tab}`)
-        if (apiKey) {
-          setApiKey(apiKey)
-        }
-        const baseURL = await store.get<string>(`baseURL-${tab}`)
-        if (baseURL) {
-          setBaseURL(baseURL)
-        } else {
-          const baseURL = baseAiConfig.find((item) => item.key === tab)?.baseURL
-          if (baseURL) {
-            setBaseURL(baseURL)
-          }
-        }
-        const model = await store.get<string>(`model-${tab}`)
-        if (model) {
-          setModel(model)
-        }
+      const aiType = await store.get<string>('aiType')
+      if (!aiType) return
+      setAiType(aiType)
+      const aiModelList = await store.get<AiConfig[]>('aiModelList')
+      if (aiModelList) {
+        setAiConfig(aiModelList)
+      } else {
+        setAiConfig(baseAiConfig)
+        await store.set('aiModelList', baseAiConfig)
+      }
+      const model = await getModelByStore(aiType)
+      if (!model) return
+      setCurrentAi(model)
+      setBaseURL(model.baseURL || '')
+      store.set('baseURL', model.baseURL || '')
+      setApiKey(model.apiKey || '')
+      store.set('apiKey', model.apiKey || '')
+      setModel(model.model || '')
+      store.set('model', model.model || '')
+      if (model.type === 'custom') {
+        setTitle(model.title || '')
       }
     }
     init()
   }, [])
 
   return (
-    <SettingType id={id} icon={icon} title={t('settings.ai.title')}>
+    <SettingType id={id} icon={icon} title={t('title')}>
       <SettingRow>
-        <Tabs className="mb-2" value={aiType} onValueChange={tabChangeHandler}>
-          <TabsList>
+        <FormItem title="Model Provider">
+          <div className="flex gap-2">
+            <Select value={aiType} onValueChange={selectChangeHandler}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a fruit" />
+              </SelectTrigger>
+              <SelectContent>
+                {
+                  aiConfig.filter(item => item.type === 'custom').length > 0 &&
+                  <SelectGroup>
+                    <SelectLabel>{t('custom')}</SelectLabel>
+                    {
+                      aiConfig.filter(item => item.type === 'custom').map((item) => (
+                        <SelectItem value={item.key} key={item.key}>{item.title}</SelectItem>
+                      ))
+                    }
+                  </SelectGroup>
+                }
+                <SelectGroup>
+                  <SelectLabel>{t('builtin')}</SelectLabel>
+                  {
+                    aiConfig.filter(item => item.type === 'built-in').map((item) => (
+                      <SelectItem value={item.key} key={item.key}>{item.title}</SelectItem>
+                    ))
+                  }
+                </SelectGroup>
+              </SelectContent>
+            </Select>
             {
-              aiConfig.map((item) => (
-                <TabsTrigger value={item.key} key={item.key}>{item.title}</TabsTrigger>
-              ))
+              currentAi?.type === 'custom' && (
+                <Button variant={'destructive'} onClick={deleteCustomModelHandler}>{t('deleteCustomModel')}</Button>
+              )
             }
-          </TabsList>
-        </Tabs>
+            <Button onClick={addCustomModelHandler}>{t('addCustomModel')}</Button>
+          </div>
+        </FormItem>
       </SettingRow>
       {
         aiType === 'custom' && (
           <SettingRow>
-            <span className="my-2 flex items-center gap-2"><InfoIcon className="size-4" />{t('settings.ai.modelSupport')}</span>
+            <span className="my-2 flex items-center gap-2"><InfoIcon className="size-4" />{t('modelSupport')}</span>
+          </SettingRow>
+        )
+      }
+      {
+        currentAi?.type === 'custom' && (
+          <SettingRow>
+            <FormItem title={t('modelTitle')}>
+              <Input value={title} onChange={titleChangeHandler} />
+            </FormItem>
           </SettingRow>
         )
       }

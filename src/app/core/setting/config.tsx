@@ -57,6 +57,9 @@ export default baseConfig
 export interface AiConfig {
   key: string
   title: string
+  type: 'built-in' | 'custom'
+  apiKey?: string
+  model?: string
   baseURL?: string
   modelURL?: string
 }
@@ -69,51 +72,38 @@ export interface Model {
 }
 
 // Define base AI configuration without translations
-const baseAiConfig = [
-  {
-    key: 'custom',
-    baseURL: null,
-  },
+const baseAiConfig: AiConfig[] = [
   {
     key: 'chatgpt',
+    title: 'ChatGPT',
+    type: 'built-in',
     baseURL: 'https://api.openai.com/v1',
     modelURL: 'https://api.openai.com/v1/models',
   },
   {
     key: 'gemini',
+    title: 'Gemini',
+    type: 'built-in',
     baseURL: 'https://generativelanguage.googleapis.com/v1beta',
   },
   {
-    key: 'chatanywhere',
-    baseURL: 'https://api.chatanywhere.tech/v1',
-    modelURL: 'https://api.chatanywhere.tech/v1/models',
-  },
-  {
     key: 'ollama',
+    title: 'Ollama',
+    type: 'built-in',
     baseURL: 'http://localhost:11434',
     modelURL: 'http://localhost:11434/v1/models',
   },
   {
     key: 'lmstudio',
+    title: 'LM Studio',
+    type: 'built-in',
     baseURL: 'http://localhost:1234/v1',
     modelURL: 'http://localhost:1234/v1/models',
   },
   {
-    key: 'volcengine',
-    baseURL: 'https://ark.cn-beijing.volces.com/api/v3',
-  },
-  {
-    key: 'aliyun',
-    baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
-    modelURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1/models',
-  },
-  {
-    key: 'moonshot',
-    baseURL: 'https://api.moonshot.cn/v1',
-    modelURL: 'https://api.moonshot.cn/v1/models',
-  },
-  {
     key: 'deepseek',
+    title: 'DeepSeek',
+    type: 'built-in',
     baseURL: 'https://api.deepseek.com',
     modelURL: 'https://api.deepseek.com/models',
   },

@@ -66,7 +66,11 @@
     },
     "ai": {
       "title": "AI",
+      "modelTitle": "模型名称",
       "custom": "自定义",
+      "addCustomModel": "添加自定义",
+      "deleteCustomModel": "删除配置",
+      "builtin": "内置",
       "modelSupport": "仅支持 openai 协议的 AI 模型",
       "modelList": {
         "error": {
@@ -78,14 +82,9 @@
       "providers": {
         "chatgpt": "ChatGPT",
         "gemini": "Gemini",
-        "chatanywhere": "ChatAnyWhere",
         "ollama": "Ollama",
         "lmstudio": "LM Studio",
-        "volcengine": "豆包",
-        "aliyun": "通义千问",
-        "moonshot": "月之暗面",
-        "deepseek": "DeepSeek",
-        "tongyi": "通义千问"
+        "deepseek": "DeepSeek"
       }
     },
     "ocr": {

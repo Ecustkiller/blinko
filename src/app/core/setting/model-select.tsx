@@ -2,7 +2,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useEffect, useState } from "react";
 import { fetch } from '@tauri-apps/plugin-http'
 import useSettingStore from "@/stores/setting";
-import { baseAiConfig, Model } from "./config";
+import { AiConfig, baseAiConfig, Model } from "./config";
 import { Input } from "@/components/ui/input";
 import { Store } from "@tauri-apps/plugin-store";
 import { toast } from "@/hooks/use-toast";
@@ -47,18 +47,21 @@ export default function ModelSelect() {
     }
   }
 
-  async function modelChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
-    setModel(e.target.value)
+  async function syncModelList(value: string) {
+    setModel(value)
     const store = await Store.load('store.json');
-    await store.set(`model`, e.target.value)
-    await store.set(`model-${aiType}`, e.target.value)
+    const models = await store.get<AiConfig[]>('aiModelList')
+    if (!models) return
+    models[models.findIndex(item => item.key === aiType)].model = value
+    await store.set('aiModelList', models)
+  }
+
+  async function modelChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
+    syncModelList(e.target.value)
   }
 
   async function modelSelectChangeHandler(e: string) {
-    setModel(e)
-    const store = await Store.load('store.json');
-    await store.set(`model`, e)
-    await store.set(`model-${aiType}`, e)
+    syncModelList(e)
   }
 
   useEffect(() => {
