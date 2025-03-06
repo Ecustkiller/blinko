@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider"
 import { v4 } from 'uuid';
 import { confirm } from '@tauri-apps/plugin-dialog';
+import { AiCheck } from "./components/ai-check";
 
 export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   const t = useTranslations('settings.ai');
@@ -186,10 +187,13 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
     <SettingType id={id} icon={icon} title={t('title')}>
       <SettingRow>
         <FormItem title="Model Provider">
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <Select value={aiType} onValueChange={selectChangeHandler}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select a fruit" />
+              <SelectTrigger className="w-[240px] flex">
+                <div className="flex items-center gap-2">
+                  <AiCheck />
+                  <SelectValue placeholder="Select a fruit" />
+                </div>
               </SelectTrigger>
               <SelectContent>
                 {

@@ -1,5 +1,5 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { fetch } from '@tauri-apps/plugin-http'
 import useSettingStore from "@/stores/setting";
 import { AiConfig, baseAiConfig, Model } from "./config";
@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Store } from "@tauri-apps/plugin-store";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from 'next-intl'
+import { debounce } from "lodash-es";
 
 export default function ModelSelect() {
   const { aiType, apiKey, model, setModel } = useSettingStore()
@@ -64,9 +65,7 @@ export default function ModelSelect() {
     syncModelList(e)
   }
 
-  useEffect(() => {
-    initModelList()
-  }, [apiKey])
+  const debouncedCheck = useCallback(debounce(initModelList, 500), [])
 
   useEffect(() => {
     init()
@@ -74,8 +73,8 @@ export default function ModelSelect() {
 
   useEffect(() => {
     init()
-    initModelList()
-  }, [url])
+    debouncedCheck()
+  }, [url, apiKey])
 
   return (
     url ? 
