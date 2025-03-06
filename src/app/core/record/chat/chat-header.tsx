@@ -4,29 +4,21 @@ import * as React from "react"
 import dayjs from "dayjs"
 import relativeTime from 'dayjs/plugin/relativeTime'
 import zh from 'dayjs/locale/zh'
-import { ChevronDown, CircleAlert, Eraser } from "lucide-react"
-import { useRouter } from "next/navigation";
-import useSettingStore from "@/stores/setting"
-import { Button } from "@/components/ui/button"
+import { Eraser } from "lucide-react"
 import { TooltipButton } from "@/components/tooltip-button"
 import useChatStore from "@/stores/chat"
 import useTagStore from "@/stores/tag"
 import { useTranslations } from 'next-intl'
 import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { ModelSelect } from "./model-select"
 
 dayjs.extend(relativeTime)
 dayjs.locale(zh)
 
 export function ChatHeader() {
-  const { apiKey, model } = useSettingStore()
   const { clearChats } = useChatStore()
   const { currentTagId } = useTagStore()
   const t = useTranslations()
-  const router = useRouter()
-
-  function handleSetting() {
-    router.push('/core/setting?anchor=ai', { scroll: false });
-  }
 
   function clearHandler() {
     clearChats(currentTagId)
@@ -37,22 +29,7 @@ export function ChatHeader() {
       <div className="flex items-center h-6 gap-1">
         <LanguageSwitch />
       </div>
-      <div>
-      <div className="flex justify-center">
-        {
-          (model && apiKey) ?
-          <div className="flex items-center gap-1 text-sm text-zinc-500 cursor-pointer hover:underline" onClick={handleSetting}>
-            {model.replace(/gpt/, 'GPT')}
-            <ChevronDown className="size-4" />
-          </div> :
-          <div className="flex gap-1 items-center">
-            <Button variant="ghost" className="text-red-800" onClick={handleSetting}>
-              <CircleAlert /> {t('record.chat.header.configApiKey')}
-            </Button>
-          </div>
-        }
-      </div>
-      </div>
+      <ModelSelect />
       <div className="flex justify-end items-center h-6 gap-1">
         <TooltipProvider>
           <TooltipButton icon={<Eraser />} tooltipText={t('record.chat.header.clearChat')} onClick={clearHandler}/>

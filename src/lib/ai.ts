@@ -77,7 +77,7 @@ export async function fetchAi(text: string): Promise<string> {
     const res = await fetch(url, requestOptions).catch(() => {
       return false
     })
-    if (typeof res !== 'boolean') {
+    if (typeof res !== 'boolean' && res.status >= 200 && res.status < 300) {
       const data = await res.json()
       if (data.error) {
         toast({
@@ -159,10 +159,7 @@ export async function checkAiStatus() {
   const res = await fetch(url, requestOptions).catch(() => {
     return false
   })
-  if (typeof res !== 'boolean') {
-    if (res.status >= 300) {
-      return false
-    }
+  if (typeof res !== 'boolean' && res.status >= 200 && res.status < 300) {
     const data = await res.json()
     if (data.error) {
       return false
