@@ -35,7 +35,7 @@ export function ControlFile() {
     if (textFileExtensions.includes(ext)) {
       const content = await readTextFile(path)
       const resetText = content.replace(/'/g, '')
-      await insertMark({ tagId: currentTagId, type: 'text', desc: resetText, content: resetText })
+      await insertMark({ tagId: currentTagId, type: 'file', desc: resetText, content: resetText })
       await fetchMarks()
       await fetchTags()
       getCurrentTag()
@@ -54,7 +54,7 @@ export function ControlFile() {
                 return ''
               }).join('');
               if (!text) return
-              insertMark({ tagId: currentTagId, type: 'text', desc: text, content: text })
+              insertMark({ tagId: currentTagId, type: 'file', desc: text, content: text })
               fetchMarks()
               fetchTags()
               getCurrentTag()

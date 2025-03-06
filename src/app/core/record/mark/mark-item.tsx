@@ -171,18 +171,31 @@ export function MarkWrapper({mark}: {mark: Mark}) {
       </div>
     )
     case 'text':
-    default:
-    return (
-      <div className="p-2 flex-1">
-        <div className="flex w-full items-center gap-2 text-zinc-500 text-xs">
-          <span className="flex items-center gap-1 bg-lime-900 text-white px-1 rounded">
-            {MarkType[mark.type]}
-          </span>
-          <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
+      return (
+        <div className="p-2 flex-1">
+          <div className="flex w-full items-center gap-2 text-zinc-500 text-xs">
+            <span className="flex items-center gap-1 bg-lime-900 text-white px-1 rounded">
+              {MarkType[mark.type]}
+            </span>
+            <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
+          </div>
+          <DetailViewer mark={mark} content={mark.content || ''} />
         </div>
-        <DetailViewer mark={mark} content={mark.content || ''} />
-      </div>
-    )
+      )
+    case 'file':
+      return (
+        <div className="p-2 flex-1">
+          <div className="flex w-full items-center gap-2 text-zinc-500 text-xs">
+            <span className="flex items-center gap-1 bg-orange-800 text-white px-1 rounded">
+              {MarkType[mark.type]}
+            </span>
+            <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
+          </div>
+          <DetailViewer mark={mark} content={mark.content || ''} />
+        </div>
+      )
+    default:
+      return null
   }
 }
 

@@ -6,12 +6,13 @@ export enum MarkType {
   text = '文本',
   image = '插图',
   link = '链接',
+  file = '文件'
 }
 
 export interface Mark {
   id: number
   tagId: number
-  type: 'scan' | 'text' | 'image' | 'link'
+  type: keyof typeof MarkType
   content?: string
   desc?: string
   url: string
