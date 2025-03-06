@@ -31,7 +31,15 @@ export default function ChatPreview({text}: {text: string}) {
   }, [chats])
 
   useEffect(() => {
-    setMdTheme(theme as Themes)
+    if (theme === 'system') {
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setMdTheme('dark')
+      } else {
+        setMdTheme('light')
+      }
+    } else {
+      setMdTheme(theme as Themes)
+    }
   }, [theme])
   
   return <div>

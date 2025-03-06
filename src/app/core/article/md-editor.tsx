@@ -19,7 +19,7 @@ export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
   const { currentArticle, saveCurrentArticle, loading } = useArticleStore()
   const { jsdelivr, accessToken } = useSettingStore()
-  const { theme } = useTheme()
+  const { theme, setTheme } = useTheme()
   const t = useTranslations('article.editor')
   const { currentLocale } = useI18n()
 
@@ -126,10 +126,18 @@ export function MdEditor() {
   }, [loading])
 
   useEffect(() => {
-    if (editor) {
-      editor.setTheme(theme === 'dark' ? 'dark' : 'classic')
+    if (theme === 'system') {
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setTheme('dark')  
+      } else {
+        setTheme('classic')
+      }
+    } else {
+      if (editor) {
+        editor.setTheme(theme === 'dark' ? 'dark' : 'classic')
+      }
     }
-  }, [theme])
+  }, [theme, editor])
 
   useEffect(() => {
     setContent(currentArticle)
