@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/context-menu"
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime'
-import zh from 'dayjs/locale/zh'
 import React, { useEffect, useState } from "react";
 import useMarkStore from "@/stores/mark";
 import useTagStore from "@/stores/tag";
@@ -30,7 +29,6 @@ import { open } from "@tauri-apps/plugin-shell";
 import { Textarea } from "@/components/ui/textarea";
 
 dayjs.extend(relativeTime)
-dayjs.locale(zh)
 
 function ImageViewer({mark, path}: {mark: Mark, path?: string}) {
   const [src, setSrc] = useState('')

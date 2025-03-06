@@ -3,7 +3,6 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import * as React from "react"
 import dayjs from "dayjs"
 import relativeTime from 'dayjs/plugin/relativeTime'
-import zh from 'dayjs/locale/zh'
 import { Eraser } from "lucide-react"
 import { TooltipButton } from "@/components/tooltip-button"
 import useChatStore from "@/stores/chat"
@@ -13,7 +12,6 @@ import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { ModelSelect } from "./model-select"
 
 dayjs.extend(relativeTime)
-dayjs.locale(zh)
 
 export function ChatHeader() {
   const { clearChats } = useChatStore()

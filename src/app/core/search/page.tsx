@@ -8,11 +8,9 @@ import { SearchResult } from './types'
 import { SearchItem } from "./search-item";
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import zh from 'dayjs/locale/zh-cn'
 import { Search } from "lucide-react";
 
 dayjs.extend(relativeTime)
-dayjs.locale(zh)
 
 const searchList: Partial<SearchResult>[] = []
 export default function Page() {

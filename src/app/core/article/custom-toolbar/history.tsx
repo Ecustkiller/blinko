@@ -6,7 +6,6 @@ import useArticleStore from "@/stores/article";
 import { RepoNames, ResCommit } from "@/lib/github.types";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import zh from "dayjs/locale/zh-cn";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TooltipButton } from "@/components/tooltip-button";
@@ -16,7 +15,6 @@ import Vditor from "vditor";
 import emitter from "@/lib/emitter";
 
 dayjs.extend(relativeTime)
-dayjs.locale(zh)
 
 export default function History({editor}: {editor?: Vditor}) {
   const [sheetOpen, setSheetOpen] = useState(false);

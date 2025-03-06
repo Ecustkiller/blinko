@@ -4,14 +4,12 @@ import useChatStore from "@/stores/chat"
 import dayjs from "dayjs"
 import { Clock, TypeIcon, XIcon } from "lucide-react"
 import relativeTime from "dayjs/plugin/relativeTime";
-import zh from "dayjs/locale/zh-cn";
 import wordsCount from 'words-count';
 import { Button } from "@/components/ui/button"
 import { clear, hasText, readText } from "tauri-plugin-clipboard-api"
 import { useTranslations } from "next-intl"
 
 dayjs.extend(relativeTime)
-dayjs.locale(zh)
 
 export default function MessageControl({chat, children}: {chat: Chat, children: React.ReactNode}) {
   const { loading } = useChatStore()

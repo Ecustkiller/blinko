@@ -10,10 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { OpenBroswer } from "@/components/open-broswer";
 import dayjs from "dayjs";
-import zh from "dayjs/locale/zh-cn";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime)
-dayjs.locale(zh)
 
 export function SettingSync({id, icon}: {id: string, icon?: React.ReactNode}) {
   const t = useTranslations();
