@@ -306,6 +306,8 @@
         "record": "Record"
       },
       "input": {
+        "organize": "Organize",
+        "chat": "Chat",
         "placeholder": {
           "default": "Type a message...",
           "noApiKey": "No API Key configured, can't use AI chat..."

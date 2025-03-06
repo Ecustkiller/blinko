@@ -166,8 +166,8 @@ export function ChatInput() {
       />
       <Tabs value={inputType} onValueChange={inputTypeChangeHandler}>
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="gen">整理</TabsTrigger>
-          <TabsTrigger value="chat">对话</TabsTrigger>
+          <TabsTrigger value="gen">{t('record.chat.input.organize')}</TabsTrigger>
+          <TabsTrigger value="chat">{t('record.chat.input.chat')}</TabsTrigger>
         </TabsList>
       </Tabs>
       {

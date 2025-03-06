@@ -283,6 +283,8 @@
         ]
       },
       "input": {
+        "organize": "整理",
+        "chat": "聊天",
         "placeholder": {
           "default": "输入消息...",
           "noApiKey": "无 API KEY 配置，无法使用 AI 聊天..."
