@@ -1,17 +1,24 @@
 "use client"
 import * as React from "react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Send } from "lucide-react"
 import useSettingStore from "@/stores/setting"
 import { Input } from "@/components/ui/input"
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
 import useChatStore from "@/stores/chat"
 import useTagStore from "@/stores/tag"
 import useMarkStore from "@/stores/mark"
 import { fetchAi } from "@/lib/ai"
-import { TooltipButton } from "@/components/tooltip-button"
 import { MarkGen } from "./mark-gen"
 import { useTranslations } from 'next-intl'
 import { useI18n } from "@/hooks/useI18n"
+import { ChatLink } from "./chat-link"
+import { TooltipButton } from "@/components/tooltip-button"
+import { useLocalStorage } from 'react-use';
 
 export function ChatInput() {
   const [text, setText] = useState("")
@@ -23,6 +30,9 @@ export function ChatInput() {
   const [placeholder, setPlaceholder] = useState('')
   const t = useTranslations()
   const { currentLocale } = useI18n()
+  const [inputType, setInputType] = useLocalStorage('chat-input-type', 'chat')
+  const markGenRef = useRef<{ openGen: () => void }>(null)
+  const { isLinkMark } = useChatStore()
 
   async function handleSubmit() {
     if (text === '') return
@@ -49,9 +59,9 @@ export function ChatInput() {
 
     await fetchMarks()
     
-    const scanMarks = marks.filter(item => item.type === 'scan')
-    const textMarks = marks.filter(item => item.type === 'text')
-    const imageMarks = marks.filter(item => item.type === 'image')
+    const scanMarks = isLinkMark ? marks.filter(item => item.type === 'scan') : []
+    const textMarks = isLinkMark ? marks.filter(item => item.type === 'text') : []
+    const imageMarks = isLinkMark ? marks.filter(item => item.type === 'image') : []
 
     const request_content = `
       请你扮演一个笔记软件的智能助手，可以参考以下内容笔记的记录，
@@ -77,11 +87,12 @@ export function ChatInput() {
   }
 
   async function genInputPlaceholder() {
+    setPlaceholder('...')
     if (!apiKey) return
     if (trashState) return
-    const scanMarks = marks.filter(item => item.type === 'scan')
-    const textMarks = marks.filter(item => item.type === 'text')
-    const imageMarks = marks.filter(item => item.type === 'image')
+    const scanMarks = isLinkMark ? marks.filter(item => item.type === 'scan') : []
+    const textMarks = isLinkMark ? marks.filter(item => item.type === 'text') : []
+    const imageMarks = isLinkMark ? marks.filter(item => item.type === 'image') : []
     const userQuestionHistorys = chats.filter((item) => item.tagId === currentTagId && item.type === "chat" && item.role === 'user').map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')
     const request_content = `
       请你扮演一个笔记软件的智能助手，可以参考以下内容笔记的记录，
@@ -108,6 +119,11 @@ export function ChatInput() {
     }
   }
 
+  // 切换输入类型
+  function inputTypeChangeHandler(value: string) {
+    setInputType(value)
+  }
+
   useEffect(() => {
     if (!apiKey) {
       setPlaceholder(t('record.chat.input.placeholder.noApiKey'))
@@ -118,36 +134,47 @@ export function ChatInput() {
       return
     }
     genInputPlaceholder()
-  }, [apiKey, marks, t])
+  }, [apiKey, marks, isLinkMark, t])
 
   return (
-    <footer className="relative flex shadow-lg rounded-xl overflow-hidden min-w-[500px] w-2/3 max-w-[800px] my-4">
-      <div className={`${loading ? 'bg-gradient-to-r' : 'bg-border'} absolute border border-transparent inset-0 rounded-xl from-blue-500 to-purple-500 animate-gradient`}></div>
-      <div className={`m-[1px] mr-[2px] relative px-4 py-4 rounded-[11px] w-full flex bg-primary-foreground h-14 items-center`}>
-        <Input
-          className="flex-1 relative border-none focus-visible:ring-0 shadow-none"
-          disabled={!apiKey || loading}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder={placeholder}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !isComposing) {
-              e.preventDefault()
+    <footer className="relative flex items-center border rounded-lg p-2 gap-1 my-4 w-3/4">
+      <ChatLink inputType={inputType} />
+      <Input
+        className="flex-1 relative border-none focus-visible:ring-0 shadow-none"
+        disabled={!apiKey || loading}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder={placeholder}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !isComposing) {
+            e.preventDefault()
+            if (inputType === "gen") {
+              markGenRef.current?.openGen()
+            } else if (inputType === "chat") {
               handleSubmit()
             }
-            if (e.key === "Tab") {
-              e.preventDefault()
-              setText(placeholder.replace('[Tab]', ''))
-            }
-          }}
-          onCompositionStart={() => setIsComposing(true)}
-          onCompositionEnd={() => setTimeout(() => {
-            setIsComposing(false)
-          }, 0)}
-        />
-        <MarkGen />
-        <TooltipButton icon={<Send />} disabled={loading || !apiKey} tooltipText={t('record.chat.input.send')} onClick={handleSubmit} />
-      </div>
+          }
+          if (e.key === "Tab") {
+            e.preventDefault()
+            setText(placeholder.replace('[Tab]', ''))
+          }
+        }}
+        onCompositionStart={() => setIsComposing(true)}
+        onCompositionEnd={() => setTimeout(() => {
+          setIsComposing(false)
+        }, 0)}
+      />
+      <Tabs value={inputType} onValueChange={inputTypeChangeHandler}>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="gen">整理</TabsTrigger>
+          <TabsTrigger value="chat">对话</TabsTrigger>
+        </TabsList>
+      </Tabs>
+      {
+        inputType === 'gen' ?
+          <MarkGen inputValue={text} ref={markGenRef} /> :
+          <TooltipButton icon={<Send />} disabled={loading || !apiKey} tooltipText={t('record.chat.input.send')} onClick={handleSubmit} />
+      }
     </footer>
   )
 }

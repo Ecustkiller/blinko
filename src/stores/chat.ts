@@ -7,6 +7,8 @@ interface ChatState {
   loading: boolean
   setLoading: (loading: boolean) => void
 
+  isLinkMark: boolean // 是否关联记录
+  setIsLinkMark: (isLinkMark: boolean) => void
   chats: Chat[]
   init: (tagId: number) => Promise<void> // 初始化 chats
   insert: (chat: Omit<Chat, 'id' | 'createdAt'>) => Promise<Chat | null> // 插入一条 chat
@@ -29,6 +31,10 @@ const useChatStore = create<ChatState>((set, get) => ({
     set({ loading })
   },
 
+  isLinkMark: true,
+  setIsLinkMark: (isLinkMark: boolean) => {
+    set({ isLinkMark })
+  },
   chats: [],
   init: async (tagId: number) => {
     await initChatsDb()

@@ -1,5 +1,4 @@
 "use client"
-import * as React from "react"
 import { NotebookPen } from "lucide-react"
 import useSettingStore, { GenTemplate, GenTemplateRange } from "@/stores/setting"
 import useChatStore from "@/stores/chat"
@@ -10,8 +9,6 @@ import { convertImage } from "@/lib/utils"
 import { TooltipButton } from "@/components/tooltip-button"
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
@@ -24,14 +21,19 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { useState } from "react"
+import { useState, useImperativeHandle, forwardRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Store } from "@tauri-apps/plugin-store"
 import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation";
 import dayjs, { Dayjs } from "dayjs"
 
-export function MarkGen() {
+interface MarkGenProps {
+  inputValue?: string;
+}
+
+export const MarkGen = forwardRef<{ openGen: () => void }, MarkGenProps>(({ inputValue }, ref) => {
+  const [open, setOpen] = useState(false)
   const { apiKey } = useSettingStore()
   const { currentTagId } = useTagStore()
   const { insert, loading, setLoading, saveChat, locale } = useChatStore()
@@ -46,7 +48,36 @@ export function MarkGen() {
     setGenTemplate(template)
   }
 
+  useImperativeHandle(ref, () => ({
+    openGen
+  }))
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!open) return
+      if (e.key === 'Enter' && !e.isComposing) {
+        e.preventDefault()
+        handleGen()
+      } else if (e.key === 'Escape') {
+        e.preventDefault()
+        setOpen(false)
+      }
+    }
+
+    setTimeout(() => {
+      window.addEventListener('keydown', handleKeyDown)
+    }, 500);
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [open])
+
+  function openGen() {
+    setOpen(true)
+    initGenTemplates()
+  }
+
   async function handleGen() {
+    setOpen(false)
+    if (!apiKey) return
     setLoading(true)
     const message = await insert({
       tagId: currentTagId,
@@ -107,6 +138,7 @@ export function MarkGen() {
         内容：${item.content}
         创建于：${dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}`).join(';\n\n')}。
       ---
+      ${inputValue ? '满足需求：'+inputValue : ''}
       如果记录内容为空，则返回本次整理中不存在任何记录信息。
       满足以下格式要求：
       - 使用 ${locale} 语言。
@@ -137,7 +169,7 @@ export function MarkGen() {
   }
 
   return (
-    <AlertDialog onOpenChange={initGenTemplates}>
+    <AlertDialog onOpenChange={openGen} open={open}>
       <AlertDialogTrigger className="relative" asChild>
         <TooltipButton icon={<NotebookPen />} disabled={loading || !apiKey} tooltipText="整理" />
       </AlertDialogTrigger>
@@ -166,11 +198,12 @@ export function MarkGen() {
         </div>
         <AlertDialogFooter>
           <Button variant={"ghost"} disabled={loading} onClick={handleSetting}>管理模板</Button>
-          <AlertDialogCancel>取消</AlertDialogCancel>
-          <AlertDialogAction onClick={handleGen}>开始整理</AlertDialogAction>
+          <Button variant={"outline"} onClick={() => setOpen(false)}>取消</Button>
+          <Button onClick={handleGen}>开始整理</Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   )
-}
-  
+})
+
+MarkGen.displayName = 'MarkGen';
