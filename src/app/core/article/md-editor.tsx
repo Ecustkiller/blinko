@@ -52,6 +52,13 @@ export function MdEditor() {
               return []
             }
           },
+          {
+            key: '???',
+            hint: async () => {
+              emitter.emit('toolbar-question');
+              return []
+            }
+          },
         ]
       },
       after: () => {
