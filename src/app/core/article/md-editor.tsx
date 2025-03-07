@@ -153,7 +153,10 @@ export function MdEditor() {
       }
     } else {
       if (editor) {
-        editor.setTheme(theme === 'dark' ? 'dark' : 'classic')
+        const editorTheme = theme === 'dark' ? 'dark' : 'classic'
+        const contentTheme = theme === 'dark' ? 'dark' : 'classic'
+        const codeTheme = theme === 'dark' ? 'github-dark' : 'github-light'
+        editor.setTheme(editorTheme, contentTheme, codeTheme)
       }
     }
   }, [theme, editor])
