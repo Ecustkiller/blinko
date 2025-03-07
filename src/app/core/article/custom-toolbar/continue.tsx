@@ -17,7 +17,7 @@ export default function Continue({editor}: {editor?: Vditor}) {
     const startContent = content.slice(0, anchorOffset);
     const endContent = content.slice(anchorOffset, content.length);
     const req = `
-      根据前文：“${startContent}” 内容，直接返回续写内容，不要超过50字。
+      根据前文：“${startContent}” 内容，直接返回续写内容，不要超过100字。
       内容可以参考后文：“${endContent}”，不要与后文内容重复。
     `
     const res = await fetchAi(req)
