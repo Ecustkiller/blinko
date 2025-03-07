@@ -6,6 +6,7 @@ import Vditor from "vditor";
 export default function Continue({editor}: {editor?: Vditor}) {
 
   async function handler() {
+    editor?.disabled()
     const button = (editor?.vditor.toolbar?.elements?.continue.childNodes[0] as HTMLButtonElement)
     button.classList.add('vditor-menu--disabled')
     const content = editor?.getValue()
@@ -22,10 +23,14 @@ export default function Continue({editor}: {editor?: Vditor}) {
     const res = await fetchAi(req)
     editor?.insertValue(res)
     button.classList.remove('vditor-menu--disabled')
+    editor?.enable()
   }
 
   useEffect(() => {
     emitter.on('toolbar-continue', handler)
+    return () => {
+      emitter.off('toolbar-continue', handler)
+    }
   }, [])
 
   return (

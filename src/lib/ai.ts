@@ -96,7 +96,7 @@ export async function fetchAi(text: string): Promise<string> {
         }
       }
     }
-    return '请求失败，请检查网络连接'
+    return '请求失败，请检查网络连接或 AI 配置是否正确。'
   }
   return ''
 }

@@ -14,6 +14,7 @@ import useSettingStore from '@/stores/setting'
 import { Store } from '@tauri-apps/plugin-store'
 import { useTranslations } from 'next-intl'
 import { useI18n } from '@/hooks/useI18n'
+import emitter from '@/lib/emitter'
 
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
@@ -42,6 +43,17 @@ export function MdEditor() {
       cdn: '',
       theme: theme === 'dark' ? 'dark' : 'classic',
       toolbar: config as any,
+      hint: {
+        extend: [
+          {
+            key: '...',
+            hint: async () => {
+              emitter.emit('toolbar-continue');
+              return []
+            }
+          },
+        ]
+      },
       after: () => {
         setEditor(vditor);
       },
