@@ -1,4 +1,4 @@
-import { GithubRepoInfo } from '@/lib/github.types'
+import { GithubRepoInfo, UserInfo } from '@/lib/github.types'
 import { create } from 'zustand'
 
 export enum SyncStateEnum {
@@ -9,6 +9,10 @@ export enum SyncStateEnum {
 }
 
 interface SyncState {
+
+  userInfo?: UserInfo
+  setUserInfo: (userInfo?: UserInfo) => void
+
   imageRepoState: SyncStateEnum
   setImageRepoState: (imageRepoState: SyncStateEnum) => void
   imageRepoInfo?: GithubRepoInfo
@@ -21,6 +25,11 @@ interface SyncState {
 }
 
 const useSyncStore = create<SyncState>((set) => ({
+  userInfo: undefined,
+  setUserInfo: (userInfo) => {
+    set({ userInfo })
+  },
+
   imageRepoState: SyncStateEnum.fail,
   setImageRepoState: (imageRepoState) => {
     set({ imageRepoState })

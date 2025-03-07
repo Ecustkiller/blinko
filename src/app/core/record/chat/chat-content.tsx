@@ -1,6 +1,6 @@
 import useChatStore from '@/stores/chat'
 import useTagStore from '@/stores/tag'
-import { BotMessageSquare, ClipboardCheck, LoaderPinwheel } from 'lucide-react'
+import { BotMessageSquare, ClipboardCheck, LoaderPinwheel, UserRound } from 'lucide-react'
 import { useEffect } from 'react'
 import { Chat } from '@/db/chats'
 import ChatPreview from './chat-preview'
@@ -12,6 +12,8 @@ import MessageControl from './message-control'
 import ChatEmpty from './chat-empty'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useTranslations } from 'next-intl'
+import useSyncStore from '@/stores/sync'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
 
 export default function ChatContent() {
   const { chats, init } = useChatStore()
@@ -42,6 +44,8 @@ export default function ChatContent() {
 
 function MessageWrapper({ chat, children }: { chat: Chat, children: React.ReactNode }) {
   const { chats, loading } = useChatStore()
+  const { userInfo } = useSyncStore()
+
   const index = chats.findIndex(item => item.id === chat.id)
   if (chat.role === 'system') {
     return <div className="flex w-full gap-4">
@@ -61,8 +65,17 @@ function MessageWrapper({ chat, children }: { chat: Chat, children: React.ReactN
       </div>
     </div>
   } else {
-    return <div className="bg-primary text-primary-foreground px-4 py-2 rounded-lg">
-      {chat.content}
+    return <div className="flex items-center gap-4">
+      <div className="bg-primary text-primary-foreground px-4 py-2 rounded-lg">
+        {chat.content}
+      </div>
+      {
+        userInfo?.avatar_url ?
+        <Avatar className='rounded size-9'>
+          <AvatarImage src={userInfo?.avatar_url} />
+        </Avatar> :
+        <UserRound />
+      }
     </div>
   }
 }

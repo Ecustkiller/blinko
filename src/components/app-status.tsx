@@ -16,8 +16,8 @@ import useSyncStore, { SyncStateEnum } from "@/stores/sync";
 export default function AppStatus() {
   const t = useTranslations();
   const { accessToken, setGithubUsername } = useSettingStore()
+  const { userInfo, setUserInfo } = useSyncStore()
   const [loading, setLoading] = useState(false)
-  const [userInfo, setUserInfo] = useState<UserInfo>()
   const {
     imageRepoState,
     setImageRepoState,
