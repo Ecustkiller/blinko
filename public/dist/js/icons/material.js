@@ -85,7 +85,7 @@ document.body.insertAdjacentHTML('afterBegin', `<svg style="position: absolute; 
         <path d="M2.909 3.636h26.182c1.6 0 2.909 1.309 2.909 2.909v18.909c0 1.6-1.309 2.909-2.909 2.909h-26.182c-1.6 0-2.909-1.309-2.909-2.909v-18.909c0-1.6 1.309-2.909 2.909-2.909zM29.091 25.455v-18.909h-11.636v18.909h11.636zM2.909 25.455h11.636v-18.909h-11.636v18.909zM13.091 11.636h-8.727v2.182h8.727zM13.091 15.273h-8.727v2.182h8.727zM13.091 18.909h-8.727v2.182h8.727z"></path>
     </symbol>
     <symbol id="vditor-icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide">
-      <path d="M22.545-0h-17.455c-1.6 0-2.909 1.309-2.909 2.909v20.364h2.909v-20.364h17.455v-2.909zM26.909 5.818h-16c-1.6 0-2.909 1.309-2.909 2.909v20.364c0 1.6 1.309 2.909 2.909 2.909h16c1.6 0 2.909-1.309 2.909-2.909v-20.364c0-1.6-1.309-2.909-2.909-2.909zM26.909 29.091h-16v-20.364h16v20.364z"></path>
+      <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
     </symbol>
     <symbol id="vditor-icon-trashcan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide">
       <path d="M23.111 10.667v17.778h-14.222v-17.778h14.222zM20.444 0h-8.889l-1.778 1.778h-6.222v3.556h24.889v-3.556h-6.222l-1.778-1.778zM26.667 7.111h-21.333v21.333c0 1.956 1.6 3.556 3.556 3.556h14.222c1.956 0 3.556-1.6 3.556-3.556v-21.333z"></path>
