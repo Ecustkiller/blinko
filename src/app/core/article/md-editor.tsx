@@ -165,7 +165,7 @@ export function MdEditor() {
     setContent(currentArticle)
   }, [currentArticle])
 
-  return <div className='flex-1 h-full flex flex-col'>
+  return <div className='flex-1 h-screen flex flex-col'>
     {
       editor && <CustomToolbar editor={editor} />
     }
