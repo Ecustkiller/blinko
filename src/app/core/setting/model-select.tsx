@@ -1,19 +1,15 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetch } from '@tauri-apps/plugin-http'
 import useSettingStore from "@/stores/setting";
 import { AiConfig, baseAiConfig, Model } from "./config";
 import { Input } from "@/components/ui/input";
 import { Store } from "@tauri-apps/plugin-store";
-import { toast } from "@/hooks/use-toast";
-import { useTranslations } from 'next-intl'
-import { debounce } from "lodash-es";
 
 export default function ModelSelect() {
   const { aiType, apiKey, model, setModel } = useSettingStore()
   const [list, setList] = useState<Model[]>([])
   const [url, setUrl] = useState<string | undefined>()
-  const t = useTranslations('settings.ai')
 
   function init() {
     setList([])
@@ -37,14 +33,10 @@ export default function ModelSelect() {
     try {
       const response = await fetch(url, requestOptions);
       const result = await response.json();
-      setList(result.data)
+      setList(result.data || [])
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast({
-        title: t('modelList.error.title'),
-        description: t('modelList.error.description'),
-        variant: "destructive"
-      })
+      setList([])
     }
   }
 
@@ -59,25 +51,23 @@ export default function ModelSelect() {
 
   async function modelChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
     syncModelList(e.target.value)
+    const store = await Store.load('store.json');
+    await store.set('model', e.target.value)
   }
 
   async function modelSelectChangeHandler(e: string) {
     syncModelList(e)
+    const store = await Store.load('store.json');
+    await store.set('model', e)
   }
 
-  const debouncedCheck = useCallback(debounce(initModelList, 500), [])
-
   useEffect(() => {
     init()
-  }, [aiType])
-
-  useEffect(() => {
-    init()
-    debouncedCheck()
-  }, [url, apiKey])
+    initModelList()
+  }, [aiType, url, apiKey])
 
   return (
-    url ? 
+    list.length ? 
     <Select onValueChange={modelSelectChangeHandler} value={model} disabled={!apiKey}>
       <SelectTrigger className="w-[280px]">
         <SelectValue placeholder="请选择模型" />
