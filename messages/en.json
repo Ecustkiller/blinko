@@ -355,6 +355,9 @@
       "placeholder": "Enter tag name"
     }
   },
+  "image": {
+    "root": "Image Repository"
+  },
   "navigation": {
     "record": "Record",
     "write": "Write",

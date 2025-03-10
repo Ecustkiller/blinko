@@ -1,7 +1,7 @@
 "use client"
 import {TooltipButton} from "@/components/tooltip-button"
 import {TooltipProvider} from "@/components/ui/tooltip"
-import {Link, RefreshCcw} from "lucide-react"
+import {RefreshCcw} from "lucide-react"
 import * as React from "react"
 import useImageStore from "@/stores/image"
 import {Separator} from "@/components/ui/separator"
@@ -9,22 +9,55 @@ import {convertBytesToSize} from "@/lib/utils"
 import {open} from '@tauri-apps/plugin-shell';
 import useSettingStore from "@/stores/setting"
 import { RepoNames } from '@/lib/github.types'
-
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { useTranslations } from 'next-intl'
 
 export function ImageHeader() {
-  const {getImages, images} = useImageStore()
-  const {githubUsername} = useSettingStore()
+  const t = useTranslations('image')
+  const {getImages, images, path, setPath} = useImageStore()
+  const { githubUsername } = useSettingStore()
   const checkSetting = githubUsername && githubUsername.length > 0
-  const handleOpenBroswer = () => {
-    const url = `https://github.com/${githubUsername}/${RepoNames.image}`
+  const handleOpenBroswer = (path: string) => {
+    let url = ''
+    if (path === '') {
+      url = `https://github.com/${githubUsername}/${RepoNames.image}`
+    } else {
+      url = `https://github.com/${githubUsername}/${RepoNames.image}/tree/main/${path}`
+    }
     open(url)
+  }
+  const backHandler = () => {
+    setPath('')
+    getImages()
   }
 
   return (
     checkSetting ? (
       <header className="h-12 flex items-center justify-between gap-2 border-b px-4 bg-primary-foreground">
         <div className="flex items-center h-6 gap-1">
-          <TooltipButton icon={<Link/>} tooltipText="打开仓库" onClick={handleOpenBroswer}/>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem className="cursor-pointer">
+                <BreadcrumbLink onClick={backHandler}>{t('root')}</BreadcrumbLink>
+              </BreadcrumbItem>
+              {
+                path && (
+                  <>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem className="cursor-pointer" onClick={() => handleOpenBroswer(path)}>
+                      <BreadcrumbLink>{path}</BreadcrumbLink>
+                    </BreadcrumbItem>
+                  </>
+                )
+              }
+            </BreadcrumbList>
+          </Breadcrumb>
         </div>
         <div className="flex items-center h-6 gap-1">
           <TooltipProvider>

@@ -3,13 +3,19 @@ import { RepoNames } from '@/lib/github.types';
 import { create } from 'zustand'
 
 interface MarkState {
+  path: string
+  setPath: (path: string) => void
+
   images: GithubFile[]
   pushImage: (image: GithubFile) => void
   deleteImage: (name: string) => void
   getImages: () => Promise<void>
 }
 
-const useImageStore = create<MarkState>((set) => ({
+const useImageStore = create<MarkState>((set, get) => ({
+  path: '',
+  setPath: (path) => set({ path }),
+
   images: [],
 
   pushImage: (image) => {
@@ -24,7 +30,7 @@ const useImageStore = create<MarkState>((set) => ({
   },
   async getImages() {
     set({ images: [] })
-    const images = await getFiles({ path: '', repo: RepoNames.image })
+    const images = await getFiles({ path: get().path, repo: RepoNames.image })
     set({ images: images || [] })
   },
 }))

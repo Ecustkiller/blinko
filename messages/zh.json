@@ -350,6 +350,9 @@
       "placeholder": "输入标签名称"
     }
   },
+  "image": {
+    "root": "图床仓库"
+  },
   "navigation": {
     "record": "记录",
     "write": "写作",

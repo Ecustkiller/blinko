@@ -10,6 +10,7 @@ import { NoData } from './no-data'
 import { v4 as uuid } from 'uuid'
 import { RepoNames } from '@/lib/github.types'
 import { CheckCircle, LoaderCircle } from 'lucide-react'
+import { FolderCard } from './folder-card'
 
 interface FileUploader {
   id: string
@@ -139,6 +140,8 @@ export default function Page() {
               <div className="p-2 grid md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2">
                 {
                   images.map((file: GithubFile) => (
+                    file.type === 'dir' ? 
+                    <FolderCard key={file.path} file={file} /> :
                     <ImageCard key={file.path} file={file} />
                   )) 
                 }

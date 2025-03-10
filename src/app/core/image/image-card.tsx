@@ -54,7 +54,7 @@ export function ImageCard({file}: {file: GithubFile}) {
   return (
     <ContextMenu>
       <ContextMenuTrigger>
-        <Card className={`w-full h-36 overflow-hidden p-0 rounded-lg shadow-none relative group hover:outline outline-2`}>
+        <Card className={`w-full h-36 overflow-hidden p-0 rounded-lg shadow-none relative group cursor-pointer hover:outline outline-0.5`}>
           <CardContent className="p-0 h-full">
             {
               file.isNew && <Badge className='absolute top-2 right-2'>最近上传</Badge>
