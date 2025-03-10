@@ -23,7 +23,7 @@ export default function Page() {
   const [isDragging, setIsDragging] = useState(false)
   const [files, setFiles] = useState<FileUploader[]>([])
 
-  const { images, getImages, pushImage } = useImageStore()
+  const { images, getImages, pushImage, path } = useImageStore()
   const { githubUsername, accessToken } = useSettingStore()
   const { fetchAllMarks } = useMarkStore()
 
@@ -35,7 +35,8 @@ export default function Page() {
         ext,
         file: await fileToBase64(fileUploader.file),
         filename,
-        repo: RepoNames.image
+        repo: RepoNames.image,
+        path
       }).catch((err) => {
         console.log(err);
         fileUploader.status ='failed'
@@ -44,7 +45,11 @@ export default function Page() {
         return null
       })
       if (res) {
-        await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`)
+        if (path) {
+          await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${path}/${res.data.content.name}`)
+        } else {
+          await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`)
+        }
         fileUploader.status = 'success'
         pushImage({
           ...res.data.content,
