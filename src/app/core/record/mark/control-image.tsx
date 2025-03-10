@@ -12,6 +12,7 @@ import useSettingStore from "@/stores/setting"
 import { v4 as uuid } from 'uuid'
 import { RepoNames } from "@/lib/github.types"
 import { open } from '@tauri-apps/plugin-dialog';
+import dayjs from "dayjs"
 
 export function ControlImage() {
   const t = useTranslations();
@@ -63,16 +64,18 @@ export function ControlImage() {
     }
     if (githubUsername) {
       setQueue(queueId, { progress: t('record.mark.progress.uploadImage') });
+      const path = dayjs().format('YYYY-MM')
       const res = await uploadFile({
         ext,
         file: uint8ArrayToBase64(file),
         filename,
-        repo: RepoNames.image
+        repo: RepoNames.image,
+        path
       })
       if (res) {
         setQueue(queueId, { progress: t('record.mark.progress.jsdelivrCache') });
-        await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`)
-        mark.url = `https://cdn.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`
+        await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${path}/${res.data.content.name}`)
+        mark.url = `https://cdn.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${path}/${res.data.content.name}`
       } else {
         mark.url = filename
       }

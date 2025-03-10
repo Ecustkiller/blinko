@@ -15,11 +15,12 @@ import { Store } from '@tauri-apps/plugin-store'
 import { useTranslations } from 'next-intl'
 import { useI18n } from '@/hooks/useI18n'
 import emitter from '@/lib/emitter'
+import dayjs from 'dayjs'
 
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
   const { currentArticle, saveCurrentArticle, loading } = useArticleStore()
-  const { jsdelivr, accessToken } = useSettingStore()
+  const { jsdelivr } = useSettingStore()
   const { theme, setTheme } = useTheme()
   const t = useTranslations('article.editor')
   const { currentLocale } = useI18n()
@@ -82,14 +83,6 @@ export function MdEditor() {
   }
 
   async function uploadImages(files: File[]) {
-    if (!accessToken) {
-      toast({
-        variant: 'destructive',
-        title: t('upload.error'),
-        description: t('upload.needToken'),
-      })
-      return ['']
-    }
     const list = await Promise.all(
       files.map((file) => {
         return new Promise<string>(async(resolve, reject) => {
@@ -99,18 +92,21 @@ export function MdEditor() {
             description: file.name,
             duration: 600000,
           })
+          const path = dayjs().format('YYYY-MM')
           const fileBase64 = await fileToBase64(file)
+          const ext = file.name.split('.')[file.name.split('.').length - 1]
           await uploadFile({
-            ext: file.name.split('.')[1],
+            ext,
             file: fileBase64,
-            repo: RepoNames.image
+            repo: RepoNames.image,
+            path
           }).then(async res => {
             let url = res?.data.content.download_url
             if (jsdelivr) {
               const store = await Store.load('store.json');
               const githubUsername = await store.get('githubUsername')
-              await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res?.data.content.name}`)
-              url = `https://cdn.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res?.data.content.name}`
+              await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${path}/${res?.data.content.name}`)
+              url = `https://cdn.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${path}/${res?.data.content.name}`
             }
             resolve(url)
           }).catch(err => {

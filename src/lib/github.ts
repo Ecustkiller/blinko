@@ -49,8 +49,8 @@ interface Links {
 }
 
 export async function uploadFile(
-  { ext, file, filename, sha, message, repo }:
-  { ext: string, file: string, filename?: string, sha?: string, message?: string, repo: RepoNames }) 
+  { ext, file, filename, sha, message, repo, path }:
+  { ext: string, file: string, filename?: string, sha?: string, message?: string, repo: RepoNames, path?: string }) 
 {
   const store = await Store.load('store.json');
   const accessToken = await store.get('accessToken')
@@ -58,17 +58,19 @@ export async function uploadFile(
     auth: accessToken
   })
   const githubUsername = await store.get('githubUsername')
+  const id = uuid()
   try {
     let _filename = ''
     if (filename) {
       _filename = `${filename}`
     } else {
-      _filename = `${uuid()}.${ext}`
+      _filename = `${id}.${ext}`
     }
     // 将空格转换成下划线
     _filename = _filename.replace(/\s/g, '_')
-    const res = await octokit.request(`PUT /repos/${githubUsername}/${repo}/contents/${_filename}`, {
-      message: message || `Upload ${filename}`,
+    const _path = path ? `/${path}`: ''
+    const res = await octokit.request(`PUT /repos/${githubUsername}/${repo}/contents${_path}/${_filename}`, {
+      message: message || `Upload ${filename || id}`,
       content: file,
       sha,
       headers: {

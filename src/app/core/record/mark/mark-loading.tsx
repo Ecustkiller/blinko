@@ -1,12 +1,10 @@
 'use client'
 import { MarkType } from "@/db/marks";
 import { MarkQueue } from "@/stores/mark";
-import { useTranslations } from 'next-intl';
 import { LoaderCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 export function MarkLoading({mark}: {mark: MarkQueue}){
-  const t = useTranslations();
   const [timeNow, setTimeNow] = useState(Date.now())
   const timer = useRef<NodeJS.Timeout>()
 
@@ -27,7 +25,7 @@ export function MarkLoading({mark}: {mark: MarkQueue}){
         <span className="flex items-center gap-1 bg-zinc-500 text-white px-1 rounded">
           {MarkType[mark.type]}
         </span>
-        <span>{t('record.mark.loading')}</span>
+        <span>{mark.progress}...</span>
       </div>
       <time className="text-zinc-400" suppressHydrationWarning={true}>{Math.round((timeNow - mark.startTime) / 1000)}s</time>
     </div>
