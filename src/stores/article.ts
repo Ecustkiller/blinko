@@ -255,6 +255,11 @@ const useArticleStore = create<NoteState>((set, get) => ({
     if (path.includes('/')) {
       const folderPath = path.includes('/') ? path.split('/').slice(0, -1).join('/') : ''
       const currentFolder = getCurrentFolder(folderPath, fileTree)
+      const collapsibleList = get().collapsibleList
+      if (!collapsibleList.includes(folderPath)) {
+        collapsibleList.push(folderPath)
+        set({ collapsibleList })
+      }
       if (currentFolder) {
         const newFile: DirTree = {
           name: '',
