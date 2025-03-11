@@ -1,7 +1,7 @@
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { Input } from "@/components/ui/input";
 import useArticleStore, { DirTree } from "@/stores/article";
-import { BaseDirectory, exists, mkdir, remove, rename } from "@tauri-apps/plugin-fs";
+import { BaseDirectory, exists, mkdir, readDir, readTextFile, remove, rename, writeTextFile } from "@tauri-apps/plugin-fs";
 import { appDataDir } from '@tauri-apps/api/path';
 import { ChevronRight, Cloud, Folder, FolderDown } from "lucide-react"
 import { useEffect, useRef, useState } from "react";
@@ -11,6 +11,8 @@ import { cloneDeep } from "lodash-es";
 import { open } from "@tauri-apps/plugin-shell";
 import { computedParentPath, getCurrentFolder } from "@/lib/path";
 import { useTranslations } from "next-intl";
+import useClipboardStore from "@/stores/clipboard";
+import { ask } from '@tauri-apps/plugin-dialog';
 
 export function FolderItem({ item }: { item: DirTree }) {
   const [isEditing, setIsEditing] = useState(item.isEditing)
@@ -18,6 +20,7 @@ export function FolderItem({ item }: { item: DirTree }) {
   const [isDragging, setIsDragging] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const t = useTranslations('article.file')
+  const { setClipboardItem, clipboardItem, clipboardOperation } = useClipboardStore()
 
   const { 
     activeFilePath,
@@ -161,6 +164,104 @@ export function FolderItem({ item }: { item: DirTree }) {
     newFolderInFolder(path)
   }
 
+  async function handleCopyFolder() {
+    setClipboardItem({
+      path,
+      name: item.name,
+      isDirectory: true,
+      isLocale: item.isLocale
+    }, 'copy')
+    toast({ title: t('clipboard.copied') })
+  }
+
+  async function handleCutFolder() {
+    setClipboardItem({
+      path,
+      name: item.name,
+      isDirectory: true,
+      isLocale: item.isLocale
+    }, 'cut')
+    toast({ title: t('clipboard.cut') })
+  }
+
+  async function handlePasteInFolder() {
+    if (!clipboardItem) {
+      toast({ title: t('clipboard.empty'), variant: 'destructive' })
+      return
+    }
+
+    try {
+      const sourcePath = `article/${clipboardItem.path}`
+      const targetPath = `article/${path}/${clipboardItem.name}`
+      
+      // Check if target already exists
+      const targetExists = await exists(targetPath, { baseDir: BaseDirectory.AppData })
+      
+      if (targetExists) {
+        const confirmOverwrite = await ask(t('clipboard.confirmOverwrite'), {
+          title: 'NoteGen',
+          kind: 'warning',
+        })
+        if (!confirmOverwrite) return
+      }
+
+      if (clipboardItem.isDirectory) {
+        // For directories, need to copy recursively
+        // Create target directory
+        await mkdir(targetPath, { baseDir: BaseDirectory.AppData })
+        
+        // Copy recursively using readDir, readTextFile, and writeTextFile
+        const copyDirRecursively = async (src: string, dest: string) => {
+          const entries = await readDir(src, { baseDir: BaseDirectory.AppData })
+          
+          for (const entry of entries) {
+            const srcPath = `${src}/${entry.name}`
+            const destPath = `${dest}/${entry.name}`
+            
+            if (entry.isDirectory) {
+              // It's a directory
+              await mkdir(destPath, { baseDir: BaseDirectory.AppData })
+              await copyDirRecursively(srcPath, destPath)
+            } else {
+              // It's a file
+              try {
+                const content = await readTextFile(srcPath, { baseDir: BaseDirectory.AppData })
+                await writeTextFile(destPath, content, { baseDir: BaseDirectory.AppData })
+              } catch (err) {
+                console.error(`Error copying file ${srcPath}:`, err)
+              }
+            }
+          }
+        }
+        
+        await copyDirRecursively(sourcePath, targetPath)
+      } else {
+        // For files, just copy the file
+        try {
+          const content = await readTextFile(sourcePath, { baseDir: BaseDirectory.AppData })
+          await writeTextFile(targetPath, content, { baseDir: BaseDirectory.AppData })
+        } catch (err) {
+          console.error(`Error copying file ${sourcePath}:`, err)
+          throw err
+        }
+      }
+      
+      // If cut operation, delete the original
+      if (clipboardOperation === 'cut') {
+        await remove(sourcePath, { baseDir: BaseDirectory.AppData })
+        // Clear clipboard after cut & paste operation
+        setClipboardItem(null, 'none')
+      }
+
+      // Refresh file tree
+      loadFileTree()
+      toast({ title: t('clipboard.pasted') })
+    } catch (error) {
+      console.error('Paste operation failed:', error)
+      toast({ title: t('clipboard.pasteFailed'), variant: 'destructive' })
+    }
+  }
+
   useEffect(() => {
     if (item.isEditing) {
       setName(name)
@@ -223,13 +324,13 @@ export function FolderItem({ item }: { item: DirTree }) {
             {t('context.viewDirectory')}
           </ContextMenuItem>
           <ContextMenuSeparator />
-          <ContextMenuItem inset disabled>
+          <ContextMenuItem inset disabled={!item.isLocale} onClick={handleCutFolder}>
             {t('context.cut')}
           </ContextMenuItem>
-          <ContextMenuItem inset disabled>
+          <ContextMenuItem inset onClick={handleCopyFolder}>
             {t('context.copy')}
           </ContextMenuItem>
-          <ContextMenuItem inset disabled>
+          <ContextMenuItem inset disabled={!clipboardItem} onClick={handlePasteInFolder}>
             {t('context.paste')}
           </ContextMenuItem>
           <ContextMenuSeparator />

@@ -406,6 +406,15 @@
       },
       "error": {
         "fileExists": "文件名已存在"
+      },
+      "clipboard": {
+        "copied": "已复制到剪贴板",
+        "cut": "已剪切到剪贴板",
+        "pasted": "已粘贴成功",
+        "pasteFailed": "粘贴操作失败",
+        "empty": "剪贴板为空",
+        "confirmOverwrite": "文件已存在，是否覆盖？",
+        "notSupported": "不支持此操作"
       }
     },
     "editor": {

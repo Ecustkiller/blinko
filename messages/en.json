@@ -411,6 +411,15 @@
       },
       "error": {
         "fileExists": "File name already exists"
+      },
+      "clipboard": {
+        "copied": "Copied to clipboard",
+        "cut": "Cut to clipboard",
+        "pasted": "Pasted successfully",
+        "pasteFailed": "Paste operation failed",
+        "empty": "Clipboard is empty",
+        "confirmOverwrite": "File already exists, do you want to overwrite it?",
+        "notSupported": "Operation not supported"
       }
     },
     "editor": {

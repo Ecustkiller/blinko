@@ -1,7 +1,7 @@
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { Input } from "@/components/ui/input";
 import useArticleStore, { DirTree } from "@/stores/article";
-import { BaseDirectory, exists, remove, rename, writeTextFile } from "@tauri-apps/plugin-fs";
+import { BaseDirectory, exists, readTextFile, remove, rename, writeTextFile } from "@tauri-apps/plugin-fs";
 import { appDataDir } from '@tauri-apps/api/path';
 import { Cloud, CloudDownload, File } from "lucide-react"
 import { useEffect, useRef, useState } from "react";
@@ -13,12 +13,14 @@ import { open } from "@tauri-apps/plugin-shell";
 import { computedParentPath, getCurrentFolder } from "@/lib/path";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
+import useClipboardStore from "@/stores/clipboard";
 
 export function FileItem({ item }: { item: DirTree }) {
   const [isEditing, setIsEditing] = useState(item.isEditing)
   const [name, setName] = useState(item.name)
   const inputRef = useRef<HTMLInputElement>(null)
-  const { activeFilePath, setActiveFilePath, readArticle, setCurrentArticle, fileTree, setFileTree } = useArticleStore()
+  const { activeFilePath, setActiveFilePath, readArticle, setCurrentArticle, fileTree, setFileTree, loadFileTree } = useArticleStore()
+  const { setClipboardItem, clipboardItem, clipboardOperation } = useClipboardStore()
   const t = useTranslations('article.file')
   
   const path = computedParentPath(item)
@@ -133,6 +135,77 @@ export function FileItem({ item }: { item: DirTree }) {
     ev.dataTransfer.setData('text', path)
   }
 
+  async function handleCopyFile() {
+    setClipboardItem({
+      path,
+      name: item.name,
+      isDirectory: false,
+      sha: item.sha,
+      isLocale: item.isLocale
+    }, 'copy')
+    toast({ title: t('clipboard.copied') })
+  }
+
+  async function handleCutFile() {
+    setClipboardItem({
+      path,
+      name: item.name,
+      isDirectory: false,
+      sha: item.sha,
+      isLocale: item.isLocale
+    }, 'cut')
+    toast({ title: t('clipboard.cut') })
+  }
+
+  async function handlePasteFile() {
+    if (!clipboardItem) {
+      toast({ title: t('clipboard.empty'), variant: 'destructive' })
+      return
+    }
+
+    // This function only handles file paste operations
+    if (clipboardItem.isDirectory) {
+      toast({ title: t('clipboard.notSupported'), variant: 'destructive' })
+      return
+    }
+
+    try {
+      const sourcePath = `article/${clipboardItem.path}`
+      const targetDir = path.substring(0, path.lastIndexOf('/'))
+      const targetPath = `article/${targetDir}/${clipboardItem.name}`
+      
+      // Check if file already exists at target location
+      const fileExists = await exists(targetPath, { baseDir: BaseDirectory.AppData })
+      if (fileExists) {
+        const confirmOverwrite = await ask(t('clipboard.confirmOverwrite'), {
+          title: 'NoteGen',
+          kind: 'warning',
+        })
+        if (!confirmOverwrite) return
+      }
+
+      // Read content from source file
+      const content = await readTextFile(sourcePath, { baseDir: BaseDirectory.AppData })
+      
+      // Write to target location
+      await writeTextFile(targetPath, content, { baseDir: BaseDirectory.AppData })
+      
+      // If cut operation, delete the original file
+      if (clipboardOperation === 'cut') {
+        await remove(sourcePath, { baseDir: BaseDirectory.AppData })
+        // Clear clipboard after cut & paste operation
+        setClipboardItem(null, 'none')
+      }
+
+      // Refresh file tree
+      loadFileTree()
+      toast({ title: t('clipboard.pasted') })
+    } catch (error) {
+      console.error('Paste operation failed:', error)
+      toast({ title: t('clipboard.pasteFailed'), variant: 'destructive' })
+    }
+  }
+
   useEffect(() => {
     if (item.isEditing) {
       setName(name)
@@ -185,13 +258,13 @@ export function FileItem({ item }: { item: DirTree }) {
           {t('context.viewDirectory')}
         </ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuItem inset disabled>
+        <ContextMenuItem inset disabled={!item.isLocale} onClick={handleCutFile}>
           {t('context.cut')}
         </ContextMenuItem>
-        <ContextMenuItem inset disabled>
+        <ContextMenuItem inset onClick={handleCopyFile}>
           {t('context.copy')}
         </ContextMenuItem>
-        <ContextMenuItem inset disabled>
+        <ContextMenuItem inset disabled={!clipboardItem} onClick={handlePasteFile}>
           {t('context.paste')}
         </ContextMenuItem>
         <ContextMenuSeparator />
