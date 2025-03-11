@@ -9,12 +9,16 @@ import useSettingStore from "@/stores/setting"
 import { useRouter } from "next/navigation";
 import { RepoNames } from "@/lib/github.types"
 import { useTranslations } from "next-intl"
+import { debounce } from "lodash-es"
 
 export function FileToolbar() {
   const { newFolder, loadFileTree, newFile, fileTreeLoading } = useArticleStore()
   const { githubUsername, accessToken } = useSettingStore()
   const router = useRouter()
   const t = useTranslations('article.file.toolbar')
+
+  const debounceNewFile = debounce(newFile, 1000)
+  const debounceNewFolder = debounce(newFolder, 1000)
 
   async function openFolder() {
     open(`https://github.com/${githubUsername}/${RepoNames.sync}`)
@@ -42,8 +46,8 @@ export function FileToolbar() {
       </div>
       <div>
         <TooltipProvider>
-          <TooltipButton icon={<FilePlus />} tooltipText={t('newArticle')} onClick={newFile} />
-          <TooltipButton icon={<FolderPlus />} tooltipText={t('newFolder')} onClick={newFolder} />
+          <TooltipButton icon={<FilePlus />} tooltipText={t('newArticle')} onClick={debounceNewFile} />
+          <TooltipButton icon={<FolderPlus />} tooltipText={t('newFolder')} onClick={debounceNewFolder} />
           <TooltipButton icon={<FolderSync />} tooltipText={t('refresh')} onClick={loadFileTree} />
         </TooltipProvider>
       </div>
