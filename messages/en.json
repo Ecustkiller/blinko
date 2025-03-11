@@ -62,7 +62,9 @@
     "dev": {
       "title": "Developer",
       "clearData": "Clear Data",
-      "clearDataConfirm": "Are you sure to clear data?"
+      "clearDataConfirm": "Are you sure to clear data?",
+      "proxy": "Proxy",
+      "proxyPlaceholder": "Enter proxy address"
     },
     "ai": {
       "title": "AI",

@@ -6,9 +6,12 @@ import { BaseDirectory, exists, remove } from "@tauri-apps/plugin-fs";
 import { confirm, message } from '@tauri-apps/plugin-dialog';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { Store } from "@tauri-apps/plugin-store";
+import { Input } from "@/components/ui/input";
+import { useEffect, useState } from "react";
 
 export function SettingDev({id, icon}: {id: string, icon?: React.ReactNode}) {
   const t = useTranslations();
+  const [proxy, setProxy] = useState('');
   const { toast } = useToast()
 
   async function handleClearData() {
@@ -47,14 +50,35 @@ export function SettingDev({id, icon}: {id: string, icon?: React.ReactNode}) {
     }
   }
 
+  async function proxyChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
+    setProxy(e.target.value)
+    const store = await Store.load('store.json');
+    await store.set('proxy', e.target.value)
+  }
+
+  useEffect(() => {
+    async function init() {
+      const store = await Store.load('store.json');
+      const proxy = await store.get<string>('proxy')
+      if (proxy) {
+        setProxy(proxy)
+      }
+    }
+    init()
+  }, [])
+
   return (
     <SettingType id={id} icon={icon} title={t('settings.dev.title')}>
+      <SettingRow border className="gap-4">
+        <span>{t('settings.dev.proxy')}</span>
+        <Input className="max-w-[400px]" placeholder={t('settings.dev.proxyPlaceholder')} value={proxy} onChange={proxyChangeHandler} />
+      </SettingRow>
       <SettingRow border>
-        清理数据信息，包括系统配置信息、数据库（包含记录）。
+        <span>清理数据信息，包括系统配置信息、数据库（包含记录）。</span>
         <Button variant={"destructive"} onClick={handleClearData}>清理</Button>
       </SettingRow>
       <SettingRow border>
-        清理文件，包括图片、文章。
+        <span>清理文件，包括图片、文章。</span>
         <Button variant={"destructive"} onClick={handleClearFile}>清理</Button>
       </SettingRow>
     </SettingType>

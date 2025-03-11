@@ -1,6 +1,6 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import { fetch } from '@tauri-apps/plugin-http'
+import { fetch, Proxy } from '@tauri-apps/plugin-http'
 import useSettingStore from "@/stores/setting";
 import { AiConfig, baseAiConfig, Model } from "./config";
 import { Input } from "@/components/ui/input";
@@ -24,10 +24,16 @@ export default function ModelSelect() {
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${apiKey}`);
     headers.append("Content-Type", "application/json");
+    const store = await Store.load('store.json');
+    const proxyUrl = await store.get<string>('proxy')
+    const proxy: Proxy | undefined = proxyUrl ? {
+      all: proxyUrl
+    } : undefined
 
     const requestOptions = {
       method: 'GET',
       headers,
+      proxy
     };
 
     try {

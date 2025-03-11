@@ -1,6 +1,6 @@
 import { toast } from "@/hooks/use-toast";
 import { Store } from "@tauri-apps/plugin-store";
-import { fetch } from '@tauri-apps/plugin-http'
+import { fetch, Proxy } from '@tauri-apps/plugin-http'
 
 const chatURL = '/chat/completions'
 
@@ -43,10 +43,16 @@ async function createAi(text: string) {
     });
   }
 
+  const proxyUrl = await store.get<string>('proxy')
+  const proxy: Proxy | undefined = proxyUrl ? {
+    all: proxyUrl
+  } : undefined
+
   const requestOptions = {
     method: 'POST',
     headers,
     body,
+    proxy
   };
 
   return { requestOptions, aiType };
