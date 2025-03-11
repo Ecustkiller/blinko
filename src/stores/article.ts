@@ -299,6 +299,9 @@ const useArticleStore = create<NoteState>((set, get) => ({
   newFileOnFolder: async (path: string) => {
     const cacheTree: DirTree[] = get().fileTree
     const currentFolder = getCurrentFolder(path, cacheTree)
+    if (currentFolder?.children?.find(item => item.name === '')) {
+      return
+    }
     if (currentFolder) {
       const newFile: DirTree = {
         name: '',
@@ -317,6 +320,9 @@ const useArticleStore = create<NoteState>((set, get) => ({
   newFolderInFolder: async (path: string) => {
     const cacheTree: DirTree[] = get().fileTree
     const currentFolder = getCurrentFolder(path, cacheTree)
+    if (currentFolder?.children?.find(item => item.name === '')) {
+      return
+    }
     if (currentFolder) {
       const newDir: DirTree = {
         name: '',
