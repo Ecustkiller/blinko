@@ -1,4 +1,4 @@
-import { Link } from "lucide-react"
+import { Link, Unlink } from "lucide-react"
  
 import { Toggle } from "@/components/ui/toggle"
 import useMarkStore from '@/stores/mark'
@@ -12,7 +12,9 @@ export function ChatLink({ inputType }: { inputType?: string }) {
 
   return (
     <Toggle size="sm" disabled={marks.length === 0 || inputType === 'gen'} pressed={isLinkMark} onPressedChange={setIsLinkMark}>
-      <Link />
+      {
+        isLinkMark ? <Link /> : <Unlink />
+      }
       {currentTag?.name} ({marks.length})
     </Toggle>
   )
