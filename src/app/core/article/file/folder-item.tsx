@@ -213,10 +213,10 @@ export function FolderItem({ item }: { item: DirTree }) {
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent>
-          <ContextMenuItem inset onClick={newFileHandler}>
+          <ContextMenuItem inset disabled={!!item.sha && !item.isLocale} onClick={newFileHandler}>
             {t('context.newFile')}
           </ContextMenuItem>
-          <ContextMenuItem inset onClick={newFolderHandler}>
+          <ContextMenuItem inset disabled={!!item.sha && !item.isLocale} onClick={newFolderHandler}>
             {t('context.newFolder')}
           </ContextMenuItem>
           <ContextMenuItem inset onClick={handleShowFileManager}>
