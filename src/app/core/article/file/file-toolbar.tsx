@@ -17,8 +17,8 @@ export function FileToolbar() {
   const router = useRouter()
   const t = useTranslations('article.file.toolbar')
 
-  const debounceNewFile = debounce(newFile, 1000)
-  const debounceNewFolder = debounce(newFolder, 1000)
+  const debounceNewFile = debounce(newFile, 200)
+  const debounceNewFolder = debounce(newFolder, 200)
 
   async function openFolder() {
     open(`https://github.com/${githubUsername}/${RepoNames.sync}`)

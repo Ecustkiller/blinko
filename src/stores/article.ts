@@ -219,6 +219,9 @@ const useArticleStore = create<NoteState>((set, get) => ({
     if (path.includes('/')) {
       const parentFolderPath = path.includes('/') ? path.split('/').slice(0, -1).join('/') : ''
       const currentFolder = getCurrentFolder(parentFolderPath, cacheTree)
+      if (currentFolder?.children?.find(item => item.name === '')) {
+        return
+      }
       if (currentFolder) {
         const newDir: DirTree = {
           name: '',
@@ -255,6 +258,9 @@ const useArticleStore = create<NoteState>((set, get) => ({
     if (path.includes('/')) {
       const folderPath = path.includes('/') ? path.split('/').slice(0, -1).join('/') : ''
       const currentFolder = getCurrentFolder(folderPath, fileTree)
+      if (currentFolder?.children?.find(item => item.name === '')) {
+        return
+      }
       const collapsibleList = get().collapsibleList
       if (!collapsibleList.includes(folderPath)) {
         collapsibleList.push(folderPath)
