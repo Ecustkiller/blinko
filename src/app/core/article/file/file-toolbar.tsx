@@ -12,6 +12,8 @@ import {
   Clock,
   Calendar,
   ArrowDownAZ,
+  ChevronsDownUp,
+  ChevronsUpDown,
 } from "lucide-react"
 import * as React from "react"
 import { TooltipButton } from "@/components/tooltip-button"
@@ -30,7 +32,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export function FileToolbar() {
-  const { newFolder, loadFileTree, newFile, fileTreeLoading, sortType, setSortType, sortDirection, setSortDirection } = useArticleStore()
+  const { newFolder, loadFileTree, newFile, fileTreeLoading, sortType, setSortType, sortDirection, setSortDirection, toggleAllFolders, collapsibleList } = useArticleStore()
   const { githubUsername, accessToken } = useSettingStore()
   const router = useRouter()
   const t = useTranslations('article.file.toolbar')
@@ -64,8 +66,11 @@ export function FileToolbar() {
       </div>
       <div>
         <TooltipProvider>
+          {/* 新建 */}
           <TooltipButton icon={<FilePlus />} tooltipText={t('newArticle')} onClick={debounceNewFile} />
+          {/* 新建文件夹 */}
           <TooltipButton icon={<FolderPlus />} tooltipText={t('newFolder')} onClick={debounceNewFolder} />
+          {/* 排序 */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div className="inline-flex items-center">
@@ -101,6 +106,13 @@ export function FileToolbar() {
             </DropdownMenuContent>
           </DropdownMenu>
         </TooltipProvider>
+        {/* 折叠/展开 */}
+        <TooltipButton 
+          icon={collapsibleList.length > 0 ? <ChevronsDownUp className="h-4 w-4" /> : <ChevronsUpDown className="h-4 w-4" />} 
+          tooltipText={collapsibleList.length > 0 ? t('collapseAll') : t('expandAll')} 
+          onClick={toggleAllFolders} 
+        />
+        {/* 刷新 */}
         <TooltipButton icon={<FolderSync />} tooltipText={t('refresh')} onClick={loadFileTree} />
       </div>
     </div>

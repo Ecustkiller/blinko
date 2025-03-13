@@ -402,7 +402,10 @@
         "configSync": "Configure Sync",
         "newArticle": "New Article",
         "newFolder": "New Folder",
-        "refresh": "Refresh"
+        "refresh": "Refresh",
+        "toggleFolders": "Toggle Folders",
+        "expandAll": "Expand All",
+        "collapseAll": "Collapse All"
       },
       "context": {
         "viewDirectory": "View Directory",

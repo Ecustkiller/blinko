@@ -57,6 +57,9 @@ interface NoteState {
   collapsibleList: string[]
   initCollapsibleList: () => Promise<void>
   setCollapsibleList: (name: string, value: boolean) => Promise<void>
+  expandAllFolders: () => Promise<void>
+  collapseAllFolders: () => Promise<void>
+  toggleAllFolders: () => Promise<void>
 
   currentArticle: string
   readArticle: (path: string, sha?: string, isLocale?: boolean) => Promise<void>
@@ -471,6 +474,48 @@ const useArticleStore = create<NoteState>((set, get) => ({
     const store = await Store.load('store.json');
     await store.set('collapsibleList', collapsibleList)
     set({ collapsibleList: uniq(collapsibleList).filter(item => !item.includes('.md')) })
+  },
+  
+  expandAllFolders: async () => {
+    // Get all folder paths from fileTree recursively
+    const getAllFolderPaths = (tree: DirTree[], parentPath: string = ''): string[] => {
+      let paths: string[] = []
+      for (const item of tree) {
+        if (!item.isFile) {
+          const currentPath = parentPath ? `${parentPath}/${item.name}` : item.name
+          paths.push(currentPath)
+          if (item.children && item.children.length > 0) {
+            paths = [...paths, ...getAllFolderPaths(item.children, currentPath)]
+          }
+        }
+      }
+      return paths
+    }
+    
+    const folderPaths = getAllFolderPaths(get().fileTree)
+    const store = await Store.load('store.json')
+    await store.set('collapsibleList', folderPaths)
+    set({ collapsibleList: uniq(folderPaths) })
+    
+    // Load all children for expanded folders
+    for (const path of folderPaths) {
+      await get().loadCollapsibleFiles(path)
+    }
+  },
+  
+  collapseAllFolders: async () => {
+    const store = await Store.load('store.json')
+    await store.set('collapsibleList', [])
+    set({ collapsibleList: [] })
+  },
+  
+  toggleAllFolders: async () => {
+    // If there are any expanded folders, collapse all; otherwise, expand all
+    if (get().collapsibleList.length > 0) {
+      await get().collapseAllFolders()
+    } else {
+      await get().expandAllFolders()
+    }
   },
 
   currentArticle: '',
