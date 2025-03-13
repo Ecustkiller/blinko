@@ -13,7 +13,8 @@
     "pin": "Pin",
     "unpin": "Unpin",
     "settings": "Settings",
-    "sync": "Sync"
+    "sync": "Sync",
+    "language": "Language"
   },
   "settings": {
     "about": {
@@ -269,7 +270,13 @@
         "regenerateDesc": "Regenerate Description",
         "viewFolder": "View in Folder",
         "viewFile": "View Original File",
-        "deleteForever": "Delete Forever"
+        "deleteForever": "Delete Forever",
+        "sortByName": "Sort by Name",
+        "sortByCreated": "Sort by Created",
+        "sortByModified": "Sort by Modified",
+        "sortAsc": "Sort Ascending",
+        "sortDesc": "Sort Descending",
+        "sort": "Sort"
       }
     },
     "chat": {

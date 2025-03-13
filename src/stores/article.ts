@@ -2,10 +2,23 @@ import { decodeBase64ToString, getFiles } from '@/lib/github'
 import { GithubContent, RepoNames } from '@/lib/github.types'
 import { getCurrentFolder } from '@/lib/path'
 import { join } from '@tauri-apps/api/path'
-import { BaseDirectory, DirEntry, exists, mkdir, readDir, readTextFile, writeTextFile } from '@tauri-apps/plugin-fs'
+import { BaseDirectory, DirEntry, exists, mkdir, readDir, readTextFile, writeTextFile, stat } from '@tauri-apps/plugin-fs'
 import { Store } from '@tauri-apps/plugin-store'
 import { cloneDeep, uniq } from 'lodash-es'
 import { create } from 'zustand'
+
+export type SortType = 'name' | 'created' | 'modified' | 'none'
+export type SortDirection = 'asc' | 'desc'
+
+export interface DirTree extends DirEntry {
+  children?: DirTree[]
+  parent?: DirTree
+  sha?: string
+  isEditing?: boolean
+  isLocale: boolean
+  createdAt?: string
+  modifiedAt?: string
+}
 
 export interface Article {
   article: string
@@ -22,6 +35,13 @@ interface NoteState {
   html2md: boolean
   initHtml2md: () => Promise<void>
   setHtml2md: (html2md: boolean) => Promise<void>
+
+  sortType: SortType
+  sortDirection: SortDirection
+  setSortType: (sortType: SortType) => Promise<void>
+  setSortDirection: (direction: SortDirection) => Promise<void>
+  sortFileTree: (tree: DirTree[]) => DirTree[]
+  updateFileStats: (path: string, tree: DirTree[]) => Promise<DirTree[]>
 
   fileTree: DirTree[]
   fileTreeLoading: boolean
@@ -47,17 +67,80 @@ interface NoteState {
   loadAllArticle: () => Promise<void>
 }
 
-export interface DirTree extends DirEntry {
-  children?: DirTree[]
-  parent?: DirTree
-  sha?: string
-  isEditing?: boolean
-  isLocale: boolean
-}
-
 const useArticleStore = create<NoteState>((set, get) => ({
   loading: false,
   setLoading: (loading: boolean) => { set({ loading }) },
+
+  sortType: 'none',
+  sortDirection: 'asc',
+  setSortType: async (sortType: SortType) => {
+    set({ sortType })
+    const store = await Store.load('store.json')
+    await store.set('sortType', sortType)
+    const currentTree = get().fileTree
+    const sortedTree = get().sortFileTree(currentTree)
+    set({ fileTree: sortedTree })
+  },
+  setSortDirection: async (direction: SortDirection) => {
+    set({ sortDirection: direction })
+    const store = await Store.load('store.json')
+    await store.set('sortDirection', direction)
+    const currentTree = get().fileTree
+    const sortedTree = get().sortFileTree(currentTree)
+    set({ fileTree: sortedTree })
+  },
+  
+  sortFileTree: (tree: DirTree[]) => {
+    const sortType = get().sortType
+    const sortDirection = get().sortDirection
+    if (sortType === 'none') return tree
+    
+    const sortedTree = cloneDeep(tree)
+    
+    const sortFunction = (a: DirTree, b: DirTree) => {
+      if (a.isDirectory && !b.isDirectory) return -1
+      if (!a.isDirectory && b.isDirectory) return 1
+      
+      let result = 0
+      switch (sortType) {
+        case 'name':
+          result = a.name.localeCompare(b.name)
+          break
+        case 'created':
+          if (a.createdAt && b.createdAt) {
+            result = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          } else {
+            result = a.name.localeCompare(b.name)
+          }
+          break
+        case 'modified':
+          if (a.modifiedAt && b.modifiedAt) {
+            result = new Date(a.modifiedAt).getTime() - new Date(b.modifiedAt).getTime()
+          } else {
+            result = a.name.localeCompare(b.name)
+          }
+          break
+        default:
+          result = 0
+      }
+      
+      return sortDirection === 'asc' ? result : -result
+    }
+    
+    sortedTree.sort(sortFunction)
+    
+    const sortChildren = (items: DirTree[]) => {
+      for (const item of items) {
+        if (item.children && item.children.length > 0) {
+          item.children.sort(sortFunction)
+          sortChildren(item.children)
+        }
+      }
+    }
+    
+    sortChildren(sortedTree)
+    return sortedTree
+  },
 
   activeFilePath: '',
   setActiveFilePath: async (path: string) => {
@@ -80,12 +163,32 @@ const useArticleStore = create<NoteState>((set, get) => ({
 
   fileTree: [],
   setFileTree: (tree: DirTree[]) => {
-    set({ fileTree: tree })
+    const sortedTree = get().sortFileTree(tree)
+    set({ fileTree: sortedTree })
   },
   addFile: (file: DirTree) => {
     set({ fileTree: [file, ...get().fileTree] })
   },
   fileTreeLoading: false,
+  updateFileStats: async (basePath: string, tree: DirTree[]) => {
+    for (const entry of tree) {
+      try {
+        const fullPath = `${basePath}/${entry.name}`
+        const fileStat = await stat(fullPath, { baseDir: BaseDirectory.AppData })
+        entry.createdAt = fileStat.birthtime ? fileStat.birthtime.toISOString() : undefined
+        entry.modifiedAt = fileStat.mtime ? fileStat.mtime.toISOString() : undefined
+        
+        // 递归处理子目录
+        if (entry.children && entry.children.length > 0) {
+          await get().updateFileStats(fullPath, entry.children)
+        }
+      } catch (error) {
+        console.error(`Error getting stats for ${entry.name}:`, error)
+      }
+    }
+    return tree
+  },
+  
   loadFileTree: async () => {
     set({ fileTreeLoading: true })
     set({ fileTree: [] })
@@ -100,7 +203,9 @@ const useArticleStore = create<NoteState>((set, get) => ({
         isEditing: false,
         isLocale: true,
         parent: undefined,
-        sha: ''
+        sha: '',
+        createdAt: undefined,
+        modifiedAt: undefined
       }))
     await processEntriesRecursively('article', dirs as DirTree[]);
     async function processEntriesRecursively(parent: string, entries: DirTree[]) {
@@ -121,7 +226,13 @@ const useArticleStore = create<NoteState>((set, get) => ({
         }
       }
     }
-    set({ fileTree: dirs })
+    // 更新文件统计信息
+    await get().updateFileStats('article', dirs)
+    
+    // 排序文件树
+    const sortedDirs = get().sortFileTree(dirs)
+    set({ fileTree: sortedDirs })
+    
     // 读取 github 同步文件
     const store = await Store.load('store.json');
     const accessToken = await store.get<string>('accessToken')

@@ -13,7 +13,8 @@
     "pin": "置顶",
     "unpin": "取消置顶",
     "settings": "设置",
-    "sync": "同步"
+    "sync": "同步",
+    "language": "语言"
   },
   "settings": {
     "about": {
@@ -390,7 +391,13 @@
         "configSync": "配置同步",
         "newArticle": "新建文章",
         "newFolder": "新建文件夹",
-        "refresh": "刷新"
+        "refresh": "刷新",
+        "sortByName": "按名称排序",
+        "sortByCreated": "按创建时间排序",
+        "sortByModified": "按修改时间排序",
+        "sortAsc": "升序排列",
+        "sortDesc": "降序排列",
+        "sort": "排序"
       },
       "context": {
         "viewDirectory": "查看目录",
