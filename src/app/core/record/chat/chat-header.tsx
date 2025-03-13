@@ -8,7 +8,7 @@ import { TooltipButton } from "@/components/tooltip-button"
 import useChatStore from "@/stores/chat"
 import useTagStore from "@/stores/tag"
 import { useTranslations } from 'next-intl'
-import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { LanguageSwitch } from "@/components/language-switch";
 import { ModelSelect } from "./model-select"
 
 dayjs.extend(relativeTime)
