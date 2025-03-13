@@ -262,6 +262,22 @@ export function FolderItem({ item }: { item: DirTree }) {
     }
   }
 
+  function handleEditEnd() {
+    if (currentFolder?.parent) {
+      const index = currentFolder?.parent?.children?.findIndex(item => item.name === '')
+      if (index !== undefined && index !== -1 && currentFolder?.parent?.children) {
+        currentFolder.parent?.children?.splice(index, 1)
+      }
+    } else {
+      const index = cacheTree.findIndex(item => item.name === '')
+      if (index !== -1) {
+        cacheTree.splice(index, 1)
+      }
+    }
+    setFileTree(cacheTree)
+    setIsEditing(false)
+  }
+
   useEffect(() => {
     if (item.isEditing) {
       setName(name)
@@ -292,6 +308,8 @@ export function FolderItem({ item }: { item: DirTree }) {
                     onKeyDown={(e) => {
                       if (e.code === 'Enter') {
                         handleRename()
+                      } else if (e.code === 'Escape') {
+                        handleEditEnd()
                       }
                     }}
                   />

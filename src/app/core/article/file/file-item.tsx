@@ -206,6 +206,22 @@ export function FileItem({ item }: { item: DirTree }) {
     }
   }
 
+  async function handleEditEnd() {
+    if (currentFolder && currentFolder.children) {
+      const index = currentFolder?.children?.findIndex(item => item.name === '')
+      if (index !== undefined && index !== -1 && currentFolder?.children) {
+        currentFolder?.children?.splice(index, 1)
+      }
+    } else {
+      const index = cacheTree.findIndex(item => item.name === '')
+      if (index !== -1) {
+        cacheTree.splice(index, 1)
+      }
+    }
+    setFileTree(cacheTree)
+    setIsEditing(false)
+  }
+
   useEffect(() => {
     if (item.isEditing) {
       setName(name)
@@ -235,6 +251,8 @@ export function FileItem({ item }: { item: DirTree }) {
                 onKeyDown={(e) => {
                   if (e.code === 'Enter') {
                     handleRename()
+                  } else if (e.code === 'Escape') {
+                    handleEditEnd()
                   }
                 }}
               />
