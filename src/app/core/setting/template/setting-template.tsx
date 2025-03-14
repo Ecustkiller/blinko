@@ -1,5 +1,5 @@
 import useSettingStore, { GenTemplate, GenTemplateRange } from "@/stores/setting";
-import { SettingRow, SettingType } from "./setting-base";
+import { SettingRow, SettingType } from "../components/setting-base";
 import { useTranslations } from 'next-intl';
 import {
   Table,

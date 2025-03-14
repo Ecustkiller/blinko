@@ -66,7 +66,7 @@ export default function AppStatus() {
   }
 
   function routerToSetting() {
-    router.push('/core/setting?anchor=sync', { scroll: false });
+    router.push('/core/setting/sync');
   }
 
   useEffect(() => {

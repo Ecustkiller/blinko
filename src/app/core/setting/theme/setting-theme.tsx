@@ -1,4 +1,4 @@
-import { SettingRow, SettingType } from "./setting-base";
+import { SettingRow, SettingType } from "../components/setting-base";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";

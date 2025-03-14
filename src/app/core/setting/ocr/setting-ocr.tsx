@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { FormItem, SettingRow, SettingType } from "./setting-base";
+import { FormItem, SettingRow, SettingType } from "../components/setting-base";
 import { useTranslations } from 'next-intl';
 import { useEffect } from "react";
 import useSettingStore from "@/stores/setting";

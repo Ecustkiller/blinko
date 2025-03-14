@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { SettingRow, SettingType } from "./setting-base";
+import { SettingRow, SettingType } from "../components/setting-base";
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from "react";
 import { platform } from '@tauri-apps/plugin-os';

@@ -1,12 +1,12 @@
 import { Input } from "@/components/ui/input";
-import { FormItem, SettingRow, SettingType } from "./setting-base";
+import { FormItem, SettingRow, SettingType } from "../components/setting-base";
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from "react";
 import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
 import { InfoIcon } from "lucide-react";
 import ModelSelect from "./model-select";
-import { AiConfig, baseAiConfig } from "./config";
+import { AiConfig, baseAiConfig } from "../config";
 import * as React from "react"
 import {
   Select,
@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider"
 import { v4 } from 'uuid';
 import { confirm } from '@tauri-apps/plugin-dialog';
-import { AiCheck } from "./components/ai-check";
+import { AiCheck } from "./ai-check";
 
 export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   const t = useTranslations('settings.ai');

@@ -165,7 +165,7 @@ export const MarkGen = forwardRef<{ openGen: () => void }, MarkGenProps>(({ inpu
   }
 
   function handleSetting() {
-    router.push('/core/setting?anchor=template', { scroll: false });
+    router.push('/core/setting/template');
   }
 
   return (

@@ -47,7 +47,7 @@ export function ModelSelect() {
   }
 
   async function toSettingHandler() {
-    router.push('/core/setting?anchor=ai', { scroll: false });
+    router.push('/core/setting/ai');
   }
 
   useEffect(() => {

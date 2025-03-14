@@ -2,7 +2,7 @@
 
 import useSettingStore from "@/stores/setting";
 import { OpenBroswer } from "@/components/open-broswer";
-import { SettingRow, SettingType } from "./setting-base";
+import { SettingRow, SettingType } from "../components/setting-base";
 import { useTranslations } from 'next-intl';
 
 export function SettingAbout({id, icon}: {id: string, icon?: React.ReactNode}) {

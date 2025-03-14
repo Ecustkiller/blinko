@@ -45,7 +45,7 @@ export function FileToolbar() {
   }
 
   function handleSetting() {
-    router.push('/core/setting?anchor=sync', { scroll: false });
+    router.push('/core/setting/sync');
   }
 
   return (

@@ -1,4 +1,4 @@
-import { SettingRow, SettingType } from "./setting-base";
+import { SettingRow, SettingType } from "../components/setting-base";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from 'next-intl';
 import { useToast } from "@/hooks/use-toast";

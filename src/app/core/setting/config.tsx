@@ -1,54 +1,37 @@
 import { BotMessageSquare, LayoutTemplate, Command, FileUp, Palette, ScanText, Store, UserRoundCog } from "lucide-react"
-import { SettingAbout } from "./setting-about"
-import { SettingAI } from "./setting-ai"
-import { SettingSync } from "./setting-sync"
-import { SettingOCR } from "./setting-ocr"
-import { SettingShortcut } from "./setting-shortcut"
-import { SettingTheme } from "./setting-theme"
-import { SettingDev } from "./setting-dev"
-import { SettingTemplate } from "./setting-template"
-
 // Define base configuration without translations
 const baseConfig = [
   {
     icon: <Store />,
     anchor: 'about',
-    children: SettingAbout,
   },
   {
     icon: <BotMessageSquare />,
     anchor: 'ai',
-    children: SettingAI,
   },
   {
     icon: <FileUp />,
     anchor: 'sync',
-    children: SettingSync,
   },
   {
     icon: <ScanText />,
     anchor: 'ocr',
-    children: SettingOCR,
   },
   {
     icon: <LayoutTemplate />,
     anchor: 'template',
-    children: SettingTemplate,
   },
   {
     icon: <Command />,
     anchor: 'shortcut',
-    children: SettingShortcut,
   },
   {
     icon: <Palette />,
     anchor: 'theme',
-    children: SettingTheme,
   },
   {
     icon: <UserRoundCog />,
     anchor: 'dev',
-    children: SettingDev,
   },
 ]
 

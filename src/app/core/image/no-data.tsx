@@ -5,7 +5,7 @@ export function NoData() {
   const router = useRouter();
 
   function handelRouteToSetting() {
-    router.push('/core/setting?anchor=sync', { scroll: false });
+    router.push('/core/setting/sync');
   }
 
   return (
