@@ -69,10 +69,11 @@
     },
     "ai": {
       "title": "AI",
-      "modelTitle": "Model Name",
+      "desc": "Here, you can add and manage various custom model services. After configuration, you will unlock AI-related features, such as organization and conversation functions.",
+      "modelTitle": "Custom Name",
       "custom": "Custom",
-      "addCustomModel": "Add Custom",
-      "deleteCustomModel": "Delete Custom",
+      "addCustomModel": "Add",
+      "deleteCustomModel": "Delete",
       "deleteCustomModelConfirm": "Are you sure to delete this custom model?",
       "builtin": "Built-in",
       "modelSupport": "Only supports AI models with OpenAI protocol",
@@ -94,7 +95,11 @@
         "moonshot": "Kimi",
         "deepseek": "DeepSeek",
         "tongyi": "Tongyi Qianwen"
-      }
+      },
+      "modelProviderDesc": "Custom models only support AI models with OpenAI protocol.",
+      "modelTitleDesc": "Custom name, used to identify AI models, please do not repeat.",
+      "modelBaseUrlDesc": "You only need to configure the version number, for example: https://api.openai.com/v1, the suffix will be automatically added.",
+      "modelDesc": "Some models support getting model list, if not supported please manually configure."
     },
     "ocr": {
       "title": "OCR",

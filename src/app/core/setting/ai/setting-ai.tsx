@@ -184,9 +184,9 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   }, [])
 
   return (
-    <SettingType id={id} icon={icon} title={t('title')}>
+    <SettingType id={id} icon={icon} title={t('title')} desc={t('desc')}>
       <SettingRow>
-        <FormItem title="Model Provider">
+        <FormItem title="Model Provider" desc={t('modelProviderDesc')}>
           <div className="flex gap-2 items-center">
             <Select value={aiType} onValueChange={selectChangeHandler}>
               <SelectTrigger className="w-[240px] flex">
@@ -236,14 +236,14 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
       {
         currentAi?.type === 'custom' && (
           <SettingRow>
-            <FormItem title={t('modelTitle')}>
+            <FormItem title={t('modelTitle')} desc={t('modelTitleDesc')}>
               <Input value={title} onChange={titleChangeHandler} />
             </FormItem>
           </SettingRow>
         )
       }
       <SettingRow>
-        <FormItem title="BaseURL">
+        <FormItem title="BaseURL" desc={t('modelBaseUrlDesc')}>
           <Input value={baseURL} onChange={baseURLChangeHandler} />
         </FormItem>
       </SettingRow>
@@ -253,7 +253,7 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
         </FormItem>
       </SettingRow>
       <SettingRow>
-        <FormItem title="Model">
+        <FormItem title="Model" desc={t('modelDesc')}>
           <ModelSelect />
         </FormItem>
       </SettingRow>

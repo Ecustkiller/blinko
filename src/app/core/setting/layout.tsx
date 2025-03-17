@@ -10,7 +10,7 @@ export default function SettingLayout({
   return (
     <div className="flex">
       <SettingTab />
-      <div className="flex-1 p-4 overflow-y-auto h-screen">
+      <div className="flex-1 p-8 overflow-y-auto h-screen">
         {children}
       </div>
     </div>
