@@ -145,14 +145,14 @@ export function MdEditor() {
       if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         setTheme('dark')  
       } else {
-        setTheme('classic')
+        setTheme('light')
       }
     } else {
       if (editor) {
-        const editorTheme = theme === 'dark' ? 'dark' : 'classic'
-        const contentTheme = theme === 'dark' ? 'dark' : 'classic'
+        const editorTheme = theme === 'dark' ? 'dark' : 'light'
+        const contentTheme = theme === 'dark' ? 'dark' : 'light'
         const codeTheme = theme === 'dark' ? 'github-dark' : 'github-light'
-        editor.setTheme(editorTheme, contentTheme, codeTheme)
+        editor.setTheme(editorTheme === 'dark' ? 'dark' : 'classic', contentTheme, codeTheme)
       }
     }
   }, [theme, editor])
