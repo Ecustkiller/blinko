@@ -135,7 +135,9 @@
         "cacheScreenshot": "Caching screenshot",
         "textAnalysis": "Text analysis",
         "save": "Saving",
-        "saveImage": "Saving image"
+        "saveImage": "Saving image",
+        "newToken": "Create access token",
+        "newTokenDesc": "New token must be configured with repo permission, configuration will automatically create file repository (private) and image repository."
       },
       "text": {
         "title": "Record Text",

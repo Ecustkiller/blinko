@@ -26,6 +26,7 @@
     },
     "sync": {
       "title": "同步",
+      "desc": "在这里，你可以配置同步仓库，将写作中的文件同步到仓库，并支持图床。",
       "repoStatus": "仓库状态",
       "syncRepo": "同步仓库",
       "syncRepoDesc": "同步写作中的 markdown 文件",
@@ -34,7 +35,9 @@
       "private": "私有",
       "public": "公开",
       "createdAt": "创建于 {time}",
-      "updatedAt": "最后更新于 {time}"
+      "updatedAt": "最后更新于 {time}",
+      "newToken": "创建 access token",
+      "newTokenDesc": "新建 token 时，请务必勾选 repo 权限，配置后将自动创建文件仓库（私有）和图床仓库。"
     },
     "template": {
       "title": "整理模板",

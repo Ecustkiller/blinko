@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { OpenBroswer } from "@/components/open-broswer";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+
 dayjs.extend(relativeTime)
 
 export function SettingSync({id, icon}: {id: string, icon?: React.ReactNode}) {
@@ -54,9 +55,10 @@ export function SettingSync({id, icon}: {id: string, icon?: React.ReactNode}) {
   }, [])
 
   return (
-    <SettingType id={id} icon={icon} title={t('settings.sync.title')}>
+    <SettingType id={id} icon={icon} title={t('settings.sync.title')} desc={t('settings.sync.desc')}>
       <SettingRow>
-        <FormItem title="Github Access Token">
+        <FormItem title="Github Access Token" desc={t('settings.sync.newTokenDesc')}>
+          <OpenBroswer url="https://github.com/settings/tokens/new" title={t('settings.sync.newToken')} className="mb-2" />
           <Input value={accessToken} onChange={tokenChangeHandler} />
         </FormItem>
       </SettingRow>
