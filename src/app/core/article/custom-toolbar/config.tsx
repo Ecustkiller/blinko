@@ -25,6 +25,14 @@ const config= [
     icon: '<svg><use xlink:href="#vditor-icon-polish"></svg>',
     click: () => emitter.emit('toolbar-polish')
   },
+  {
+    name: 'mark',
+    tipPosition: 's',
+    tip: '使用记录',
+    className: 'right',
+    icon: '<svg><use xlink:href="#vditor-icon-mark"></svg>',
+    click: () => emitter.emit('toolbar-mark'),
+  },
   '|',
   { name: 'undo', tipPosition: 's' },
   { name: 'redo', tipPosition: 's' },

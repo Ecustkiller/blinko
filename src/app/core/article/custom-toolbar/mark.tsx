@@ -1,9 +1,7 @@
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { fetchAi } from "@/lib/ai";
 import useArticleStore from "@/stores/article";
 import { Highlighter, Plus } from "lucide-react";
 import { MarkWrapper } from "../../record/mark/mark-item";
-import { Clipboard } from "../../record/mark/clipboard";
 import { MarkLoading } from "../../record/mark/mark-loading";
 import useMarkStore from "@/stores/mark";
 import { Button } from "@/components/ui/button";
@@ -11,9 +9,12 @@ import { Mark, delMark } from "@/db/marks";
 import { TooltipButton } from "@/components/tooltip-button";
 import useSettingStore from "@/stores/setting";
 import Vditor from "vditor";
+import { useEffect, useState } from "react";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import emitter from "@/lib/emitter";
 
 export default function MarkInsert({editor}: {editor?: Vditor}) {
-
+  const [open, setOpen] = useState(false)
   const { loading, setLoading } = useArticleStore()
   const { apiKey } = useSettingStore()
   const { allMarks, queues, fetchAllMarks } = useMarkStore()
@@ -43,26 +44,37 @@ export default function MarkInsert({editor}: {editor?: Vditor}) {
     setLoading(false)
   }
 
-  async function openChangeHandler (e: boolean) {
+  async function openChangeHandler(e: boolean) {
+    setOpen(e)
     if (e) {
       fetchAllMarks()
     }
   }
 
+  useEffect(() => {
+    emitter.on('toolbar-mark', () => {
+      openChangeHandler(true)
+    })
+    return () => {
+      emitter.off('toolbar-mark', () => {
+        openChangeHandler(false)
+      })
+    }
+  }, [])
+
   return (
-    <Popover onOpenChange={openChangeHandler}>
-      <PopoverTrigger asChild>
+    <Sheet open={open} onOpenChange={openChangeHandler}>
+      <SheetTrigger asChild>
         <div>
           <TooltipButton tooltipText="使用记录" icon={<Highlighter />} disabled={loading} />
         </div>
-      </PopoverTrigger>
-      <PopoverContent align="start" className="w-96 p-0">
-        <div className="px-2 py-2 flex items-end">
-          <h4 className="leading-6 font-bold text-sm">使用记录</h4>
-          <span className="text-xs text-zinc-500 font-normal ml-2 leading-5">消耗记录转化为内容插入到文章。</span>
-        </div>
-        <div className="max-h-[calc(100vh/1.5)] overflow-y-auto border-t">
-          <Clipboard />
+      </SheetTrigger>
+      <SheetContent className="p-0 min-w-[500px]">
+        <SheetHeader className="p-4 border-b">
+          <SheetTitle>使用记录</SheetTitle>
+          <SheetDescription>消耗记录转化为内容插入到文章。</SheetDescription>
+        </SheetHeader>
+        <div className="max-h-[calc(100vh/1.5)] overflow-y-auto">
           {
             queues.map(mark => {
               return (
@@ -83,7 +95,7 @@ export default function MarkInsert({editor}: {editor?: Vditor}) {
             </div>
           }
         </div>
-      </PopoverContent>
-    </Popover>
+      </SheetContent>
+    </Sheet>
   )
 }
