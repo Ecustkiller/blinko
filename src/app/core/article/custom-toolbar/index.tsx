@@ -2,7 +2,7 @@ import Vditor from 'vditor'
 import Mark from "./mark";
 import Question from "./question";
 import Continue from "./continue";
-import Optimize from "./optimize";
+import Polish from "./polish";
 import Eraser from "./eraser";
 import Translation from "./translation";
 import Sync from "./sync";
@@ -13,7 +13,7 @@ export default function CustomToolbar({editor}: {editor?: Vditor}) {
     <Mark editor={editor} />
     <Question editor={editor} />
     <Continue editor={editor} />
-    <Optimize editor={editor} />
+    <Polish editor={editor} />
     <Eraser editor={editor} />
     <Translation editor={editor} />
     <History editor={editor} />

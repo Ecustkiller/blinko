@@ -17,6 +17,14 @@ const config= [
     icon: '<svg><use xlink:href="#vditor-icon-list-plus"></svg>',
     click: () => emitter.emit('toolbar-continue'),
   },
+  {
+    name: 'polish',
+    tipPosition: 's',
+    tip: '润色',
+    className: 'right',
+    icon: '<svg><use xlink:href="#vditor-icon-polish"></svg>',
+    click: () => emitter.emit('toolbar-polish')
+  },
   '|',
   { name: 'undo', tipPosition: 's' },
   { name: 'redo', tipPosition: 's' },
