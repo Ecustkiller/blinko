@@ -2,10 +2,6 @@ import { BotMessageSquare, LayoutTemplate, Command, FileUp, Palette, ScanText, S
 // Define base configuration without translations
 const baseConfig = [
   {
-    icon: <Store />,
-    anchor: 'about',
-  },
-  {
     icon: <BotMessageSquare />,
     anchor: 'ai',
   },
@@ -32,6 +28,10 @@ const baseConfig = [
   {
     icon: <UserRoundCog />,
     anchor: 'dev',
+  },
+  {
+    icon: <Store />,
+    anchor: 'about',
   },
 ]
 
