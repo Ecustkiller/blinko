@@ -53,8 +53,12 @@ export default function AppStatus() {
     }).catch(async () => {
       setImageRepoState(SyncStateEnum.creating)
       const info = await createSyncRepo(RepoNames.image)
-      setImageRepoInfo(info)
-      setImageRepoState(SyncStateEnum.success)
+      if (info) {
+        setImageRepoInfo(info)
+        setImageRepoState(SyncStateEnum.success)
+      } else {
+        setImageRepoState(SyncStateEnum.fail)
+      }
     })
     
     // 检查同步仓库状态
@@ -68,8 +72,12 @@ export default function AppStatus() {
     }).catch(async () => {
       setSyncRepoState(SyncStateEnum.creating)
       const info = await createSyncRepo(RepoNames.sync, true)
-      setSyncRepoInfo(info)
-      setSyncRepoState(SyncStateEnum.success)
+      if (info) {
+        setSyncRepoInfo(info)
+        setSyncRepoState(SyncStateEnum.success)
+      } else {
+        setSyncRepoState(SyncStateEnum.fail)
+      }
     })
     setLoading(false)
   }

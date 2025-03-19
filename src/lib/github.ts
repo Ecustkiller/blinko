@@ -373,18 +373,10 @@ export async function createSyncRepo(name: string, isPrivate?: boolean) {
     
     if (response.status >= 200 && response.status < 300) {
       const data = await response.json() as GithubRepoInfo;
-      toast({
-        title: '仓库创建成功',
-        description: `仓库名：${name}`,
-      });
       return data;
     }
   } catch (error) {
-    toast({
-      title: '创建仓库失败',
-      description: (error as GithubError).message,
-      variant: 'destructive',
-    });
+    console.log(error);
     return undefined;
   }
 }
