@@ -10,6 +10,7 @@ async function createAi(text: string) {
   const model = await store.get('model')
   const aiType = await store.get<string>('aiType')
   const temperature = await store.get<number>('temperature')
+  const topP = await store.get<number>('topP')
 
   const headers = new Headers();
   headers.append("Content-Type", "application/json");
@@ -26,6 +27,7 @@ async function createAi(text: string) {
       }],
       generationConfig: {
         temperature,
+        topP,
       },
     });
   } else {
@@ -40,6 +42,7 @@ async function createAi(text: string) {
       ],
       stream: false,
       temperature,
+      top_p: topP,
     });
   }
 

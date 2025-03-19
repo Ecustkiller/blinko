@@ -42,6 +42,7 @@ export interface AiConfig {
   title: string
   type: 'built-in' | 'custom'
   temperature: number
+  topP: number
   apiKey?: string
   model?: string
   baseURL?: string
@@ -62,6 +63,7 @@ const baseAiConfig: AiConfig[] = [
     title: 'ChatGPT',
     type: 'built-in',
     temperature: 0.7,
+    topP: 1.0,
     baseURL: 'https://api.openai.com/v1',
     modelURL: 'https://api.openai.com/v1/models',
   },
@@ -70,6 +72,7 @@ const baseAiConfig: AiConfig[] = [
     title: 'Gemini',
     type: 'built-in',
     temperature: 0.7,
+    topP: 1.0,
     baseURL: 'https://generativelanguage.googleapis.com/v1beta',
   },
   {
@@ -78,6 +81,7 @@ const baseAiConfig: AiConfig[] = [
     type: 'built-in',
     baseURL: 'http://localhost:11434',
     temperature: 0.7,
+    topP: 1.0,
     modelURL: 'http://localhost:11434/v1/models',
   },
   {
@@ -85,6 +89,7 @@ const baseAiConfig: AiConfig[] = [
     title: 'LM Studio',
     type: 'built-in',
     temperature: 0.7,
+    topP: 1.0,
     baseURL: 'http://localhost:1234/v1',
     modelURL: 'http://localhost:1234/v1/models',
   },
@@ -93,6 +98,7 @@ const baseAiConfig: AiConfig[] = [
     title: 'DeepSeek',
     type: 'built-in',
     temperature: 0.7,
+    topP: 1.0,
     baseURL: 'https://api.deepseek.com',
     modelURL: 'https://api.deepseek.com/models',
   },
