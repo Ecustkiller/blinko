@@ -1,7 +1,7 @@
 import { toast } from '@/hooks/use-toast';
 import { Store } from '@tauri-apps/plugin-store';
 import { v4 as uuid } from 'uuid';
-import { GithubError, RepoNames } from './github.types';
+import { GithubError, GithubRepoInfo, RepoNames } from './github.types';
 import { fetch, Proxy } from '@tauri-apps/plugin-http'
 
 // 自定义类型，代替 OctokitResponse
@@ -331,10 +331,10 @@ export async function checkSyncRepoState(name: string) {
   
   if (response.status >= 200 && response.status < 300) {
     const data = await response.json();
-    return { data } as OctokitResponse<any>;
+    return data;
   }
   
-  return { status: response.status } as OctokitResponse<any>;
+  return false
 }
 
 // 创建 Github 仓库
@@ -372,21 +372,19 @@ export async function createSyncRepo(name: string, isPrivate?: boolean) {
     const response = await fetch(url, requestOptions);
     
     if (response.status >= 200 && response.status < 300) {
-      const data = await response.json();
+      const data = await response.json() as GithubRepoInfo;
       toast({
         title: '仓库创建成功',
         description: `仓库名：${name}`,
       });
-      return { data } as OctokitResponse<any>;
+      return data;
     }
-    
-    return { status: response.status } as OctokitResponse<any>;
   } catch (error) {
     toast({
       title: '创建仓库失败',
       description: (error as GithubError).message,
       variant: 'destructive',
     });
-    return false;
+    return undefined;
   }
 }

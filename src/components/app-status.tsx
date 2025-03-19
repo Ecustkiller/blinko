@@ -30,6 +30,8 @@ export default function AppStatus() {
   const router = useRouter()
 
   async function handleGetUserInfo() {
+    setImageRepoInfo(undefined)
+    setSyncRepoInfo(undefined)
     setImageRepoState(SyncStateEnum.checking)
     setSyncRepoState(SyncStateEnum.checking)
     const res = await getUserInfo()
@@ -39,11 +41,15 @@ export default function AppStatus() {
     } else {
       setUserInfo(undefined)
     }
+
+    // 检查图床仓库状态
     await checkSyncRepoState(RepoNames.image).then((res) => {
       if (res) {
-        setImageRepoInfo(res.data)
+        setImageRepoInfo(res)
+        setImageRepoState(SyncStateEnum.success)
+      } else {
+        setImageRepoState(SyncStateEnum.fail)
       }
-      setImageRepoState(SyncStateEnum.success)
     }).catch(async () => {
       setImageRepoState(SyncStateEnum.creating)
       const info = await createSyncRepo(RepoNames.image)
@@ -51,11 +57,14 @@ export default function AppStatus() {
       setImageRepoState(SyncStateEnum.success)
     })
     
+    // 检查同步仓库状态
     await checkSyncRepoState(RepoNames.sync).then((res) => {
       if (res) {
-        setSyncRepoInfo(res.data)
+        setSyncRepoInfo(res)
+        setSyncRepoState(SyncStateEnum.success)
+      } else {
+        setSyncRepoState(SyncStateEnum.fail)
       }
-      setSyncRepoState(SyncStateEnum.success)
     }).catch(async () => {
       setSyncRepoState(SyncStateEnum.creating)
       const info = await createSyncRepo(RepoNames.sync, true)
