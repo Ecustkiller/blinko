@@ -88,7 +88,7 @@ export function FileItem({ item }: { item: DirTree }) {
       if (currentFolder && currentFolder.children) {
         const fileIndex = currentFolder?.children?.findIndex(file => file.name === item.name)
         if (fileIndex !== undefined && fileIndex !== -1) {
-          currentFolder.children[fileIndex].name = name + '.md'
+          currentFolder.children[fileIndex].name = name
           currentFolder.children[fileIndex].isEditing = false
         }
       } else {
