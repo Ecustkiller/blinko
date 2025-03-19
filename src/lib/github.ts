@@ -1,8 +1,15 @@
 import { toast } from '@/hooks/use-toast';
-import { Octokit } from '@octokit/core'
 import { Store } from '@tauri-apps/plugin-store';
 import { v4 as uuid } from 'uuid';
 import { GithubError, RepoNames } from './github.types';
+import { fetch, Proxy } from '@tauri-apps/plugin-http'
+
+// 自定义类型，代替 OctokitResponse
+type OctokitResponse<T> = {
+  data: T;
+  status?: number;
+  headers?: Record<string, string>;
+}
 
 export function uint8ArrayToBase64(data: Uint8Array) {
   return Buffer.from(data).toString('base64');
@@ -54,11 +61,15 @@ export async function uploadFile(
 {
   const store = await Store.load('store.json');
   const accessToken = await store.get('accessToken')
-  const octokit = new Octokit({
-    auth: accessToken
-  })
   const githubUsername = await store.get('githubUsername')
   const id = uuid()
+  
+  // 获取代理设置
+  const proxyUrl = await store.get<string>('proxy')
+  const proxy: Proxy | undefined = proxyUrl ? {
+    all: proxyUrl
+  } : undefined
+  
   try {
     let _filename = ''
     if (filename) {
@@ -69,15 +80,38 @@ export async function uploadFile(
     // 将空格转换成下划线
     _filename = _filename.replace(/\s/g, '_')
     const _path = path ? `/${path}`: ''
-    const res = await octokit.request(`PUT /repos/${githubUsername}/${repo}/contents${_path}/${_filename}`, {
-      message: message || `Upload ${filename || id}`,
-      content: file,
-      sha,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      },
-    })
-    return res;
+    
+    // 设置请求头
+    const headers = new Headers();
+    headers.append('Authorization', `Bearer ${accessToken}`);
+    headers.append('Accept', 'application/vnd.github+json');
+    headers.append('X-GitHub-Api-Version', '2022-11-28');
+    headers.append('Content-Type', 'application/json');
+    
+    const requestOptions = {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({
+        message: message || `Upload ${filename || id}`,
+        content: file,
+        sha
+      }),
+      proxy
+    };
+    
+    const url = `https://api.github.com/repos/${githubUsername}/${repo}/contents${_path}/${_filename}`;
+    const response = await fetch(url, requestOptions);
+    
+    if (response.status >= 200 && response.status < 300) {
+      const data = await response.json();
+      return { data } as OctokitResponse<any>;
+    }
+    
+    const errorData = await response.json();
+    throw {
+      status: response.status,
+      message: errorData.message || '同步失败'
+    };
   } catch (error) {
     toast({
       title: '同步失败',
@@ -91,21 +125,42 @@ export async function getFiles({ path, repo }: { path: string, repo: RepoNames }
   const store = await Store.load('store.json');
   const accessToken = await store.get('accessToken')
   if (!accessToken) return;
-  const octokit = new Octokit({
-    auth: accessToken
-  })
+  
   const githubUsername = await store.get('githubUsername')
   path = path.replace(/\s/g, '_')
+  
+  // 获取代理设置
+  const proxyUrl = await store.get<string>('proxy')
+  const proxy: Proxy | undefined = proxyUrl ? {
+    all: proxyUrl
+  } : undefined
+  
   try {
-    const res = await octokit.request(`GET /repos/${githubUsername}/${repo}/contents/${path}`, {
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
-        'If-None-Match': ''
+    // 设置请求头
+    const headers = new Headers();
+    headers.append('Authorization', `Bearer ${accessToken}`);
+    headers.append('Accept', 'application/vnd.github+json');
+    headers.append('X-GitHub-Api-Version', '2022-11-28');
+    headers.append('If-None-Match', '');
+    
+    const requestOptions = {
+      method: 'GET',
+      headers,
+      proxy
+    };
+    
+    const url = `https://api.github.com/repos/${githubUsername}/${repo}/contents/${path}`;
+    
+    try {
+      const response = await fetch(url, requestOptions);
+      if (response.status >= 200 && response.status < 300) {
+        const data = await response.json();
+        return data;
       }
-    }).catch(() => {
-      return { data: null }
-    })
-    return res.data
+      return null;
+    } catch {
+      return null;
+    }
   } catch (error) {
     if ((error as GithubError).status !== 404) {
       toast({
@@ -121,19 +176,41 @@ export async function deleteFile({ path, sha, repo }: { path: string, sha: strin
   const store = await Store.load('store.json');
   const accessToken = await store.get('accessToken')
   if (!accessToken) return;
-  const octokit = new Octokit({
-    auth: accessToken
-  })
+  
   const githubUsername = await store.get('githubUsername')
+  
+  // 获取代理设置
+  const proxyUrl = await store.get<string>('proxy')
+  const proxy: Proxy | undefined = proxyUrl ? {
+    all: proxyUrl
+  } : undefined
+  
   try {
-    const res = await octokit.request(`DELETE /repos/${githubUsername}/${repo}/contents/${path}`, {
-      sha,
-      message: `Delete ${path}`,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
-    })
-    return res.data;
+    // 设置请求头
+    const headers = new Headers();
+    headers.append('Authorization', `Bearer ${accessToken}`);
+    headers.append('Accept', 'application/vnd.github+json');
+    headers.append('X-GitHub-Api-Version', '2022-11-28');
+    headers.append('Content-Type', 'application/json');
+    
+    const requestOptions = {
+      method: 'DELETE',
+      headers,
+      body: JSON.stringify({
+        sha,
+        message: `Delete ${path}`
+      }),
+      proxy
+    };
+    
+    const url = `https://api.github.com/repos/${githubUsername}/${repo}/contents/${path}`;
+    const response = await fetch(url, requestOptions);
+    
+    if (response.status >= 200 && response.status < 300) {
+      const data = await response.json();
+      return data;
+    }
+    throw new Error('删除文件失败');
   } catch (error) {
     console.log(error);
     return false
@@ -144,19 +221,40 @@ export async function getFileCommits({ path, repo }: { path: string, repo: RepoN
   const store = await Store.load('store.json');
   const accessToken = await store.get('accessToken')
   if (!accessToken) return;
-  const octokit = new Octokit({
-    auth: accessToken
-  })
+  
   const githubUsername = await store.get('githubUsername')
   path = path.replace(/\s/g, '_')
+  console.log(path);
+  
+  // 获取代理设置
+  const proxyUrl = await store.get<string>('proxy')
+  const proxy: Proxy | undefined = proxyUrl ? {
+    all: proxyUrl
+  } : undefined
+  
   try {
-    const res = await octokit.request(`GET /repos/${githubUsername}/${repo}/commits?path=${path}`, {
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
-        'If-None-Match': ''
-      }
-    })
-    return res.data;
+    // 设置请求头
+    const headers = new Headers();
+    headers.append('Authorization', `Bearer ${accessToken}`);
+    headers.append('Accept', 'application/vnd.github+json');
+    headers.append('X-GitHub-Api-Version', '2022-11-28');
+    headers.append('If-None-Match', '');
+    
+    const requestOptions = {
+      method: 'GET',
+      headers,
+      proxy
+    };
+    
+    const url = `https://api.github.com/repos/${githubUsername}/${repo}/commits?path=${path}`;
+    const response = await fetch(url, requestOptions);
+    
+    if (response.status >= 200 && response.status < 300) {
+      const data = await response.json();
+      return data;
+    }
+    
+    throw new Error('获取提交记录失败');
   } catch (error) {
     console.log(error);
     return false
@@ -168,16 +266,35 @@ export async function getUserInfo() {
   const store = await Store.load('store.json');
   const accessToken = await store.get('accessToken')
   if (!accessToken) return;
-  const octokit = new Octokit({
-    auth: accessToken
-  })
+  
+  // 获取代理设置
+  const proxyUrl = await store.get<string>('proxy')
+  const proxy: Proxy | undefined = proxyUrl ? {
+    all: proxyUrl
+  } : undefined
+  
   try {
-    const res = await octokit.request(`GET /user`, {
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
-      }
-    })
-    return res;
+    // 设置请求头
+    const headers = new Headers();
+    headers.append('Authorization', `Bearer ${accessToken}`);
+    headers.append('Accept', 'application/vnd.github+json');
+    headers.append('X-GitHub-Api-Version', '2022-11-28');
+    
+    const requestOptions = {
+      method: 'GET',
+      headers,
+      proxy
+    };
+    
+    const url = 'https://api.github.com/user';
+    const response = await fetch(url, requestOptions);
+    
+    if (response.status >= 200 && response.status < 300) {
+      const data = await response.json();
+      return { data } as OctokitResponse<any>;
+    }
+    
+    throw new Error('获取用户信息失败');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return false;
@@ -190,10 +307,34 @@ export async function checkSyncRepoState(name: string) {
   const githubUsername = await store.get('githubUsername')
   const accessToken = await store.get('accessToken')
   if (!accessToken) return;
-  const octokit = new Octokit({
-    auth: accessToken
-  })
-  return octokit.request(`Get /repos/${githubUsername}/${name}`)
+  
+  // 获取代理设置
+  const proxyUrl = await store.get<string>('proxy')
+  const proxy: Proxy | undefined = proxyUrl ? {
+    all: proxyUrl
+  } : undefined
+  
+  // 设置请求头
+  const headers = new Headers();
+  headers.append('Authorization', `Bearer ${accessToken}`);
+  headers.append('Accept', 'application/vnd.github+json');
+  headers.append('X-GitHub-Api-Version', '2022-11-28');
+  
+  const requestOptions = {
+    method: 'GET',
+    headers,
+    proxy
+  };
+  
+  const url = `https://api.github.com/repos/${githubUsername}/${name}`;
+  const response = await fetch(url, requestOptions);
+  
+  if (response.status >= 200 && response.status < 300) {
+    const data = await response.json();
+    return { data } as OctokitResponse<any>;
+  }
+  
+  return { status: response.status } as OctokitResponse<any>;
 }
 
 // 创建 Github 仓库
@@ -201,23 +342,51 @@ export async function createSyncRepo(name: string, isPrivate?: boolean) {
   const store = await Store.load('store.json');
   const accessToken = await store.get('accessToken')
   if (!accessToken) return;
-  const octokit = new Octokit({
-    auth: accessToken
-  })
-  const res = await octokit.request(`POST /user/repos`, {
-    name,
-    description: 'This is a NoteGen sync repository.',
-    private: isPrivate
-  })
-  .then(() => {
-    toast({
-      title: '仓库创建成功',
-      description: `仓库名：${name}`,
-    })
-  })
-  .catch(error => {
-    return error.response.status
-  })
   
-  return res;
+  // 获取代理设置
+  const proxyUrl = await store.get<string>('proxy')
+  const proxy: Proxy | undefined = proxyUrl ? {
+    all: proxyUrl
+  } : undefined
+  
+  try {
+    // 设置请求头
+    const headers = new Headers();
+    headers.append('Authorization', `Bearer ${accessToken}`);
+    headers.append('Accept', 'application/vnd.github+json');
+    headers.append('X-GitHub-Api-Version', '2022-11-28');
+    headers.append('Content-Type', 'application/json');
+    
+    const requestOptions = {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        name,
+        description: 'This is a NoteGen sync repository.',
+        private: isPrivate
+      }),
+      proxy
+    };
+    
+    const url = 'https://api.github.com/user/repos';
+    const response = await fetch(url, requestOptions);
+    
+    if (response.status >= 200 && response.status < 300) {
+      const data = await response.json();
+      toast({
+        title: '仓库创建成功',
+        description: `仓库名：${name}`,
+      });
+      return { data } as OctokitResponse<any>;
+    }
+    
+    return { status: response.status } as OctokitResponse<any>;
+  } catch (error) {
+    toast({
+      title: '创建仓库失败',
+      description: (error as GithubError).message,
+      variant: 'destructive',
+    });
+    return false;
+  }
 }
