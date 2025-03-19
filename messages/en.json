@@ -64,7 +64,7 @@
       "title": "Developer",
       "clearData": "Clear Data",
       "clearDataConfirm": "Are you sure to clear data?",
-      "proxy": "Proxy",
+      "proxy": "Proxy, used to solve network problems, after configuration, it is recommended to restart the application.",
       "proxyPlaceholder": "Enter proxy address"
     },
     "ai": {

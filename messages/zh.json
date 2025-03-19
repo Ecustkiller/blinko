@@ -67,7 +67,7 @@
       "title": "开发者",
       "clearData": "清理数据",
       "clearDataConfirm": "确定清理数据吗？",
-      "proxy": "代理",
+      "proxy": "代理，用于解决网络问题，配置后建议重启应用。",
       "proxyPlaceholder": "请输入代理地址"
     },
     "ai": {
