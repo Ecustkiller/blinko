@@ -5,14 +5,16 @@ import { useEffect } from 'react';
 
 export default function GlobalError({
   error,
-  reset,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
 }) {
   useEffect(() => {
     console.error('全局错误:', error);
   }, [error]);
+
+  function reloadPage() {
+    window.location.reload();
+  }
 
   return (
     <html lang="zh">
@@ -28,7 +30,7 @@ export default function GlobalError({
             </p>
             <div className="flex justify-end">
               <Button 
-                onClick={reset} 
+                onClick={reloadPage} 
                 className="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
               >
                 重试

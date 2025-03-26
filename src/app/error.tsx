@@ -5,15 +5,17 @@ import { useEffect } from 'react';
 
 export default function Error({
   error,
-  reset,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
 }) {
   useEffect(() => {
     // 记录错误到控制台
     console.error('应用错误:', error);
   }, [error]);
+
+  function reloadPage() {
+    window.location.reload();
+  }
 
   return (
     <div className="flex flex-col items-center justify-center p-4 min-h-[200px]">
@@ -26,7 +28,7 @@ export default function Error({
           {error.message || '未知错误'}
         </p>
         <div className="flex justify-end">
-          <Button onClick={reset} variant="outline" size="sm">
+          <Button onClick={reloadPage} variant="outline" size="sm">
             重试
           </Button>
         </div>
