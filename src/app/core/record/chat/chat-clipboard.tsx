@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BaseDirectory, copyFile, exists, mkdir, readFile } from '@tauri-apps/plugin-fs';
 import useTagStore from "@/stores/tag";
 import useSettingStore from "@/stores/setting";
@@ -21,11 +21,46 @@ import { useTranslations } from 'next-intl';
 export function ChatClipboard({chat}: { chat: Chat }) {
   const [loading, setLoading] = useState(false)
   const [type] = useState<'image' | 'text'>(chat.image ? 'image' : 'text')
+  const [countdown, setCountdown] = useState(5) // 5 seconds countdown
+  const [isCountingDown, setIsCountingDown] = useState(!chat.inserted) // Start countdown if not recorded
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
   const { apiKey, githubUsername } = useSettingStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
-  const { updateInsert } = useChatStore()
+  const { updateInsert, deleteChat } = useChatStore()
   const t = useTranslations()
+  
+  useEffect(() => {
+    if (chat.inserted) {
+      setIsCountingDown(false);
+      return;
+    }
+    
+    const timer = setTimeout(() => {
+      if (!chat.inserted) {
+        deleteChat(chat.id);
+      }
+    }, 5000);
+    
+    return () => clearTimeout(timer);
+  }, [chat.id, chat.inserted, deleteChat]);
+  
+  useEffect(() => {
+    if (!isCountingDown) return;
+    
+    if (countdown <= 0) return;
+    
+    const interval = setInterval(() => {
+      setCountdown(prev => prev - 1);
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, [countdown, isCountingDown]);
+  
+  useEffect(() => {
+    if (chat.inserted) {
+      setIsCountingDown(false);
+    }
+  }, [chat.inserted]);
 
   async function handleInset() {
     setLoading(true)
@@ -99,7 +134,12 @@ export function ChatClipboard({chat}: { chat: Chat }) {
   return (
     type === 'image' && chat.image ? 
       <div className="flex-col leading-6">
-        <p>{t('record.chat.clipboard.image.detected')}</p>
+        <p className="flex items-center">
+          {t('record.chat.clipboard.image.detected')}
+          {isCountingDown && (
+            <span className="text-red-500 animate-pulse">{countdown}s</span>
+          )}
+        </p>
         <LocalImage src={chat.image} alt="" width={0} height={0} className="max-h-96 max-w-96 w-auto mt-2 mb-3 border-8 rounded" />
         <MessageControl chat={chat}>
           {
@@ -113,17 +153,24 @@ export function ChatClipboard({chat}: { chat: Chat }) {
                   <CheckCircle className="size-4" />
                   {t('record.chat.clipboard.image.recorded')}
                 </Button> :
-                <Button variant={"ghost"} size="sm" onClick={handleInset}>
-                  <ImagePlus className="size-4" />
-                  {t('record.chat.clipboard.image.record')}
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button variant={"ghost"} size="sm" onClick={handleInset}>
+                    <ImagePlus className="size-4" />
+                    {t('record.chat.clipboard.image.record')}
+                  </Button>
+                </div>
             )
           }
           
         </MessageControl>
       </div> :
       <div className="flex-col leading-6">
-        <p>{t('record.chat.clipboard.text.detected')}</p>
+        <p className='flex items-center'>
+          {t('record.chat.clipboard.text.detected')}
+          {isCountingDown && (
+            <span className="text-red-500 animate-pulse">{countdown}s</span>
+          )}
+        </p>
         <p className='text-zinc-500'>{chat.content}</p>
         <MessageControl chat={chat}>
           {
@@ -132,10 +179,12 @@ export function ChatClipboard({chat}: { chat: Chat }) {
                 <CheckCircle className="size-4" />
                 {t('record.chat.clipboard.text.recorded')}
               </Button> :
-              <Button variant={"ghost"} size="sm" onClick={handleTextInset}>
-                <Highlighter className="size-4" />
-                {t('record.chat.clipboard.text.record')}
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button variant={"ghost"} size="sm" onClick={handleTextInset}>
+                  <Highlighter className="size-4" />
+                  {t('record.chat.clipboard.text.record')}
+                </Button>
+              </div>
           }
         </MessageControl>
       </div>
