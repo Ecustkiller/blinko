@@ -56,13 +56,16 @@
     "template": {
       "title": "整理模板",
       "customTemplate": "自定义模板",
-      "addTemplate": "新增自定义整理模板",
+      "addTemplate": "新增模板",
       "deleteConfirm": "确认删除模板吗?",
       "status": "状态",
       "name": "名称",
       "content": "内容",
       "scope": "范围",
-      "selectScope": "选择范围"
+      "selectScope": "选择范围",
+      "addTemplateDesc": "请输入自定义模板名称和内容，帮助 AI 更好地理解你的需求。",
+      "editTemplate": "编辑自定义模板",
+      "noContent": "暂无内容"
     },
     "shortcut": {
       "title": "快捷键",

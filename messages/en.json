@@ -61,7 +61,10 @@
       "name": "Name",
       "content": "Content",
       "scope": "Scope",
-      "selectScope": "Select Scope"
+      "selectScope": "Select Scope",
+      "addTemplateDesc": "Please enter the custom template name and content, helping AI better understand your needs.",
+      "editTemplate": "Edit Custom Template",
+      "noContent": "No content"
     },
     "shortcut": {
       "title": "Shortcuts",
