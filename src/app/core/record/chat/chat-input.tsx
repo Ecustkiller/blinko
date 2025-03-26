@@ -64,7 +64,7 @@ export function ChatInput() {
     const imageMarks = isLinkMark ? marks.filter(item => item.type === 'image') : []
 
     const request_content = `
-      请你扮演一个笔记软件的智能助手，可以参考以下内容笔记的记录，
+      可以参考以下内容笔记的记录：
       以下是通过截图后，使用OCR识别出的文字片段：
       ${scanMarks.map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')}。
       以下是通过文本复制记录的片段：
@@ -75,7 +75,7 @@ export function ChatInput() {
       ${
         chats.filter((item) => item.tagId === currentTagId && item.type === "chat").map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')
       }。
-      使用 ${currentLocale} 语言，不许使用 markdown 语法，回复用户的信息：
+      使用 ${currentLocale} 语言
       ${text}
     `
     const content = await fetchAi(request_content)
@@ -95,7 +95,7 @@ export function ChatInput() {
     const imageMarks = isLinkMark ? marks.filter(item => item.type === 'image') : []
     const userQuestionHistorys = chats.filter((item) => item.tagId === currentTagId && item.type === "chat" && item.role === 'user').map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')
     const request_content = `
-      请你扮演一个笔记软件的智能助手，可以参考以下内容笔记的记录，
+      请你扮演一个笔记软件的智能助手的 placeholder，可以参考以下内容笔记的记录，
       以下是通过截图后，使用OCR识别出的文字片段：
       ${scanMarks.map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')}。
       以下是通过文本复制记录的片段：
@@ -108,10 +108,7 @@ export function ChatInput() {
       }。
       以下是用户之前的提问记录：
       ${userQuestionHistorys}。
-      使用 ${currentLocale} 语言，分析这些记录的内容，编写一个可能会向你提问的问题，用于辅助用户向你提问，不要返回用户已经提过的类似问题，不许超过 20 个字，可以参考以下内容：
-      什么是 ** ？
-      如何解决 ** 问题？
-      总结 ** 。
+      使用 ${currentLocale} 语言，分析这些记录的内容，编写一个可能会向你提问的问题，用于辅助用户向你提问，不要返回用户已经提过的类似问题，不许超过 20 个字。
     `
     const content = await fetchAi(request_content)
     if (content.length < 30 && content.length > 10) {

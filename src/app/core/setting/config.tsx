@@ -1,9 +1,17 @@
-import { BotMessageSquare, LayoutTemplate, Command, FileUp, Palette, ScanText, Store, UserRoundCog } from "lucide-react"
-// Define base configuration without translations
+import { BotMessageSquare, LayoutTemplate, Command, FileUp, Palette, ScanText, Store, UserRoundCog, Drama } from "lucide-react"
+
 const baseConfig = [
   {
     icon: <BotMessageSquare />,
     anchor: 'ai',
+  },
+  {
+    icon: <Drama />,
+    anchor: 'prompt',
+  },
+  {
+    icon: <LayoutTemplate />,
+    anchor: 'template',
   },
   {
     icon: <FileUp />,
@@ -12,10 +20,6 @@ const baseConfig = [
   {
     icon: <ScanText />,
     anchor: 'ocr',
-  },
-  {
-    icon: <LayoutTemplate />,
-    anchor: 'template',
   },
   {
     icon: <Command />,

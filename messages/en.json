@@ -14,7 +14,10 @@
     "unpin": "Unpin",
     "settings": "Settings",
     "sync": "Sync",
-    "language": "Language"
+    "language": "Language",
+    "confirm": "Confirm",
+    "selectPrompt": "Select Prompt",
+    "prompt": "Prompt"
   },
   "settings": {
     "about": {
@@ -23,6 +26,19 @@
       "checkReleases": "Check Release History",
       "checkUpdate": "Check for Updates",
       "language": "Language"
+    },
+    "prompt": {
+      "title": "Prompt",
+      "promptTitle": "Prompt Title",
+      "desc": "Here, you can add and manage prompts, helping AI better understand your needs.",
+      "addPrompt": "Add Prompt",
+      "selectPrompt": "Select Prompt",
+      "configPrompt": "Configure Prompt",
+      "noContent": "No content",
+      "addPromptDesc": "Please enter the prompt name and content, helping AI better understand your needs.",
+      "promptTitlePlaceholder": "Please enter the prompt name",
+      "promptContentPlaceholder": "Please enter the prompt content",
+      "promptContent": "Prompt Content"
     },
     "sync": {
       "title": "Sync",
@@ -334,7 +350,8 @@
       },
       "header": {
         "configApiKey": "Configure API KEY",
-        "clearChat": "Clear Chat"
+        "clearChat": "Clear Chat",
+        "selectPrompt": "Select Prompt"
       },
       "clipboard": {
         "image": {

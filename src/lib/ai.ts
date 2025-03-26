@@ -11,6 +11,20 @@ async function createAi(text: string) {
   const aiType = await store.get<string>('aiType')
   const temperature = await store.get<number>('temperature')
   const topP = await store.get<number>('topP')
+  
+  // 获取当前选择的面具
+  const currentPromptId = await store.get<string>('currentPromptId')
+  let promptContent = ''
+  
+  if (currentPromptId) {
+    const promptList = await store.get<Array<{id: string, content: string}>>('promptList')
+    if (promptList) {
+      const currentPrompt = promptList.find(prompt => prompt.id === currentPromptId)
+      if (currentPrompt && currentPrompt.content) {
+        promptContent = currentPrompt.content
+      }
+    }
+  }
 
   const headers = new Headers();
   headers.append("Content-Type", "application/json");
@@ -19,10 +33,14 @@ async function createAi(text: string) {
   
   if (aiType === 'gemini') {
     headers.append("x-goog-api-key", apiKey || '');
+    
+    // 如果有面具内容，添加到请求中
+    const finalText = promptContent ? `${promptContent}\n\n${text}` : text;
+    
     body = JSON.stringify({
       contents: [{
         parts: [{
-          text: text
+          text: finalText
         }]
       }],
       generationConfig: {
@@ -32,14 +50,27 @@ async function createAi(text: string) {
     });
   } else {
     headers.append("Authorization", `Bearer ${apiKey}`);
+    
+    // 构建消息数组
+    const messages = [];
+    
+    // 如果有面具内容，添加系统消息
+    if (promptContent) {
+      messages.push({
+        role: 'system',
+        content: promptContent
+      });
+    }
+    
+    // 添加用户消息
+    messages.push({
+      role: 'user',
+      content: text
+    });
+    
     body = JSON.stringify({
       model,
-      messages: [
-        {
-          role: 'user',
-          content: text
-        }
-      ],
+      messages: messages,
       stream: false,
       temperature,
       top_p: topP,
