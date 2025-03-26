@@ -19,6 +19,7 @@ import AppStatus from "./app-status"
 import { Store } from "@tauri-apps/plugin-store"
 import { PinToggle } from "./pin-toggle"
 import { useTranslations } from 'next-intl'
+import { LanguageSwitch } from "./language-switch"
  
 export function AppSidebar() {
   const pathname = usePathname()
@@ -90,6 +91,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
+        <LanguageSwitch />
         <PinToggle />
         <ModeToggle />
         <SidebarMenuButton isActive={pathname === '/core/setting'} asChild className="md:h-8 md:p-0"
