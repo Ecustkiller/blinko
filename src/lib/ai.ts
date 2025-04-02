@@ -384,8 +384,6 @@ export async function checkAiStatus() {
     
     if (!baseURL || !aiType) return false
 
-    console.log(baseURL);
-    
     // 创建 OpenAI 客户端
     const openai = await createOpenAIClient()
     

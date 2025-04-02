@@ -12,9 +12,7 @@ export default function ModelSelect() {
   const [list, setList] = useState<OpenAI.Models.Model[]>([])
 
   async function initModelList() {
-    console.log('initModelList')
     const models = await getModels()
-    console.log(models)
     setList(models)
   }
 

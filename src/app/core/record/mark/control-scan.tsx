@@ -89,7 +89,7 @@ export function ControlScan() {
       if (e.state === 'Pressed') {
         await createScreenShot()
       }
-    }).catch(e => console.log(e))
+    }).catch(() => {})
   }
 
   async function linstenRegister(key?: string) {
@@ -107,7 +107,7 @@ export function ControlScan() {
       if (e.state === 'Pressed') {
         await createScreenShot()
       }
-    }).catch(e => console.log(e))
+    }).catch(() => {})
   }
 
   useEffect(() => {

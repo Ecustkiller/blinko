@@ -69,7 +69,7 @@ export function ControlText() {
       if (e.state === 'Pressed') {
         quickRecord()
       }
-    }).catch(e => console.log(e))
+    }).catch(() => {})
   }
 
   async function linstenRegister(key?: string) {
@@ -87,7 +87,7 @@ export function ControlText() {
       if (e.state === 'Pressed') {
         quickRecord()
       }
-    }).catch(e => console.log(e))
+    }).catch(() => {})
   }
 
   useEffect(() => {

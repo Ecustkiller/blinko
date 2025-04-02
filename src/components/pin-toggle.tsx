@@ -42,7 +42,7 @@ export function PinToggle() {
         if (e.state === 'Pressed') {
           await setPin()
         }
-      }).catch(e => console.log(e))
+      }).catch(() => {})
     }
 
   async function linstenRegister(key?: string) {
@@ -60,7 +60,7 @@ export function PinToggle() {
       if (e.state === 'Pressed') {
         await setPin()
       }
-    }).catch(e => console.log(e))
+    }).catch(() => {})
   }
 
   useEffect(() => {

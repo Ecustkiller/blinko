@@ -37,8 +37,8 @@ export default function Page() {
         filename,
         repo: RepoNames.image,
         path
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       }).catch((err) => {
-        console.log(err);
         fileUploader.status ='failed'
         const newFiles = files.splice(index, 1, fileUploader)
         setFiles(newFiles)

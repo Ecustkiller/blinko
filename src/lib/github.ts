@@ -211,8 +211,8 @@ export async function deleteFile({ path, sha, repo }: { path: string, sha: strin
       return data;
     }
     throw new Error('删除文件失败');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.log(error);
     return false
   }
 }
@@ -224,7 +224,6 @@ export async function getFileCommits({ path, repo }: { path: string, repo: RepoN
   
   const githubUsername = await store.get('githubUsername')
   path = path.replace(/\s/g, '_')
-  console.log(path);
   
   // 获取代理设置
   const proxyUrl = await store.get<string>('proxy')
@@ -255,8 +254,8 @@ export async function getFileCommits({ path, repo }: { path: string, repo: RepoN
     }
     
     throw new Error('获取提交记录失败');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.log(error);
     return false
   }
 }
@@ -375,8 +374,8 @@ export async function createSyncRepo(name: string, isPrivate?: boolean) {
       const data = await response.json() as GithubRepoInfo;
       return data;
     }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.log(error);
     return undefined;
   }
 }
