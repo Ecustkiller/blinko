@@ -2,6 +2,14 @@ import emitter from "@/lib/emitter";
 
 const config= [
   {
+    name: 'mark',
+    tipPosition: 's',
+    tip: '使用记录',
+    className: 'right',
+    icon: '<svg><use xlink:href="#vditor-icon-mark"></svg>',
+    click: () => emitter.emit('toolbar-mark'),
+  },
+  {
     name: 'question',
     tipPosition: 's',
     tip: 'Chat',
@@ -24,14 +32,6 @@ const config= [
     className: 'right',
     icon: '<svg><use xlink:href="#vditor-icon-polish"></svg>',
     click: () => emitter.emit('toolbar-polish')
-  },
-  {
-    name: 'mark',
-    tipPosition: 's',
-    tip: '使用记录',
-    className: 'right',
-    icon: '<svg><use xlink:href="#vditor-icon-mark"></svg>',
-    click: () => emitter.emit('toolbar-mark'),
   },
   {
     name: 'translation',
