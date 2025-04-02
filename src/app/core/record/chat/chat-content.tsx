@@ -10,7 +10,6 @@ import { MarkText } from './mark-text'
 import { ChatClipboard } from './chat-clipboard'
 import MessageControl from './message-control'
 import ChatEmpty from './chat-empty'
-import { Skeleton } from '@/components/ui/skeleton'
 import { useTranslations } from 'next-intl'
 import useSyncStore from '@/stores/sync'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
@@ -50,14 +49,7 @@ function MessageWrapper({ chat, children }: { chat: Chat, children: React.ReactN
   if (chat.role === 'system') {
     return <div className="flex w-full gap-4">
       { loading && index === chats.length - 1 && chat.type === 'chat' ? 
-        <div className="flex w-full">
-          <LoaderPinwheel className="animate-spin mr-4" />
-          <div className="space-y-2 flex-1 mt-0.5">
-            <Skeleton className="h-4 w-8/12" />
-            <Skeleton className="h-4 w-9/12" />
-            <Skeleton className="h-4 w-4/12" />
-          </div>
-        </div> : 
+        <LoaderPinwheel className="animate-spin" /> : 
         chat.type === 'clipboard' ? <ClipboardCheck /> : <BotMessageSquare />
       }
       <div className='text-sm leading-6 flex-1'>

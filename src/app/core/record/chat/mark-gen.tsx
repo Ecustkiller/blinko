@@ -4,7 +4,7 @@ import useSettingStore, { GenTemplate, GenTemplateRange } from "@/stores/setting
 import useChatStore from "@/stores/chat"
 import useTagStore from "@/stores/tag"
 import useMarkStore from "@/stores/mark"
-import { fetchAi } from "@/lib/ai"
+import { fetchAiStream } from "@/lib/ai"
 import { convertImage } from "@/lib/utils"
 import { TooltipButton } from "@/components/tooltip-button"
 import {
@@ -156,12 +156,26 @@ export const MarkGen = forwardRef<{ openGen: () => void }, MarkGenProps>(({ inpu
       }
       ${genTemplate.find(item => item.id === tab)?.content}
     `
-    const content = await fetchAi(request_content)
+    // 先保存空消息，然后通过流式请求更新
     await saveChat({
       ...message,
-      content,
+      content: '',
     })
-    setLoading(false)
+    
+    // 使用流式方式获取AI结果
+    try {
+      await fetchAiStream(request_content, async (content) => {
+        // 每次收到流式内容时更新消息
+        await saveChat({
+          ...message,
+          content,
+        })
+      })
+    } catch (error) {
+      console.error('Stream error:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   function handleSetting() {

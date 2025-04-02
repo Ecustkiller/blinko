@@ -12,7 +12,7 @@ import {
 import useChatStore from "@/stores/chat"
 import useTagStore from "@/stores/tag"
 import useMarkStore from "@/stores/mark"
-import { fetchAi } from "@/lib/ai"
+import { fetchAi, fetchAiStream } from "@/lib/ai"
 import { MarkGen } from "./mark-gen"
 import { useTranslations } from 'next-intl'
 import { useI18n } from "@/hooks/useI18n"
@@ -78,12 +78,27 @@ export function ChatInput() {
       使用 ${currentLocale} 语言
       ${text}
     `
-    const content = await fetchAi(request_content)
+    
+    // 先保存空消息，然后通过流式请求更新
     await saveChat({
       ...message,
-      content,
+      content: '',
     })
-    setLoading(false)
+    
+    // 使用流式方式获取AI结果
+    try {
+      await fetchAiStream(request_content, async (content) => {
+        // 每次收到流式内容时更新消息
+        await saveChat({
+          ...message,
+          content,
+        })
+      })
+    } catch (error) {
+      console.error('Stream error:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   async function genInputPlaceholder() {
@@ -110,6 +125,7 @@ export function ChatInput() {
       ${userQuestionHistorys}。
       使用 ${currentLocale} 语言，分析这些记录的内容，编写一个可能会向你提问的问题，用于辅助用户向你提问，不要返回用户已经提过的类似问题，不许超过 20 个字。
     `
+    // 使用非流式请求获取placeholder内容
     const content = await fetchAi(request_content)
     if (content.length < 30 && content.length > 10) {
       setPlaceholder(content + '[Tab]')
