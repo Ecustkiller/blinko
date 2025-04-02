@@ -61,8 +61,8 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
     }
     setTemperature(model.temperature)
     store.set('temperature', model.temperature)
-    setTopP(model.topP)
-    store.set('topP', model.topP)
+    setTopP(model.topP || 0.1)
+    store.set('topP', model.topP || 0.1)
   }
 
   // 自定义名称
@@ -166,7 +166,7 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
     if (!aiModelList) return
     aiModelList[aiModelList.findIndex(item => item.key === aiType)] = model
     await store.set('aiModelList', aiModelList)
-    await store.set('topP', value[0])
+    await store.set('topP', value[0] || 0.1)
   }
   
   useEffect(() => {
@@ -196,8 +196,8 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
       }
       setTemperature(model.temperature)
       await store.set('temperature', model.temperature)
-      setTopP(model.topP)
-      await store.set('topP', model.topP)
+      setTopP(model.topP || 0.1)
+      await store.set('topP', model.topP || 0.1)
     }
     init()
   }, [])

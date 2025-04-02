@@ -83,7 +83,7 @@ const baseAiConfig: AiConfig[] = [
     key: 'ollama',
     title: 'Ollama',
     type: 'built-in',
-    baseURL: 'http://localhost:11434',
+    baseURL: 'http://localhost:11434/v1',
     temperature: 0.7,
     topP: 1.0,
     modelURL: 'http://localhost:11434/v1/models',

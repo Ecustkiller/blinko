@@ -1,49 +1,21 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import { fetch, Proxy } from '@tauri-apps/plugin-http'
 import useSettingStore from "@/stores/setting";
-import { AiConfig, baseAiConfig, Model } from "../config";
+import { AiConfig } from "../config";
 import { Input } from "@/components/ui/input";
 import { Store } from "@tauri-apps/plugin-store";
+import { getModels } from "@/lib/ai";
+import OpenAI from "openai";
 
 export default function ModelSelect() {
   const { aiType, apiKey, model, setModel } = useSettingStore()
-  const [list, setList] = useState<Model[]>([])
-  const [url, setUrl] = useState<string | undefined>()
-
-  function init() {
-    setList([])
-    const url = baseAiConfig.find(item => item.key === aiType)?.modelURL
-    setUrl(url)
-  }
+  const [list, setList] = useState<OpenAI.Models.Model[]>([])
 
   async function initModelList() {
-    if (!apiKey) return
-    if (!url) return
-
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${apiKey}`);
-    headers.append("Content-Type", "application/json");
-    const store = await Store.load('store.json');
-    const proxyUrl = await store.get<string>('proxy')
-    const proxy: Proxy | undefined = proxyUrl ? {
-      all: proxyUrl
-    } : undefined
-
-    const requestOptions = {
-      method: 'GET',
-      headers,
-      proxy
-    };
-
-    try {
-      const response = await fetch(url, requestOptions);
-      const result = await response.json();
-      setList(result.data || [])
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      setList([])
-    }
+    console.log('initModelList')
+    const models = await getModels()
+    console.log(models)
+    setList(models)
   }
 
   async function syncModelList(value: string) {
@@ -61,10 +33,7 @@ export default function ModelSelect() {
   }
 
   useEffect(() => {
-    init()
-    if (apiKey && url) {
-      initModelList()
-    }
+    initModelList()
   }, [apiKey, aiType])
   
   return (
