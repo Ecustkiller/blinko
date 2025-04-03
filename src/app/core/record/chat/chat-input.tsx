@@ -1,7 +1,7 @@
 "use client"
 import * as React from "react"
 import { useEffect, useRef, useState } from "react"
-import { Send } from "lucide-react"
+import { Send, Square } from "lucide-react"
 import useSettingStore from "@/stores/setting"
 import { Input } from "@/components/ui/input"
 import {
@@ -33,6 +33,16 @@ export function ChatInput() {
   const [inputType, setInputType] = useLocalStorage('chat-input-type', 'chat')
   const markGenRef = useRef<{ openGen: () => void }>(null)
   const { isLinkMark } = useChatStore()
+  const abortControllerRef = useRef<AbortController | null>(null)
+
+  // 终止对话功能
+  function terminateChat() {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+      abortControllerRef.current = null
+      setLoading(false)
+    }
+  }
 
   async function handleSubmit() {
     if (text === '') return
@@ -85,6 +95,10 @@ export function ChatInput() {
       content: '',
     })
     
+    // 创建新的 AbortController 用于终止请求
+    abortControllerRef.current = new AbortController()
+    const signal = abortControllerRef.current.signal
+    
     // 使用流式方式获取AI结果
     try {
       await fetchAiStream(request_content, async (content) => {
@@ -93,10 +107,14 @@ export function ChatInput() {
           ...message,
           content,
         })
-      })
-    } catch (error) {
-      console.error('Stream error:', error)
+      }, signal)
+    } catch (error: any) {
+      // 如果不是中止错误，则记录错误信息
+      if (error.name !== 'AbortError') {
+        console.error('Stream error:', error)
+      }
     } finally {
+      abortControllerRef.current = null
       setLoading(false)
     }
   }
@@ -150,7 +168,7 @@ export function ChatInput() {
   }, [apiKey, marks, isLinkMark, t])
 
   return (
-    <footer className="relative flex items-center border rounded-lg p-2 gap-1 my-4 w-3/4">
+    <footer className="relative flex items-center border rounded-lg p-2 gap-1 my-4 w-3/4 max-w-[860px]">
       <ChatLink inputType={inputType} />
       <Input
         className="flex-1 relative border-none focus-visible:ring-0 shadow-none"
@@ -186,7 +204,18 @@ export function ChatInput() {
       {
         inputType === 'gen' ?
           <MarkGen inputValue={text} ref={markGenRef} /> :
-          <TooltipButton icon={<Send />} disabled={loading || !apiKey} tooltipText={t('record.chat.input.send')} onClick={handleSubmit} />
+          loading ? 
+            <TooltipButton 
+              icon={<Square className="text-destructive" />} 
+              tooltipText={t('record.chat.input.terminate')} 
+              onClick={terminateChat} 
+            /> :
+            <TooltipButton 
+              icon={<Send className="size-4" />} 
+              disabled={!apiKey} 
+              tooltipText={t('record.chat.input.send')} 
+              onClick={handleSubmit} 
+            />
       }
     </footer>
   )

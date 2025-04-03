@@ -146,8 +146,9 @@ export async function fetchAi(text: string): Promise<string> {
  * 流式方式获取AI结果
  * @param text 请求文本
  * @param onUpdate 每次收到流式内容时的回调函数
+ * @param abortSignal 用于终止请求的信号
  */
-export async function fetchAiStream(text: string, onUpdate: (content: string) => void): Promise<string> {
+export async function fetchAiStream(text: string, onUpdate: (content: string) => void, abortSignal?: AbortSignal): Promise<string> {
   try {
     const store = await Store.load('store.json')
     const baseURL = await store.get<string>('baseURL')
@@ -222,6 +223,11 @@ export async function fetchAiStream(text: string, onUpdate: (content: string) =>
     let fullContent = ''
     
     for await (const chunk of stream) {
+      // Check if the request has been aborted
+      if (abortSignal?.aborted) {
+        break;
+      }
+      
       const content = chunk.choices[0]?.delta?.content || ''
       if (content) {
         fullContent += content

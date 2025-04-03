@@ -321,7 +321,8 @@
           "default": "输入消息...",
           "noApiKey": "无 API KEY 配置，无法使用 AI 聊天..."
         },
-        "send": "发送"
+        "send": "发送",
+        "terminate": "终止"
       },
       "header": {
         "configApiKey": "配置 API KEY",

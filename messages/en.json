@@ -349,7 +349,8 @@
           "default": "Type a message...",
           "noApiKey": "No API Key configured, can't use AI chat..."
         },
-        "send": "Send"
+        "send": "Send",
+        "terminate": "Terminate"
       },
       "header": {
         "configApiKey": "Configure API KEY",
