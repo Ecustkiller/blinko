@@ -126,6 +126,9 @@ export function ChatInput() {
     const scanMarks = isLinkMark ? marks.filter(item => item.type === 'scan') : []
     const textMarks = isLinkMark ? marks.filter(item => item.type === 'text') : []
     const imageMarks = isLinkMark ? marks.filter(item => item.type === 'image') : []
+    const fileMarks = isLinkMark ? marks.filter(item => item.type === 'file') : []
+    const linkMarks = isLinkMark ? marks.filter(item => item.type === 'link') : []
+
     const userQuestionHistorys = chats.filter((item) => item.tagId === currentTagId && item.type === "chat" && item.role === 'user').map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')
     const request_content = `
       请你扮演一个笔记软件的智能助手的 placeholder，可以参考以下内容笔记的记录，
@@ -135,6 +138,10 @@ export function ChatInput() {
       ${textMarks.map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')}。
       以下是插图记录的片段描述：
       ${imageMarks.map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')}。
+      以下是文件记录的片段描述：
+      ${fileMarks.map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')}。
+      以下是链接记录的片段描述：
+      ${linkMarks.map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')}。
       以下聊天记录：
       ${
         chats.filter((item) => item.tagId === currentTagId && item.type === "chat").map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')
