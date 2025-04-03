@@ -29,7 +29,7 @@ export function ClipboardListener() {
       await mkdir('clipboard', { baseDir: BaseDirectory.AppData })
     }
     const image = await readImageBase64()
-    const uint8Array = Uint8Array.from(atob(image), c => c.charCodeAt(0))
+    const uint8Array = Uint8Array.from(atob(image), c => c.charCodeAt(0)) || new Uint8Array()
     const path = `clipboard/${uuid()}.png`
     await writeFile(path, uint8Array, { baseDir: BaseDirectory.AppData })
     await clear()
