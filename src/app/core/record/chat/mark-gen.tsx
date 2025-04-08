@@ -116,6 +116,7 @@ export const MarkGen = forwardRef<{ openGen: () => void }, MarkGenProps>(({ inpu
     const textMarks = marksByRange.filter(item => item.type === 'text')
     const imageMarks = marksByRange.filter(item => item.type === 'image')
     const linkMarks = marksByRange.filter(item => item.type === 'link')
+    const fileMarks = marksByRange.filter(item => item.type === 'file')
     for (const image of imageMarks) {
       if (!image.url.includes('http')) {
         image.url = await convertImage(`/image/${image.url}`)
@@ -137,6 +138,10 @@ export const MarkGen = forwardRef<{ openGen: () => void }, MarkGenProps>(({ inpu
         链接：${item.url}
         内容：${item.content}
         创建于：${dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}`).join(';\n\n')}。
+      以下是文件记录的片段描述：·
+      ${fileMarks.map(item => `
+        内容：${item.content}，
+      `).join(';\n\n')}。
       ---
       ${inputValue ? '满足需求：'+inputValue : ''}
       如果记录内容为空，则返回本次整理中不存在任何记录信息。
