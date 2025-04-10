@@ -68,17 +68,9 @@ NoteGen 的核心理念是将记录、写作和 AI 结合使用，三者相辅�
 
 [下载 NoteGen (alpha)](https://github.com/codexu/note-gen/releases)
 
-### 入门指南
-
-如果你还不了解 NoteGen，你可以阅读使用文档，其中包含了快速上手指南：
-
-[NoteGen 使用文档](https://codexu.github.io/note-gen-help/)
-
 ### AI 模型接入
 
-目前已支持自定义模型配置，内置 ChatGPT、ChatAnyWhere、Ollama、LM Studio、豆包、通义千问、Kimi、DeepSeek，支持所有以 OpenAI 协议的模型，未来将逐步支持其他协议。
-
-> 本地模型目前调用可能存在 403 报错，目前在等待 http-plugin 的解决办法，开发环境中不会出现此问题。
+NoteGen 本身不提供 AI 模型，需要手动去配置，支持 ChatGPT、Ollama、LM Studio、DeepSeek 等多种大模型。
 
 [话题讨论 - 关于模型接入](https://github.com/codexu/note-gen/discussions/26)
 
