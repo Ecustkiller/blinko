@@ -43,41 +43,41 @@ export default function AppStatus() {
     }
 
     // 检查图床仓库状态
-    await checkSyncRepoState(RepoNames.image).then((res) => {
+    await checkSyncRepoState(RepoNames.image).then(async (res) => {
       if (res) {
         setImageRepoInfo(res)
         setImageRepoState(SyncStateEnum.success)
       } else {
-        setImageRepoState(SyncStateEnum.fail)
+        setImageRepoState(SyncStateEnum.creating)
+        const info = await createSyncRepo(RepoNames.image)
+        if (info) {
+          setImageRepoInfo(info)
+          setImageRepoState(SyncStateEnum.success)
+        } else {
+          setImageRepoState(SyncStateEnum.fail)
+        }
       }
     }).catch(async () => {
-      setImageRepoState(SyncStateEnum.creating)
-      const info = await createSyncRepo(RepoNames.image)
-      if (info) {
-        setImageRepoInfo(info)
-        setImageRepoState(SyncStateEnum.success)
-      } else {
-        setImageRepoState(SyncStateEnum.fail)
-      }
+      setImageRepoState(SyncStateEnum.fail)
     })
     
     // 检查同步仓库状态
-    await checkSyncRepoState(RepoNames.sync).then((res) => {
+    await checkSyncRepoState(RepoNames.sync).then(async (res) => {
       if (res) {
         setSyncRepoInfo(res)
         setSyncRepoState(SyncStateEnum.success)
       } else {
-        setSyncRepoState(SyncStateEnum.fail)
+        setSyncRepoState(SyncStateEnum.creating)
+        const info = await createSyncRepo(RepoNames.sync, true)
+        if (info) {
+          setSyncRepoInfo(info)
+          setSyncRepoState(SyncStateEnum.success)
+        } else {
+          setSyncRepoState(SyncStateEnum.fail)
+        }
       }
     }).catch(async () => {
-      setSyncRepoState(SyncStateEnum.creating)
-      const info = await createSyncRepo(RepoNames.sync, true)
-      if (info) {
-        setSyncRepoInfo(info)
-        setSyncRepoState(SyncStateEnum.success)
-      } else {
-        setSyncRepoState(SyncStateEnum.fail)
-      }
+      setSyncRepoState(SyncStateEnum.fail)
     })
     setLoading(false)
   }
