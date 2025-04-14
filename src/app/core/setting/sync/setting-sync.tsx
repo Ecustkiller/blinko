@@ -102,8 +102,8 @@ export function SettingSync({id, icon}: {id: string, icon?: React.ReactNode}) {
                     <OpenBroswer title={imageRepoInfo?.full_name || ''} url={imageRepoInfo?.html_url || ''} />
                   </h3>
                   <CardDescription className="flex">
-                    <p className="text-zinc-500 leading-6">创建于 { dayjs(imageRepoInfo?.created_at).fromNow() }，</p>
-                    <p className="text-zinc-500 leading-6">最后更新于 { dayjs(imageRepoInfo?.updated_at).fromNow() }。</p>
+                    <p className="text-zinc-500 leading-6">{t('settings.sync.createdAt', { time: dayjs(imageRepoInfo?.created_at).fromNow() })}，</p>
+                    <p className="text-zinc-500 leading-6">{t('settings.sync.updatedAt', { time: dayjs(imageRepoInfo?.updated_at).fromNow() })}。</p>
                   </CardDescription>
                 </CardContent>
               }

@@ -42,6 +42,7 @@
     },
     "sync": {
       "title": "Sync",
+      "desc": "Here, you can add and manage repositories, helping you sync your notes and images.",
       "repoStatus": "Repository Status",
       "syncRepo": "Sync Repository",
       "syncRepoDesc": "Sync markdown files in writing",
