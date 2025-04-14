@@ -94,7 +94,7 @@ export function AppSidebar() {
         <LanguageSwitch />
         <PinToggle />
         <ModeToggle />
-        <SidebarMenuButton isActive={pathname === '/core/setting'} asChild className="md:h-8 md:p-0"
+        <SidebarMenuButton isActive={pathname.includes('/core/setting')} asChild className="md:h-8 md:p-0"
           tooltip={{
             children: t('common.settings'),
             hidden: false,

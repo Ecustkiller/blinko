@@ -69,6 +69,9 @@ interface SettingState {
 
   useImageRepo: boolean
   setUseImageRepo: (useImageRepo: boolean) => Promise<void>
+  
+  lastSettingPage: string
+  setLastSettingPage: (page: string) => Promise<void>
 }
 
 
@@ -176,6 +179,13 @@ const useSettingStore = create<SettingState>((set, get) => ({
     set({ useImageRepo })
     const store = await Store.load('store.json');
     await store.set('useImageRepo', useImageRepo)
+  },
+  
+  lastSettingPage: 'ai',
+  setLastSettingPage: async (page: string) => {
+    set({ lastSettingPage: page })
+    const store = await Store.load('store.json');
+    await store.set('lastSettingPage', page)
   },
 }))
 

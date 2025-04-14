@@ -4,12 +4,14 @@ import { useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation";
 import baseConfig from '../config'
 import { useTranslations } from 'next-intl'
+import useSettingStore from "@/stores/setting"
 
 export function SettingTab() {
   const [currentPage, setCurrentPage] = useState('about')
   const router = useRouter()
   const pathname = usePathname()
   const t = useTranslations('settings')
+  const { setLastSettingPage } = useSettingStore()
   
   // Add translations to the config
   const config = baseConfig.map(item => ({
@@ -20,6 +22,8 @@ export function SettingTab() {
   function handleNavigation(anchor: string) {
     setCurrentPage(anchor)
     router.push(`/core/setting/${anchor}`)
+    // 记录最后访问的设置页面
+    setLastSettingPage(anchor)
   }
 
   useEffect(() => {
@@ -27,8 +31,10 @@ export function SettingTab() {
     const pageName = pathname.split('/').pop()
     if (pageName && pageName !== 'setting') {
       setCurrentPage(pageName)
+      // 记录最后访问的设置页面
+      setLastSettingPage(pageName)
     }
-  }, [pathname])
+  }, [pathname, setLastSettingPage])
 
   return (
     <div className="w-56 border-r h-full min-h-screen bg-sidebar p-4">
