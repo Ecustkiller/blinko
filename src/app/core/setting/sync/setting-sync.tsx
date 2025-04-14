@@ -1,6 +1,6 @@
 'use client'
 import { Input } from "@/components/ui/input";
-import { FormItem, SettingRow, SettingType } from "../components/setting-base";
+import { FormItem, SettingPanel, SettingRow, SettingType } from "../components/setting-base";
 import { useEffect } from "react";
 import { useTranslations } from 'next-intl';
 import useSettingStore from "@/stores/setting";
@@ -17,7 +17,7 @@ dayjs.extend(relativeTime)
 
 export function SettingSync({id, icon}: {id: string, icon?: React.ReactNode}) {
   const t = useTranslations();
-  const { accessToken, setAccessToken, useImageRepo, setUseImageRepo } = useSettingStore()
+  const { accessToken, setAccessToken, useImageRepo, setUseImageRepo, jsdelivr, setJsdelivr } = useSettingStore()
   const {
     imageRepoState,
     setImageRepoState,
@@ -105,20 +105,31 @@ export function SettingSync({id, icon}: {id: string, icon?: React.ReactNode}) {
                     <p className="text-zinc-500 leading-6">创建于 { dayjs(imageRepoInfo?.created_at).fromNow() }，</p>
                     <p className="text-zinc-500 leading-6">最后更新于 { dayjs(imageRepoInfo?.updated_at).fromNow() }。</p>
                   </CardDescription>
-                  <CardDescription className="flex items-center gap-4 mt-4">
-                    <p className="text-zinc-500 leading-6">使用 GitHub 图床</p>
-                    <Switch 
-                      checked={useImageRepo} 
-                      onCheckedChange={(checked) => setUseImageRepo(checked)} 
-                      disabled={!accessToken || imageRepoState !== SyncStateEnum.success}
-                    />
-                  </CardDescription>
                 </CardContent>
               }
             </Card>
           </div>
         </FormItem>
       </SettingRow>
+      {
+        imageRepoInfo &&
+        <>
+          <SettingPanel title={t('settings.sync.imageRepoSetting')} desc={t('settings.sync.imageRepoSettingDesc')}>
+            <Switch 
+              checked={useImageRepo} 
+              onCheckedChange={(checked) => setUseImageRepo(checked)} 
+              disabled={!accessToken || imageRepoState !== SyncStateEnum.success}
+            />
+          </SettingPanel>
+          <SettingPanel title={t('settings.sync.jsdelivrSetting')} desc={t('settings.sync.jsdelivrSettingDesc')}>
+            <Switch 
+              checked={jsdelivr} 
+              onCheckedChange={(checked) => setJsdelivr(checked)} 
+              disabled={!accessToken || imageRepoState !== SyncStateEnum.success || !useImageRepo}
+            />
+          </SettingPanel>
+        </>
+      }
     </SettingType>
   )
 }

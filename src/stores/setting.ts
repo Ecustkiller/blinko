@@ -167,12 +167,20 @@ const useSettingStore = create<SettingState>((set, get) => ({
 
   accessToken: '',
   setAccessToken: async (accessToken) => {
-    await get().setGithubUsername('')
+    const store = await Store.load('store.json');
+    const hasAccessToken = await store.get('accessToken') === accessToken
+    if (!hasAccessToken) {
+      await get().setGithubUsername('')
+    }
     set({ accessToken })
   },
 
   jsdelivr: true,
-  setJsdelivr: (jsdelivr: boolean) => set({ jsdelivr }),
+  setJsdelivr: async (jsdelivr: boolean) => {
+    set({ jsdelivr })
+    const store = await Store.load('store.json');
+    await store.set('jsdelivr', jsdelivr)
+  },
 
   useImageRepo: true,
   setUseImageRepo: async (useImageRepo: boolean) => {

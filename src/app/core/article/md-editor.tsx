@@ -11,7 +11,6 @@ import { useTheme } from 'next-themes'
 import { toast } from '@/hooks/use-toast'
 import { fileToBase64, uploadFile } from '@/lib/github'
 import { RepoNames } from '@/lib/github.types'
-import useSettingStore from '@/stores/setting'
 import { Store } from '@tauri-apps/plugin-store'
 import { useTranslations } from 'next-intl'
 import { useI18n } from '@/hooks/useI18n'
@@ -24,7 +23,6 @@ import { convertImage } from '@/lib/utils'
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
   const { currentArticle, saveCurrentArticle, loading } = useArticleStore()
-  const { jsdelivr, accessToken, useImageRepo } = useSettingStore()
   const { theme, setTheme } = useTheme()
   const t = useTranslations('article.editor')
   const { currentLocale } = useI18n()
@@ -74,6 +72,9 @@ export function MdEditor() {
       },
       upload: {
         async handler(files: File[]) {
+          const store = await Store.load('store.json');
+          const accessToken = await store.get('accessToken')
+          const useImageRepo = await store.get('useImageRepo')
           if (accessToken && useImageRepo) {
             const filesUrls = await uploadImages(files)
             if (vditor) {
@@ -123,9 +124,10 @@ export function MdEditor() {
             repo: RepoNames.image,
             path
           }).then(async res => {
+            const store = await Store.load('store.json');
+            const jsdelivr = await store.get('jsdelivr')
             let url = res?.data.content.download_url
             if (jsdelivr) {
-              const store = await Store.load('store.json');
               const githubUsername = await store.get('githubUsername')
               await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${path}/${res?.data.content.name}`)
               url = `https://cdn.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${path}/${res?.data.content.name}`
