@@ -2,6 +2,7 @@
 import useArticleStore from '@/stores/article'
 import { useEffect, useState } from 'react'
 import Vditor from 'vditor'
+import { exists, mkdir, writeFile } from '@tauri-apps/plugin-fs'
 import "vditor/dist/index.css"
 import CustomToolbar from './custom-toolbar'
 import './style.scss'
@@ -16,11 +17,14 @@ import { useTranslations } from 'next-intl'
 import { useI18n } from '@/hooks/useI18n'
 import emitter from '@/lib/emitter'
 import dayjs from 'dayjs'
+import { appDataDir } from '@tauri-apps/api/path'
+import { v4 as uuid } from 'uuid'
+import { convertImage } from '@/lib/utils'
 
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
   const { currentArticle, saveCurrentArticle, loading } = useArticleStore()
-  const { jsdelivr } = useSettingStore()
+  const { jsdelivr, accessToken } = useSettingStore()
   const { theme, setTheme } = useTheme()
   const t = useTranslations('article.editor')
   const { currentLocale } = useI18n()
@@ -70,13 +74,31 @@ export function MdEditor() {
       },
       upload: {
         async handler(files: File[]) {
-          const filesUrls = await uploadImages(files)
-          if (vditor) {
-            for (let i = 0; i < filesUrls.length; i++) {
-              vditor.insertValue(`![${files[i].name}](${filesUrls[i]})`)
+          if (accessToken) {
+            const filesUrls = await uploadImages(files)
+            if (vditor) {
+              for (let i = 0; i < filesUrls.length; i++) {
+                vditor.insertValue(`![${files[i].name}](${filesUrls[i]})`)
+              }
             }
+            return filesUrls.join('\n')
+          } else {
+            // 保存到本地 images/ 目录下
+            const appDataDirPath = await appDataDir()
+            const imagesDir = `${appDataDirPath}/image`
+            if (!await exists(imagesDir)) {
+              await mkdir(imagesDir)
+            }
+            for (let i = 0; i < files.length; i++) {
+              const uint8Array = new Uint8Array(await files[i].arrayBuffer())
+              const fileName = `${uuid()}.${files[i].name.split('.')[files[i].name.split('.').length - 1]}`
+              const path = `${imagesDir}/${fileName}`
+              await writeFile(path, uint8Array)
+              const imageSrc = await convertImage(`/image/${fileName}`)
+              vditor.insertValue(`![${files[i].name}](${imageSrc})`)
+            }
+            return '图片已保存到本地'
           }
-          return filesUrls.join('\n')
         }
       }
     })
