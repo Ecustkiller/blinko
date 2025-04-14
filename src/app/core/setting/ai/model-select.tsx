@@ -14,6 +14,13 @@ export default function ModelSelect() {
   async function initModelList() {
     const models = await getModels()
     setList(models)
+    const store = await Store.load('store.json');
+    const aiModelList = await store.get<AiConfig[]>('aiModelList')
+    if (!aiModelList) return
+    const model = aiModelList.find(item => item.key === aiType)
+    if (!model) return
+    console.log(model.model);
+    setModel(model.model || '')
   }
 
   async function syncModelList(value: string) {
@@ -37,7 +44,7 @@ export default function ModelSelect() {
   return (
     <div className="flex flex-col">
       {list.length ? (
-        <Select defaultValue={model} onValueChange={syncModelList}>
+        <Select value={model} onValueChange={syncModelList}>
           <SelectTrigger className="mt-2 w-full">
             <SelectValue placeholder={model || 'Select model'} />
           </SelectTrigger>
