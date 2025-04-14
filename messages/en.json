@@ -442,7 +442,13 @@
         "refresh": "Refresh",
         "toggleFolders": "Toggle Folders",
         "expandAll": "Expand All",
-        "collapseAll": "Collapse All"
+        "collapseAll": "Collapse All",
+        "sortByName": "Sort by Name",
+        "sortByCreated": "Sort by Created",
+        "sortByModified": "Sort by Modified",
+        "sortAsc": "Sort Ascending",
+        "sortDesc": "Sort Descending",
+        "sort": "Sort"
       },
       "context": {
         "viewDirectory": "View Directory",
