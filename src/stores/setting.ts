@@ -66,6 +66,9 @@ interface SettingState {
 
   jsdelivr: boolean
   setJsdelivr: (jsdelivr: boolean) => void
+
+  useImageRepo: boolean
+  setUseImageRepo: (useImageRepo: boolean) => Promise<void>
 }
 
 
@@ -167,6 +170,13 @@ const useSettingStore = create<SettingState>((set, get) => ({
 
   jsdelivr: true,
   setJsdelivr: (jsdelivr: boolean) => set({ jsdelivr }),
+
+  useImageRepo: true,
+  setUseImageRepo: async (useImageRepo: boolean) => {
+    set({ useImageRepo })
+    const store = await Store.load('store.json');
+    await store.set('useImageRepo', useImageRepo)
+  },
 }))
 
 export default useSettingStore

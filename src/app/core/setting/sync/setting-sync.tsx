@@ -11,12 +11,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { OpenBroswer } from "@/components/open-broswer";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { Switch } from "@/components/ui/switch";
 
 dayjs.extend(relativeTime)
 
 export function SettingSync({id, icon}: {id: string, icon?: React.ReactNode}) {
   const t = useTranslations();
-  const { accessToken, setAccessToken } = useSettingStore()
+  const { accessToken, setAccessToken, useImageRepo, setUseImageRepo } = useSettingStore()
   const {
     imageRepoState,
     setImageRepoState,
@@ -103,6 +104,14 @@ export function SettingSync({id, icon}: {id: string, icon?: React.ReactNode}) {
                   <CardDescription className="flex">
                     <p className="text-zinc-500 leading-6">创建于 { dayjs(imageRepoInfo?.created_at).fromNow() }，</p>
                     <p className="text-zinc-500 leading-6">最后更新于 { dayjs(imageRepoInfo?.updated_at).fromNow() }。</p>
+                  </CardDescription>
+                  <CardDescription className="flex items-center gap-4 mt-4">
+                    <p className="text-zinc-500 leading-6">使用 GitHub 图床</p>
+                    <Switch 
+                      checked={useImageRepo} 
+                      onCheckedChange={(checked) => setUseImageRepo(checked)} 
+                      disabled={!accessToken || imageRepoState !== SyncStateEnum.success}
+                    />
                   </CardDescription>
                 </CardContent>
               }

@@ -24,7 +24,7 @@ import { convertImage } from '@/lib/utils'
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
   const { currentArticle, saveCurrentArticle, loading } = useArticleStore()
-  const { jsdelivr, accessToken } = useSettingStore()
+  const { jsdelivr, accessToken, useImageRepo } = useSettingStore()
   const { theme, setTheme } = useTheme()
   const t = useTranslations('article.editor')
   const { currentLocale } = useI18n()
@@ -74,7 +74,7 @@ export function MdEditor() {
       },
       upload: {
         async handler(files: File[]) {
-          if (accessToken) {
+          if (accessToken && useImageRepo) {
             const filesUrls = await uploadImages(files)
             if (vditor) {
               for (let i = 0; i < filesUrls.length; i++) {
