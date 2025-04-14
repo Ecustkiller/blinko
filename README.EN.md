@@ -12,78 +12,80 @@ English | [简体中文](README.md)
 
 NoteGen is a cross-platform AI note-taking application focused on `recording` and `writing`, developed based on `Tauri`.
 
-| Recording | Writing |
-| ---- | ---- |
-| ![](https://github.com/user-attachments/assets/4c605f4b-f675-467b-90e1-e039c1812d7b) | ![](https://github.com/user-attachments/assets/f0b2754a-e8cc-4661-a07f-0114a2a09d38) |
+The core philosophy is to combine recording, writing, and AI, with all three complementing each other. The recording function helps users quickly capture and organize fragmented knowledge. The organization function is the bridge connecting recording and writing, which can organize continuously recorded content into a readable note, assisting users in completing the creation process from scratch. If the AI-organized results cannot meet your requirements, you can use the writing function to refine it yourself.
 
-## Features
+## Screenshots
 
-> [!IMPORTANT]
-> NoteGen is still in the development stage and has many limitations and defects.
+Writing:
 
-The core philosophy of NoteGen is to combine recording, writing, and AI, with all three complementing each other. The recording function helps users quickly capture and organize fragmented knowledge. The organization function is the bridge connecting recording and writing, which can organize continuously recorded content into a readable note, assisting users in completing the creation process from scratch. If the AI-organized results cannot meet your requirements, you can use the writing function to refine it yourself.
+![432097489-6b95eb58-e460-4b85-8668-2d3a3b898f2d.png](https://s2.loli.net/2025/04/14/NxhiWjMZT7RtusS.png)
 
-### Recording
+Recording:
 
-Recording methods supported:
+![432097246-a5d7efdc-c47b-4170-946f-1ac6af5cfd81.png](https://s2.loli.net/2025/04/14/R4YzblokDp7xKat.png)
 
-1. 🖥️ Screenshot recording, through which users can quickly capture and record fragmented knowledge, especially in situations where text copying is not possible.
-2. 📄 Text recording, which allows copying text or manually inputting brief content as a record.
-3. 🖼️ Illustration recording, which can be automatically inserted into appropriate positions when generating notes.
-4. 📇 File recording, which recognizes content from PDF, md, html, txt, and other files for text recording.
-5. 🔗 Link recording (to be implemented), using web crawlers for page content recognition and recording.
-6. 📷 Photo recording (to be implemented), similar to illustration recording, calling the camera to record, suitable for future mobile use.
+Dark Mode:
 
-Auxiliary recording:
+![432098306-c8931fb1-a3f3-43cd-83ae-991f721cde7a.png](https://s2.loli.net/2025/04/14/9JhgTie2X4tZLdz.png)
 
-- 🏷️ Custom tags for better categorization and differentiation of different recording scenarios.
-- 🤖 AI conversation, by default associated with records under the current tag, and you can also manually associate it with any article in your writing.
-- 📋 Clipboard recognition, which automatically recognizes images or text in the clipboard after you copy them.
-- 💾 Organization, when you have completed a series of records, you can try to let AI help you organize them into an article.
+## Recording
 
-### Writing
+Supported recording methods:
 
-- 🗂 File manager, supporting management of files and folders in local and Github repositories, with unlimited directory levels.
-- 📝 Support for WYSIWYG, instant rendering, and split-screen preview modes.
-- 📅 Version control, if you enable synchronization, you can trace back to historically uploaded records in the history.
-- 🤖 AI assistance, supporting Q&A, continuation, optimization, simplification, translation, and other functions, and you can insert records into any position of the article at any time.
-- 🏞️ Image hosting, directly copy and paste images into the Markdown editor, which will automatically upload the image to the image hosting service and convert it to a Markdown image link.
-- 🛠️ HTML and Markdown conversion, copying content from browsers will automatically convert it to Markdown format.
+1. 🖥️ Screenshot recording: Users can quickly capture and record fragmented knowledge through screenshots, especially in situations where text cannot be copied.
+2. 📄 Text recording: You can copy text or manually input brief content as a record.
+3. 🖼️ Illustration recording: Can be automatically inserted into appropriate positions when generating notes.
+4. 📇 File recording: Recognize content from PDF, MD, HTML, TXT, and other file types for text recording.
+5. 🔗 Link recording (coming soon): Use web crawlers to identify and record page content.
+6. 📷 Photo recording (coming soon): Similar to illustration recording, it uses the camera to record, suitable for future mobile use.
 
-### Auxiliary
+Assistive recording features:
 
-- 📦 Large model support, with multiple built-in large model configurations, supporting customization and easy switching.
-- 👁️ OCR, which can assist in recognizing text in images.
-- 🏗️ Organization templates, which can be customized for AI to organize different types of content.
-- 🔎 Global search, for quickly searching and jumping to specified content.
-- 🌃 Image hosting management, for convenient management of image hosting repository content.
-- 💎 Themes and appearance, supporting dark theme, and appearance settings for Markdown, code, etc.
+- 🏷️ Custom tags: Better categorize and distinguish different recording scenarios.
+- 🤖 AI conversation: By default, it associates with records under the current tag, but you can also manually associate with any article in your writing section.
+- 🤪 Personas: Support custom prompts to precisely control your AI assistant.
+- 📋 Clipboard recognition: Automatically recognizes images or text in your clipboard after copying.
+- 💾 Organization: When you've completed a series of records, you can have AI organize them into an article.
+
+## Writing
+
+- 🗂 File manager: Supports file and folder management for both local and GitHub repositories, with unlimited directory hierarchy.
+- 📝 Supports WYSIWYG, instant rendering, and split-screen preview modes.
+- 📅 Version control: If you enable the sync feature, you can trace back to previously uploaded records in the history.
+- 🤖 AI assistance: Supports Q&A, continuation, optimization, simplification, translation, and other functions, and you can insert records into any position in your article at any time.
+- 🏞️ Image hosting: Directly copy and paste images into the Markdown editor, which will automatically upload the image to the image host and convert it to a Markdown image link.
+- 🛠️ HTML to Markdown conversion: Browser content copied will be automatically converted to Markdown format.
+
+## Auxiliary Functions
+
+- 📦 Large model support: Built-in configurations for various large models, with customization support and easy switching.
+- 👁️ OCR: Helps recognize text within images.
+- 🏗️ Organization templates: Customizable templates for AI to perform tailored organization of different content types.
+- 🔎 Global search: Quickly search and jump to specific content.
+- 🌃 Image hosting management: Easily manage content in your image hosting repository.
+- 💎 Themes and appearance: Supports dark theme and appearance settings for Markdown, code, etc.
 
 ## How to Use?
 
 ### Download
 
-Currently supports Mac, Windows, Linux, and thanks to Tauri2's cross-platform capabilities, it will support iOS and Android in the future.
+Currently supports Mac, Windows, and Linux. Thanks to Tauri2's cross-platform capabilities, it will support iOS and Android in the future.
 
 [Download NoteGen (alpha)](https://github.com/codexu/note-gen/releases)
 
-### Getting Started Guide
-
-If you are not familiar with NoteGen, you can read the user documentation, which includes a quick start guide:
-
-[NoteGen User Documentation](https://codexu.github.io/note-gen-help/)
-
 ### AI Model Integration
 
-Currently supports custom model configuration, with built-in support for ChatGPT, ChatAnyWhere, Ollama, LM Studio, Doubao, Tongyi Qianwen, Kimi, DeepSeek, and all models using the OpenAI protocol. Support for other protocols will be gradually added in the future.
+NoteGen does not provide any services itself and requires manual configuration. It supports ChatGPT, Ollama, LM Studio, DeepSeek, and other large models by default, and also supports custom configuration of other providers' large models.
 
-> Local models may currently experience 403 errors, waiting for a solution from http-plugin. This issue does not occur in the development environment.
+### Sync and Image Hosting
 
-[Discussion Topic - About Model Integration](https://github.com/codexu/note-gen/discussions/26)
+NoteGen supports offline storage, with all notes stored in Markdown format. To ensure the security of your notes, you can choose to sync them to a private GitHub repository. After configuring synchronization, it also supports GitHub image hosting functionality. In the future, it will support independent configuration of other image hosting services.
 
-### Synchronization and Image Hosting
+## Community
 
-NoteGen supports offline storage, with all notes stored in Markdown format. To ensure the security of your notes, you can choose to synchronize them to a private Github repository. After configuring synchronization, Github image hosting functionality is also supported. Independent configuration for other image hosting services will be supported in the future.
+Welcome to join the NoteGen community group, where you can ask questions, share usage experiences, or suggest improvements. You can also join to learn about Tauri and discuss it with me.
+
+Scan the QR code to join the [discussion group](https://github.com/codexu/note-gen/discussions/110). If the QR code expires, you can add WeChat xu461229187 to join the group.
 
 ## Contribute
 
@@ -93,10 +95,8 @@ NoteGen is implemented using the following technology stack:
 - [Next.js 15](https://nextjs.org/)
 - [shadcn-ui](https://ui.shadcn.com/)
 
-Participate in contributions:
+How to contribute:
 
-- [Update Plan](https://github.com/codexu/note-gen/issues/46)
-- [Submit Bug or Improvement Suggestions](https://github.com/codexu/note-gen/issues)
+- [Update plans](https://github.com/codexu/note-gen/issues/46)
+- [Submit bugs or improvement suggestions](https://github.com/codexu/note-gen/issues)
 - [Discussions](https://github.com/codexu/note-gen/discussions)
-
-If you are learning Tauri, you can follow my series [《Tauri Open Source Diary》](https://juejin.cn/column/7451402575066546211).
