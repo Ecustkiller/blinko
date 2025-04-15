@@ -1,7 +1,9 @@
 import emitter from "@/lib/emitter";
 
 const config= [
-  {
+  { name: 'undo', tipPosition: 's' },
+  { name: 'redo', tipPosition: 's' },
+  '|',{
     name: 'mark',
     tipPosition: 's',
     tip: '使用记录',
@@ -42,9 +44,6 @@ const config= [
     click: () => emitter.emit('toolbar-translation'),
   },
   '|',
-  { name: 'undo', tipPosition: 's' },
-  { name: 'redo', tipPosition: 's' },
-  '|',
   { name: 'headings', tipPosition: 'se',},
   { name: 'bold', tipPosition: 's' },
   { name: 'italic', tipPosition: 's' },
@@ -64,7 +63,6 @@ const config= [
   { name: 'edit-mode', tipPosition: 's', className: 'bottom' },
   { name: 'preview', tipPosition: 's' },
   { name: 'outline', tipPosition: 's' },
-  { name: 'export', tipPosition: 's', className: 'bottom' },
 ]
 
 export default config

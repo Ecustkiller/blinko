@@ -73,11 +73,11 @@ export default function History({editor}: {editor?: Vditor}) {
   return (
     <Sheet open={sheetOpen} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="sm" disabled={!accessToken} className="outline-none">
+        <Button variant="ghost" size="sm" disabled={!accessToken || commitsLoading} className="outline-none">
           {
             commitsLoading && <LoaderCircle className="animate-spin !size-3" />
           }
-          <span className="text-muted-foreground text-xs">
+          <span className="text-xs">
             {commitsLoading ? '读取历史' : commits.length ? `历史记录(${commits.length})` : '无历史记录'}
           </span>
         </Button>
