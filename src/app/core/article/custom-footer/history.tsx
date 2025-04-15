@@ -13,6 +13,8 @@ import { open } from "@tauri-apps/plugin-shell";
 import useSettingStore from "@/stores/setting";
 import Vditor from "vditor";
 import emitter from "@/lib/emitter";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 dayjs.extend(relativeTime)
 
@@ -22,6 +24,7 @@ export default function History({editor}: {editor?: Vditor}) {
   const { accessToken } = useSettingStore()
   const [commits, setCommits] = useState<ResCommit[]>([])
   const [commitsLoading, setCommitsLoading] = useState(false)
+  const [filterQuick, setFilterQuick] = useState(false)
 
   async function onOpenChange(e: boolean) {
     setSheetOpen(e)
@@ -82,18 +85,21 @@ export default function History({editor}: {editor?: Vditor}) {
       <SheetContent className="p-0 min-w-[500px]">
         <SheetHeader className="p-4 border-b">
           <SheetTitle>历史记录</SheetTitle>
-          <SheetDescription className="flex items-center gap-1">
+          <SheetDescription className="flex items-center justify-between">
             {
-              commitsLoading ? <LoaderCircle className="size-4 animate-spin" /> : <HistoryIcon className="size-4" />
+              commitsLoading ? 
+              <span className="flex items-center gap-1"><LoaderCircle className="size-4 animate-spin" />加载中</span> : 
+              <span className="flex items-center gap-1"><HistoryIcon className="size-4" />{commits.length} 条记录</span>
             }
-            {
-              commitsLoading ? <span>加载中</span> : <span>{commits.length} 条记录</span>
-            }
+            <span className="flex items-center space-x-2">
+              <Label htmlFor="filter-quick">过滤快速同步</Label>
+              <Switch id="filter-quick" checked={filterQuick} onCheckedChange={setFilterQuick} />
+            </span>
           </SheetDescription>
         </SheetHeader>
         <div className="max-h-[calc(100vh-90px)] overflow-y-auto">
           {
-            commits.map((commit) => (
+            commits.filter(commit => !filterQuick || !commit.commit.message.includes('快速同步')).map((commit) => (
               <div className="flex justify-between items-center gap-4 border-b px-4 py-2" key={commit.sha}>
                 <div className="flex-1 flex flex-col">
                   <span
