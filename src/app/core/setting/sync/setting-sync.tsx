@@ -17,7 +17,7 @@ dayjs.extend(relativeTime)
 
 export function SettingSync({id, icon}: {id: string, icon?: React.ReactNode}) {
   const t = useTranslations();
-  const { accessToken, setAccessToken, useImageRepo, setUseImageRepo, jsdelivr, setJsdelivr } = useSettingStore()
+  const { accessToken, setAccessToken, useImageRepo, setUseImageRepo, jsdelivr, setJsdelivr, autoSync, setAutoSync } = useSettingStore()
   const {
     imageRepoState,
     setImageRepoState,
@@ -111,6 +111,18 @@ export function SettingSync({id, icon}: {id: string, icon?: React.ReactNode}) {
           </div>
         </FormItem>
       </SettingRow>
+      {
+        syncRepoInfo &&
+        <>
+          <SettingPanel title="自动同步" desc="启用后，编辑器在输入停止10秒后将自动同步到GitHub">
+            <Switch 
+              checked={autoSync} 
+              onCheckedChange={(checked) => setAutoSync(checked)} 
+              disabled={!accessToken || syncRepoState !== SyncStateEnum.success}
+            />
+          </SettingPanel>
+        </>
+      }
       {
         imageRepoInfo &&
         <>

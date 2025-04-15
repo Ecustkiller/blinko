@@ -69,6 +69,9 @@ interface SettingState {
 
   useImageRepo: boolean
   setUseImageRepo: (useImageRepo: boolean) => Promise<void>
+
+  autoSync: boolean
+  setAutoSync: (autoSync: boolean) => Promise<void>
   
   lastSettingPage: string
   setLastSettingPage: (page: string) => Promise<void>
@@ -187,6 +190,13 @@ const useSettingStore = create<SettingState>((set, get) => ({
     set({ useImageRepo })
     const store = await Store.load('store.json');
     await store.set('useImageRepo', useImageRepo)
+  },
+
+  autoSync: true,
+  setAutoSync: async (autoSync: boolean) => {
+    set({ autoSync })
+    const store = await Store.load('store.json');
+    await store.set('autoSync', autoSync)
   },
   
   lastSettingPage: 'ai',

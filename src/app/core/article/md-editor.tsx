@@ -70,6 +70,7 @@ export function MdEditor() {
       },
       input: (value) => {
         saveCurrentArticle(value)
+        emitter.emit('editor-input')
       },
       upload: {
         async handler(files: File[]) {
