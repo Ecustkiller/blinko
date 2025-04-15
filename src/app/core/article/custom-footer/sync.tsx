@@ -15,7 +15,7 @@ import emitter from "@/lib/emitter";
 
 export default function Sync({editor}: {editor?: Vditor}) {
   const { currentArticle } = useArticleStore()
-  const { accessToken, autoSync } = useSettingStore()
+  const { accessToken, autoSync, apiKey } = useSettingStore()
   const [isLoading, setIsLoading] = useState(false)
   const syncTimeoutRef = useRef<number | null>(null)
   const [syncText, setSyncText] = useState('同步')
@@ -29,22 +29,24 @@ export default function Sync({editor}: {editor?: Vditor}) {
       const activeFilePath = await store.get<string>('activeFilePath') || ''
       // 获取上一次提交的记录内容
       let message = `Upload ${activeFilePath}`
-      const commits = await getFileCommits({ path: activeFilePath, repo: RepoNames.sync })
-      if (commits?.length > 0) {
-        const lastCommit = commits[0]
-        const latContent = await getFiles({path: `${activeFilePath}?ref=${lastCommit.sha}`, repo: RepoNames.sync})
-        const diff = diffWordsWithSpace(decodeBase64ToString(latContent?.content || ''), currentArticle)
-        const addDiff = diff.filter(item => item.added).map(item => item.value).join('')
-        const removeDiff = diff.filter(item => item.removed).map(item => item.value).join('')
-        const text = `
-          根据两篇内容的diff：
-          增加了内容：${addDiff}
-          删除了内容：${removeDiff}
-          对比后对本次修改返回一条标准的提交描述，仅返回描述内容，字数不能超过50个字。
-        `
-        const aiMessage = await fetchAi(text)
-        if (!aiMessage.includes('请求失败')) {
-          message = aiMessage
+      if (apiKey) {
+        const commits = await getFileCommits({ path: activeFilePath, repo: RepoNames.sync })
+        if (commits?.length > 0) {
+          const lastCommit = commits[0]
+          const latContent = await getFiles({path: `${activeFilePath}?ref=${lastCommit.sha}`, repo: RepoNames.sync})
+          const diff = diffWordsWithSpace(decodeBase64ToString(latContent?.content || ''), currentArticle)
+          const addDiff = diff.filter(item => item.added).map(item => item.value).join('')
+          const removeDiff = diff.filter(item => item.removed).map(item => item.value).join('')
+          const text = `
+            根据两篇内容的diff：
+            增加了内容：${addDiff}
+            删除了内容：${removeDiff}
+            对比后对本次修改返回一条标准的提交描述，仅返回描述内容，字数不能超过50个字。
+          `
+          const aiMessage = await fetchAi(text)
+          if (!aiMessage.includes('请求失败')) {
+            message = aiMessage
+          }
         }
       }
       const res = await getFiles({path: activeFilePath, repo: RepoNames.sync})
