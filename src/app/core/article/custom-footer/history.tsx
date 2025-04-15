@@ -12,6 +12,7 @@ import { TooltipButton } from "@/components/tooltip-button";
 import { open } from "@tauri-apps/plugin-shell";
 import useSettingStore from "@/stores/setting";
 import Vditor from "vditor";
+import emitter from "@/lib/emitter";
 
 dayjs.extend(relativeTime)
 
@@ -57,10 +58,19 @@ export default function History({editor}: {editor?: Vditor}) {
     fetchCommits()
   }, [activeFilePath])
 
+  useEffect(() => {
+    emitter.on('sync-success', () => {
+      fetchCommits()
+    })
+    return () => {
+      emitter.off('sync-success')
+    }
+  }, [])
+
   return (
     <Sheet open={sheetOpen} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
-        <Button variant="ghost" disabled={!accessToken}>
+        <Button variant="ghost" size="sm" disabled={!accessToken} className="outline-none">
           {
             commitsLoading && <LoaderCircle className="animate-spin !size-3" />
           }

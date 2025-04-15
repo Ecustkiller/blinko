@@ -10,7 +10,7 @@ import { Store } from "@tauri-apps/plugin-store";
 import { Button } from "@/components/ui/button";
 import useSettingStore from "@/stores/setting";
 import { useEffect, useState, useRef } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Upload } from "lucide-react";
 import emitter from "@/lib/emitter";
 
 export default function Sync({editor}: {editor?: Vditor}) {
@@ -65,10 +65,8 @@ export default function Sync({editor}: {editor?: Vditor}) {
         repo: RepoNames.sync
       })
       if (uploadRes?.data.commit.message) {
-        setSyncText('同步成功')
-        setTimeout(() => {
-          setSyncText('同步')
-        }, 2000)
+        setSyncText('已同步')
+        emitter.emit('sync-success')
       }
     } catch (error) {
       console.error('Sync error:', error);
@@ -86,10 +84,13 @@ export default function Sync({editor}: {editor?: Vditor}) {
     if (!editor || !autoSync || !accessToken) return;
     
     const handleInput = () => {
+      console.log('input', syncText);
+      if (syncText !== '同步') {
+        setSyncText('同步')
+      }
       if (syncTimeoutRef.current) {
         window.clearTimeout(syncTimeoutRef.current);
       }
-      
       syncTimeoutRef.current = window.setTimeout(() => {
         handleSync();
       }, 10000);
@@ -103,22 +104,26 @@ export default function Sync({editor}: {editor?: Vditor}) {
       }
       emitter.off('editor-input', handleInput)
     };
-  }, [autoSync, accessToken]);
+  }, [autoSync, accessToken, syncText]);
 
   return (
     <Button 
-      onClick={handleSync} 
-      variant="ghost" 
+      onClick={handleSync}
+      variant="ghost"
+      size="sm"
       disabled={!accessToken || isLoading}
-      className="relative"
+      className="relative outline-none"
     >
       {isLoading ? (
         <>
           <Loader2 className="h-3 w-3 animate-spin mr-1" />
-          <span className="text-xs text-muted-foreground">同步中</span>
+          <span className="text-xs">同步中</span>
         </>
       ) : (
-        <span className="text-xs text-muted-foreground">{syncText}</span>
+        <>
+          <Upload className="!size-3" />
+          <span className="text-xs">{syncText}</span>
+        </>
       )}
     </Button>
   )

@@ -218,6 +218,7 @@ export async function deleteFile({ path, sha, repo }: { path: string, sha: strin
 }
 
 export async function getFileCommits({ path, repo }: { path: string, repo: RepoNames }) {
+  if (!path) return;
   const store = await Store.load('store.json');
   const accessToken = await store.get('accessToken')
   if (!accessToken) return;
