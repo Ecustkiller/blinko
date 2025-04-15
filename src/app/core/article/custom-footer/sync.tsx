@@ -4,21 +4,20 @@ import { decodeBase64ToString, getFileCommits, getFiles, uint8ArrayToBase64, upl
 import { RepoNames } from "@/lib/github.types";
 import useArticleStore from "@/stores/article";
 import { BaseDirectory, readFile } from "@tauri-apps/plugin-fs";
-import { useEffect } from "react";
 import { diffWordsWithSpace } from 'diff';
 import Vditor from "vditor";
-import emitter from "@/lib/emitter";
 import { Store } from "@tauri-apps/plugin-store";
+import { Button } from "@/components/ui/button";
+import useSettingStore from "@/stores/setting";
 
 export default function Sync({editor}: {editor?: Vditor}) {
   const { currentArticle } = useArticleStore()
+  const { accessToken } = useSettingStore()
 
   async function handleSync() {
     editor?.focus();
     const store = await Store.load('store.json');
     const activeFilePath = await store.get<string>('activeFilePath') || ''
-    const button = (editor?.vditor.toolbar?.elements?.sync.childNodes[0] as HTMLButtonElement)
-    button.classList.add('vditor-menu--disabled')
     // 获取上一次提交的记录内容
     let message = `Upload ${activeFilePath}`
     const commits = await getFileCommits({ path: activeFilePath, repo: RepoNames.sync })
@@ -59,14 +58,11 @@ export default function Sync({editor}: {editor?: Vditor}) {
         toast({title: '同步成功', description: uploadRes.data?.commit.message})
       }
     }
-    button.classList.remove('vditor-menu--disabled')
   }
 
-  useEffect(() => {
-    emitter.on('toolbar-sync', handleSync)
-  }, [])
-
   return (
-    <></>
+    <Button onClick={handleSync} variant="ghost" disabled={!accessToken}>
+      <span className="text-xs text-muted-foreground">同步</span>
+    </Button>
   )
 }

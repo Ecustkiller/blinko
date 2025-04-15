@@ -19,7 +19,6 @@ export default function ModelSelect() {
     if (!aiModelList) return
     const model = aiModelList.find(item => item.key === aiType)
     if (!model) return
-    console.log(model.model);
     setModel(model.model || '')
   }
 

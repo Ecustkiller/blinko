@@ -12,7 +12,6 @@ import { TooltipButton } from "@/components/tooltip-button";
 import { open } from "@tauri-apps/plugin-shell";
 import useSettingStore from "@/stores/setting";
 import Vditor from "vditor";
-import emitter from "@/lib/emitter";
 
 dayjs.extend(relativeTime)
 
@@ -21,12 +20,13 @@ export default function History({editor}: {editor?: Vditor}) {
   const { activeFilePath, setCurrentArticle, currentArticle } = useArticleStore()
   const { accessToken } = useSettingStore()
   const [commits, setCommits] = useState<ResCommit[]>([])
-  const [loading, setLoading] = useState(false)
   const [commitsLoading, setCommitsLoading] = useState(false)
 
   async function onOpenChange(e: boolean) {
     setSheetOpen(e)
-    if (!e) return
+  }
+
+  async function fetchCommits() {
     setCommitsLoading(true)
     setCommits([])
     editor?.focus()
@@ -36,7 +36,7 @@ export default function History({editor}: {editor?: Vditor}) {
   }
 
   async function handleCommit(sha: string) {
-    setLoading(true)
+    setCommitsLoading(true)
     setSheetOpen(false)
     const cacheArticle = currentArticle;
     setCurrentArticle('正在读取历史记录...')
@@ -46,7 +46,7 @@ export default function History({editor}: {editor?: Vditor}) {
     } else {
       setCurrentArticle(cacheArticle)
     }
-    setLoading(false)
+    setCommitsLoading(false)
   }
 
   function openHandler(url: string) {
@@ -54,18 +54,19 @@ export default function History({editor}: {editor?: Vditor}) {
   }
 
   useEffect(() => {
-    emitter.on('toolbar-history', () => {
-      onOpenChange(true)
-    })
-  }, [])
+    fetchCommits()
+  }, [activeFilePath])
 
   return (
     <Sheet open={sheetOpen} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" title="历史记录" disabled={!accessToken}>
+        <Button variant="ghost" disabled={!accessToken}>
           {
-            loading ? <LoaderCircle className="animate-spin size-4" /> : <HistoryIcon />
+            commitsLoading && <LoaderCircle className="animate-spin !size-3" />
           }
+          <span className="text-muted-foreground text-xs">
+            {commitsLoading ? '读取历史' : commits.length ? `历史记录(${commits.length})` : '无历史记录'}
+          </span>
         </Button>
       </SheetTrigger>
       <SheetContent className="p-0 min-w-[500px]">

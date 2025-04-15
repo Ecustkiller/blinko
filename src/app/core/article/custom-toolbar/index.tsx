@@ -5,8 +5,6 @@ import Continue from "./continue";
 import Polish from "./polish";
 import Eraser from "./eraser";
 import Translation from "./translation";
-import Sync from "./sync";
-import History from "./history";
 
 export default function CustomToolbar({editor}: {editor?: Vditor}) {
   return <div className="h-12 w-full border-b items-center px-2 gap-1 justify-between hidden">
@@ -16,7 +14,5 @@ export default function CustomToolbar({editor}: {editor?: Vditor}) {
     <Polish editor={editor} />
     <Eraser editor={editor} />
     <Translation editor={editor} />
-    <History editor={editor} />
-    <Sync editor={editor} />
   </div>
 }

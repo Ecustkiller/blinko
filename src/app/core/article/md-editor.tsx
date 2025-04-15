@@ -19,6 +19,7 @@ import dayjs from 'dayjs'
 import { appDataDir } from '@tauri-apps/api/path'
 import { v4 as uuid } from 'uuid'
 import { convertImage } from '@/lib/utils'
+import CustomFooter from './custom-footer'
 
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
@@ -100,6 +101,12 @@ export function MdEditor() {
             }
             return '图片已保存到本地'
           }
+        }
+      },
+      counter: {
+        enable: true,
+        after: (length: number) => {
+          emitter.emit('toolbar-text-number', length)
         }
       }
     })
@@ -185,10 +192,13 @@ export function MdEditor() {
     setContent(currentArticle)
   }, [currentArticle])
 
-  return <div className='flex-1 h-screen flex flex-col'>
+  return <div className='flex-1 h-screen flex flex-col overflow-hidden'>
     {
       editor && <CustomToolbar editor={editor} />
     }
     <div id="aritcle-md-editor" className='flex-1'></div>
+    {
+      editor && <CustomFooter editor={editor} />
+    }
   </div>
 }
