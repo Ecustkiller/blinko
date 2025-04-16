@@ -8,106 +8,95 @@
 ![](https://img.shields.io/github/downloads/codexu/note-gen/total)
 ![](https://img.shields.io/github/commit-activity/m/codexu/note-gen)
 
-[English](README.EN.md) | 简体中文
+English | [简体中文](README.CN.md)
 
-NoteGen 是一款的跨端的 `Markdown` 笔记应用，致力于使用 AI 建立记录和写作的桥梁，将碎片化知识整理成一篇可读的笔记。
+NoteGen is a cross-platform AI note-taking application focused on `recording` and `writing`, developed based on `Tauri`.
 
-## 为什么选择 NoteGen？
+The core philosophy is to combine recording, writing, and AI, with all three complementing each other. The recording function helps users quickly capture and organize fragmented knowledge. The organization function is the bridge connecting recording and writing, which can organize continuously recorded content into a readable note, assisting users in completing the creation process from scratch. If the AI-organized results cannot meet your requirements, you can use the writing function to refine it yourself.
 
-- 轻量，[安装包](https://github.com/codexu/note-gen/releases)**仅十几兆**，免费且无任何广告，无任何捆绑。
-- 跨端，支持 Mac、Windows、Linux，得益于 `Tauri2` 的跨平台能力，未来将支持 IOS、Android。
-- 支持`截图`、`文本`、`插图`、`文件`、`链接`等多种记录方式，满足各类场景的碎片化记录需求。
-- 默认支持本地离线使用，原生 `Markdown(.md)` 作为存储格式，同时支持实时同步到 `Github 私有仓库`，支持历史回滚。
-- AI 加持，可配置 ChatGPT、Gemini、Ollama、LM Studio、DeepSeek 等多种模型，支持自定义配置使用第三方模型。
+## Screenshots
 
-## 截图
+Writing:
 
-记录：
+![432097489-6b95eb58-e460-4b85-8668-2d3a3b898f2d.png](https://s2.loli.net/2025/04/14/NxhiWjMZT7RtusS.png)
 
-![record](https://s2.loli.net/2025/04/14/NxhiWjMZT7RtusS.png)
+Recording:
 
-写作：
+![432097246-a5d7efdc-c47b-4170-946f-1ac6af5cfd81.png](https://s2.loli.net/2025/04/14/R4YzblokDp7xKat.png)
 
-![writing](https://s2.loli.net/2025/04/16/LcgMvUa86IpRi4V.png)
+Dark Mode:
 
-深色模式：
+![432098306-c8931fb1-a3f3-43cd-83ae-991f721cde7a.png](https://s2.loli.net/2025/04/14/9JhgTie2X4tZLdz.png)
 
-![dark](https://s2.loli.net/2025/04/14/9JhgTie2X4tZLdz.png)
+## Recording
 
-## 从记录到写作
+Supported recording methods:
 
-常规的笔记应用，通常不会提供记录的功能，用户需要手动进行复制粘贴的操作进行记录，大大降低了记录的效率，而面对零散的记录内容时，更是需要花费大量的精力进行整理。
+1. 🖥️ Screenshot recording: Users can quickly capture and record fragmented knowledge through screenshots, especially in situations where text cannot be copied.
+2. 📄 Text recording: You can copy text or manually input brief content as a record.
+3. 🖼️ Illustration recording: Can be automatically inserted into appropriate positions when generating notes.
+4. 📇 File recording: Recognize content from PDF, MD, HTML, TXT, and other file types for text recording.
+5. 🔗 Link recording (coming soon): Use web crawlers to identify and record page content.
+6. 📷 Photo recording (coming soon): Similar to illustration recording, it uses the camera to record, suitable for future mobile use.
 
-NoteGen 分为`记录`和`写作`两个页面，其关系是：
+Assistive recording features:
 
-- 记录可以整理为笔记，转移至写作页面进行深度编写。
-- 写作时可以随时插入记录。
+- 🏷️ Custom tags: Better categorize and distinguish different recording scenarios.
+- 🤖 AI conversation: By default, it associates with records under the current tag, but you can also manually associate with any article in your writing section.
+- 🤪 Personas: Support custom prompts to precisely control your AI assistant.
+- 📋 Clipboard recognition: Automatically recognizes images or text in your clipboard after copying.
+- 💾 Organization: When you've completed a series of records, you can have AI organize them into an article.
 
-### 记录
+## Writing
 
-记录功能类似 **AI 聊天机器人**，但与其对话时可以关联已记录的内容，将对话模式切换为整理模式，可以将记录整理成一篇可读的笔记。
+- 🗂 File manager: Supports file and folder management for both local and GitHub repositories, with unlimited directory hierarchy.
+- 📝 Supports WYSIWYG, instant rendering, and split-screen preview modes.
+- 📅 Version control: If you enable the sync feature, you can trace back to previously uploaded records in the history.
+- 🤖 AI assistance: Supports Q&A, continuation, optimization, simplification, translation, and other functions, and you can insert records into any position in your article at any time.
+- 🏞️ Image hosting: Directly copy and paste images into the Markdown editor, which will automatically upload the image to the image host and convert it to a Markdown image link.
+- 🛠️ HTML to Markdown conversion: Browser content copied will be automatically converted to Markdown format.
 
-以下这些辅助功能可以帮助你更好地进行记录：
+## Auxiliary Functions
 
-- **标签**，用于区分不同的记录场景。
-- **面具**，支持自定义 prompt，精准控制你的 AI 助手。
-- **剪贴板助手**，可以自动识别剪贴板中的文本或图片，记录到列表中。
+- 📦 Large model support: Built-in configurations for various large models, with customization support and easy switching.
+- 👁️ OCR: Helps recognize text within images.
+- 🏗️ Organization templates: Customizable templates for AI to perform tailored organization of different content types.
+- 🔎 Global search: Quickly search and jump to specific content.
+- 🌃 Image hosting management: Easily manage content in your image hosting repository.
+- 💎 Themes and appearance: Supports dark theme and appearance settings for Markdown, code, etc.
 
-### 写作
+## How to Use?
 
-写作是分为**文件管理器**和**Markdown 编辑器**两个部分。
+### Download
 
-**文件管理器**
+Currently supports Mac, Windows, and Linux. Thanks to Tauri2's cross-platform capabilities, it will support iOS and Android in the future.
 
-- 支持管理本地 Markdown 文件和 Github 的同步文件。
-- 支持无限层级目录。
-- 支持多种排序方式。
+[Download NoteGen (alpha)](https://github.com/codexu/note-gen/releases)
 
-**Markdown 编辑器**
+### AI Model Integration
 
-- 支持所见即所得、即时渲染、分屏预览三种模式。
-- 支持版本控制，可以回溯历史记录。
-- 支持 AI 辅助，可以进行对话、续写、润色、翻译功能。
-- 支持图床，可以将图片上传至图床，并转换为 Markdown 图片链接。
-- 支持 HTML、Markdown 转换，可以复制浏览器内容，自动转换为 Markdown 格式。
-- 支持大纲、数学公式、脑图、图表、流程图、甘特图、时序图、五线谱、多媒体、语音阅读、标题锚点、代码高亮及复制、graphviz 渲染、plantumlUML 图。
-- 支持实时本地保存内容，延时（10s 未进行编辑）自动同步，历史回滚。
+NoteGen does not provide any services itself and requires manual configuration. It supports ChatGPT, Ollama, LM Studio, DeepSeek, and other large models by default, and also supports custom configuration of other providers' large models.
 
-## 其他
+### Sync and Image Hosting
 
-- 全局搜索，可以快速搜索并跳转至指定的内容。
-- 图床管理，可以方便的管理图床仓库的内容。
-- 主题与外观，支持深色主题，支持 Markdown、代码等外观设置。
-- 支持国际化，暂支持中文、英文。
+NoteGen supports offline storage, with all notes stored in Markdown format. To ensure the security of your notes, you can choose to sync them to a private GitHub repository. After configuring synchronization, it also supports GitHub image hosting functionality. In the future, it will support independent configuration of other image hosting services.
 
-## 如何使用？
+## Community
 
-### 下载
+Welcome to join the NoteGen community group, where you can ask questions, share usage experiences, or suggest improvements. You can also join to learn about Tauri and discuss it with me.
 
-目前支持 Mac、Windows、Linux，得益于 Tauri2 的跨平台能力，未来将支持 IOS、Android。
-
-[下载 NoteGen (alpha)](https://github.com/codexu/note-gen/releases)
-
-### 增强
-
-笔记本身可以无配置直接使用，如果你想得到更好的体验，请打开设置页面，对 AI 和同步进行配置。
-
-## 交流群
-
-欢迎加入 NoteGen 交流群，这里你可以向我提出问题，分享使用心得，或者提出改进建议。也可以以学习 Tauri 为目的，和我一起交流。
-
-扫码加入[交流群](https://github.com/codexu/note-gen/discussions/110)，如果二维码失效，可以加微信 xu461229187 进群。
+Scan the QR code to join the [discussion group](https://github.com/codexu/note-gen/discussions/110). If the QR code expires, you can add WeChat xu461229187 to join the group.
 
 ## Contribute
 
-NoteGen 使用以下技术栈实现：
+NoteGen is implemented using the following technology stack:
 
 - [Tauri 2](https://v2.tauri.app/)
 - [Next.js 15](https://nextjs.org/)
 - [shadcn-ui](https://ui.shadcn.com/)
 
-参与贡献：
+How to contribute:
 
-- [更新计划](https://github.com/codexu/note-gen/issues/46)
-- [提交 Bug 或改进建议](https://github.com/codexu/note-gen/issues)
-- [讨论](https://github.com/codexu/note-gen/discussions)
+- [Update plans](https://github.com/codexu/note-gen/issues/46)
+- [Submit bugs or improvement suggestions](https://github.com/codexu/note-gen/issues)
+- [Discussions](https://github.com/codexu/note-gen/discussions)
