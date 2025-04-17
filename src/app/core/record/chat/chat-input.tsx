@@ -192,7 +192,7 @@ export function ChatInput() {
         onChange={(e) => setText(e.target.value)}
         placeholder={placeholder}
         onKeyDown={(e) => {
-          if (e.key === "Enter" && !isComposing) {
+          if (e.key === "Enter" && !isComposing && e.keyCode === 13) {
             e.preventDefault()
             if (inputType === "gen") {
               markGenRef.current?.openGen()
