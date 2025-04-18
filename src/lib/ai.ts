@@ -1,6 +1,7 @@
 import { toast } from "@/hooks/use-toast";
 import { Store } from "@tauri-apps/plugin-store";
 import OpenAI from 'openai';
+import { GoogleGenAI } from "@google/genai";
 
 /**
  * 获取当前的面具内容
@@ -41,6 +42,15 @@ async function createOpenAIClient() {
   })
 }
 
+// 创建Google Gemini客户端
+async function createGeminiClient() {
+  const store = await Store.load('store.json')
+  const apiKey = await store.get<string>('apiKey')
+  
+  // 创建Gemini客户端
+  return new GoogleGenAI({apiKey: apiKey || ''});
+}
+
 /**
  * 非流式方式获取AI结果
  */
@@ -70,19 +80,22 @@ export async function fetchAi(text: string): Promise<string> {
     
     // 根据不同AI类型构建请求
     if (aiType === 'gemini') {
-      // Gemini API请求
+      // Gemini API请求使用@google/genai
       const finalText = promptContent ? `${promptContent}\n\n${text}` : text
       
-      const completion = await openai.chat.completions.create({
+      // 创建Gemini客户端
+      const genAI = await createGeminiClient()
+      
+      const result = await genAI.models.generateContent({
         model: model,
-        messages: [{
-          role: 'user' as const,
-          content: finalText
-        }],
+        contents: {
+          parts: [{ text: finalText }]
+        },
         temperature: temperature,
-        top_p: topP,
+        topP: topP
       })
-      return completion.choices[0].message.content || ''
+      
+      return result.text || ''
     } else if (aiType === 'ollama') {
       // Ollama API请求
       const messages = []
@@ -177,7 +190,8 @@ export async function fetchAiStream(text: string, onUpdate: (content: string) =>
     
     // 根据不同AI类型构建请求
     if (aiType === 'gemini') {
-      // Gemini API请求
+      // 对于Gemini，我们将使用@google/genai库，这里的messages只是占位
+      // 实际执行时会创建Gemini客户端
       const finalText = promptContent ? `${promptContent}\n\n${text}` : text
       messages = [{
         role: 'user', 
@@ -211,31 +225,64 @@ export async function fetchAiStream(text: string, onUpdate: (content: string) =>
       })
     }
     
-    // 流式请求
-    const stream = await openai.chat.completions.create({
-      model: model,
-      messages: messages,
-      temperature: temperature,
-      top_p: topP,
-      stream: true,
-    })
-    
-    let fullContent = ''
-    
-    for await (const chunk of stream) {
-      // Check if the request has been aborted
-      if (abortSignal?.aborted) {
-        break;
+    // 根据不同AI类型进行流式请求
+    if (aiType === 'gemini') {
+      // Gemini API流式请求使用@google/genai
+      const genAI = await createGeminiClient()
+      
+      // 从消息中提取出用户文本
+      const userMessage = messages[0].content as string
+      
+      let fullContent = ''
+      const response = await genAI.models.generateContentStream({
+        model: model,
+        contents: {
+          parts: [{ text: userMessage }]
+        },
+        temperature: temperature,
+        topP: topP
+      })
+      
+      for await (const chunk of response) {
+        // Check if the request has been aborted
+        if (abortSignal?.aborted) {
+          break;
+        }
+        
+        if (chunk.text) {
+          fullContent += chunk.text
+          onUpdate(fullContent)
+        }
       }
       
-      const content = chunk.choices[0]?.delta?.content || ''
-      if (content) {
-        fullContent += content
-        onUpdate(fullContent)
+      return fullContent
+    } else {
+      // OpenAI/Ollama流式请求
+      const stream = await openai.chat.completions.create({
+        model: model,
+        messages: messages,
+        temperature: temperature,
+        top_p: topP,
+        stream: true,
+      })
+      
+      let fullContent = ''
+      
+      for await (const chunk of stream) {
+        // Check if the request has been aborted
+        if (abortSignal?.aborted) {
+          break;
+        }
+        
+        const content = chunk.choices[0]?.delta?.content || ''
+        if (content) {
+          fullContent += content
+          onUpdate(fullContent)
+        }
       }
+      
+      return fullContent
     }
-    
-    return fullContent
   } catch (error) {
     toast({
       title: 'AI 错误',
@@ -280,7 +327,8 @@ export async function fetchAiStreamToken(text: string, onUpdate: (content: strin
     
     // 根据不同AI类型构建请求
     if (aiType === 'gemini') {
-      // Gemini API请求
+      // 对于Gemini，我们将使用@google/genai库，这里的messages只是占位
+      // 实际执行时会创建Gemini客户端
       const finalText = promptContent ? `${promptContent}\n\n${text}` : text
       messages = [{
         role: 'user', 
@@ -314,23 +362,49 @@ export async function fetchAiStreamToken(text: string, onUpdate: (content: strin
       })
     }
     
-    // 流式请求
-    const stream = await openai.chat.completions.create({
-      model: model,
-      messages: messages,
-      temperature: temperature,
-      top_p: topP,
-      stream: true,
-    })
-    
-    for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content || ''
-      if (content) {
-        onUpdate(content)
+    // 根据不同AI类型进行流式请求
+    if (aiType === 'gemini') {
+      // Gemini API流式请求使用@google/genai
+      const genAI = await createGeminiClient()
+      
+      // 从消息中提取出用户文本
+      const userMessage = messages[0].content as string
+      
+      const streamingResult = await genAI.models.generateContentStream({
+        model: model,
+        contents: {
+          parts: [{ text: userMessage }]
+        },
+        temperature: temperature,
+        topP: topP
+      })
+      
+      for await (const chunk of streamingResult) {
+        if (chunk.text) {
+          onUpdate(chunk.text)
+        }
       }
+      
+      return ''
+    } else {
+      // OpenAI/Ollama流式请求
+      const stream = await openai.chat.completions.create({
+        model: model,
+        messages: messages,
+        temperature: temperature,
+        top_p: topP,
+        stream: true,
+      })
+      
+      for await (const chunk of stream) {
+        const content = chunk.choices[0]?.delta?.content || ''
+        if (content) {
+          onUpdate(content)
+        }
+      }
+      
+      return ''
     }
-    
-    return ''
   } catch (error) {
     toast({
       title: 'AI 错误',
@@ -392,16 +466,37 @@ export async function checkAiStatus() {
 
     // 创建 OpenAI 客户端
     const openai = await createOpenAIClient()
-    
-    // 检测连接
-    await openai.chat.completions.create({
-      model,
-      messages: [{
-        role: 'user' as const,
-        content: 'Hello'
-      }],
-    })
-    
+
+    if (aiType === 'gemini') {
+      // Gemini - 使用@google/genai
+      const genAI = await createGeminiClient()
+      
+      await genAI.models.generateContent({
+        model: model,
+        contents: {
+          parts: [{ text: 'Hello' }]
+        }
+      })
+    } else if (aiType === 'ollama') {
+      // Ollama
+      await openai.chat.completions.create({
+        model,
+        messages: [{
+          role: 'user' as const,
+          content: 'Hello'
+        }],
+      })
+    } else {
+      // OpenAI
+       // 检测连接
+      await openai.chat.completions.create({
+        model,
+        messages: [{
+          role: 'user' as const,
+          content: 'Hello'
+        }],
+      })
+    }
     return true
   } catch {
     // 捕获错误但不处理
@@ -415,10 +510,16 @@ export async function getModels() {
     const baseURL = await store.get<string>('baseURL')
     const aiType = await store.get<string>('aiType')
     if (!baseURL || !aiType) return []
-    const openai = await createOpenAIClient()
-    const models = await openai.models.list()
-    const uniqueModels = models.data.filter((model, index) => models.data.findIndex(m => m.id === model.id) === index)
-    return uniqueModels
+    
+    if (aiType === 'gemini') {
+      return []
+    } else {
+      // OpenAI/Ollama模型列表
+      const openai = await createOpenAIClient()
+      const models = await openai.models.list()
+      const uniqueModels = models.data.filter((model, index) => models.data.findIndex(m => m.id === model.id) === index)
+      return uniqueModels
+    }
   } catch {
     return []
   }
