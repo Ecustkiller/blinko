@@ -182,7 +182,7 @@ export function SettingPrompt({id, icon}: {id: string, icon?: React.ReactNode}) 
                         </Button>
                       </div>
                     </div>
-                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap line-clamp-3">
                       {prompt.content || t('prompt.noContent')}
                     </p>
                   </div>
