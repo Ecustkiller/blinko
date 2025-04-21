@@ -11,10 +11,12 @@ import { open } from '@tauri-apps/plugin-dialog'
 import { BaseDirectory, exists, mkdir } from "@tauri-apps/plugin-fs"
 // import { toast } from "@/components/ui/use-toast"
 import { useTranslations } from 'next-intl'
+import useArticleStore from "@/stores/article"
 
 export function SettingFile() {
   const { workspacePath, setWorkspacePath } = useSettingStore()
   const [defaultPath, setDefaultPath] = useState('')
+  const {clearCollapsibleList, loadFileTree} = useArticleStore()
   const t = useTranslations('settings.file')
 
   // 初始化默认工作区路径
@@ -39,6 +41,8 @@ export function SettingFile() {
       if (selected) {
         const path = selected as string
         await setWorkspacePath(path)
+        await clearCollapsibleList()
+        await loadFileTree()
       }
     } catch (error) {
       console.error('选择工作区失败:', error)
@@ -53,8 +57,9 @@ export function SettingFile() {
       if (!exists1) {
         await mkdir('article', { baseDir: BaseDirectory.AppData })
       }
-      
       await setWorkspacePath('')
+      await clearCollapsibleList()
+      await loadFileTree()
     } catch (error) {
       console.error('重置工作区失败:', error)
     }

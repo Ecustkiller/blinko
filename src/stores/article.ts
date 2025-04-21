@@ -61,6 +61,7 @@ interface NoteState {
   expandAllFolders: () => Promise<void>
   collapseAllFolders: () => Promise<void>
   toggleAllFolders: () => Promise<void>
+  clearCollapsibleList: () => Promise<void>
 
   currentArticle: string
   readArticle: (path: string, sha?: string, isLocale?: boolean) => Promise<void>
@@ -255,6 +256,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
     }
     
     // 递归处理工作区下的所有文件和文件夹
+    console.log(workspace.path);
     await processEntriesRecursively(workspace.path, dirs as DirTree[]);
     
     async function processEntriesRecursively(parent: string, entries: DirTree[]) {
@@ -613,6 +615,11 @@ const useArticleStore = create<NoteState>((set, get) => ({
     } else {
       await get().expandAllFolders()
     }
+  },
+  clearCollapsibleList: async () => {
+    set({ collapsibleList: [] })
+    const store = await Store.load('store.json')
+    await store.set('collapsibleList', [])
   },
 
   currentArticle: '',

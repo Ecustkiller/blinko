@@ -1,6 +1,6 @@
 import { BaseDirectory } from '@tauri-apps/plugin-fs'
-import useSettingStore from '@/stores/setting'
 import { join } from '@tauri-apps/api/path'
+import { Store } from '@tauri-apps/plugin-store'
 
 /**
  * 获取当前工作区路径
@@ -8,7 +8,9 @@ import { join } from '@tauri-apps/api/path'
  * 否则返回默认的 AppData/article 路径
  */
 export async function getWorkspacePath(): Promise<{ path: string, isCustom: boolean }> {
-  const { workspacePath } = useSettingStore.getState()
+  // 查询本地存储
+  const store = await Store.load('store.json')
+  const workspacePath = await store.get<string>('workspacePath')
   
   // 如果设置了自定义工作区路径，则使用自定义路径
   if (workspacePath) {
@@ -41,6 +43,45 @@ export async function getFilePathOptions(relativePath: string): Promise<{ path: 
     // 对于默认工作区，使用AppData作为baseDir
     return { 
       path: `article/${relativePath}`, 
+      baseDir: BaseDirectory.AppData 
+    }
+  }
+}
+
+/**
+ * 获取通用文件路径选项
+ * 不限于article目录，可处理任意AppData下的路径
+ * @param path 原始路径，可能包含或不包含目录前缀
+ * @param prefix 可选的目录前缀，如'article'、'image'等
+ * @returns 包含文件路径和baseDir的选项
+ */
+export async function getGenericPathOptions(path: string, prefix?: string): Promise<{ path: string, baseDir?: BaseDirectory }> {
+  const workspace = await getWorkspacePath()
+  
+  if (workspace.isCustom) {
+    // 对于自定义工作区，返回基于自定义工作区的绝对路径
+    let fullPath = workspace.path
+    
+    // 如果指定了prefix，且path不以prefix开头，则添加prefix
+    if (prefix && !path.startsWith(`${prefix}/`) && !path.startsWith(prefix)) {
+      fullPath = await join(fullPath, prefix || '', path)
+    } else {
+      fullPath = await join(fullPath, path)
+    }
+    
+    return { path: fullPath }
+  } else {
+    // 对于默认工作区，使用AppData作为baseDir
+    // 如果指定了prefix且path不以prefix开头，则添加prefix/
+    if (prefix && !path.startsWith(`${prefix}/`) && !path.startsWith(prefix)) {
+      return {
+        path: `${prefix}/${path}`,
+        baseDir: BaseDirectory.AppData
+      }
+    }
+    
+    return { 
+      path: path, 
       baseDir: BaseDirectory.AppData 
     }
   }

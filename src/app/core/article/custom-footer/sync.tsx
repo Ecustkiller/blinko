@@ -3,7 +3,7 @@ import { fetchAi } from "@/lib/ai";
 import { decodeBase64ToString, getFileCommits, getFiles, uint8ArrayToBase64, uploadFile } from "@/lib/github";
 import { RepoNames } from "@/lib/github.types";
 import useArticleStore from "@/stores/article";
-import { BaseDirectory, readFile } from "@tauri-apps/plugin-fs";
+import { readFile } from "@tauri-apps/plugin-fs";
 import { diffWordsWithSpace } from 'diff';
 import Vditor from "vditor";
 import { Store } from "@tauri-apps/plugin-store";
@@ -12,6 +12,7 @@ import useSettingStore from "@/stores/setting";
 import { useEffect, useState, useRef } from "react";
 import { Loader2, Upload } from "lucide-react";
 import emitter from "@/lib/emitter";
+import { getFilePathOptions } from "@/lib/workspace";
 
 export default function Sync({editor}: {editor?: Vditor}) {
   const { currentArticle } = useArticleStore()
@@ -56,7 +57,9 @@ export default function Sync({editor}: {editor?: Vditor}) {
       }
       const filename = activeFilePath?.split('/').pop()
       const _path = activeFilePath?.split('/').slice(0, -1).join('/')
-      const file = await readFile(`article/${activeFilePath}`, { baseDir: BaseDirectory.AppData  })
+      // 获取文件路径选项，根据是否有自定义工作区决定使用哪种路径方式
+      const filePathOptions = await getFilePathOptions(activeFilePath)
+      const file = await readFile(filePathOptions.path, filePathOptions.baseDir ? { baseDir: filePathOptions.baseDir } : undefined)
       const uploadRes = await uploadFile({
         ext: 'md',
         file: uint8ArrayToBase64(file),
@@ -97,7 +100,9 @@ export default function Sync({editor}: {editor?: Vditor}) {
       }
       const filename = activeFilePath?.split('/').pop()
       const _path = activeFilePath?.split('/').slice(0, -1).join('/')
-      const file = await readFile(`article/${activeFilePath}`, { baseDir: BaseDirectory.AppData  })
+      // 获取文件路径选项，根据是否有自定义工作区决定使用哪种路径方式
+      const filePathOptions = await getFilePathOptions(activeFilePath)
+      const file = await readFile(filePathOptions.path, filePathOptions.baseDir ? { baseDir: filePathOptions.baseDir } : undefined)
       const uploadRes = await uploadFile({
         ext: 'md',
         file: uint8ArrayToBase64(file),

@@ -129,7 +129,7 @@
       "modelInstruction": "以逗号分隔，例如：eng,chi_sim"
     },
     "file": {
-      "title": "文件设置",
+      "title": "文件管理",
       "desc": "在这里，你可以管理工作区设置和其他文件相关选项。",
       "workspace": {
         "title": "工作区设置",
