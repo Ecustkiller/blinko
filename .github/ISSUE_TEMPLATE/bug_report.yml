@@ -23,6 +23,28 @@ body:
     validations:
       required: true
 
+  - type: input
+    id: version
+    attributes:
+      label: NoteGen 版本
+      placeholder: 请填写你当前使用的 NoteGen 版本。
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: 操作系统
+      multiple: true
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Android
+        - iOS
+    validations:
+      required: true
+
   - type: textarea
     id: log
     attributes:
