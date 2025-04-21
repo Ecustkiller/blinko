@@ -127,6 +127,33 @@
       "languagePacks": "语言包",
       "checkModels": "在此查询全部模型",
       "modelInstruction": "以逗号分隔，例如：eng,chi_sim"
+    },
+    "file": {
+      "title": "文件设置",
+      "desc": "在这里，你可以管理工作区设置和其他文件相关选项。",
+      "workspace": {
+        "title": "工作区设置",
+        "desc": "设置应用程序的工作区目录，文件将保存在该目录中",
+        "current": "当前工作区路径",
+        "default": "使用默认工作区路径",
+        "custom": "自定义工作区路径",
+        "select": "选择工作区目录",
+        "reset": "重置为默认路径"
+      },
+      "info": {
+        "title": "工作区说明", 
+        "desc": "更改工作区后需要重启应用程序才能完全生效。新工作区中的文件将在重启后显示。"
+      },
+      "toast": {
+        "updated": "工作区已更新",
+        "updatedDesc": "工作区已设置为: {path}",
+        "reset": "工作区已重置",
+        "resetDesc": "已恢复使用默认工作区",
+        "error": "选择工作区失败",
+        "errorDesc": "无法选择工作区目录，请重试",
+        "resetError": "重置工作区失败",
+        "resetErrorDesc": "无法重置为默认工作区，请重试"
+      }
     }
   },
   "record": {

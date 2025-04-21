@@ -1,4 +1,4 @@
-import { BotMessageSquare, LayoutTemplate, Command, FileUp, Palette, ScanText, Store, UserRoundCog, Drama } from "lucide-react"
+import { BotMessageSquare, LayoutTemplate, Command, FileUp, Palette, ScanText, Store, UserRoundCog, Drama, FolderOpen } from "lucide-react"
 
 const baseConfig = [
   {
@@ -16,6 +16,10 @@ const baseConfig = [
   {
     icon: <FileUp />,
     anchor: 'sync',
+  },
+  {
+    icon: <FolderOpen />,
+    anchor: 'file',
   },
   {
     icon: <ScanText />,

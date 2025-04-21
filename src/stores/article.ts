@@ -6,6 +6,7 @@ import { BaseDirectory, DirEntry, exists, mkdir, readDir, readTextFile, writeTex
 import { Store } from '@tauri-apps/plugin-store'
 import { cloneDeep, uniq } from 'lodash-es'
 import { create } from 'zustand'
+import { getFilePathOptions, getWorkspacePath, toWorkspaceRelativePath } from '@/lib/workspace'
 
 export type SortType = 'name' | 'created' | 'modified' | 'none'
 export type SortDirection = 'asc' | 'desc'
@@ -174,19 +175,30 @@ const useArticleStore = create<NoteState>((set, get) => ({
   },
   fileTreeLoading: false,
   updateFileStats: async (basePath: string, tree: DirTree[]) => {
+    const workspace = await getWorkspacePath()
+    
     for (const entry of tree) {
-      try {
-        const fullPath = `${basePath}/${entry.name}`
-        const fileStat = await stat(fullPath, { baseDir: BaseDirectory.AppData })
-        entry.createdAt = fileStat.birthtime ? fileStat.birthtime.toISOString() : undefined
-        entry.modifiedAt = fileStat.mtime ? fileStat.mtime.toISOString() : undefined
-        
-        // 递归处理子目录
-        if (entry.children && entry.children.length > 0) {
-          await get().updateFileStats(fullPath, entry.children)
+      if (entry.isFile) {
+        const filePath = await join(basePath, entry.name)
+        try {
+          let fileStat
+          if (workspace.isCustom) {
+            // 自定义工作区，使用绝对路径
+            fileStat = await stat(filePath)
+          } else {
+            // 默认工作区，使用AppData路径
+            const relPath = await toWorkspaceRelativePath(filePath)
+            const pathOptions = await getFilePathOptions(relPath)
+            fileStat = await stat(pathOptions.path, { baseDir: pathOptions.baseDir })
+          }
+          entry.createdAt = fileStat.birthtime?.toISOString()
+          entry.modifiedAt = fileStat.mtime?.toISOString()
+        } catch (error) {
+          console.error(`Error getting stats for ${filePath}:`, error)
         }
-      } catch (error) {
-        console.error(`Error getting stats for ${entry.name}:`, error)
+      } else if (entry.isDirectory && entry.children) {
+        const dirPath = await join(basePath, entry.name)
+        await get().updateFileStats(dirPath, entry.children)
       }
     }
     return tree
@@ -195,43 +207,95 @@ const useArticleStore = create<NoteState>((set, get) => ({
   loadFileTree: async () => {
     set({ fileTreeLoading: true })
     set({ fileTree: [] })
-    const isArticleDir = await exists('article', { baseDir: BaseDirectory.AppData })
-    if (!isArticleDir) {
-      await mkdir('article', { baseDir: BaseDirectory.AppData })
+    
+    // 获取当前工作区路径
+    const workspace = await getWorkspacePath()
+    
+    // 确保工作区目录存在
+    if (workspace.isCustom) {
+      // 自定义工作区
+      const isWorkspaceExists = await exists(workspace.path)
+      if (!isWorkspaceExists) {
+        await mkdir(workspace.path)
+      }
+    } else {
+      // 默认工作区
+      const isArticleDir = await exists('article', { baseDir: BaseDirectory.AppData })
+      if (!isArticleDir) {
+        await mkdir('article', { baseDir: BaseDirectory.AppData })
+      }
     }
-    // 获取 article 路径下所有的文件
-    const dirs = (await readDir('article', { baseDir: BaseDirectory.AppData }))
-      .filter(file => file.name !== '.DS_Store').map(file => ({
-        ...file,
-        isEditing: false,
-        isLocale: true,
-        parent: undefined,
-        sha: '',
-        createdAt: undefined,
-        modifiedAt: undefined
-      }))
-    await processEntriesRecursively('article', dirs as DirTree[]);
+
+    // 读取工作区文件
+    let dirs: DirTree[] = []
+    if (workspace.isCustom) {
+      // 自定义工作区
+      dirs = (await readDir(workspace.path))
+        .filter(file => file.name !== '.DS_Store').map(file => ({
+          ...file,
+          isEditing: false,
+          isLocale: true,
+          parent: undefined,
+          sha: '',
+          createdAt: undefined,
+          modifiedAt: undefined
+        }))
+    } else {
+      // 默认工作区
+      dirs = (await readDir('article', { baseDir: BaseDirectory.AppData }))
+        .filter(file => file.name !== '.DS_Store').map(file => ({
+          ...file,
+          isEditing: false,
+          isLocale: true,
+          parent: undefined,
+          sha: '',
+          createdAt: undefined,
+          modifiedAt: undefined
+        }))
+    }
+    
+    // 递归处理工作区下的所有文件和文件夹
+    await processEntriesRecursively(workspace.path, dirs as DirTree[]);
+    
     async function processEntriesRecursively(parent: string, entries: DirTree[]) {
       for (const entry of entries) {
         if (entry.isDirectory) {
           const dir = await join(parent, entry.name);
-          const children = (await readDir(dir, { baseDir: BaseDirectory.AppData }))
-            .filter(file => file.name !== '.DS_Store')
-            .map(file => ({
-              ...file,
-              parent: entry,
-              isEditing: false,
-              isLocale: true,
-              sha: ''
-            })) as DirTree[]
+          let children: DirTree[] = []
+          
+          if (workspace.isCustom) {
+            children = (await readDir(dir))
+              .filter(file => file.name !== '.DS_Store')
+              .map(file => ({
+                ...file,
+                parent: entry,
+                isEditing: false,
+                isLocale: true,
+                sha: ''
+              })) as DirTree[]
+          } else {
+            const dirRelative = await toWorkspaceRelativePath(dir)
+            const pathOptions = await getFilePathOptions(dirRelative)
+            children = (await readDir(pathOptions.path, { baseDir: pathOptions.baseDir }))
+              .filter(file => file.name !== '.DS_Store')
+              .map(file => ({
+                ...file,
+                parent: entry,
+                isEditing: false,
+                isLocale: true,
+                sha: ''
+              })) as DirTree[]
+          }
+          
           entry.children = children
           await processEntriesRecursively(dir, children)
         }
       }
     }
-    // 更新文件统计信息
-    await get().updateFileStats('article', dirs)
     
+    // 更新文件统计信息
+    await get().updateFileStats(workspace.path, dirs)
+        
     // 排序文件树
     const sortedDirs = get().sortFileTree(dirs)
     set({ fileTree: sortedDirs })
@@ -327,59 +391,55 @@ const useArticleStore = create<NoteState>((set, get) => ({
     }
   },
   newFolder: async () => {
-    const path = get().activeFilePath;
     const cacheTree = cloneDeep(get().fileTree)
+    const exists = cacheTree.find(item => item.name === '' && item.isDirectory)
+    if (exists) {
+      return
+    }
+    const node = {
+      name: '',
+      isFile: false,
+      isDirectory: true,
+      isSymlink: false,
+      isEditing: true,
+      isLocale: true,
+      children: []
+    }
 
-    if (path.includes('/')) {
-      const parentFolderPath = path.includes('/') ? path.split('/').slice(0, -1).join('/') : ''
-      const currentFolder = getCurrentFolder(parentFolderPath, cacheTree)
-      if (currentFolder?.children?.find(item => item.name === '')) {
-        return
-      }
-      if (currentFolder) {
-        const newDir: DirTree = {
-          name: '',
-          isFile: false,
-          isSymlink: false,
-          parent: currentFolder,
-          isEditing: true,
-          isDirectory: true,
-          isLocale: true,
-        }
-        currentFolder.children?.unshift(newDir)
-        set({ fileTree: cacheTree })
-      }
-    } else {
-      // 不存在 parent，直接在根目录下创建
-      const newDir: DirTree = {
-        name: '',
-        isFile: false,
-        isSymlink: false,
-        parent: undefined,
-        isEditing: true,
-        isDirectory: true,
-        isLocale: true,
-      }
-      const fileTree = get().fileTree
-      fileTree.unshift(newDir)
-      set({ fileTree })
+    try {
+      cacheTree.unshift(node as DirTree)
+      set({ fileTree: cacheTree })
+    } catch (error) {
+      console.error('newFolder error', error)
     }
   },
   newFile: async () => {
+    // 检查现有树中是否已有空文件名的文件（正在编辑中）
+    const cacheTree = cloneDeep(get().fileTree)
+    const exists = cacheTree.find(item => item.name === '' && item.isFile)
+    if (exists) {
+      return
+    }
+  
     // 判断 activeFilePath 是否存在 parent
     const path = get().activeFilePath;
-    const fileTree = get().fileTree;
     if (path.includes('/')) {
-      const folderPath = path.includes('/') ? path.split('/').slice(0, -1).join('/') : ''
-      const currentFolder = getCurrentFolder(folderPath, fileTree)
-      if (currentFolder?.children?.find(item => item.name === '')) {
+      // 在当前活动文件的父文件夹下创建新文件
+      const folderPath = path.split('/').slice(0, -1).join('/')
+      const currentFolder = getCurrentFolder(folderPath, cacheTree)
+      
+      // 如果文件夹中已经有一个空名称的文件，不再创建新的
+      if (currentFolder?.children?.find(item => item.name === '' && item.isFile)) {
         return
       }
+      
+      // 确保文件夹是展开状态
       const collapsibleList = get().collapsibleList
       if (!collapsibleList.includes(folderPath)) {
         collapsibleList.push(folderPath)
         set({ collapsibleList })
       }
+      
       if (currentFolder) {
         const newFile: DirTree = {
           name: '',
@@ -389,9 +449,11 @@ const useArticleStore = create<NoteState>((set, get) => ({
           isEditing: true,
           isDirectory: false,
           isLocale: true,
+          sha: '',
+          children: []
         }
         currentFolder.children?.unshift(newFile)
-        set({ fileTree })
+        set({ fileTree: cacheTree })
       }
     } else {
       // 不存在 parent，直接在根目录下创建
@@ -403,53 +465,84 @@ const useArticleStore = create<NoteState>((set, get) => ({
         isEditing: true,
         isDirectory: false,
         isLocale: true,
+        sha: '',
+        children: []
       }
-      const fileTree = get().fileTree
-      fileTree.unshift(newFile)
-      set({ fileTree })
+      cacheTree.unshift(newFile)
+      set({ fileTree: cacheTree })
     }
   },
 
   newFileOnFolder: async (path: string) => {
-    const cacheTree: DirTree[] = get().fileTree
-    const currentFolder = getCurrentFolder(path, cacheTree)
-    if (currentFolder?.children?.find(item => item.name === '')) {
-      return
+    // 获取 parent folder
+    const cacheTree = cloneDeep(get().fileTree)
+    const currentFolder = path.includes('/') ? getCurrentFolder(path, cacheTree) : cacheTree.find(item => item.name === path)
+    
+    // 获取工作区路径信息
+    const workspace = await getWorkspacePath()
+    
+    // 创建新文件
+    const file = `新建文件-${new Date().getTime()}.md`
+    const fullPath = `${path}/${file}`
+    const pathOptions = await getFilePathOptions(fullPath)
+    
+    // 写入空文件
+    if (workspace.isCustom) {
+      await writeTextFile(pathOptions.path, '')
+    } else {
+      await writeTextFile(pathOptions.path, '', { baseDir: pathOptions.baseDir })
     }
-    if (currentFolder) {
-      const newFile: DirTree = {
-        name: '',
-        isFile: true,
-        isSymlink: false,
-        parent: currentFolder,
-        isEditing: true,
-        isDirectory: false,
-        isLocale: true,
-      }
-      currentFolder.children?.unshift(newFile)
+
+    // 更新树
+    const node = {
+      name: file,
+      isFile: true,
+      isDirectory: false,
+      isSymlink: false,
+      isEditing: false,
+      isLocale: true,
+      parent: currentFolder,
+      sha: '',
+      children: []
+    }
+
+    try {
+      currentFolder?.children?.unshift(node as DirTree)
       set({ fileTree: cacheTree })
-      set({ collapsibleList: [...get().collapsibleList, path]})
+      get().setActiveFilePath(fullPath)
+    } catch (error) {
+      console.error('newFileOnFolder error', error)
     }
   },
   newFolderInFolder: async (path: string) => {
-    const cacheTree: DirTree[] = get().fileTree
-    const currentFolder = getCurrentFolder(path, cacheTree)
-    if (currentFolder?.children?.find(item => item.name === '')) {
+    // 获取 parent folder
+    const cacheTree = cloneDeep(get().fileTree)
+    const currentFolder = path.includes('/') ? getCurrentFolder(path, cacheTree) : cacheTree.find(item => item.name === path)
+    
+    // 如果文件夹中已存在未命名文件夹，不创建新的
+    const hasEmptyFolder = currentFolder?.children?.find(item => item.name === '' && item.isDirectory)
+    if (hasEmptyFolder) {
       return
     }
-    if (currentFolder) {
-      const newDir: DirTree = {
-        name: '',
-        isFile: false,
-        isSymlink: false,
-        parent: currentFolder,
-        isEditing: true,
-        isDirectory: true,
-        isLocale: true,
-      }
-      currentFolder.children?.unshift(newDir)
+
+    // 更新树
+    const node = {
+      name: '',
+      isFile: false,
+      isDirectory: true,
+      isSymlink: false,
+      isEditing: true,
+      isLocale: true,
+      parent: currentFolder,
+      sha: '',
+      children: []
+    }
+
+    try {
+      currentFolder?.children?.unshift(node as DirTree)
       set({ fileTree: cacheTree })
-      set({ collapsibleList: [...get().collapsibleList, path]})
+    } catch (error) {
+      console.error('newFolderInFolder error', error)
     }
   },
 
@@ -462,14 +555,18 @@ const useArticleStore = create<NoteState>((set, get) => ({
       set({ activeFilePath })
       get().readArticle(activeFilePath)
     }
-    set({ collapsibleList: res || [] })
+    set({ collapsibleList: res ? uniq(res.filter(item => !item.includes('.md'))) : [] })
   },
+  
   setCollapsibleList: async (path: string, value: boolean) => {
-    const collapsibleList = get().collapsibleList
+    const collapsibleList = cloneDeep(get().collapsibleList)
     if (value) {
       collapsibleList.push(path)
     } else {
-      collapsibleList.splice(collapsibleList.indexOf(path), 1)
+      const index = collapsibleList.indexOf(path)
+      if (index !== -1) {
+        collapsibleList.splice(index, 1)
+      }
     }
     const store = await Store.load('store.json');
     await store.set('collapsibleList', collapsibleList)
@@ -525,7 +622,15 @@ const useArticleStore = create<NoteState>((set, get) => ({
     if (isLocale) {
       let res = ''
       try {
-        res = await readTextFile(`article/${path}`, { baseDir: BaseDirectory.AppData })
+        // 获取文件路径选项（根据是否是自定义工作区）
+        const pathOptions = await getFilePathOptions(path)
+        if (pathOptions.baseDir) {
+          // 默认工作区
+          res = await readTextFile(pathOptions.path, { baseDir: pathOptions.baseDir })
+        } else {
+          // 自定义工作区
+          res = await readTextFile(pathOptions.path)
+        }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         try{
@@ -548,19 +653,50 @@ const useArticleStore = create<NoteState>((set, get) => ({
   saveCurrentArticle: async (content: string) => {
     if (content) {
       const path = get().activeFilePath
-      const isLocale = await exists(`article/${path}`, { baseDir: BaseDirectory.AppData })
+      const workspace = await getWorkspacePath()
+      
+      // 检查文件是否存在（根据是否是自定义工作区）
+      let isLocale = false
+      const pathOptions = await getFilePathOptions(path)
+      if (workspace.isCustom) {
+        isLocale = await exists(pathOptions.path)
+      } else {
+        isLocale = await exists(pathOptions.path, { baseDir: pathOptions.baseDir })
+      }
+      
+      // 确保目录结构存在
       if (path.includes('/')) {
         let dir = ''
         const dirPath = path.split('/')
         for (let index = 0; index < dirPath.length - 1; index += 1) {
           dir += `${dirPath[index]}/`
-          if (!await exists(`article/${dir}`, { baseDir: BaseDirectory.AppData })) {
-            await mkdir(`article/${dir}`, { baseDir: BaseDirectory.AppData })
+          const dirOptions = await getFilePathOptions(dir)
+          
+          let dirExists = false
+          if (workspace.isCustom) {
+            dirExists = await exists(dirOptions.path)
+          } else {
+            dirExists = await exists(dirOptions.path, { baseDir: dirOptions.baseDir })
+          }
+          
+          if (!dirExists) {
+            if (workspace.isCustom) {
+              await mkdir(dirOptions.path)
+            } else {
+              await mkdir(dirOptions.path, { baseDir: dirOptions.baseDir })
+            }
           }
         }
       }
-      await writeTextFile(`article/${path}`, content, { baseDir: BaseDirectory.AppData })
       
+      // 保存文件内容
+      if (workspace.isCustom) {
+        await writeTextFile(pathOptions.path, content)
+      } else {
+        await writeTextFile(pathOptions.path, content, { baseDir: pathOptions.baseDir })
+      }
+      
+      // 更新缓存树
       if (!isLocale) {
         const cacheTree = cloneDeep(get().fileTree)
         const current = path.includes('/') ? getCurrentFolder(path, cacheTree) : cacheTree.find(item => item.name === path)
@@ -574,13 +710,34 @@ const useArticleStore = create<NoteState>((set, get) => ({
 
   allArticle: [],
   loadAllArticle: async () => {
-    const res = await readDir('article', { baseDir: BaseDirectory.AppData })
-    const allArticle = res.filter(file => file.isFile && file.name !== '.DS_Store').map(file => ({ article: '', path: file.name }))
-    for (let index = 0; index < allArticle.length; index += 1) {
-      const file = allArticle[index];
-      const article = await readTextFile(`article/${file.path}`, { baseDir: BaseDirectory.AppData })
-      allArticle[index].article = article
+    const workspace = await getWorkspacePath()
+    let allArticle: Article[] = []
+    
+    if (workspace.isCustom) {
+      // 自定义工作区
+      const res = await readDir(workspace.path)
+      allArticle = res.filter(file => file.isFile && file.name !== '.DS_Store')
+        .map(file => ({ article: '', path: file.name }))
+      
+      for (let index = 0; index < allArticle.length; index += 1) {
+        const file = allArticle[index];
+        const fullPath = await join(workspace.path, file.path)
+        const article = await readTextFile(fullPath)
+        allArticle[index].article = article
+      }
+    } else {
+      // 默认工作区
+      const res = await readDir('article', { baseDir: BaseDirectory.AppData })
+      allArticle = res.filter(file => file.isFile && file.name !== '.DS_Store')
+        .map(file => ({ article: '', path: file.name }))
+      
+      for (let index = 0; index < allArticle.length; index += 1) {
+        const file = allArticle[index];
+        const article = await readTextFile(`article/${file.path}`, { baseDir: BaseDirectory.AppData })
+        allArticle[index].article = article
+      }
     }
+    
     set({ allArticle })
   }
 }))

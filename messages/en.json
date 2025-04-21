@@ -134,6 +134,33 @@
       "languagePacks": "Language Packs",
       "checkModels": "Check all models here",
       "modelInstruction": "Separate with commas, e.g.: eng,chi_sim"
+    },
+    "file": {
+      "title": "File Settings",
+      "desc": "Here, you can manage workspace settings and other file-related options.",
+      "workspace": {
+        "title": "Workspace Settings",
+        "desc": "Set the application's workspace directory where files will be saved",
+        "current": "Current Workspace Path",
+        "default": "Using default workspace path",
+        "custom": "Using custom workspace path",
+        "select": "Select Workspace Directory",
+        "reset": "Reset to Default Path"
+      },
+      "info": {
+        "title": "Workspace Information", 
+        "desc": "After changing the workspace, you need to restart the application for the changes to take full effect. Files in the new workspace will be displayed after restart."
+      },
+      "toast": {
+        "updated": "Workspace Updated",
+        "updatedDesc": "Workspace set to: {path}",
+        "reset": "Workspace Reset",
+        "resetDesc": "Restored to default workspace",
+        "error": "Workspace Selection Failed",
+        "errorDesc": "Unable to select workspace directory, please try again",
+        "resetError": "Workspace Reset Failed",
+        "resetErrorDesc": "Unable to reset to default workspace, please try again"
+      }
     }
   },
   "record": {

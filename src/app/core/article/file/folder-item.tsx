@@ -73,8 +73,14 @@ export function FolderItem({ item }: { item: DirTree }) {
   // 创建或修改文件夹名称
   async function handleRename() {
     setName(name.replace(/ /g, '_')) // github 存储空格会报错，替换为下划线
+  
+    // 获取工作区路径信息
+    const { getFilePathOptions, getWorkspacePath } = await import('@/lib/workspace')
+    const workspace = await getWorkspacePath()
+  
     // 修改文件夹名称
     if (name && name !== item.name && item.name !== '') {
+      // 更新缓存树中的名称
       if (parentFolder && parentFolder.children) {
         const folderIndex = parentFolder?.children?.findIndex(folder => folder.name === item.name)
         if (folderIndex !== undefined && folderIndex !== -1) {
@@ -86,16 +92,46 @@ export function FolderItem({ item }: { item: DirTree }) {
         cacheTree[folderIndex].name = name
         cacheTree[folderIndex].isEditing = false
       }
-      await rename(`article/${path}`, `article/${path.split('/').slice(0, -1).join('/')}/${name}`, { newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData })
+      
+      // 获取源路径和目标路径
+      const oldPathOptions = await getFilePathOptions(path)
+      const newPathOptions = await getFilePathOptions(`${path.split('/').slice(0, -1).join('/')}/${name}`)
+      
+      // 根据工作区类型执行重命名操作
+      if (workspace.isCustom) {
+        await rename(oldPathOptions.path, newPathOptions.path)
+      } else {
+        await rename(oldPathOptions.path, newPathOptions.path, { 
+          newPathBaseDir: BaseDirectory.AppData, 
+          oldPathBaseDir: BaseDirectory.AppData 
+        })
+      }
     } else {
       // 新建文件夹
       if (name !== '') {
-        const isExists = await exists(`article/${path}/${name}`, { baseDir: BaseDirectory.AppData })
+        // 检查文件夹是否已存在
+        const newFolderPath = `${path}/${name}`
+        const pathOptions = await getFilePathOptions(newFolderPath)
+        
+        let isExists = false
+        if (workspace.isCustom) {
+          isExists = await exists(pathOptions.path)
+        } else {
+          isExists = await exists(pathOptions.path, { baseDir: pathOptions.baseDir })
+        }
+        
         if (isExists) {
           toast({ title: '文件夹名已存在' })
           setTimeout(() => inputRef.current?.focus(), 300);
         } else {
-          await mkdir(`article/${path}/${name}`, { baseDir: BaseDirectory.AppData })
+          // 创建新文件夹
+          if (workspace.isCustom) {
+            await mkdir(pathOptions.path)
+          } else {
+            await mkdir(pathOptions.path, { baseDir: pathOptions.baseDir })
+          }
+          
+          // 更新缓存树
           if (parentFolder && parentFolder.children) {
             const index = parentFolder.children?.findIndex(item => item.name === '')
             parentFolder.children[index].name = name
@@ -107,6 +143,7 @@ export function FolderItem({ item }: { item: DirTree }) {
           }
         }
       } else {
+        // 处理空名称情况（取消新建）
         if (currentFolder?.parent) {
           const index = currentFolder?.parent?.children?.findIndex(item => item.name === '')
           if (index !== undefined && index !== -1 && currentFolder?.parent?.children) {

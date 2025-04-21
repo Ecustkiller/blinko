@@ -75,6 +75,9 @@ interface SettingState {
   
   lastSettingPage: string
   setLastSettingPage: (page: string) => Promise<void>
+
+  workspacePath: string
+  setWorkspacePath: (path: string) => Promise<void>
 }
 
 
@@ -204,6 +207,13 @@ const useSettingStore = create<SettingState>((set, get) => ({
     set({ lastSettingPage: page })
     const store = await Store.load('store.json');
     await store.set('lastSettingPage', page)
+  },
+
+  workspacePath: '',
+  setWorkspacePath: async (path: string) => {
+    set({ workspacePath: path })
+    const store = await Store.load('store.json');
+    await store.set('workspacePath', path)
   },
 }))
 
