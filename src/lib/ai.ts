@@ -420,31 +420,47 @@ export async function fetchAiDesc(text: string) {
     const store = await Store.load('store.json')
     const baseURL = await store.get<string>('baseURL')
     const model = await store.get<string>('model') || 'gpt-3.5-turbo'
-    // aiType不再需要，因为所有类型都统一使用openai库
+    const aiType = await store.get<string>('aiType') || 'openai'
     const temperature = await store.get<number>('temperature') || 0.7
     const topP = await store.get<number>('topP') || 1
     
     if (!baseURL) return null;
     
     const descContent = `
-      根据内容：${text}，返回一段关于截图的描述，不要超过50字，不要包含特殊字符。
+      根据截图的内容：${text}，返回一条描述，不要超过50字，不要包含特殊字符。
     `
     
-    // 创建 OpenAI 客户端
-    const openai = await createOpenAIClient()
-    
-    // 所有AI类型都使用OpenAI库
-    const completion = await openai.chat.completions.create({
-      model: model,
-      messages: [{
-        role: 'user' as const,
-        content: descContent
-      }],
-      temperature: temperature,
-      top_p: topP,
-    })
-    
-    return completion.choices[0].message.content || ''
+    if (aiType === 'gemini') {
+      // 创建 Gemini 客户端
+      const genAI = await createGeminiClient()
+      
+      // 使用 Gemini API
+      const result = await genAI.models.generateContent({
+        model: model,
+        contents: {
+          parts: [{ text: descContent }]
+        }
+      })
+      
+      // 获取响应文本
+      return result.candidates?.[0]?.content?.parts?.[0]?.text || ''      
+    } else {
+      // 创建 OpenAI 客户端
+      const openai = await createOpenAIClient()
+      
+      // OpenAI/Ollama使用OpenAI库
+      const completion = await openai.chat.completions.create({
+        model: model,
+        messages: [{
+          role: 'user' as const,
+          content: descContent
+        }],
+        temperature: temperature,
+        top_p: topP,
+      })
+      
+      return completion.choices[0].message.content || ''
+    }
   } catch (error) {
     toast({
       title: 'AI 错误',
