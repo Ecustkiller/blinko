@@ -23,7 +23,7 @@ import CustomFooter from './custom-footer'
 
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
-  const { currentArticle, saveCurrentArticle, loading } = useArticleStore()
+  const { currentArticle, saveCurrentArticle, loading, activeFilePath } = useArticleStore()
   const { theme, setTheme } = useTheme()
   const t = useTranslations('article.editor')
   const { currentLocale } = useI18n()
@@ -67,6 +67,9 @@ export function MdEditor() {
       },
       after: () => {
         setEditor(vditor);
+        if (activeFilePath === '') {
+          vditor.setValue('', true)
+        }
       },
       input: (value) => {
         saveCurrentArticle(value)

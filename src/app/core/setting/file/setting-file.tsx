@@ -2,27 +2,24 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { FormItem, SettingPanel, SettingType } from "../components/setting-base"
+import { FormItem, SettingType } from "../components/setting-base"
 import { FolderOpen } from "lucide-react"
 import { useEffect, useState } from "react"
 import useSettingStore from "@/stores/setting"
 import { open } from '@tauri-apps/plugin-dialog'
-// import { appConfigDir } from '@tauri-apps/plugin-path'
 import { BaseDirectory, exists, mkdir } from "@tauri-apps/plugin-fs"
-// import { toast } from "@/components/ui/use-toast"
 import { useTranslations } from 'next-intl'
 import useArticleStore from "@/stores/article"
 
 export function SettingFile() {
   const { workspacePath, setWorkspacePath } = useSettingStore()
   const [defaultPath, setDefaultPath] = useState('')
-  const {clearCollapsibleList, loadFileTree} = useArticleStore()
+  const {clearCollapsibleList, loadFileTree, setActiveFilePath, setCurrentArticle} = useArticleStore()
   const t = useTranslations('settings.file')
 
   // 初始化默认工作区路径
   useEffect(() => {
     async function getDefaultPath() {
-      // const appConfig = await appConfigDir()
       const defaultWorkspace = `/article`
       setDefaultPath(defaultWorkspace)
     }
@@ -42,6 +39,8 @@ export function SettingFile() {
         const path = selected as string
         await setWorkspacePath(path)
         await clearCollapsibleList()
+        setActiveFilePath('')
+        setCurrentArticle('')
         await loadFileTree()
       }
     } catch (error) {
@@ -59,6 +58,8 @@ export function SettingFile() {
       }
       await setWorkspacePath('')
       await clearCollapsibleList()
+      setActiveFilePath('')
+      setCurrentArticle('')
       await loadFileTree()
     } catch (error) {
       console.error('重置工作区失败:', error)
@@ -88,7 +89,12 @@ export function SettingFile() {
             </div>
           </FormItem>
         </CardContent>
-        <CardFooter className="flex justify-between">
+        <CardFooter className="flex gap-4">
+          <Button 
+            onClick={handleSelectWorkspace}
+          >
+            {t('workspace.select')}
+          </Button>
           <Button 
             variant="outline" 
             onClick={handleResetWorkspace}
@@ -96,20 +102,8 @@ export function SettingFile() {
           >
             {t('workspace.reset')}
           </Button>
-          <Button 
-            onClick={handleSelectWorkspace}
-          >
-            {t('workspace.select')}
-          </Button>
         </CardFooter>
       </Card>
-      
-      <SettingPanel 
-        title={t('info.title')} 
-        desc={t('info.desc')}
-      >
-        <div></div>
-      </SettingPanel>
     </SettingType>
   )
 }
