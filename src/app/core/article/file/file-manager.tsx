@@ -57,12 +57,30 @@ export function FileManager() {
     const renamePath = e.dataTransfer?.getData('text')
     if (renamePath) {
       const filename = renamePath.slice(renamePath.lastIndexOf('/') + 1)
-      const oldPaht = `article/${renamePath}`;
-      const newPath = `article/${filename}`;
-      await rename(oldPaht, newPath ,{ newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData})
+      
+      // 获取工作区路径信息
+      const { getFilePathOptions, getWorkspacePath } = await import('@/lib/workspace')
+      const workspace = await getWorkspacePath()
+      
+      // 获取源路径和目标路径的选项
+      const oldPathOptions = await getFilePathOptions(renamePath)
+      const newPathOptions = await getFilePathOptions(filename) // 直接使用文件名，表示根目录
+      
+      // 根据工作区类型执行重命名操作
+      if (workspace.isCustom) {
+        // 自定义工作区
+        await rename(oldPathOptions.path, newPathOptions.path)
+      } else {
+        // 默认工作区
+        await rename(oldPathOptions.path, newPathOptions.path, { 
+          newPathBaseDir: BaseDirectory.AppData, 
+          oldPathBaseDir: BaseDirectory.AppData 
+        })
+      }
+      
       await loadFileTree()
       if (renamePath === activeFilePath) {
-        setActiveFilePath(newPath.replace('article/', ''))
+        setActiveFilePath(filename)
       }
     } else {
       const files = e.dataTransfer.files
