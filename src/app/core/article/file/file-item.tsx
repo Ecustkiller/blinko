@@ -98,7 +98,13 @@ export function FileItem({ item }: { item: DirTree }) {
 
   async function handleRename() {
     setName(name.replace(/ /g, '_')) // github 存储空格会报错，替换为下划线
+  
+    // 获取工作区路径信息
+    const { getFilePathOptions, getWorkspacePath } = await import('@/lib/workspace')
+    const workspace = await getWorkspacePath()
+  
     if (name && name !== item.name) {
+      // 更新缓存树中的名称
       if (currentFolder && currentFolder.children) {
         const fileIndex = currentFolder?.children?.findIndex(file => file.name === item.name)
         if (fileIndex !== undefined && fileIndex !== -1) {
@@ -110,22 +116,61 @@ export function FileItem({ item }: { item: DirTree }) {
         cacheTree[fileIndex].name = name
         cacheTree[fileIndex].isEditing = false
       }
-      const oldPath = `article/${path}` 
-      const newPath = `article/${path.split('/').slice(0, -1).join('/')}/${name}`
-      if (newPath.includes('.md')) {
-        await rename(oldPath, newPath, { newPathBaseDir: BaseDirectory.AppData, oldPathBaseDir: BaseDirectory.AppData })
+      
+      // 确定是重命名现有文件还是创建新文件
+      if (item.name !== '') {
+        // 重命名现有文件
+        // 获取源路径和目标路径
+        const oldPathOptions = await getFilePathOptions(path)
+        const newPathRelative = path.split('/').slice(0, -1).join('/') + '/' + name
+        const newPathOptions = await getFilePathOptions(newPathRelative)
+        
+        // 根据工作区类型执行重命名操作
+        if (workspace.isCustom) {
+          await rename(oldPathOptions.path, newPathOptions.path)
+        } else {
+          await rename(oldPathOptions.path, newPathOptions.path, { 
+            newPathBaseDir: BaseDirectory.AppData, 
+            oldPathBaseDir: BaseDirectory.AppData 
+          })
+        }
       } else {
-        const isExists = await exists(newPath + '.md', { baseDir: BaseDirectory.AppData })
+        // 创建新文件
+        let newFilePath = name
+        if (!newFilePath.endsWith('.md')) {
+          newFilePath += '.md'
+        }
+        
+        // 获取新文件的完整路径
+        const parentPath = path.split('/').slice(0, -1).join('/')
+        const fullRelativePath = parentPath ? `${parentPath}/${newFilePath}` : newFilePath
+        const pathOptions = await getFilePathOptions(fullRelativePath)
+        
+        // 检查文件是否已存在
+        let isExists = false
+        if (workspace.isCustom) {
+          isExists = await exists(pathOptions.path)
+        } else {
+          isExists = await exists(pathOptions.path, { baseDir: pathOptions.baseDir })
+        }
+        
         if (isExists) {
           toast({ title: '文件名已存在' })
           setTimeout(() => inputRef.current?.focus(), 300);
           return
         } else {
-          await writeTextFile(newPath + '.md', '', { baseDir: BaseDirectory.AppData })
+          // 创建新文件
+          if (workspace.isCustom) {
+            await writeTextFile(pathOptions.path, '')
+          } else {
+            await writeTextFile(pathOptions.path, '', { baseDir: pathOptions.baseDir })
+          }
         }
       }
-      setActiveFilePath(newPath.replace('article/', ''))
+      
+      setActiveFilePath(path.split('/').slice(0, -1).join('/') + '/' + name)
     } else {
+      // 处理取消创建或无变更的情况
       if (currentFolder && currentFolder.children) {
         const index = currentFolder?.children?.findIndex(item => item.name === '')
         if (index !== undefined && index !== -1 && currentFolder?.children) {
@@ -136,6 +181,7 @@ export function FileItem({ item }: { item: DirTree }) {
         cacheTree.splice(index, 1)
       }
     }
+    
     setFileTree(cacheTree)
     setIsEditing(false)
   }
