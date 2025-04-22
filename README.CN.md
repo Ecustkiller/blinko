@@ -100,14 +100,7 @@ NoteGen 分为`记录`和`写作`两个页面，其关系是：
 
 ## Contribute
 
-NoteGen 使用以下技术栈实现：
-
-- [Tauri 2](https://v2.tauri.app/)
-- [Next.js 15](https://nextjs.org/)
-- [shadcn-ui](https://ui.shadcn.com/)
-
-参与贡献：
-
+- [阅读贡献指南](CONTRIBUTING.md)
 - [更新计划](https://github.com/codexu/note-gen/issues/46)
 - [提交 Bug 或改进建议](https://github.com/codexu/note-gen/issues)
 - [讨论](https://github.com/codexu/note-gen/discussions)

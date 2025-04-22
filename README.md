@@ -100,14 +100,7 @@ Scan the QR code to join the [discussion group](https://github.com/codexu/note-g
 
 ## Contribute
 
-NoteGen is implemented using the following technology stack:
-
-- [Tauri 2](https://v2.tauri.app/)
-- [Next.js 15](https://nextjs.org/)
-- [shadcn-ui](https://ui.shadcn.com/)
-
-How to contribute:
-
+- [Read contribution guide](CONTRIBUTING.md)
 - [Update plans](https://github.com/codexu/note-gen/issues/46)
 - [Submit bugs or improvement suggestions](https://github.com/codexu/note-gen/issues)
 - [Discussions](https://github.com/codexu/note-gen/discussions)
