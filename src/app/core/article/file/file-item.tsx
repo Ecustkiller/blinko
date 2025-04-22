@@ -35,7 +35,21 @@ export function FileItem({ item }: { item: DirTree }) {
   }
 
   async function handleDeleteFile() {
-    await remove(`article/${path}`, { baseDir: BaseDirectory.AppData })
+    // 获取工作区路径信息
+    const { getFilePathOptions, getWorkspacePath } = await import('@/lib/workspace')
+    const workspace = await getWorkspacePath()
+    
+    // 根据工作区类型正确删除文件
+    const pathOptions = await getFilePathOptions(path)
+    if (workspace.isCustom) {
+      // 自定义工作区
+      await remove(pathOptions.path)
+    } else {
+      // 默认工作区
+      await remove(pathOptions.path, { baseDir: pathOptions.baseDir })
+    }
+    
+    // 更新文件树
     if (currentFolder) {
       const index = currentFolder.children?.findIndex(file => file.name === item.name)
       if (index !== undefined && index !== -1 && currentFolder.children) {

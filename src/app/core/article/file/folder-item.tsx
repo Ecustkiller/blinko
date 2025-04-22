@@ -42,7 +42,21 @@ export function FolderItem({ item }: { item: DirTree }) {
   async function handleDeleteFolder(evnet: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     evnet.stopPropagation()
     try {
-      await remove(`article/${path}`, { baseDir: BaseDirectory.AppData })
+      // 获取工作区路径信息
+      const { getFilePathOptions, getWorkspacePath } = await import('@/lib/workspace')
+      const workspace = await getWorkspacePath()
+      
+      // 根据工作区类型正确删除文件夹
+      const pathOptions = await getFilePathOptions(path)
+      if (workspace.isCustom) {
+        // 自定义工作区
+        await remove(pathOptions.path)
+      } else {
+        // 默认工作区
+        await remove(pathOptions.path, { baseDir: pathOptions.baseDir })
+      }
+      
+      // 更新文件树
       if (parentFolder) {
         const index = parentFolder.children?.findIndex(folder => folder.name === currentFolder.name)
         if (index!== -1 && index !== undefined && parentFolder.children) {
@@ -56,10 +70,11 @@ export function FolderItem({ item }: { item: DirTree }) {
           setFileTree(cacheTree)
         }
       }
-    } catch {
+    } catch (error) {
+      console.error('删除文件夹失败:', error)
       toast({
         title: '删除失败',
-        description: '文件夹内存在文件！',
+        description: '文件夹内存在文件或无法访问！',
         variant: 'destructive',
       })
     }
