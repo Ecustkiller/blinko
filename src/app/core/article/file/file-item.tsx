@@ -127,8 +127,23 @@ export function FileItem({ item }: { item: DirTree }) {
   }
 
   async function handleShowFileManager() {
-    const appDir = await appDataDir()
-    open(`${appDir}/article${item.parent? '/'+item.parent.name : ''}`)
+    // 获取工作区路径信息
+    const { getFilePathOptions, getWorkspacePath } = await import('@/lib/workspace')
+    const workspace = await getWorkspacePath()
+    
+    // 确定文件所在的目录路径
+    const folderPath = item.parent ? computedParentPath(item.parent) : ''
+    
+    // 根据工作区类型确定正确的路径
+    if (workspace.isCustom) {
+      // 自定义工作区 - 直接使用工作区路径
+      const pathOptions = await getFilePathOptions(folderPath)
+      open(pathOptions.path)
+    } else {
+      // 默认工作区 - 使用 AppData 目录
+      const appDir = await appDataDir()
+      open(`${appDir}/article${folderPath ? '/'+folderPath : ''}`)
+    }
   }
 
   async function handleDragStart(ev: React.DragEvent<HTMLDivElement>) {
