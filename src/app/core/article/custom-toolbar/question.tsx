@@ -7,11 +7,13 @@ import useSettingStore from "@/stores/setting";
 import { MessageCircleQuestion } from "lucide-react";
 import { useEffect } from "react";
 import Vditor from "vditor";
+import { useTranslations } from "next-intl";
 
 export default function Question({editor}: {editor?: Vditor}) {
 
   const { currentArticle } = useArticleStore()
   const { apiKey } = useSettingStore()
+  const t = useTranslations('article.editor.toolbar.question')
   
   async function handleBlock() {
     const selection = document.getSelection()
@@ -20,16 +22,16 @@ export default function Question({editor}: {editor?: Vditor}) {
     button.classList.add('vditor-menu--disabled')
     const selectedText = rang?.startContainer.textContent;
     if (selectedText) {
-      const req = `
-        参考原文：${currentArticle}
-        根据提问：${selectedText}，直接返回回答内容。
-      `
+      const req = t('promptTemplate', {
+        content: currentArticle,
+        question: selectedText
+      })
       await fetchAiStreamToken(req, (text) => {
         editor?.insertValue(text, true)
       })
     } else {
       toast({
-        title: '请先选择一段内容',
+        title: t('selectContent'),
         variant: 'destructive'
       })
     }
@@ -40,7 +42,7 @@ export default function Question({editor}: {editor?: Vditor}) {
     emitter.on('toolbar-question', handleBlock)
   }, [])
   return (
-    <TooltipButton disabled={!apiKey} icon={<MessageCircleQuestion />} tooltipText="问答" onClick={handleBlock}>
+    <TooltipButton disabled={!apiKey} icon={<MessageCircleQuestion />} tooltipText={t('tooltip')} onClick={handleBlock}>
     </TooltipButton>
   )
 }

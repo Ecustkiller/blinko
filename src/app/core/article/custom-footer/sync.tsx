@@ -13,13 +13,15 @@ import { useEffect, useState, useRef } from "react";
 import { Loader2, Upload } from "lucide-react";
 import emitter from "@/lib/emitter";
 import { getFilePathOptions } from "@/lib/workspace";
+import { useTranslations } from "next-intl";
 
 export default function Sync({editor}: {editor?: Vditor}) {
   const { currentArticle } = useArticleStore()
   const { accessToken, autoSync, apiKey } = useSettingStore()
   const [isLoading, setIsLoading] = useState(false)
   const syncTimeoutRef = useRef<number | null>(null)
-  const [syncText, setSyncText] = useState('同步')
+  const t = useTranslations('article.footer.sync')
+  const [syncText, setSyncText] = useState(t('sync'))
 
   async function handleSync() {
     if (isLoading || !accessToken) return;
@@ -75,8 +77,8 @@ export default function Sync({editor}: {editor?: Vditor}) {
     } catch (error) {
       console.error('Sync error:', error);
       toast({
-        title: '同步失败',
-        description: '请检查网络连接或 GitHub 令牌',
+        title: t('syncFailed'),
+        description: t('checkNetworkOrToken'),
         variant: 'destructive'
       });
     } finally {
@@ -92,7 +94,7 @@ export default function Sync({editor}: {editor?: Vditor}) {
       const store = await Store.load('store.json');
       const activeFilePath = await store.get<string>('activeFilePath') || ''
       // 获取上一次提交的记录内容
-      const message = `Upload ${activeFilePath}（快速同步）`
+      const message = `Upload ${activeFilePath}（${t('quickSync')}）`
       const res = await getFiles({path: activeFilePath, repo: RepoNames.sync})
       let sha = undefined
       if (res) {
@@ -118,8 +120,8 @@ export default function Sync({editor}: {editor?: Vditor}) {
     } catch (error) {
       console.error('Sync error:', error);
       toast({
-        title: '同步失败',
-        description: '请检查网络连接或 GitHub 令牌',
+        title: t('syncFailed'),
+        description: t('checkNetworkOrToken'),
         variant: 'destructive'
       });
     } finally {
@@ -131,8 +133,8 @@ export default function Sync({editor}: {editor?: Vditor}) {
     if (!editor || !autoSync || !accessToken) return;
     
     const handleInput = () => {
-      if (syncText !== '同步') {
-        setSyncText('同步')
+      if (syncText !== t('sync')) {
+        setSyncText(t('sync'))
       }
       if (syncTimeoutRef.current) {
         window.clearTimeout(syncTimeoutRef.current);
@@ -163,7 +165,7 @@ export default function Sync({editor}: {editor?: Vditor}) {
       {isLoading ? (
         <>
           <Loader2 className="h-3 w-3 animate-spin mr-1" />
-          <span className="text-xs">同步中</span>
+          <span className="text-xs">{t('syncing')}</span>
         </>
       ) : (
         <>

@@ -9,6 +9,7 @@ import { toast } from "@/hooks/use-toast";
 import { TooltipButton } from "@/components/tooltip-button";
 import useSettingStore from "@/stores/setting";
 import Vditor from "vditor";
+import { useTranslations } from "next-intl";
 
 export default function Translation({editor}: {editor?: Vditor}) {
   const [open, setOpen] = useState(false)
@@ -18,6 +19,7 @@ export default function Translation({editor}: {editor?: Vditor}) {
   const [range, setRange] = useState<Range | null>(null)
   const [offsetTop, setOffsetTop] = useState(0)
   const [offsetLeft, setOffsetLeft] = useState(0)
+  const t = useTranslations('article.editor.toolbar.translation')
 
   function openHander(isOpen: boolean) {
     setOffsetTop(editor?.vditor.toolbar?.elements?.translation?.offsetTop || 0)
@@ -38,7 +40,10 @@ export default function Translation({editor}: {editor?: Vditor}) {
     if (selectedText) {
       setLoading(true)
       editor?.blur()
-      const req = `将这段文字：${selectedText}，翻译为${locale}语言，直接返回翻译后的结果。`
+      const req = t('promptTemplate', {
+        content: selectedText,
+        language: locale
+      })
       const res = await fetchAi(req)
       setLoading(false)
       if (range) {
@@ -52,7 +57,7 @@ export default function Translation({editor}: {editor?: Vditor}) {
       editor?.insertValue(res)
     } else {
       toast({
-        title: '请先选择一段内容',
+        title: t('selectContent'),
         variant: 'destructive'
       })
     }
@@ -73,11 +78,11 @@ export default function Translation({editor}: {editor?: Vditor}) {
     <DropdownMenu open={open} onOpenChange={openHander}>
       <DropdownMenuTrigger asChild className="outline-none" disabled={loading || !apiKey}>
         <div>
-          <TooltipButton tooltipText="翻译" icon={<Languages />} disabled={loading || !apiKey} />
+          <TooltipButton tooltipText={t('tooltip')} icon={<Languages />} disabled={loading || !apiKey} />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 fixed" style={{ top: offsetTop + 32, left: offsetLeft }}>
-        <DropdownMenuLabel>将选中的文本进行翻译</DropdownMenuLabel>
+        <DropdownMenuLabel>{t('description')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {

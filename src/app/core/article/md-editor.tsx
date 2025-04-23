@@ -6,7 +6,6 @@ import { exists, mkdir, writeFile } from '@tauri-apps/plugin-fs'
 import "vditor/dist/index.css"
 import CustomToolbar from './custom-toolbar'
 import './style.scss'
-import config from './custom-toolbar/config'
 import { useTheme } from 'next-themes'
 import { toast } from '@/hooks/use-toast'
 import { fileToBase64, uploadFile } from '@/lib/github'
@@ -40,13 +39,79 @@ export function MdEditor() {
   }
 
   function init() {
+
+    const toolbarConfig = [
+      { name: 'undo', tipPosition: 's' },
+      { name: 'redo', tipPosition: 's' },
+      '|',{
+        name: 'mark',
+        tipPosition: 's',
+        tip: t('toolbar.mark.tooltip'),
+        className: 'right',
+        icon: '<svg><use xlink:href="#vditor-icon-mark"></svg>',
+        click: () => emitter.emit('toolbar-mark'),
+      },
+      {
+        name: 'question',
+        tipPosition: 's',
+        tip: t('toolbar.question.tooltip'),
+        className: 'right',
+        icon: '<svg><use xlink:href="#vditor-icon-question"></svg>',
+        click: () => emitter.emit('toolbar-question'),
+      },
+      {
+        name: 'continue',
+        tipPosition: 's',
+        tip: t('toolbar.continue.tooltip'),
+        className: 'right',
+        icon: '<svg><use xlink:href="#vditor-icon-list-plus"></svg>',
+        click: () => emitter.emit('toolbar-continue'),
+      },
+      {
+        name: 'polish',
+        tipPosition: 's',
+        tip: t('toolbar.polish.tooltip'),
+        className: 'right',
+        icon: '<svg><use xlink:href="#vditor-icon-polish"></svg>',
+        click: () => emitter.emit('toolbar-polish')
+      },
+      {
+        name: 'translation',
+        tipPosition: 's',
+        tip: t('toolbar.translation.tooltip'),
+        className: 'right',
+        icon: '<svg><use xlink:href="#vditor-icon-translation"></svg>',
+        click: () => emitter.emit('toolbar-translation'),
+      },
+      '|',
+      { name: 'headings', tipPosition: 'se',},
+      { name: 'bold', tipPosition: 's' },
+      { name: 'italic', tipPosition: 's' },
+      { name: 'strike', tipPosition: 's' },
+      '|',
+      { name: 'line', tipPosition: 's' },
+      { name: 'quote', tipPosition: 's' },
+      { name: 'list', tipPosition: 's' },
+      { name: 'ordered-list', tipPosition: 's' },
+      { name: 'check', tipPosition: 's' },
+      { name: 'code', tipPosition: 's' },
+      { name: 'inline-code', tipPosition: 's' },
+      { name: 'upload', tipPosition: 's' },
+      { name: 'link', tipPosition: 's' },
+      { name: 'table', tipPosition: 's' },
+      '|',
+      { name: 'edit-mode', tipPosition: 's', className: 'bottom' },
+      { name: 'preview', tipPosition: 's' },
+      { name: 'outline', tipPosition: 's' },
+    ]
+    
     const vditor = new Vditor('aritcle-md-editor', {
       lang: getLang(),
       height: document.documentElement.clientHeight - 100,
       icon: 'material',
       cdn: '',
       theme: theme === 'dark' ? 'dark' : 'classic',
-      toolbar: config as any,
+      toolbar: toolbarConfig,
       hint: {
         extend: [
           {

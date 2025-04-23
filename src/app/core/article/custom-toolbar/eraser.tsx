@@ -5,28 +5,30 @@ import useArticleStore from "@/stores/article";
 import useSettingStore from "@/stores/setting";
 import { EraserIcon } from "lucide-react";
 import Vditor from "vditor";
+import { useTranslations } from "next-intl";
 
 export default function Eraser({editor}: {editor?: Vditor}) {
   const { loading, setLoading } = useArticleStore()
   const { apiKey } = useSettingStore()
+  const t = useTranslations('article.editor.toolbar.eraser')
   async function handleBlock() {
     const selectedText = editor?.getSelection()
     if (selectedText) {
       setLoading(true)
       editor?.focus()
-      const req = `精简这段文字：${selectedText}，这段文字过于臃肿，字数要求缩减一半以上，要求语言不变，直接返回优化后的结果。`
+      const req = t('promptTemplate', {content: selectedText})
       const res = await fetchAi(req)
       editor?.updateValue(res)
       setLoading(false)
     } else {
       toast({
-        title: '请先选择一段内容',
+        title: t('selectContent'),
         variant: 'destructive'
       })
     }
   }
   return (
-    <TooltipButton disabled={loading || !apiKey} icon={<EraserIcon />} tooltipText="精简" onClick={handleBlock}>
+    <TooltipButton disabled={loading || !apiKey} icon={<EraserIcon />} tooltipText={t('tooltip')} onClick={handleBlock}>
     </TooltipButton>
   )
 }

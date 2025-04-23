@@ -12,12 +12,14 @@ import Vditor from "vditor";
 import { useEffect, useState } from "react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import emitter from "@/lib/emitter";
+import { useTranslations } from "next-intl";
 
 export default function MarkInsert({editor}: {editor?: Vditor}) {
   const [open, setOpen] = useState(false)
   const { loading, setLoading } = useArticleStore()
   const { apiKey } = useSettingStore()
   const { allMarks, queues, fetchAllMarks } = useMarkStore()
+  const t = useTranslations('article.editor.toolbar.mark')
 
   async function handleBlock(mark: Mark) {
     setLoading(true)
@@ -37,7 +39,7 @@ export default function MarkInsert({editor}: {editor?: Vditor}) {
           const res = await fetchAi(req)
           editor?.insertValue(res)
         } else {
-          editor?.insertValue(mark.content || 'OCR 未识别到任何内容')
+          editor?.insertValue(mark.content || t('ocrNoContent'))
         }
         break;
     }
@@ -66,13 +68,13 @@ export default function MarkInsert({editor}: {editor?: Vditor}) {
     <Sheet open={open} onOpenChange={openChangeHandler}>
       <SheetTrigger asChild>
         <div>
-          <TooltipButton tooltipText="使用记录" icon={<Highlighter />} disabled={loading} />
+          <TooltipButton tooltipText={t('tooltip')} icon={<Highlighter />} disabled={loading} />
         </div>
       </SheetTrigger>
       <SheetContent className="p-0 min-w-[500px]">
         <SheetHeader className="p-4 border-b">
-          <SheetTitle>使用记录</SheetTitle>
-          <SheetDescription>消耗记录转化为内容插入到文章。</SheetDescription>
+          <SheetTitle>{t('title')}</SheetTitle>
+          <SheetDescription>{t('description')}</SheetDescription>
         </SheetHeader>
         <div className="max-h-[calc(100vh/1.5)] overflow-y-auto">
           {
@@ -91,7 +93,7 @@ export default function MarkInsert({editor}: {editor?: Vditor}) {
               </div>
             )) :
             <div className="flex items-center justify-center text-zinc-500 text-xs text-center h-48">
-              暂无记录
+              {t('noRecords')}
             </div>
           }
         </div>

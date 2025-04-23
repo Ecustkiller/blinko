@@ -495,6 +495,62 @@
         "error": "上传失败",
         "needToken": "上传图片需配置 accessToken",
         "uploading": "正在上传图片"
+      },
+      "toolbar": {
+        "mark": {
+          "title": "使用记录",
+          "tooltip": "使用记录",
+          "description": "消耗记录转化为内容插入到文章。",
+          "noRecords": "暂无记录",
+          "ocrNoContent": "OCR 未识别到任何内容"
+        },
+        "question": {
+          "tooltip": "问答",
+          "selectContent": "请先选择一段内容",
+          "promptTemplate": "参考原文：{content}\n根据提问：{question}，直接返回回答内容。"
+        },
+        "continue": {
+          "tooltip": "续写",
+          "promptTemplate": "根据前文：\"{content}\" 内容，直接返回续写内容，不要超过100字。\n内容可以参考后文：\"{endContent}\"，不要与后文内容重复。"
+        },
+        "polish": {
+          "tooltip": "优化",
+          "selectContent": "请先选择一段内容",
+          "promptTemplate": "润色这段文字：{content}，要求语言不变，修复错别字和病句，直接返回润色后的结果。"
+        },
+        "eraser": {
+          "tooltip": "精简",
+          "selectContent": "请先选择一段内容",
+          "promptTemplate": "精简这段文字：{content}，这段文字过于臃肿，字数要求缩减一半以上，要求语言不变，直接返回优化后的结果。"
+        },
+        "translation": {
+          "tooltip": "翻译",
+          "description": "将选中的文本进行翻译",
+          "selectContent": "请先选择一段内容",
+          "promptTemplate": "将这段文字：{content}，翻译为{language}语言，直接返回翻译后的结果。"
+        }
+      }
+    },
+    "footer": {
+      "wordCount": "字数",
+      "sync": {
+        "sync": "同步",
+        "synced": "已同步",
+        "syncing": "同步中",
+        "syncFailed": "同步失败",
+        "checkNetworkOrToken": "请检查网络连接或 GitHub 令牌",
+        "quickSync": "快速同步"
+      },
+      "history": {
+        "loadingHistory": "正在读取历史记录",
+        "historyRecords": "历史记录",
+        "noHistory": "无历史记录",
+        "loading": "加载中",
+        "recordsCount": "条记录",
+        "filterQuickSync": "过滤快速同步",
+        "committedAt": "提交于",
+        "pull": "拉取",
+        "quickSync": "快速同步"
       }
     }
   }

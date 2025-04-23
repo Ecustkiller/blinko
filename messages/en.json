@@ -507,6 +507,62 @@
         "error": "Upload Failed",
         "needToken": "Upload image requires accessToken configuration",
         "uploading": "Uploading image"
+      },
+      "toolbar": {
+        "mark": {
+          "title": "Records",
+          "tooltip": "Use Records",
+          "description": "Convert records into content to insert into the article.",
+          "noRecords": "No records",
+          "ocrNoContent": "OCR did not recognize any content"
+        },
+        "question": {
+          "tooltip": "Q&A",
+          "selectContent": "Please select content first",
+          "promptTemplate": "Reference text: {content}\nBased on the question: {question}, directly provide the answer content."
+        },
+        "continue": {
+          "tooltip": "Continue",
+          "promptTemplate": "Based on the preceding text: \"{content}\" continue writing and return content not exceeding 100 words.\nYou can reference the following text: \"{endContent}\", but avoid duplicating its content."
+        },
+        "polish": {
+          "tooltip": "Polish",
+          "selectContent": "Please select content first",
+          "promptTemplate": "Polish this text: {content}, keep the language unchanged, fix typos and grammatical errors, directly return the polished result."
+        },
+        "eraser": {
+          "tooltip": "Simplify",
+          "selectContent": "Please select content first",
+          "promptTemplate": "Simplify this text: {content}, this text is too verbose, reduce the word count by at least half, keep the language unchanged, directly return the optimized result."
+        },
+        "translation": {
+          "tooltip": "Translate",
+          "description": "Translate the selected text",
+          "selectContent": "Please select content first",
+          "promptTemplate": "Translate this text: {content}, into {language}, directly return the translated result."
+        }
+      }
+    },
+    "footer": {
+      "wordCount": "Words",
+      "sync": {
+        "sync": "Sync",
+        "synced": "Synced",
+        "syncing": "Syncing",
+        "syncFailed": "Sync Failed",
+        "checkNetworkOrToken": "Please check network connection or GitHub token",
+        "quickSync": "Quick Sync"
+      },
+      "history": {
+        "loadingHistory": "Loading history",
+        "historyRecords": "History Records",
+        "noHistory": "No History",
+        "loading": "Loading",
+        "recordsCount": "records",
+        "filterQuickSync": "Filter Quick Syncs",
+        "committedAt": "committed at",
+        "pull": "Pull",
+        "quickSync": "Quick Sync"
       }
     }
   }
