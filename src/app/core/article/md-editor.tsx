@@ -19,6 +19,7 @@ import { appDataDir } from '@tauri-apps/api/path'
 import { v4 as uuid } from 'uuid'
 import { convertImage } from '@/lib/utils'
 import CustomFooter from './custom-footer'
+import { useLocalStorage } from 'react-use'
 
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
@@ -26,6 +27,7 @@ export function MdEditor() {
   const { theme, setTheme } = useTheme()
   const t = useTranslations('article.editor')
   const { currentLocale } = useI18n()
+  const [localMode, setLocalMode] = useLocalStorage<'ir' | 'sv' | 'wysiwyg'>('useLocalMode', 'ir')
 
   function getLang() {
     switch (currentLocale) {
@@ -100,7 +102,7 @@ export function MdEditor() {
       { name: 'link', tipPosition: 's' },
       { name: 'table', tipPosition: 's' },
       '|',
-      { name: 'edit-mode', tipPosition: 's', className: 'bottom' },
+      { name: 'edit-mode', tipPosition: 's', className: 'bottom edit-mode-button' },
       { name: 'preview', tipPosition: 's' },
       { name: 'outline', tipPosition: 's' },
     ]
@@ -132,14 +134,25 @@ export function MdEditor() {
       },
       after: () => {
         setEditor(vditor);
+        // 切换记录编辑模式
+        const editModeButtons = vditor.vditor.element.querySelectorAll('.edit-mode-button .vditor-hint button')
+        editModeButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const mode = button.getAttribute('data-mode')
+            if (!mode) return
+            setLocalMode(mode as 'ir' | 'sv' | 'wysiwyg')
+          })
+        })
         if (activeFilePath === '') {
           vditor.setValue('', true)
         }
+        
       },
       input: (value) => {
         saveCurrentArticle(value)
         emitter.emit('editor-input')
       },
+      mode: localMode,
       upload: {
         async handler(files: File[]) {
           const store = await Store.load('store.json');
