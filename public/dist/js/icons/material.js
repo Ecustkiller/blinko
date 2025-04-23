@@ -88,7 +88,7 @@ document.body.insertAdjacentHTML('afterBegin', `<svg style="position: absolute; 
       <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
     </symbol>
     <symbol id="vditor-icon-trashcan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide">
-      <path d="M23.111 10.667v17.778h-14.222v-17.778h14.222zM20.444 0h-8.889l-1.778 1.778h-6.222v3.556h24.889v-3.556h-6.222l-1.778-1.778zM26.667 7.111h-21.333v21.333c0 1.956 1.6 3.556 3.556 3.556h14.222c1.956 0 3.556-1.6 3.556-3.556v-21.333z"></path>
+      <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
     </symbol>
     <symbol id="vditor-icon-more" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide">
       <path d="M4 12c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4zM28 12c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4zM16 12c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4z"></path>
@@ -106,10 +106,10 @@ document.body.insertAdjacentHTML('afterBegin', `<svg style="position: absolute; 
       <path d="m18 8 4 4-4 4"/><path d="m6 8-4 4 4 4"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/>  
     </symbol>
     <symbol id="vditor-icon-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide">
-      <path d="M3.76 6.12l12.24 12.213 12.24-12.213 3.76 3.76-16 16-16-16 3.76-3.76z"></path>
+      <path d="m6 9 6 6 6-6"/>
     </symbol>
     <symbol id="vditor-icon-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide">
-      <path d="M3.76 25.88l12.24-12.213 12.24 12.213 3.76-3.76-16-16-16 16 3.76 3.76z"></path>
+      <path d="m18 15-6-6-6 6"/>
     </symbol>
     <symbol id="vditor-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide">
       <rect x="3" y="5" width="6" height="6" rx="1"/><path d="m3 17 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/>  
@@ -181,12 +181,12 @@ document.body.insertAdjacentHTML('afterBegin', `<svg style="position: absolute; 
     <symbol id="vditor-icon-ordered-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide">
       <path d="M10 12h11"/><path d="M10 18h11"/><path d="M10 6h11"/><path d="M4 10h2"/><path d="M4 6h1v4"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/>  
     </symbol>
-    <symbol id="vditor-icon-mp-wechat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide">
+    <symbol id="vditor-icon-mp-wechat" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide">
       <path d="M6.927 17.719s-3.040-3.431-2.915-6.942c0.16-4.453 4.738-10.257 11.359-10.257 1.884 0 5.653 0 10.328 5.52 0.249 0.302-15.075-3.84-18.772 11.679z"></path>
       <path d="M17.477 9.301s3.946-1.298 7.271-0.178c4.222 1.422 8.693 6.826 6.809 13.182-0.533 1.804-1.609 5.413-8.231 8.32-0.356 0.16 10.613-13.351-5.849-21.323z"></path>
       <path d="M10.944 24.332c-1.938 2.035-3.751 1.742-3.751 1.742l0.578-3.191c-5.235-3.44-6.373-10.328-6.453-10.106-2.444 6.817-0.916 11.377 0.027 13.004 3.315 5.733 11.982 7.351 17.484 3.893 2.969-1.867 4.533-7.057 4.533-7.057-5.298 2.338-9.342 2.569-12.417 1.715z"></path>
     </symbol>
-    <symbol id="vditor-icon-zhihu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide">
+    <symbol id="vditor-icon-zhihu" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide">
       <path d="M17.167 17.769s0-2.583-1.25-2.667c-1.25-0.167-5.167 0-5.167 0v-8h5.833s-0.083-2.667-1.167-2.667h-9.5l1.583-4.25s-2.333 0.167-3.25 1.667c-0.833 1.5-3.5 9.167-3.5 9.167s0.917 0.417 2.417-0.75c1.5-1.083 2-3.083 2-3.083l2.75-0.167 0.083 8.083s-4.917-0.083-5.833 0c-1 0.083-1.5 2.667-1.5 2.667h7.417s-0.667 4.583-2.5 7.75c-1.917 3.333-5.583 5.917-5.583 5.917s2.583 1.083 5.167-0.417 4.417-8.083 4.417-8.083l5.917 7.417s0.5-3.5-0.083-4.583c-0.667-1-4.167-5-4.167-5l-1.5 1.333 1.083-4.417 6.333 0.083zM18.667 4.269l-0.083 23.999h2.417l0.833 2.917 4.25-2.917h5.917v-23.999h-13.333zM29.333 25.602h-2.75l-3.5 2.667-0.75-2.667h-0.75v-18.582h7.75v18.582z"></path>
     </symbol>
     <symbol id="vditor-icon-list-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide">
