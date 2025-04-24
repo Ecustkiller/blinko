@@ -1,5 +1,4 @@
 'use client'
-
 import { ImageUp, Search, Settings, Highlighter, SquarePen } from "lucide-react"
 import {
   Sidebar,
@@ -12,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { ModeToggle } from "./mode-toggle"
 import Link from "next/link"
 import AppStatus from "./app-status"
@@ -20,9 +19,12 @@ import { Store } from "@tauri-apps/plugin-store"
 import { PinToggle } from "./pin-toggle"
 import { useTranslations } from 'next-intl'
 import { LanguageSwitch } from "./language-switch"
+import { useSidebarStore } from "@/stores/sidebar"
  
 export function AppSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+  const { toggleFileSidebar } = useSidebarStore()
   const t = useTranslations()
   const items = [
     {
@@ -48,6 +50,11 @@ export function AppSidebar() {
     },
   ]
   async function menuHandler(item: typeof items[0]) {
+    if (pathname === '/core/article' && item.url === '/core/article') {
+      toggleFileSidebar()
+    } else {
+      router.push(item.url)
+    }
     const store = await Store.load('store.json')
     store.set('currentPage', item.url)
   }
@@ -79,10 +86,9 @@ export function AppSidebar() {
                       hidden: false,
                     }}
                   >
-                    <Link href={item.url} onClick={() => menuHandler(item)}>
+                    <div className="cursor-pointer" onClick={() => menuHandler(item)}>
                       <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
+                    </div>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
