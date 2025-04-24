@@ -52,13 +52,13 @@ function MessageWrapper({ chat, children }: { chat: Chat, children: React.ReactN
         <LoaderPinwheel className="animate-spin" /> : 
         chat.type === 'clipboard' ? <ClipboardCheck /> : <BotMessageSquare />
       }
-      <div className='text-sm leading-6 flex-1'>
+      <div className='text-sm leading-6 flex-1 max-w-[calc(100vw-460px)] break-words'>
         {children}
       </div>
     </div>
   } else {
     return <div className="flex items-center gap-4">
-      <div className="bg-primary text-primary-foreground px-4 py-2 rounded-lg">
+      <div className="bg-primary text-primary-foreground px-4 py-2 rounded-lg max-w-[calc(100vw-600px)]">
         {chat.content}
       </div>
       {
