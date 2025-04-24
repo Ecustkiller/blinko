@@ -13,7 +13,6 @@ function getDefaultLayout() {
   return [25, 75]
 }
 
-
 function ResizebleWrapper({
   defaultLayout,
 }: {
@@ -21,7 +20,6 @@ function ResizebleWrapper({
 }) {
   const { fileSidebarVisible } = useSidebarStore()
   const onLayout = (sizes: number[]) => {
-    console.log(sizes);
     localStorage.setItem("react-resizable-panels:layout", JSON.stringify(sizes));
   };
 
