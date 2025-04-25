@@ -8,7 +8,7 @@
 ![](https://img.shields.io/github/downloads/codexu/note-gen/total)
 ![](https://img.shields.io/github/commit-activity/m/codexu/note-gen)
 
-[English](README.md) | 简体中文 | [日本語](README.JP.md)
+[English](../README.md) | 简体中文 | [日本語](README.JP.md)
 
 NoteGen 是一款的跨端的 `Markdown` 笔记应用，致力于使用 AI 建立记录和写作的桥梁，将碎片化知识整理成一篇可读的笔记。
 
@@ -96,7 +96,7 @@ NoteGen 分为`记录`和`写作`两个页面，其关系是：
 
 欢迎加入 NoteGen 交流群，这里你可以向我提出问题，分享使用心得，或者提出改进建议。也可以以学习 Tauri 为目的，和我一起交流。
 
-扫码加入[交流群](https://github.com/codexu/note-gen/discussions/110)，如果二维码失效，可以加微信 xu461229187 进群。
+扫码加入[交流群](https://github.com/codexu/note-gen/discussions/110)，如果二维码失效，可以加微信 xu461229187 备注 NoteGen 进群。
 
 ## Contribute
 
