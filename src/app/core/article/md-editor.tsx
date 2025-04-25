@@ -86,7 +86,7 @@ export function MdEditor() {
         click: () => emitter.emit('toolbar-translation'),
       },
       '|',
-      { name: 'headings', tipPosition: 'se',},
+      { name: 'headings', tipPosition: 's', className: 'bottom' },
       { name: 'bold', tipPosition: 's' },
       { name: 'italic', tipPosition: 's' },
       { name: 'strike', tipPosition: 's' },
