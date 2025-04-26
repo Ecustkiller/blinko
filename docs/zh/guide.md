@@ -1,14 +1,5 @@
-<img src="https://cdn.jsdelivr.net/gh/codexu/note-gen@dev/app-icon.png" width="128" height="128" />
 
 # NoteGen
-
-![](https://github.com/codexu/note-gen/actions/workflows/release.yml/badge.svg?branch=release)
-![](https://img.shields.io/github/v/release/codexu/note-gen)
-![](https://img.shields.io/badge/version-alpha-orange)
-![](https://img.shields.io/github/downloads/codexu/note-gen/total)
-![](https://img.shields.io/github/commit-activity/m/codexu/note-gen)
-
-[English](../README.md) | 简体中文 | [日本語](README.JP.md)
 
 NoteGen 是一款的跨端的 `Markdown` 笔记应用，致力于使用 AI 建立记录和写作的桥梁，将碎片化知识整理成一篇可读的笔记。
 
