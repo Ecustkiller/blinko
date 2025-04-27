@@ -34,10 +34,9 @@ jobs:
       - name: deploy #部署
         uses: peaceiris/actions-gh-pages@v3 #和上面一样，这里使用的是他人写好的插件库，作用是发布到其他仓库中或者其他分支上，想要具体了解可以在插件库中搜索
         with:
-          deploy_key: ${{ secrets.DOC }} # key
-          external_repository: hahaxiaowai/note-gen #推送到该仓库中，地址格式为github名称/仓库名
-          publish_branch: gh-page #分支名
-          publish_dir: dist #要推送的内容（打包后的博客文件夹）
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/.vitepress/dist #要推送的内容（打包后的博客文件夹）
+          publish_branch: gh-pages #分支名
       # - name: deploy aliyun      # 为 step 指定一个名称，将会在 github action 的控制台中显示
       #   uses: easingthemes/ssh-deploy@v5.0.3      #可以访问的仓库，实现的上传服务器步骤被封装在此action
       #   env:

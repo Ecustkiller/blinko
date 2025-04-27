@@ -14,7 +14,9 @@
   const assets = ref(null)
   const version =ref(null)
   getLatestRelease('codexu','note-gen').then(res =>{
-    assets.value = res
-    version.value =res.name
+    if(res) {
+      assets.value = res
+      version.value =res.name
+    }
   })
 </script>

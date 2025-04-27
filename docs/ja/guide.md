@@ -89,7 +89,6 @@ NoteGenコミュニティグループに参加して、質問をしたり、使�
 
 ## 貢献
 
-- [貢献ガイドを読む](CONTRIBUTING.md)
 - [更新計画](https://github.com/codexu/note-gen/issues/46)
 - [バグや改善提案を提出する](https://github.com/codexu/note-gen/issues)
 - [ディスカッション](https://github.com/codexu/note-gen/discussions)

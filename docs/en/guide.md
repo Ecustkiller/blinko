@@ -89,7 +89,6 @@ Scan the QR code to join the [discussion group](https://github.com/codexu/note-g
 
 ## Contribute
 
-- [Read contribution guide](CONTRIBUTING.md)
 - [Update plans](https://github.com/codexu/note-gen/issues/46)
 - [Submit bugs or improvement suggestions](https://github.com/codexu/note-gen/issues)
 - [Discussions](https://github.com/codexu/note-gen/discussions)
