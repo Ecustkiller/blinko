@@ -167,12 +167,16 @@
       "empty": "暂无记录",
       "loading": "加载中...",
       "type": {
+        "scan": "扫描",
         "image": "插图",
         "screenshot": "截图",
         "text": "文本",
         "file": "文件",
         "link": "链接"
       },
+      "desc": "描述",
+      "content": "内容",
+      "createdAt": "创建于",
       "progress": {
         "cacheImage": "缓存图片",
         "ocr": "OCR 识别",

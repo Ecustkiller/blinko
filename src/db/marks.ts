@@ -1,18 +1,10 @@
 import { getDb } from "./index"
 import { BaseDirectory, exists, mkdir } from "@tauri-apps/plugin-fs"
 
-export enum MarkType {
-  scan = '截图',
-  text = '文本',
-  image = '插图',
-  link = '链接',
-  file = '文件'
-}
-
 export interface Mark {
   id: number
   tagId: number
-  type: keyof typeof MarkType
+  type: 'scan' | 'text' | 'image' | 'link' | 'file'
   content?: string
   desc?: string
   url: string

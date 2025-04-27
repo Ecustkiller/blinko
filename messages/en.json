@@ -173,13 +173,17 @@
     "mark": {
       "empty": "No records yet",
       "loading": "Loading...",
+      "createdAt": "Created At",
       "type": {
+        "scan": "Scan",
         "image": "Image",
         "screenshot": "Screenshot",
         "text": "Text",
         "file": "File",
         "link": "Link"
       },
+      "desc": "Description",
+      "content": "Content",
       "progress": {
         "cacheImage": "Caching image",
         "ocr": "OCR recognition",
