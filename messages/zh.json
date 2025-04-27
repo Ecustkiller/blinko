@@ -163,6 +163,16 @@
       "records": "共 {count} 条记录可还原",
       "empty": "清空"
     },
+    "queue": {
+      "ocr": "OCR 识别",
+      "ai": "AI 内容识别",
+      "upload": "上传至图床",
+      "jsdelivr": "通知 jsdelivr 缓存",
+      "recording": "记录中...",
+      "recorded": "已记录",
+      "record": "记录",
+      "detected": "检测到"
+    },
     "mark": {
       "empty": "暂无记录",
       "loading": "加载中...",

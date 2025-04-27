@@ -170,6 +170,16 @@
       "records": "{count} records can be restored",
       "empty": "Empty"
     },
+    "queue": {
+      "ocr": "OCR recognition",
+      "ai": "AI content recognition",
+      "upload": "Upload to image host",
+      "jsdelivr": "Notify jsdelivr cache",
+      "recording": "Recording...",
+      "recorded": "Recorded",
+      "record": "Record",
+      "detected": "Detected"
+    },
     "mark": {
       "empty": "No records yet",
       "loading": "Loading...",

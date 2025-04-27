@@ -1,12 +1,13 @@
 'use client'
-import { MarkType } from "@/db/marks";
 import { MarkQueue } from "@/stores/mark";
 import { LoaderCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 export function MarkLoading({mark}: {mark: MarkQueue}){
   const [timeNow, setTimeNow] = useState(Date.now())
   const timer = useRef<NodeJS.Timeout>()
+  const t = useTranslations('record.mark.type');
 
   useEffect(() => {
     // 挂载时执行的操作
@@ -23,7 +24,7 @@ export function MarkLoading({mark}: {mark: MarkQueue}){
       <div className="flex gap-1">
         <LoaderCircle className="animate-spin size-4" />
         <span className="flex items-center gap-1 bg-zinc-500 text-white px-1 rounded">
-          {MarkType[mark.type]}
+          {t(mark.type)}
         </span>
         <span>{mark.progress}...</span>
       </div>

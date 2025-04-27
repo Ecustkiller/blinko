@@ -3,7 +3,6 @@ import { SearchResult } from './types'
 import { LocalImage } from '@/components/local-image'
 import { LocateFixed, MapPin } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { MarkType } from '@/db/marks'
 import dayjs from 'dayjs'
 import useTagStore from '@/stores/tag'
 import { useRouter } from 'next/navigation'
@@ -43,7 +42,7 @@ function SearchMark({
         </p>
         <div className='flex gap-1'>
           <Badge variant={'secondary'}>{item.matches?.[0].indices.length}个匹配项</Badge>
-          <Badge variant={'secondary'}>{MarkType[item.item.type || 'scan']}</Badge>
+          <Badge variant={'secondary'}>{item.item.type || 'scan'}</Badge>
           <Badge variant={'secondary'}>{dayjs(item.item.createdAt).fromNow()}</Badge>
         </div>
       </div>

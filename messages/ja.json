@@ -163,6 +163,16 @@
       "records": "共 {count} 条記録可还原",
       "empty": "清空"
     },
+    "queue": {
+      "ocr": "OCR 認識",
+      "ai": "AI 認識",
+      "upload": "图床上传",
+      "jsdelivr": "jsdelivr 缓存通知",
+      "recording": "记录中...",
+      "recorded": "已记录",
+      "record": "记录",
+      "detected": "检测到"
+    },
     "mark": {
       "empty": "暂无記録",
       "loading": "加载中...",
@@ -179,10 +189,10 @@
       "createdAt": "作成于",
       "progress": {
         "cacheImage": "缓存图片",
-        "ocr": "OCR 识别",
-        "aiAnalysis": "AI 内容识别",
-        "uploadImage": "上传至图床",
-        "jsdelivrCache": "通知 jsdelivr 缓存",
+        "ocr": "OCR 認識",
+        "aiAnalysis": "AI 認識",
+        "uploadImage": "图床上传",
+        "jsdelivrCache": "jsdelivr 缓存通知",
         "cacheFile": "缓存文件",
         "cacheScreenshot": "缓存スクリーンショット",
         "textAnalysis": "テキスト分析",
