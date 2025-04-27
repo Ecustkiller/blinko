@@ -71,7 +71,7 @@ export default function Sync({editor}: {editor?: Vditor}) {
         repo: RepoNames.sync
       })
       if (uploadRes?.data.commit.message) {
-        setSyncText('已同步')
+        setSyncText(t('synced'))
         emitter.emit('sync-success')
       }
     } catch (error) {
