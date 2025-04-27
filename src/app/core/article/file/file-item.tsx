@@ -176,7 +176,11 @@ export function FileItem({ item }: { item: DirTree }) {
         }
       }
       
-      setActiveFilePath(path.split('/').slice(0, -1).join('/') + '/' + name)
+      // 构建新文件的完整路径用于激活文件
+      const newPath = path.split('/').slice(0, -1).join('/') + '/' + (name.endsWith('.md') ? name : name + '.md')
+      setActiveFilePath(newPath)
+      // 新建文件后自动选择该文件并读取内容
+      readArticle(newPath, '', true)
     } else {
       // 处理取消创建或无变更的情况
       if (currentFolder && currentFolder.children) {
