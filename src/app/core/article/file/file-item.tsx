@@ -104,17 +104,23 @@ export function FileItem({ item }: { item: DirTree }) {
     const workspace = await getWorkspacePath()
   
     if (name && name !== item.name) {
+      // 确保新文件名如果需要.md后缀则添加后缀
+      let displayName = name;
+      if (item.name === '' && !displayName.endsWith('.md')) {
+        displayName += '.md';
+      }
+      
       // 更新缓存树中的名称
       if (currentFolder && currentFolder.children) {
         const fileIndex = currentFolder?.children?.findIndex(file => file.name === item.name)
         if (fileIndex !== undefined && fileIndex !== -1) {
-          currentFolder.children[fileIndex].name = name
+          currentFolder.children[fileIndex].name = displayName
           currentFolder.children[fileIndex].isEditing = false
         }
       } else {
         const fileIndex = cacheTree.findIndex(file => file.name === item.name)
         if (fileIndex !== -1 && fileIndex !== undefined) {
-          cacheTree[fileIndex].name = name
+          cacheTree[fileIndex].name = displayName
           cacheTree[fileIndex].isEditing = false
         }
       }
