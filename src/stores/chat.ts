@@ -13,7 +13,7 @@ interface ChatState {
   init: (tagId: number) => Promise<void> // 初始化 chats
   insert: (chat: Omit<Chat, 'id' | 'createdAt'>) => Promise<Chat | null> // 插入一条 chat
   updateChat: (chat: Chat) => void // 更新一条 chat
-  saveChat: (chat: Chat) => Promise<void> // 保存一条 chat，用于动态 AI 回复结束后保存数据库
+  saveChat: (chat: Chat, isSave?: boolean) => Promise<void> // 保存一条 chat，用于动态 AI 回复结束后保存数据库
   deleteChat: (id: number) => Promise<void> // 删除一条 chat
 
   locale: string
@@ -67,9 +67,11 @@ const useChatStore = create<ChatState>((set, get) => ({
     })
     set({ chats: newChats })
   },
-  saveChat: async (chat) => {
+  saveChat: async (chat, isSave = false) => {
     get().updateChat(chat)
-    await updateChat(chat)
+    if (isSave) {
+      await updateChat(chat)
+    }
   },
   deleteChat: async (id) => {
     const chats = get().chats
