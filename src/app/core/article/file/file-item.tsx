@@ -113,8 +113,10 @@ export function FileItem({ item }: { item: DirTree }) {
         }
       } else {
         const fileIndex = cacheTree.findIndex(file => file.name === item.name)
-        cacheTree[fileIndex].name = name
-        cacheTree[fileIndex].isEditing = false
+        if (fileIndex !== -1 && fileIndex !== undefined) {
+          cacheTree[fileIndex].name = name
+          cacheTree[fileIndex].isEditing = false
+        }
       }
       
       // 确定是重命名现有文件还是创建新文件
