@@ -308,7 +308,7 @@ export function FileItem({ item }: { item: DirTree }) {
     <ContextMenu>
       <ContextMenuTrigger>
         <div
-          className={`${path === activeFilePath ? 'file-manange-item active' : 'file-manange-item'} ${isRoot && '-translate-x-5'}`}
+          className={`${path === activeFilePath ? 'file-manange-item active' : 'file-manange-item'} ${!isRoot && 'translate-x-5'}`}
           onClick={handleSelectFile}
           onContextMenu={handleSelectFile}
         >
