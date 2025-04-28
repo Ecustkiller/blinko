@@ -31,7 +31,7 @@ jobs:
       - name: install and build #安装以来并打包，执行的是项目我们定义的命令
         run: |
           cd docs
-          pnpm install
+          pnpm install --frozen-lockfile
           pnpm run build
 
       - name: deploy #部署
