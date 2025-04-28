@@ -110,7 +110,7 @@ export default function History({editor}: {editor?: Vditor}) {
                   >{commit.commit.message}</span>
                   <div className="flex gap-1 items-center mt-2">
                     <Avatar className="size-5">
-                      <AvatarImage src={commit.author.avatar_url} alt={commit.author.login} />
+                      <AvatarImage src={commit.author?.avatar_url} alt={commit.author.login} />
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <span className="text-xs text-zinc-500">
