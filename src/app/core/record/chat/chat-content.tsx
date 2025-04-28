@@ -85,7 +85,7 @@ function Message({ chat }: { chat: Chat }) {
   const [isThinkOpen, setIsThinkOpen] = useState(true)
 
   const thinkingContent = chat.content?.split('<thinking>')[1] || ''
-  const content = chat.content?.split('<thinking>')[2] || ''
+  const content = chat.content?.includes('thinking') ? chat.content.split('<thinking>')[2] : chat.content
 
   switch (chat.type) {
     case 'clipboard':
