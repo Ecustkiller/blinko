@@ -455,6 +455,7 @@
     "articleRepo": "記事倉庫"
   },
   "ai": {
+    "thinking": "考えることです",
     "error": {
       "title": "AIエラー",
       "noAddress": "まずAIアドレスを設定してください"

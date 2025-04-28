@@ -114,7 +114,7 @@ export function ChatInput() {
         // 每次收到流式内容时更新消息
         await saveChat({
           ...message,
-          content,
+          content
         }, false)
       }, signal)
     } catch (error: any) {

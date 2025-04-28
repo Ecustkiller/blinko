@@ -467,6 +467,7 @@
     "articleRepo": "Article Repository"
   },
   "ai": {
+    "thinking": "Thinking",
     "error": {
       "title": "AI Error",
       "noAddress": "Please set AI address first"

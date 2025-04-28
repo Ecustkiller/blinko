@@ -455,6 +455,7 @@
     "articleRepo": "文章仓库"
   },
   "ai": {
+    "thinking": "思考",
     "error": {
       "title": "AI 错误",
       "noAddress": "请先设置 AI 地址"
