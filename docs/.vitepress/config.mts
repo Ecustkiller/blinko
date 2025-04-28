@@ -23,6 +23,11 @@ export default defineConfig({
       ...ja
     }
   },
+  vite: {
+    css: {
+      postcss: undefined
+    }
+  },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     i18nRouting: true,
