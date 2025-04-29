@@ -27,6 +27,7 @@ import { Store } from "@tauri-apps/plugin-store"
 import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation";
 import dayjs, { Dayjs } from "dayjs"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface MarkGenProps {
   inputValue?: string;
@@ -208,7 +209,11 @@ export const MarkGen = forwardRef<{ openGen: () => void }, MarkGenProps>(({ inpu
         <div className="px-2 space-y-2">
           <div className="space-y-1">
             <Label htmlFor="name">模板内容</Label>
-            <p className="text-xs text-muted-foreground whitespace-pre-wrap">{ genTemplate.find(item => item.id === tab)?.content }</p>
+            <ScrollArea className="h-32 w-full p-2 rounded-md border">
+              <p className="text-xs text-muted-foreground whitespace-pre-wrap">
+                { genTemplate.find(item => item.id === tab)?.content }
+              </p>
+            </ScrollArea>
           </div>
           <div className="space-y-1">
             <Label htmlFor="username">记录选择范围</Label>

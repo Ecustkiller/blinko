@@ -264,7 +264,7 @@ export function SettingTemplate({id, icon}: {id: string, icon?: React.ReactNode}
                   <div className="text-sm text-muted-foreground">
                     {t('settings.template.scope')}: <span className="font-medium">{item.range}</span>
                   </div>
-                  <p className={`text-sm whitespace-pre-wrap mt-2 ${!item.status ? 'opacity-50' : ''}`}>
+                  <p className={`text-sm whitespace-pre-wrap mt-2 line-clamp-3 ${!item.status ? 'opacity-50' : ''}`}>
                     {item.content || t('settings.template.noContent') || 'No content'}
                   </p>
                 </div>
