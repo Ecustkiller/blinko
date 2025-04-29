@@ -25,7 +25,10 @@ export default defineConfig({
   },
   vite: {
     css: {
-      postcss: undefined
+      postcss: {
+        plugins: {
+          }
+      }
     }
   },
   themeConfig: {
