@@ -54,7 +54,6 @@ export interface AiConfig {
   apiKey?: string
   model?: string
   baseURL?: string
-  modelURL?: string
 }
 
 export interface Model {
@@ -73,7 +72,6 @@ const baseAiConfig: AiConfig[] = [
     temperature: 0.7,
     topP: 1.0,
     baseURL: 'https://api.openai.com/v1',
-    modelURL: 'https://api.openai.com/v1/models',
   },
   {
     key: 'gemini',
@@ -84,13 +82,20 @@ const baseAiConfig: AiConfig[] = [
     baseURL: 'https://generativelanguage.googleapis.com/v1beta',
   },
   {
+    key: 'grok',
+    title: 'Grok',
+    type: 'built-in',
+    temperature: 0.7,
+    topP: 1.0,
+    baseURL: 'https://api.x.ai/v1',
+  },
+  {
     key: 'ollama',
     title: 'Ollama',
     type: 'built-in',
     baseURL: 'http://localhost:11434/v1',
     temperature: 0.7,
     topP: 1.0,
-    modelURL: 'http://localhost:11434/v1/models',
   },
   {
     key: 'lmstudio',
@@ -99,7 +104,6 @@ const baseAiConfig: AiConfig[] = [
     temperature: 0.7,
     topP: 1.0,
     baseURL: 'http://localhost:1234/v1',
-    modelURL: 'http://localhost:1234/v1/models',
   },
   {
     key: 'deepseek',
@@ -108,7 +112,22 @@ const baseAiConfig: AiConfig[] = [
     temperature: 0.7,
     topP: 1.0,
     baseURL: 'https://api.deepseek.com',
-    modelURL: 'https://api.deepseek.com/models',
+  },
+  {
+    key: 'openrouter',
+    title: 'OpenRouter',
+    type: 'built-in',
+    temperature: 0.7,
+    topP: 1.0,
+    baseURL: 'https://openrouter.ai/api/v1',
+  },
+  {
+    key: 'siliconflow',
+    title: 'SiliconFlow',
+    type: 'built-in',
+    temperature: 0.7,
+    topP: 1.0,
+    baseURL: 'https://api.siliconflow.cn/v1',
   },
 ]
 
