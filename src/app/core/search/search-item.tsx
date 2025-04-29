@@ -116,7 +116,7 @@ function RouteTo({
   item: FuseResult<Partial<SearchResult>>
 }) {
   const { setCurrentTagId } = useTagStore()
-  const { setActiveFilePath } = useArticleStore()
+  const { setActiveFilePath, setMatchPosition } = useArticleStore()
   const router = useRouter()
   function handleRouterTo() {
     switch (item.item.searchType) {
@@ -125,6 +125,12 @@ function RouteTo({
         router.push(`/core/note`)
         break;
       default:
+        // 当匹配到文章时，设置匹配位置
+        if (item.matches && item.matches.length > 0 && item.matches[0].indices.length > 0) {
+          // 取第一个匹配项的起始位置
+          const matchPosition = item.matches[0].indices[0][0]
+          setMatchPosition(matchPosition)
+        }
         setActiveFilePath(item.item.path as string)
         router.push(`/core/article`)
         break;
@@ -134,6 +140,7 @@ function RouteTo({
     <LocateFixed className='size-4 cursor-pointer mr-1 text-cyan-900' onClick={handleRouterTo} />
   )
 }
+
 export function SearchItem({
   item,
 }: {

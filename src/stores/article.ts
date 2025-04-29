@@ -33,6 +33,9 @@ interface NoteState {
   activeFilePath: string 
   setActiveFilePath: (name: string) => void
 
+  matchPosition: number | null
+  setMatchPosition: (position: number | null) => void
+
   html2md: boolean
   initHtml2md: () => Promise<void>
   setHtml2md: (html2md: boolean) => Promise<void>
@@ -152,6 +155,11 @@ const useArticleStore = create<NoteState>((set, get) => ({
     set({ activeFilePath: path })
     const store = await Store.load('store.json');
     await store.set('activeFilePath', path)
+  },
+
+  matchPosition: null,
+  setMatchPosition: (position: number | null) => {
+    set({ matchPosition: position })
   },
 
   html2md: false,
