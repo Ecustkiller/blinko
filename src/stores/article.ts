@@ -720,31 +720,63 @@ const useArticleStore = create<NoteState>((set, get) => ({
     const workspace = await getWorkspacePath()
     let allArticle: Article[] = []
     
+    const readDirRecursively = async (dirPath: string, basePath: string, isCustomWorkspace: boolean): Promise<Article[]> => {
+      let allArticles: Article[] = []
+      
+      // 读取当前目录内容
+      const res = isCustomWorkspace 
+        ? await readDir(dirPath)
+        : await readDir(dirPath, { baseDir: BaseDirectory.AppData })
+      
+      // 过滤文件
+      const files = res.filter(file => 
+        file.isFile && 
+        file.name !== '.DS_Store' && 
+        !file.name.startsWith('.') && 
+        file.name.endsWith('.md')
+      )
+      
+      // 添加文件到结果列表
+      for (const file of files) {
+        // 构建相对路径
+        const relativePath = await join(basePath, file.name)
+        
+        // 读取文件内容
+        let article = ''
+        if (isCustomWorkspace) {
+          const fullPath = await join(dirPath, file.name)
+          article = await readTextFile(fullPath)
+        } else {
+          article = await readTextFile(`${dirPath}/${file.name}`, { baseDir: BaseDirectory.AppData })
+        }
+        
+        allArticles.push({ article, path: relativePath })
+      }
+      
+      // 递归处理子目录
+      const directories = res.filter(entry => 
+        entry.isDirectory && 
+        !entry.name.startsWith('.')
+      )
+      
+      for (const dir of directories) {
+        const newDirPath = await join(dirPath, dir.name)
+        const newBasePath = await join(basePath, dir.name)
+        const subDirArticles = await readDirRecursively(newDirPath, newBasePath, isCustomWorkspace)
+        allArticles = [...allArticles, ...subDirArticles]
+      }
+      
+      return allArticles
+    }
+
     if (workspace.isCustom) {
       // 自定义工作区
-      const res = await readDir(workspace.path)
-      allArticle = res.filter(file => file.isFile && file.name !== '.DS_Store' && !file.name.startsWith('.') && file.name.endsWith('.md'))
-        .map(file => ({ article: '', path: file.name }))
-      
-      for (let index = 0; index < allArticle.length; index += 1) {
-        const file = allArticle[index];
-        const fullPath = await join(workspace.path, file.path)
-        const article = await readTextFile(fullPath)
-        allArticle[index].article = article
-      }
+      allArticle = await readDirRecursively(workspace.path, '', true)
     } else {
       // 默认工作区
-      const res = await readDir('article', { baseDir: BaseDirectory.AppData })
-      allArticle = res.filter(file => file.isFile && file.name !== '.DS_Store' && !file.name.startsWith('.') && file.name.endsWith('.md'))
-        .map(file => ({ article: '', path: file.name }))
-      
-      for (let index = 0; index < allArticle.length; index += 1) {
-        const file = allArticle[index];
-        const article = await readTextFile(`article/${file.path}`, { baseDir: BaseDirectory.AppData })
-        allArticle[index].article = article
-      }
+      allArticle = await readDirRecursively('article', '', false)
     }
-    
+
     set({ allArticle })
   }
 }))
