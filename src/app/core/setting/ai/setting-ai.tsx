@@ -177,9 +177,10 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
       setAiType(aiType)
       const aiModelList = await store.get<AiConfig[]>('aiModelList')
       if (aiModelList) {
-        baseAiConfig.forEach(item => {
+        baseAiConfig.forEach(async item => {
           if (aiModelList?.findIndex(model => model.key === item.key) === -1) {
             aiModelList?.push(item)
+            await store.set('aiModelList', aiModelList)
           }
         })
         setAiConfig(aiModelList)
