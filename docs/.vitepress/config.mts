@@ -26,8 +26,6 @@ export default defineConfig({
   vite: {
     css: {
       postcss: {
-        plugins: {
-          }
       }
     }
   },
