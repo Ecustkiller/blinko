@@ -33,7 +33,7 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     i18nRouting: true,
-    logo: { src: '/assets/app-icon.png', width: 24, height: 24 },
+    logo: { src: '/app-icon.png', width: 24, height: 24 },
     socialLinks: [
       { icon: 'github', link: 'https://github.com/hahaxiaowai/note-gen' }
     ]
