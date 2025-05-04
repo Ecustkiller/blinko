@@ -7,7 +7,7 @@ hero:
   text: "一个跨平台笔记应用"
   tagline: 使用 AI 建立记录和写作的桥梁
   image:
-    src: /assets/app-icon.png
+    src: /app-icon.png
     alt: NoteGen Logo
     width: 180
     height: 180

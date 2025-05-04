@@ -7,7 +7,7 @@ hero:
   text: "A Cross-Platform Application"
   tagline: Bridging the Gap Between Recording and Writing with AI
   image:
-    src: /assets/app-icon.png
+    src: /app-icon.png
     alt: NoteGen Logo
     width: 180
     height: 180
