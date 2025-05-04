@@ -273,6 +273,10 @@ export function FolderItem({ item }: { item: DirTree }) {
 
   function newFolderHandler(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.stopPropagation()
+    // 如果当前文件夹未展开，则先展开
+    if (!collapsibleList.includes(path)) {
+      setCollapsibleList(path, true)
+    }
     newFolderInFolder(path)
   }
 
@@ -401,7 +405,7 @@ export function FolderItem({ item }: { item: DirTree }) {
     <CollapsibleTrigger className="w-full select-none">
       <ContextMenu>
         <ContextMenuTrigger asChild>
-          <div className={`${isDragging ? 'file-on-drop' : ''} group -translate-x-5 file-manange-item flex select-none`}>
+          <div className={`${isDragging ? 'file-on-drop' : ''} group file-manange-item flex select-none`}>
             <ChevronRight className="transition-transform size-4 ml-1 bg-sidebar group-hover:bg-transparent" />
             {
               isEditing ?

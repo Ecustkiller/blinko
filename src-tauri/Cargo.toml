@@ -1,6 +1,6 @@
 [package]
 name = "note-gen"
-version = "0.13.4"
+version = "0.13.6"
 description = "A Tauri App"
 authors = ["codexu"]
 edition = "2021"

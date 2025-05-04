@@ -1,5 +1,5 @@
 'use client'
-import { delMark, delMarkForever, Mark, MarkType, restoreMark, updateMark } from "@/db/marks";
+import { delMark, delMarkForever, Mark, restoreMark, updateMark } from "@/db/marks";
 import { useTranslations } from 'next-intl';
 import {
   ContextMenu,
@@ -60,6 +60,8 @@ function ImageViewer({mark, path}: {mark: Mark, path?: string}) {
 function DetailViewer({mark, content, path}: {mark: Mark, content: string, path?: string}) {
   const [value, setValue] = useState('')
   const { updateMark } = useMarkStore()
+  const t = useTranslations('record.mark.type');
+  const markT = useTranslations('record.mark');
   async function textMarkChangeHandler(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setValue(e.target.value)
     await updateMark({ ...mark, desc: e.target.value, content: e.target.value })
@@ -75,8 +77,8 @@ function DetailViewer({mark, content, path}: {mark: Mark, content: string, path?
       </SheetTrigger>
       <SheetContent className="min-w-[400px] p-0">
         <SheetHeader className="p-4 border-b">
-          <SheetTitle>{MarkType[mark.type]}</SheetTitle>
-          <span className="mt-4 text-xs text-zinc-500">创建于：{dayjs(mark.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
+          <SheetTitle>{t(mark.type)}</SheetTitle>
+          <span className="mt-4 text-xs text-zinc-500">{markT('createdAt')}：{dayjs(mark.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
         </SheetHeader>
         <div className="h-[calc(100vh-88px)] overflow-y-auto p-4">
           {
@@ -92,11 +94,11 @@ function DetailViewer({mark, content, path}: {mark: Mark, content: string, path?
             {
               mark.type === 'text' || mark.desc === mark.content ? null :
               <>
-                <span className="block my-4 text-md text-zinc-900 font-bold">描述</span>
+                <span className="block my-4 text-md text-zinc-900 font-bold">{markT('desc')}</span>
                 <span className="leading-6">{mark.desc}</span>
               </>
             }
-            <span className="block my-4 text-md text-zinc-900 font-bold">内容</span>
+            <span className="block my-4 text-md text-zinc-900 font-bold">{markT('content')}</span>
             {
               mark.type === "text" ? 
               <Textarea placeholder="在此输入文本记录内容..." rows={14} value={value} onChange={textMarkChangeHandler} /> :
@@ -110,6 +112,7 @@ function DetailViewer({mark, content, path}: {mark: Mark, content: string, path?
 }
 
 export function MarkWrapper({mark}: {mark: Mark}) {
+  const t = useTranslations('record.mark.type');
   switch (mark.type) {
     case 'scan':
     return (
@@ -117,7 +120,7 @@ export function MarkWrapper({mark}: {mark: Mark}) {
         <div className="pr-2 flex-1 overflow-hidden text-xs">
           <div className="flex w-full items-center gap-2 text-zinc-500">
             <span className="flex items-center gap-1 bg-cyan-900 text-white px-1 rounded">
-              {MarkType[mark.type]}
+              {t(mark.type)}
             </span>
             <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
           </div>
@@ -134,7 +137,7 @@ export function MarkWrapper({mark}: {mark: Mark}) {
         <div className="pr-2 flex-1 overflow-hidden text-xs">
           <div className="flex w-full items-center gap-2 text-zinc-500">
             <span className="flex items-center gap-1 bg-fuchsia-900 text-white px-1 rounded">
-              {MarkType[mark.type]}
+              {t(mark.type)}
             </span>
             {mark.url.includes('http') ? <ImageUp className="size-3 text-zinc-400" /> : null}
             <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
@@ -151,7 +154,7 @@ export function MarkWrapper({mark}: {mark: Mark}) {
       <div className="p-2 flex-1">
         <div className="flex w-full items-center gap-2 text-zinc-500 text-xs">
           <span className="flex items-center gap-1 bg-blue-900 text-white px-1 rounded">
-            {MarkType[mark.type]}
+            {t(mark.type)}
           </span>
           <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
         </div>
@@ -173,7 +176,7 @@ export function MarkWrapper({mark}: {mark: Mark}) {
         <div className="p-2 flex-1">
           <div className="flex w-full items-center gap-2 text-zinc-500 text-xs">
             <span className="flex items-center gap-1 bg-lime-900 text-white px-1 rounded">
-              {MarkType[mark.type]}
+              {t(mark.type)}
             </span>
             <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
           </div>
@@ -185,7 +188,7 @@ export function MarkWrapper({mark}: {mark: Mark}) {
         <div className="p-2 flex-1">
           <div className="flex w-full items-center gap-2 text-zinc-500 text-xs">
             <span className="flex items-center gap-1 bg-orange-800 text-white px-1 rounded">
-              {MarkType[mark.type]}
+              {t(mark.type)}
             </span>
             <span className="ml-auto text-xs">{dayjs(mark.createdAt).fromNow()}</span>
           </div>

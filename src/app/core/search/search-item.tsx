@@ -3,7 +3,6 @@ import { SearchResult } from './types'
 import { LocalImage } from '@/components/local-image'
 import { LocateFixed, MapPin } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { MarkType } from '@/db/marks'
 import dayjs from 'dayjs'
 import useTagStore from '@/stores/tag'
 import { useRouter } from 'next/navigation'
@@ -43,7 +42,7 @@ function SearchMark({
         </p>
         <div className='flex gap-1'>
           <Badge variant={'secondary'}>{item.matches?.[0].indices.length}个匹配项</Badge>
-          <Badge variant={'secondary'}>{MarkType[item.item.type || 'scan']}</Badge>
+          <Badge variant={'secondary'}>{item.item.type || 'scan'}</Badge>
           <Badge variant={'secondary'}>{dayjs(item.item.createdAt).fromNow()}</Badge>
         </div>
       </div>
@@ -117,7 +116,7 @@ function RouteTo({
   item: FuseResult<Partial<SearchResult>>
 }) {
   const { setCurrentTagId } = useTagStore()
-  const { setActiveFilePath } = useArticleStore()
+  const { setActiveFilePath, setMatchPosition, setCollapsibleList } = useArticleStore()
   const router = useRouter()
   function handleRouterTo() {
     switch (item.item.searchType) {
@@ -126,8 +125,49 @@ function RouteTo({
         router.push(`/core/note`)
         break;
       default:
-        setActiveFilePath(item.item.path as string)
-        router.push(`/core/article`)
+        // 当匹配到文章时，设置匹配位置
+        if (item.matches && item.matches.length > 0 && item.matches[0].indices.length > 0) {
+          // 取第一个匹配项的起始位置
+          const matchPosition = item.matches[0].indices[0][0]
+          setMatchPosition(matchPosition)
+        }
+        
+        // 设置当前文件路径
+        const filePath = item.item.path as string
+        
+        // 使用Promise来确保所有状态更新和异步操作完成后再进行导航
+        const setupAndNavigate = async () => {
+          // 先设置活动文件路径
+          setActiveFilePath(filePath)
+          
+          // 确保文件所在的所有父文件夹都被展开
+          // 获取文件的父文件夹路径
+          const pathParts = filePath.split('/')
+          pathParts.pop() // 移除文件名，只保留文件夹路径
+          
+          // 逐级展开父文件夹
+          let currentPath = ''
+          for (const part of pathParts) {
+            if (currentPath) {
+              currentPath += '/' + part
+            } else {
+              currentPath = part
+            }
+            
+            // 将文件夹添加到展开列表中
+            if (currentPath) {
+              await setCollapsibleList(currentPath, true)
+            }
+          }
+          
+          // 将文件路径保存到localStorage，这样文章页面可以检测到它
+          localStorage.setItem('pendingReadArticle', filePath)
+          
+          // 导航到文章页面
+          router.push(`/core/article`)
+        }
+        
+        setupAndNavigate()
         break;
     }
   }
@@ -135,6 +175,7 @@ function RouteTo({
     <LocateFixed className='size-4 cursor-pointer mr-1 text-cyan-900' onClick={handleRouterTo} />
   )
 }
+
 export function SearchItem({
   item,
 }: {

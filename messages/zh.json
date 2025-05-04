@@ -163,16 +163,30 @@
       "records": "共 {count} 条记录可还原",
       "empty": "清空"
     },
+    "queue": {
+      "ocr": "OCR 识别",
+      "ai": "AI 内容识别",
+      "upload": "上传至图床",
+      "jsdelivr": "通知 jsdelivr 缓存",
+      "recording": "记录中...",
+      "recorded": "已记录",
+      "record": "记录",
+      "detected": "检测到"
+    },
     "mark": {
       "empty": "暂无记录",
       "loading": "加载中...",
       "type": {
+        "scan": "扫描",
         "image": "插图",
         "screenshot": "截图",
         "text": "文本",
         "file": "文件",
         "link": "链接"
       },
+      "desc": "描述",
+      "content": "内容",
+      "createdAt": "创建于",
       "progress": {
         "cacheImage": "缓存图片",
         "ocr": "OCR 识别",
@@ -441,6 +455,7 @@
     "articleRepo": "文章仓库"
   },
   "ai": {
+    "thinking": "思考",
     "error": {
       "title": "AI 错误",
       "noAddress": "请先设置 AI 地址"

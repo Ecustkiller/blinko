@@ -266,6 +266,7 @@ export async function fetchAiStream(text: string, onUpdate: (content: string) =>
         stream: true,
       })
       
+      let thinking = ''
       let fullContent = ''
       
       for await (const chunk of stream) {
@@ -274,11 +275,17 @@ export async function fetchAiStream(text: string, onUpdate: (content: string) =>
           break;
         }
         
+        const thinkingContent = (chunk.choices[0]?.delta as any)?.reasoning_content || ''
         const content = chunk.choices[0]?.delta?.content || ''
+        // 如果存在 thinkingContent 则每次将内容插入到 fullContent 的 <thinking></thinking> 标签中，只保留一个<thinking></thinking>标签
+        if (thinkingContent) {
+          thinking += thinkingContent
+          fullContent = `<thinking>${thinking}<thinking>`
+        }
         if (content) {
           fullContent += content
-          onUpdate(fullContent)
         }
+        onUpdate(fullContent)
       }
       
       return fullContent

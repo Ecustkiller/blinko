@@ -35,11 +35,11 @@ export function NoteSidebar() {
         <MarkToolbar />
         {
           trashState? 
-          <div className="flex pb-2 relative border-b h-6 items-center justify-center">
-            <p className="absolute text-xs text-zinc-500">{t('record.trash.records', { count: marks.length })}</p>
+          <div className="flex pb-2 pl-2 relative border-b h-6 items-center justify-between">
+            <p className="text-xs text-zinc-500">{t('record.trash.records', { count: marks.length })}</p>
             {
               marks.length > 0 ?
-              <Button className="text-xs text-red-900 right-8 absolute" variant="link" onClick={handleClearTrash}>{t('record.trash.empty')}</Button> : null
+              <Button className="text-xs text-red-900" variant="link" onClick={handleClearTrash}>{t('record.trash.empty')}</Button> : null
             }
           </div> :
           <TagManage />

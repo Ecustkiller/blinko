@@ -23,7 +23,7 @@ import { useLocalStorage } from 'react-use'
 
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
-  const { currentArticle, saveCurrentArticle, loading, activeFilePath } = useArticleStore()
+  const { currentArticle, saveCurrentArticle, loading, activeFilePath, matchPosition, setMatchPosition } = useArticleStore()
   const { theme, setTheme } = useTheme()
   const t = useTranslations('article.editor')
   const { currentLocale } = useI18n()
@@ -233,9 +233,92 @@ export function MdEditor() {
     return list
   }
 
-  function setContent(content: string) {
-    if (editor) {
-      editor.setValue(content || '', true)
+  // 设置编辑器内容并滚动到匹配位置
+  const setContent = (content: string) => {
+    if (!editor) return
+    editor.setValue(content)
+    
+    // 如果有匹配位置，滚动到对应位置
+    if (matchPosition !== null) {
+      setTimeout(() => {
+        try {
+          // 获取编辑器预览区域
+          let editorElement: HTMLElement | null = null
+          
+          // 安全地访问 vditor 属性
+          const vditor = editor as any
+          if (vditor.vditor) {
+            if (localMode === 'ir' && vditor.vditor.ir) {
+              editorElement = vditor.vditor.ir.element
+            } else if (localMode === 'wysiwyg' && vditor.vditor.wysiwyg) {
+              editorElement = vditor.vditor.wysiwyg.element
+            } else if (localMode === 'sv' && vditor.vditor.sv) {
+              editorElement = vditor.vditor.sv.element
+            }
+          }
+          
+          if (editorElement) {
+            // 计算目标位置前的文本
+            const textBefore = content.substring(0, matchPosition)
+            // 计算行数（通过换行符数量）
+            const lineCount = (textBefore.match(/\n/g) || []).length
+            
+            // 创建一个范围来定位匹配位置
+            const range = document.createRange()
+            const textNodes = Array.from(editorElement.querySelectorAll('*'))
+              .filter(node => node.childNodes.length > 0 && 
+                     node.childNodes[0].nodeType === Node.TEXT_NODE)
+            
+            // 尝试找到匹配位置附近的文本节点
+            let currentPos = 0
+            let targetNode = null
+            let targetOffset = 0
+            
+            for (const node of textNodes) {
+              const textContent = node.textContent || ''
+              if (currentPos + textContent.length >= matchPosition) {
+                targetNode = node.childNodes[0]  // 获取文本节点
+                targetOffset = matchPosition - currentPos
+                break
+              }
+              currentPos += textContent.length
+            }
+            
+            // 如果找到了目标节点，设置选择范围并滚动
+            if (targetNode) {
+              try {
+                range.setStart(targetNode, Math.min(targetOffset, targetNode.textContent?.length || 0))
+                range.setEnd(targetNode, Math.min(targetOffset + 1, targetNode.textContent?.length || 0))
+                
+                const selection = window.getSelection()
+                if (selection) {
+                  selection.removeAllRanges()
+                  selection.addRange(range)
+                  
+                  // 滚动到选中位置
+                  const targetElement = range.startContainer.parentElement
+                  if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                  }
+                }
+              } catch (e) {
+                console.error('Error when setting range:', e)
+              }
+            } else {
+              // 如果无法精确定位，尝试通过行号滚动
+              const lineElements = editorElement.querySelectorAll('div[data-block="0"]')
+              if (lineCount < lineElements.length) {
+                lineElements[lineCount]?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+              }
+            }
+          }
+        } catch (e) {
+          console.error('Error scrolling to match position:', e)
+        }
+        
+        // 处理完后重置匹配位置
+        setMatchPosition(null)
+      }, 300) // 给编辑器一点时间来渲染内容
     }
   }
 

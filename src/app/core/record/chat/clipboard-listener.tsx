@@ -10,6 +10,7 @@ import useTagStore from "@/stores/tag";
 export function ClipboardListener() {
   const { insert, chats, loading } = useChatStore()
   const { currentTagId } = useTagStore()
+  let unlisten: UnlistenFn;
 
   async function readHandler() {
     if (loading) return
@@ -58,12 +59,12 @@ export function ClipboardListener() {
   }
 
   useEffect(() => {
-    let unlisten: UnlistenFn;
-
     async function initListen() {
       unlisten = await listen('tauri://focus', readHandler)
     }
-    initListen()
+    if (!unlisten) {
+      initListen()
+    }
 
     return () => {
       if (unlisten) {

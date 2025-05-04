@@ -104,17 +104,25 @@ export function FileItem({ item }: { item: DirTree }) {
     const workspace = await getWorkspacePath()
   
     if (name && name !== item.name) {
+      // 确保新文件名如果需要.md后缀则添加后缀
+      let displayName = name;
+      if (item.name === '' && !displayName.endsWith('.md')) {
+        displayName += '.md';
+      }
+      
       // 更新缓存树中的名称
       if (currentFolder && currentFolder.children) {
         const fileIndex = currentFolder?.children?.findIndex(file => file.name === item.name)
         if (fileIndex !== undefined && fileIndex !== -1) {
-          currentFolder.children[fileIndex].name = name
+          currentFolder.children[fileIndex].name = displayName
           currentFolder.children[fileIndex].isEditing = false
         }
       } else {
         const fileIndex = cacheTree.findIndex(file => file.name === item.name)
-        cacheTree[fileIndex].name = name
-        cacheTree[fileIndex].isEditing = false
+        if (fileIndex !== -1 && fileIndex !== undefined) {
+          cacheTree[fileIndex].name = displayName
+          cacheTree[fileIndex].isEditing = false
+        }
       }
       
       // 确定是重命名现有文件还是创建新文件
@@ -168,7 +176,11 @@ export function FileItem({ item }: { item: DirTree }) {
         }
       }
       
-      setActiveFilePath(path.split('/').slice(0, -1).join('/') + '/' + name)
+      // 构建新文件的完整路径用于激活文件
+      const newPath = path.split('/').slice(0, -1).join('/') + '/' + (name.endsWith('.md') ? name : name + '.md')
+      setActiveFilePath(newPath)
+      // 新建文件后自动选择该文件并读取内容
+      readArticle(newPath, '', true)
     } else {
       // 处理取消创建或无变更的情况
       if (currentFolder && currentFolder.children) {
@@ -308,7 +320,7 @@ export function FileItem({ item }: { item: DirTree }) {
     <ContextMenu>
       <ContextMenuTrigger>
         <div
-          className={`${path === activeFilePath ? 'file-manange-item active' : 'file-manange-item'} ${isRoot && '-translate-x-5'}`}
+          className={`${path === activeFilePath ? 'file-manange-item active' : 'file-manange-item'} ${!isRoot && 'translate-x-5'}`}
           onClick={handleSelectFile}
           onContextMenu={handleSelectFile}
         >

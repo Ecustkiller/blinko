@@ -27,7 +27,7 @@ export function ChatClipboard({chat}: { chat: Chat }) {
   const { apiKey, githubUsername } = useSettingStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
   const { updateInsert, deleteChat } = useChatStore()
-  const t = useTranslations()
+  const t = useTranslations('record.queue')
   
   useEffect(() => {
     if (chat.inserted) {
@@ -75,11 +75,11 @@ export function ChatClipboard({chat}: { chat: Chat }) {
     const fromPath = chat.image.slice(1)
     const toPath = fromPath.replace('clipboard', 'image')
     await copyFile(fromPath, toPath, { fromPathBaseDir: BaseDirectory.AppData, toPathBaseDir: BaseDirectory.AppData})
-    setQueue(queueId, { progress: ' OCR 识别' });
+    setQueue(queueId, { progress: t('ocr') });
     const content = await ocr(toPath)
     let desc = ''
     if (apiKey) {
-      setQueue(queueId, { progress: ' AI 内容识别' });
+      setQueue(queueId, { progress: t('ai') });
       desc = await fetchAiDesc(content).then(res => res ? res : content)
     } else {
       desc = content
@@ -93,7 +93,7 @@ export function ChatClipboard({chat}: { chat: Chat }) {
     }
     const file = await readFile(toPath, { baseDir: BaseDirectory.AppData  })
     if (githubUsername) {
-      setQueue(queueId, { progress: '上传至图床' });
+      setQueue(queueId, { progress: t('upload') });
       const res = await uploadFile({
         ext: 'png',
         file: uint8ArrayToBase64(file),
@@ -101,7 +101,7 @@ export function ChatClipboard({chat}: { chat: Chat }) {
         repo: RepoNames.image
       })
       if (res) {
-        setQueue(queueId, { progress: '通知 jsdelivr 缓存' });
+        setQueue(queueId, { progress: t('jsdelivr') });
         await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`)
         mark.url = `https://cdn.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`
       } else {
@@ -135,7 +135,7 @@ export function ChatClipboard({chat}: { chat: Chat }) {
     type === 'image' && chat.image ? 
       <div className="flex-col leading-6">
         <p className="flex items-center">
-          {t('record.chat.clipboard.image.detected')}
+          {t('detected')}
           {isCountingDown && (
             <span className="text-red-500 animate-pulse">{countdown}s</span>
           )}
@@ -146,17 +146,17 @@ export function ChatClipboard({chat}: { chat: Chat }) {
             loading ? 
               <Button variant={"ghost"} size="sm" disabled>
                 <LoaderCircle className="size-4 animate-spin" />
-                {t('record.chat.clipboard.image.recording')}
+                {t('recording')}
               </Button> : (
               chat.inserted?
                 <Button variant={"ghost"} size="sm" disabled>
                   <CheckCircle className="size-4" />
-                  {t('record.chat.clipboard.image.recorded')}
+                  {t('recorded')}
                 </Button> :
                 <div className="flex items-center gap-2">
                   <Button variant={"ghost"} size="sm" onClick={handleInset}>
                     <ImagePlus className="size-4" />
-                    {t('record.chat.clipboard.image.record')}
+                    {t('record')}
                   </Button>
                 </div>
             )
@@ -166,7 +166,7 @@ export function ChatClipboard({chat}: { chat: Chat }) {
       </div> :
       <div className="flex-col leading-6">
         <p className='flex items-center'>
-          {t('record.chat.clipboard.text.detected')}
+          {t('detected')}
           {isCountingDown && (
             <span className="text-red-500 animate-pulse">{countdown}s</span>
           )}
@@ -177,12 +177,12 @@ export function ChatClipboard({chat}: { chat: Chat }) {
             chat.inserted ? 
               <Button variant={"ghost"} size="sm" disabled>
                 <CheckCircle className="size-4" />
-                {t('record.chat.clipboard.text.recorded')}
+                {t('recorded')}
               </Button> :
               <div className="flex items-center gap-2">
                 <Button variant={"ghost"} size="sm" onClick={handleTextInset}>
                   <Highlighter className="size-4" />
-                  {t('record.chat.clipboard.text.record')}
+                  {t('record')}
                 </Button>
               </div>
           }

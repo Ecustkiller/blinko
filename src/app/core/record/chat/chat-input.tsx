@@ -100,20 +100,22 @@ export function ChatInput() {
     await saveChat({
       ...message,
       content: '',
-    })
+    }, true)
     
     // 创建新的 AbortController 用于终止请求
     abortControllerRef.current = new AbortController()
     const signal = abortControllerRef.current.signal
     
     // 使用流式方式获取AI结果
+    let cache_content = '';
     try {
       await fetchAiStream(request_content, async (content) => {
+        cache_content = content
         // 每次收到流式内容时更新消息
         await saveChat({
           ...message,
-          content,
-        })
+          content
+        }, false)
       }, signal)
     } catch (error: any) {
       // 如果不是中止错误，则记录错误信息
@@ -123,6 +125,10 @@ export function ChatInput() {
     } finally {
       abortControllerRef.current = null
       setLoading(false)
+      await saveChat({
+        ...message,
+        content: cache_content
+      }, true)
     }
   }
 

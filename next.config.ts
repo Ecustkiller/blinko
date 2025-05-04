@@ -20,6 +20,10 @@ const nextConfig: NextConfig = {
     silenceDeprecations: ['legacy-js-api'],
   },
   reactStrictMode: false,
+  webpack: (config) => {
+    config.output.chunkLoadTimeout = 60000;
+    return config;
+  },
 };
 
 export default withNextIntl(nextConfig);

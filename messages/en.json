@@ -170,16 +170,30 @@
       "records": "{count} records can be restored",
       "empty": "Empty"
     },
+    "queue": {
+      "ocr": "OCR recognition",
+      "ai": "AI content recognition",
+      "upload": "Upload to image host",
+      "jsdelivr": "Notify jsdelivr cache",
+      "recording": "Recording...",
+      "recorded": "Recorded",
+      "record": "Record",
+      "detected": "Detected"
+    },
     "mark": {
       "empty": "No records yet",
       "loading": "Loading...",
+      "createdAt": "Created At",
       "type": {
+        "scan": "Scan",
         "image": "Image",
         "screenshot": "Screenshot",
         "text": "Text",
         "file": "File",
         "link": "Link"
       },
+      "desc": "Description",
+      "content": "Content",
       "progress": {
         "cacheImage": "Caching image",
         "ocr": "OCR recognition",
@@ -453,6 +467,7 @@
     "articleRepo": "Article Repository"
   },
   "ai": {
+    "thinking": "Thinking",
     "error": {
       "title": "AI Error",
       "noAddress": "Please set AI address first"
