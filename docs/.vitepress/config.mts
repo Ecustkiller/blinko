@@ -35,7 +35,7 @@ export default defineConfig({
     i18nRouting: true,
     logo: { src: '/app-icon.png', width: 24, height: 24 },
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/hahaxiaowai/note-gen' }
+      { icon: 'github', link: 'https://github.com/codexu/note-gen' }
     ]
   }
 })
