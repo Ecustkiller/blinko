@@ -1,15 +1,4 @@
-<img src="https://cdn.jsdelivr.net/gh/codexu/note-gen@dev/app-icon.png" width="128" height="128" />
-
 # NoteGen
-
-![](https://github.com/codexu/note-gen/actions/workflows/release.yml/badge.svg?branch=release)
-![](https://img.shields.io/github/v/release/codexu/note-gen)
-![](https://img.shields.io/badge/version-alpha-orange)
-![](https://img.shields.io/github/downloads/codexu/note-gen/total)
-![](https://img.shields.io/github/commit-activity/m/codexu/note-gen)
-
-[English](../README.md) | [简体中文](README.CN.md) | 日本語
-
 NoteGenは、AIを使用して記録と執筆を橋渡しし、断片化された知識を読みやすいノートに整理することに専念するクロスプラットフォームの`Markdown`ノートアプリケーションです。
 
 ## なぜNoteGenを選ぶのか？
@@ -100,7 +89,6 @@ NoteGenコミュニティグループに参加して、質問をしたり、使�
 
 ## 貢献
 
-- [貢献ガイドを読む](CONTRIBUTING.md)
 - [更新計画](https://github.com/codexu/note-gen/issues/46)
 - [バグや改善提案を提出する](https://github.com/codexu/note-gen/issues)
 - [ディスカッション](https://github.com/codexu/note-gen/discussions)
