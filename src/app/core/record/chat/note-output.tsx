@@ -24,9 +24,11 @@ import { redirect } from 'next/navigation'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Chat } from "@/db/chats"
 import { useTranslations } from "next-intl"
+import useArticleStore from "@/stores/article"
 
 export function NoteOutput({chat}: {chat: Chat}) {
   const { deleteTag, currentTagId } = useTagStore()
+  const { loadFileTree } = useArticleStore()
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('')
   const [path, setPath] = useState('/')
@@ -53,21 +55,19 @@ export function NoteOutput({chat}: {chat: Chat}) {
       deleteTag(currentTagId)
     }
     setOpen(false)
+    await loadFileTree()
     redirect('/core/article')
   }
 
   async function readArticleDir() {
-    // Get workspace information
     const workspace = await getWorkspacePath()
     let folders = []
     
     if (workspace.isCustom) {
-      // For custom workspace, read from custom path
-      const pathOptions = await getGenericPathOptions('', 'article')
+      const pathOptions = await getGenericPathOptions('', '')
       const dirs = (await readDir(pathOptions.path)).filter(dir => dir.isDirectory).map(dir => `/${dir.name}`)
       folders = dirs
     } else {
-      // For default workspace, read from AppData/article
       const dirs = (await readDir('article', { baseDir: BaseDirectory.AppData })).filter(dir => dir.isDirectory).map(dir => `/${dir.name}`)
       folders = dirs
     }
