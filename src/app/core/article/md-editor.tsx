@@ -323,7 +323,21 @@ export function MdEditor() {
   }
 
   useEffect(() => {
-    init()
+    if (!activeFilePath) {
+      editor?.destroy()
+      setEditor(undefined)
+    } else {
+      if (!editor) {
+        init()
+        setContent(currentArticle)
+      }
+    }
+  }, [activeFilePath])
+
+  useEffect(() => {
+    if (activeFilePath) {
+      init()
+    }
   }, [currentLocale])
 
   useEffect(() => {
