@@ -43,10 +43,18 @@ export function FileItem({ item }: { item: DirTree }) {
     const pathOptions = await getFilePathOptions(path)
     if (workspace.isCustom) {
       // 自定义工作区
-      await remove(pathOptions.path)
+      try {
+        await remove(pathOptions.path)
+      } catch (e) {
+        console.error(e);
+      }
     } else {
       // 默认工作区
-      await remove(pathOptions.path, { baseDir: pathOptions.baseDir })
+      try {
+        await remove(pathOptions.path, { baseDir: pathOptions.baseDir })
+      } catch (e) {
+        console.error(e);
+      }
     }
     
     // 更新文件树
@@ -177,7 +185,11 @@ export function FileItem({ item }: { item: DirTree }) {
       }
       
       // 构建新文件的完整路径用于激活文件
-      const newPath = path.split('/').slice(0, -1).join('/') + '/' + (name.endsWith('.md') ? name : name + '.md')
+      let newPath = path.split('/').slice(0, -1).join('/') + '/' + (name.endsWith('.md') ? name : name + '.md')
+      // 判断 newPath 是否以 / 开头
+      if (newPath.startsWith('/')) {
+        newPath = newPath.slice(1)
+      }
       setActiveFilePath(newPath)
       // 新建文件后自动选择该文件并读取内容
       readArticle(newPath, '', true)
