@@ -21,7 +21,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { useState, useImperativeHandle, forwardRef, useEffect } from "react"
+import { useState, useImperativeHandle, forwardRef, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Store } from "@tauri-apps/plugin-store"
 import { Label } from "@/components/ui/label"
@@ -42,6 +42,7 @@ export const MarkGen = forwardRef<{ openGen: () => void }, MarkGenProps>(({ inpu
   const [tab, setTab] = useState('0')
   const [genTemplate, setGenTemplate] = useState<GenTemplate[]>([])
   const router = useRouter()
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   async function initGenTemplates() {
     const store = await Store.load('store.json')
@@ -62,6 +63,9 @@ export const MarkGen = forwardRef<{ openGen: () => void }, MarkGenProps>(({ inpu
       } else if (e.key === 'Escape') {
         e.preventDefault()
         setOpen(false)
+      } else if (e.key === 'Escape' && loading) {
+        e.preventDefault()
+        terminateChat()
       }
     }
 
@@ -69,7 +73,15 @@ export const MarkGen = forwardRef<{ openGen: () => void }, MarkGenProps>(({ inpu
       window.addEventListener('keydown', handleKeyDown)
     }, 500);
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [open])
+  }, [open, loading])
+
+  function terminateChat() {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+      abortControllerRef.current = null
+      setLoading(false)
+    }
+  }
 
   function openGen() {
     setOpen(true)
@@ -149,6 +161,7 @@ export const MarkGen = forwardRef<{ openGen: () => void }, MarkGenProps>(({ inpu
       满足以下格式要求：
       - 使用 ${locale} 语言。
       - 使用 Markdown 语法。
+      - 确保存在一级标题。
       - 笔记顺序可能是错误的，要按照正确顺序排列。
       - 如果存在链接记录，将其作为参考链接放在文章末尾，格式如下：
         ## 参考链接
@@ -166,21 +179,36 @@ export const MarkGen = forwardRef<{ openGen: () => void }, MarkGenProps>(({ inpu
     await saveChat({
       ...message,
       content: '',
-    })
+    }, true)
+    
+    // 创建新的 AbortController 用于终止请求
+    abortControllerRef.current = new AbortController()
+    const signal = abortControllerRef.current.signal
     
     // 使用流式方式获取AI结果
+    let cache_content = '';
     try {
       await fetchAiStream(request_content, async (content) => {
+        cache_content = content
         // 每次收到流式内容时更新消息
         await saveChat({
           ...message,
-          content,
-        })
-      })
-    } catch (error) {
-      console.error('Stream error:', error)
+          content: content,
+        }, false)
+      }, signal)
+    } catch (error: any) {
+      // 如果不是中止错误，则记录错误信息
+      if (error.name !== 'AbortError') {
+        console.error('Stream error:', error)
+      }
     } finally {
+      abortControllerRef.current = null
       setLoading(false)
+      const cleanedContent = cache_content.replace(/<thinking>[\s\S]*?<thinking>/g, '');
+      await saveChat({
+        ...message,
+        content: cleanedContent
+      }, true)
     }
   }
 

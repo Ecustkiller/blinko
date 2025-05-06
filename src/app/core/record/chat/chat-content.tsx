@@ -1,7 +1,7 @@
 import useChatStore from '@/stores/chat'
 import useTagStore from '@/stores/tag'
-import { BotMessageSquare, ChevronsUpDown, ClipboardCheck, LoaderCircle, LoaderPinwheel, UserRound } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { BotMessageSquare, ClipboardCheck, LoaderPinwheel, UserRound } from 'lucide-react'
+import { useEffect } from 'react'
 import { Chat } from '@/db/chats'
 import ChatPreview from './chat-preview'
 import './chat.scss'
@@ -13,12 +13,7 @@ import ChatEmpty from './chat-empty'
 import { useTranslations } from 'next-intl'
 import useSyncStore from '@/stores/sync'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
-import { Button } from '@/components/ui/button'
+import ChatThinking from './chat-thinking'
 
 export default function ChatContent() {
   const { chats, init } = useChatStore()
@@ -79,12 +74,7 @@ function MessageWrapper({ chat, children }: { chat: Chat, children: React.ReactN
 }
 
 function Message({ chat }: { chat: Chat }) {
-  const { loading, chats } = useChatStore()
-  const index = chats.findIndex(item => item.id === chat.id)
   const t = useTranslations()
-  const [isThinkOpen, setIsThinkOpen] = useState(true)
-
-  const thinkingContent = chat.content?.split('<thinking>')[1] || ''
   const content = chat.content?.includes('thinking') ? chat.content.split('<thinking>')[2] : chat.content
 
   switch (chat.type) {
@@ -96,13 +86,16 @@ function Message({ chat }: { chat: Chat }) {
     case 'note':
       return <MessageWrapper chat={chat}>
         {
-          (!loading || index !== chats.length - 1) && <div className='w-full overflow-x-hidden'>
+          <div className='w-full overflow-x-hidden'>
             <div className='flex justify-between'>
               <p>{t('record.chat.content.organize')}</p>
             </div>
-            <div className='note-wrapper border w-full overflow-y-auto overflow-x-hidden my-2 p-4 rounded-lg'>
-              <ChatPreview text={content || ''} />
-            </div>
+            <ChatThinking chat={chat} />
+            {
+              <div className={`${content ? 'note-wrapper border w-full overflow-y-auto overflow-x-hidden my-2 p-4 rounded-lg' : ''}`}>
+                <ChatPreview text={content || ''} />
+              </div>
+            }
             <MessageControl chat={chat}>
               <NoteOutput chat={chat} />
             </MessageControl>
@@ -112,30 +105,7 @@ function Message({ chat }: { chat: Chat }) {
 
     default:
       return <MessageWrapper chat={chat}>
-        {
-          chat.content?.includes('<thinking>') && <Collapsible
-            open={isThinkOpen}
-            onOpenChange={setIsThinkOpen}
-            className="w-full border rounded-lg p-4 mb-4"
-          >
-            <div className="flex items-center justify-between">
-              <h4 className="text-sm font-semibold flex items-center gap-2">
-                <span>{t('ai.thinking')}</span>
-                {!content && <LoaderCircle className="animate-spin size-4" />}
-              </h4>
-              <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <ChevronsUpDown className="h-4 w-4" />
-                  <span className="sr-only">Toggle</span>
-                </Button>
-              </CollapsibleTrigger>
-            </div>
-            <CollapsibleContent>
-              <p className='mt-2 text-justify'>{thinkingContent}</p>
-            </CollapsibleContent>
-          </Collapsible>
-        }
-
+        <ChatThinking chat={chat} />
         <ChatPreview text={content || ''} />
         <MessageControl chat={chat}>
           <MarkText chat={chat} />

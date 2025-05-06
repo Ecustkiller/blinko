@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { extractTitle } from "@/lib/markdown"
+import { getFilePathOptions, getWorkspacePath, getGenericPathOptions } from "@/lib/workspace"
 import useTagStore from "@/stores/tag"
 import { CheckedState } from "@radix-ui/react-checkbox"
 import { BaseDirectory, readDir, writeTextFile } from "@tauri-apps/plugin-fs"
@@ -23,9 +24,11 @@ import { redirect } from 'next/navigation'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Chat } from "@/db/chats"
 import { useTranslations } from "next-intl"
+import useArticleStore from "@/stores/article"
 
 export function NoteOutput({chat}: {chat: Chat}) {
   const { deleteTag, currentTagId } = useTagStore()
+  const { loadFileTree } = useArticleStore()
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('')
   const [path, setPath] = useState('/')
@@ -35,20 +38,41 @@ export function NoteOutput({chat}: {chat: Chat}) {
 
   async function handleTransform() {
     const content = decodeURIComponent(chat?.content || '')
-    const writeTo = `article${path}/${title.replace(/ /g, '_')}`
-    await writeTextFile(writeTo, content, { baseDir: BaseDirectory.AppData })
+    const writePath = `${path}/${title.replace(/ /g, '_')}`
+    
+    // Use workspace functions instead of directly using BaseDirectory.AppData
+    const pathOptions = await getFilePathOptions(writePath)
+    if (pathOptions.baseDir) {
+      await writeTextFile(pathOptions.path, content, { baseDir: pathOptions.baseDir })
+    } else {
+      // Handle custom workspace (direct path, no baseDir)
+      await writeTextFile(pathOptions.path, content)
+    }
+    
     const store = await Store.load('store.json');
     await store.set('activeFilePath', title)
     if (isRemove) {
       deleteTag(currentTagId)
     }
     setOpen(false)
+    await loadFileTree()
     redirect('/core/article')
   }
 
   async function readArticleDir() {
-    const dirs = (await readDir('article', { baseDir: BaseDirectory.AppData })).filter(dir => dir.isDirectory).map(dir => `/${dir.name}`)
-    setFolders(dirs)
+    const workspace = await getWorkspacePath()
+    let folders = []
+    
+    if (workspace.isCustom) {
+      const pathOptions = await getGenericPathOptions('', '')
+      const dirs = (await readDir(pathOptions.path)).filter(dir => dir.isDirectory).map(dir => `/${dir.name}`)
+      folders = dirs
+    } else {
+      const dirs = (await readDir('article', { baseDir: BaseDirectory.AppData })).filter(dir => dir.isDirectory).map(dir => `/${dir.name}`)
+      folders = dirs
+    }
+    
+    setFolders(folders)
   }
 
   useEffect(() => {
