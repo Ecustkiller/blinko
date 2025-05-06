@@ -161,6 +161,7 @@ export const MarkGen = forwardRef<{ openGen: () => void }, MarkGenProps>(({ inpu
       满足以下格式要求：
       - 使用 ${locale} 语言。
       - 使用 Markdown 语法。
+      - 确保存在一级标题。
       - 笔记顺序可能是错误的，要按照正确顺序排列。
       - 如果存在链接记录，将其作为参考链接放在文章末尾，格式如下：
         ## 参考链接
@@ -192,7 +193,7 @@ export const MarkGen = forwardRef<{ openGen: () => void }, MarkGenProps>(({ inpu
         // 每次收到流式内容时更新消息
         await saveChat({
           ...message,
-          content,
+          content: content,
         }, false)
       }, signal)
     } catch (error: any) {
