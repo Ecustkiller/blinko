@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "note-gen"
+  name: "NoteGen"
   text: "A Cross-Platform Application"
   tagline: Bridging the Gap Between Recording and Writing with AI
   image:

@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "note-gen"
+  name: "NoteGen"
   text: "一个跨平台笔记应用"
   tagline: 使用 AI 建立记录和写作的桥梁
   image:

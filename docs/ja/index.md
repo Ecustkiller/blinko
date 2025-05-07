@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "note-gen"
+  name: "NoteGen"
   text: "クロスプラットフォーム対応のノートアプリ"
   tagline: AIを活用して記録と執筆の架け橋を構築
   image:

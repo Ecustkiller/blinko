@@ -5,7 +5,7 @@ import { ja } from './ja'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   base: '/note-gen/',
-  title: "note-gen",
+  title: "NoteGen",
   description: "A cross-platform Markdown note-taking application dedicated to using AI to bridge recording and writing, organizing fragmented knowledge into a readable note.",
   locales: {
     root: {
