@@ -3,8 +3,8 @@ name: Automatic update # 该Action的名字
 # on:何时触发该事件.
 on:
   push:
-    tags:
-      - "*"
+    paths:
+      - "docs/**"
 
   # 允许从Actions选项卡手动运行此工作流
   workflow_dispatch:
