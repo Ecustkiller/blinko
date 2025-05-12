@@ -503,7 +503,8 @@
         "empty": "剪贴板为空",
         "confirmOverwrite": "文件已存在，是否覆盖？",
         "notSupported": "不支持此操作"
-      }
+      },
+      "deleteConfirm": "确认删除此文件吗？"
     },
     "editor": {
       "upload": {

@@ -35,53 +35,62 @@ export function FileItem({ item }: { item: DirTree }) {
   }
 
   async function handleDeleteFile() {
-    // 获取工作区路径信息
-    const { getFilePathOptions, getWorkspacePath } = await import('@/lib/workspace')
-    const workspace = await getWorkspacePath()
+    // 添加确认弹窗
+    const answer = await ask(t('deleteConfirm'), {
+      title: 'NoteGen',
+      kind: 'warning',
+    });
     
-    // 根据工作区类型正确删除文件
-    const pathOptions = await getFilePathOptions(path)
-    if (workspace.isCustom) {
-      // 自定义工作区
-      try {
-        await remove(pathOptions.path)
-      } catch (e) {
-        console.error(e);
-      }
-    } else {
-      // 默认工作区
-      try {
-        await remove(pathOptions.path, { baseDir: pathOptions.baseDir })
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    
-    // 更新文件树
-    if (currentFolder) {
-      const index = currentFolder.children?.findIndex(file => file.name === item.name)
-      if (index !== undefined && index !== -1 && currentFolder.children) {
-        const current = currentFolder.children[index]
-        if (current.sha) {
-          current.isLocale = false
-        } else {
-          currentFolder.children.splice(index, 1)
+    // 如果用户确认删除，则继续执行
+    if (answer) {
+      // 获取工作区路径信息
+      const { getFilePathOptions, getWorkspacePath } = await import('@/lib/workspace')
+      const workspace = await getWorkspacePath()
+      
+      // 根据工作区类型正确删除文件
+      const pathOptions = await getFilePathOptions(path)
+      if (workspace.isCustom) {
+        // 自定义工作区
+        try {
+          await remove(pathOptions.path)
+        } catch (e) {
+          console.error(e);
+        }
+      } else {
+        // 默认工作区
+        try {
+          await remove(pathOptions.path, { baseDir: pathOptions.baseDir })
+        } catch (e) {
+          console.error(e);
         }
       }
-    } else {
-      const index = cacheTree.findIndex(file => file.name === item.name)
-      if (index !== undefined && index !== -1) {
-        const current = cacheTree[index]
-        if (current.sha) {
-          current.isLocale = false
-        } else {
-          cacheTree.splice(index, 1)
+      
+      // 更新文件树
+      if (currentFolder) {
+        const index = currentFolder.children?.findIndex(file => file.name === item.name)
+        if (index !== undefined && index !== -1 && currentFolder.children) {
+          const current = currentFolder.children[index]
+          if (current.sha) {
+            current.isLocale = false
+          } else {
+            currentFolder.children.splice(index, 1)
+          }
+        }
+      } else {
+        const index = cacheTree.findIndex(file => file.name === item.name)
+        if (index !== undefined && index !== -1) {
+          const current = cacheTree[index]
+          if (current.sha) {
+            current.isLocale = false
+          } else {
+            cacheTree.splice(index, 1)
+          }
         }
       }
+      setFileTree(cacheTree)
+      setActiveFilePath('')
+      setCurrentArticle('')
     }
-    setFileTree(cacheTree)
-    setActiveFilePath('')
-    setCurrentArticle('')
   }
 
   async function handleDeleteSyncFile() {

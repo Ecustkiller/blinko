@@ -515,7 +515,8 @@
         "empty": "Clipboard is empty",
         "confirmOverwrite": "File already exists, do you want to overwrite it?",
         "notSupported": "Operation not supported"
-      }
+      },
+      "deleteConfirm": "Are you sure you want to delete this file?"
     },
     "editor": {
       "upload": {
