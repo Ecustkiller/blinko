@@ -503,7 +503,8 @@
         "empty": "クリップボードが空です",
         "confirmOverwrite": "ファイルが既に存在します。覆盖吗？",
         "notSupported": "この操作はサポートされていません"
-      }
+      },
+      "deleteConfirm": "このファイルを削除してもよろしいですか？"
     },
     "editor": {
       "upload": {
