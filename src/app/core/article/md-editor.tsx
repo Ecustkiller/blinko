@@ -41,7 +41,6 @@ export function MdEditor() {
   }
 
   function init() {
-
     const toolbarConfig = [
       { name: 'undo', tipPosition: 's' },
       { name: 'redo', tipPosition: 's' },
