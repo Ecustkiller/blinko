@@ -15,7 +15,9 @@
     "unpin": "取消置顶",
     "settings": "设置",
     "sync": "同步",
-    "language": "语言"
+    "language": "语言",
+    "success": "成功",
+    "error": "失败"
   },
   "settings": {
     "prompt": {
@@ -52,10 +54,17 @@
       "updatedAt": "最后更新于 {time}",
       "newToken": "创建 access token",
       "newTokenDesc": "新建 token 时，请务必勾选 repo 权限，配置后将自动创建文件仓库（私有）和图床仓库。",
+      "giteeTokenDesc": "Gitee 私人令牌用于同步数据，需要有仓库的读写权限，配置后将自动创建文件仓库（私有）和图床仓库。",
       "imageRepoSetting": "本地/图床",
       "imageRepoSettingDesc": "你已经配置了图床仓库，开启此项将使用图床仓库，否则将使用本地存储。",
       "jsdelivrSetting": "jsDelivr",
-      "jsdelivrSettingDesc": "使用 jsdelivr 加速图片访问。"
+      "jsdelivrSettingDesc": "使用 jsdelivr 加速图片访问。",
+      "autoSync": "自动同步",
+      "giteeAutoSyncDesc": "启用后，编辑器在输入停止10秒后将自动同步到Gitee",
+      "backupMethod": "备份方式",
+      "backupMethodDesc": "设置为主要备份方式后，写作中的所有同步相关功能将使用当前备份方式（图床功能除外）",
+      "isPrimaryBackup": "当前 {type} 为主要备份方式",
+      "setPrimaryBackup": "设为主要备份方式"
     },
     "template": {
       "title": "整理模板",
@@ -437,7 +446,11 @@
     "record": "记录",
     "write": "写作",
     "search": "搜索",
-    "gallery": "图床"
+    "gallery": "图床",
+    "login": "登录",
+    "loading": "加载中",
+    "view": "查看",
+    "logout": "登出"
   },
   "marks": {
     "types": {
@@ -490,7 +503,9 @@
         "deleteLocalFile": "删除本地文件",
         "delete": "删除",
         "newFile": "新建文件",
-        "newFolder": "新建文件夹"
+        "newFolder": "新建文件夹",
+        "deleteSyncFileSuccess": "删除成功",
+        "deleteSyncFileError": "删除失败"
       },
       "error": {
         "fileExists": "文件名已存在"

@@ -58,6 +58,7 @@ interface SettingState {
   tesseractList: string
   setTesseractList: (tesseractList: string) => void
 
+  // Github 相关设置
   githubUsername: string
   setGithubUsername: (githubUsername: string) => Promise<void>
 
@@ -72,6 +73,17 @@ interface SettingState {
 
   autoSync: boolean
   setAutoSync: (autoSync: boolean) => Promise<void>
+  
+  // Gitee 相关设置
+  giteeAccessToken: string
+  setGiteeAccessToken: (giteeAccessToken: string) => void
+
+  giteeAutoSync: boolean
+  setGiteeAutoSync: (giteeAutoSync: boolean) => Promise<void>
+  
+  // 主要备份方式设置
+  primaryBackupMethod: 'github' | 'gitee'
+  setPrimaryBackupMethod: (method: 'github' | 'gitee') => Promise<void>
   
   lastSettingPage: string
   setLastSettingPage: (page: string) => Promise<void>
@@ -215,6 +227,29 @@ const useSettingStore = create<SettingState>((set, get) => ({
     const store = await Store.load('store.json');
     await store.set('workspacePath', path)
   },
+  
+  // Gitee 相关设置
+  giteeAccessToken: '',
+  setGiteeAccessToken: async (giteeAccessToken: string) => {
+    set({ giteeAccessToken })
+    const store = await Store.load('store.json');
+    await store.set('giteeAccessToken', giteeAccessToken)
+  },
+
+  giteeAutoSync: true,
+  setGiteeAutoSync: async (giteeAutoSync: boolean) => {
+    set({ giteeAutoSync })
+    const store = await Store.load('store.json');
+    await store.set('giteeAutoSync', giteeAutoSync)
+  },
+  
+  // 默认使用 GitHub 作为主要备份方式
+  primaryBackupMethod: 'github',
+  setPrimaryBackupMethod: async (method: 'github' | 'gitee') => {
+    set({ primaryBackupMethod: method })
+    const store = await Store.load('store.json');
+    await store.set('primaryBackupMethod', method)
+  }
 }))
 
 export default useSettingStore

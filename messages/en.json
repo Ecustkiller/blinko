@@ -17,7 +17,9 @@
     "language": "Language",
     "confirm": "Confirm",
     "selectPrompt": "Select Prompt",
-    "prompt": "Prompt"
+    "prompt": "Prompt",
+    "success": "Success",
+    "error": "Failed"
   },
   "settings": {
     "about": {
@@ -54,10 +56,17 @@
       "updatedAt": "Last updated {time}",
       "newToken": "Create Access Token",
       "newTokenDesc": "When creating a new token, please make sure to check the repo permission, and after configuration, it will automatically create a file repository (private) and an image repository.",
+      "giteeTokenDesc": "Gitee personal access token is used for data synchronization. It needs repository read and write permissions. After configuration, it will automatically create a file repository (private) and an image repository.",
       "imageRepoSetting": "Local/Cloud Storage",
       "imageRepoSettingDesc": "You have already configured an image repository, you can choose to use the image repository or use local storage.",
       "jsdelivrSetting": "jsDelivr",
-      "jsdelivrSettingDesc": "Use jsdelivr to speed up image access."
+      "jsdelivrSettingDesc": "Use jsdelivr to speed up image access.",
+      "autoSync": "Auto Sync",
+      "giteeAutoSyncDesc": "When enabled, the editor will automatically sync to Gitee 10 seconds after input stops",
+      "backupMethod": "Backup Method",
+      "backupMethodDesc": "After setting as the primary backup method, all sync-related functions in writing will use the current backup method (except for image hosting)",
+      "isPrimaryBackup": "{type} is current primary backup",
+      "setPrimaryBackup": "Set as Primary Backup"
     },
     "template": {
       "title": "Template",
@@ -449,7 +458,11 @@
     "record": "Record",
     "write": "Write",
     "search": "Search",
-    "gallery": "Gallery"
+    "gallery": "Gallery",
+    "login": "Login",
+    "loading": "Loading",
+    "view": "View",
+    "logout": "Logout"
   },
   "marks": {
     "types": {
@@ -502,7 +515,9 @@
         "deleteLocalFile": "Delete Local File",
         "delete": "Delete",
         "newFile": "New File",
-        "newFolder": "New Folder"
+        "newFolder": "New Folder",
+        "deleteSyncFileSuccess": "Delete Sync File Success",
+        "deleteSyncFileError": "Delete Sync File Error"
       },
       "error": {
         "fileExists": "File name already exists"
