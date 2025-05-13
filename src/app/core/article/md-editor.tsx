@@ -20,6 +20,7 @@ import { v4 as uuid } from 'uuid'
 import { convertImage } from '@/lib/utils'
 import CustomFooter from './custom-footer'
 import { useLocalStorage } from 'react-use'
+import { open } from '@tauri-apps/plugin-shell'
 
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
@@ -113,6 +114,14 @@ export function MdEditor() {
       cdn: '',
       theme: theme === 'dark' ? 'dark' : 'classic',
       toolbar: toolbarConfig,
+      link: {
+        isOpen: false,
+        click: (dom: Element) => {
+          const href = dom.getAttribute('href') || dom.innerHTML
+          if (!href) return
+          open(href)
+        }
+      },
       hint: {
         extend: [
           {
