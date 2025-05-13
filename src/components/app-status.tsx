@@ -1,18 +1,15 @@
 import { SidebarMenuButton } from "./ui/sidebar";
 import { createSyncRepo, checkSyncRepoState, getUserInfo } from "@/lib/github";
-import { useEffect, useState } from "react";
-import { useTranslations } from 'next-intl';
+import { useEffect } from "react";
 import useSettingStore from "@/stores/setting";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { CircleUserRound, LoaderPinwheel } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { CircleUserRound } from "lucide-react";
 import { UserInfo } from "@/lib/github.types";
-import { Button } from "./ui/button";
 import { RepoNames } from "@/lib/github.types";
 import useSyncStore, { SyncStateEnum } from "@/stores/sync";
+import { open } from '@tauri-apps/plugin-shell'
 
 export default function AppStatus() {
-  const t = useTranslations();
   const { accessToken, giteeAccessToken, primaryBackupMethod, setGithubUsername } = useSettingStore()
   const { 
     userInfo, 
@@ -28,12 +25,9 @@ export default function AppStatus() {
     setGiteeSyncRepoState,
     setGiteeSyncRepoInfo 
   } = useSyncStore()
-  
-  const [loading, setLoading] = useState(false)
 
   // 获取当前主要备份方式的用户信息
   async function handleGetUserInfo() {
-    setLoading(true)
     try {
       if (accessToken) {
         // 获取 GitHub 用户信息
@@ -66,14 +60,11 @@ export default function AppStatus() {
       }
     } catch (err) {
       console.error('Failed to get user info:', err)
-    } finally {
-      setLoading(false)
     }
   }
 
   // 检查 GitHub 仓库状态
   async function checkGithubRepos() {
-    console.log('checkGithubRepos');
     try {
       // 检查图床仓库状态
       const imageRepo = await checkSyncRepoState(RepoNames.image)
@@ -140,6 +131,14 @@ export default function AppStatus() {
     }
   }
 
+  function openUserHome() {
+    if (primaryBackupMethod === 'github') {
+      open(`https://github.com/${userInfo?.login}`)
+    } else if (primaryBackupMethod === 'gitee') {
+      open(`https://gitee.com/${giteeUserInfo?.login}`)
+    }
+  }
+
   // 监听 token 变化，获取用户信息
   useEffect(() => {
     if (accessToken || giteeAccessToken) {
@@ -149,82 +148,36 @@ export default function AppStatus() {
 
   return (
     <SidebarMenuButton size="lg" asChild className="md:h-8 md:p-0">
-      <div className="flex items-center gap-2">
-        <Popover>
-          <PopoverTrigger asChild>
-            <div className="cursor-pointer">
-              <Avatar className="h-8 w-8">
-                {primaryBackupMethod === 'github' ? (
-                  <>
-                    <AvatarImage src={userInfo?.avatar_url} />
-                    <AvatarFallback>{userInfo? userInfo.login.slice(0, 1): <CircleUserRound size={14}/>}</AvatarFallback>
-                  </>
-                ) : primaryBackupMethod === 'gitee' ? (
-                  <>
-                    <AvatarImage src={giteeUserInfo?.avatar_url} />
-                    <AvatarFallback>{giteeUserInfo? giteeUserInfo.login.slice(0, 1): <CircleUserRound size={14}/>}</AvatarFallback>
-                  </>
-                ) : (
-                  <AvatarFallback><CircleUserRound size={14}/></AvatarFallback>
-                )}
-              </Avatar>
+      <div className="relative flex items-center gap-2 cursor-pointer" onClick={openUserHome} >
+        <Avatar className="h-8 w-8 rounded">
+          {primaryBackupMethod === 'github' ? (
+            <>
+              <AvatarImage src={userInfo?.avatar_url} />
+              <AvatarFallback>{userInfo? userInfo.login.slice(0, 1): <CircleUserRound size={14}/>}</AvatarFallback>
+            </>
+          ) : primaryBackupMethod === 'gitee' ? (
+            <>
+              <AvatarImage src={giteeUserInfo?.avatar_url} />
+              <AvatarFallback>{giteeUserInfo? giteeUserInfo.login.slice(0, 1): <CircleUserRound size={14}/>}</AvatarFallback>
+            </>
+          ) : (
+            <AvatarFallback><CircleUserRound size={14}/></AvatarFallback>
+          )}
+        </Avatar>
+        {
+          primaryBackupMethod === 'github' ? (  
+            <div className={`
+              absolute right-0.5 bottom-0.5 rounded-full size-2 
+              ${syncRepoState === SyncStateEnum.fail ? 'bg-red-700' : 
+                syncRepoState === SyncStateEnum.checking ? 'bg-orange-400' : ''}`}>
             </div>
-          </PopoverTrigger>
-          <PopoverContent side="right" className="w-56 mr-12 mt-4">
-            {/* GitHub 用户信息显示 */}
-            {primaryBackupMethod === 'github' && userInfo ? (
-              <div>
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={userInfo.avatar_url} />
-                    <AvatarFallback><CircleUserRound /></AvatarFallback>
-                  </Avatar>
-                  <div className="font-bold text-base">{userInfo.login}</div>
-                </div>
-                <div className="flex mt-4 justify-between items-center">
-                  <div className="text-xs text-zinc-400">
-                    Github {syncRepoState === SyncStateEnum.success ? <span className="text-green-500">●</span> : <span className="text-red-500">●</span>}
-                  </div>
-                </div>
-                <div className="text-xs font-medium text-zinc-500 mt-2">{t('settings.sync.isPrimaryBackup', { type: 'Github' })}</div>
-              </div>
-            ) : primaryBackupMethod === 'gitee' && giteeUserInfo ? (
-              <div>
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={giteeUserInfo.avatar_url} />
-                    <AvatarFallback><CircleUserRound /></AvatarFallback>
-                  </Avatar>
-                  <div className="font-bold text-base">{giteeUserInfo.login}</div>
-                </div>
-                <div className="flex mt-4 justify-between items-center">
-                  <div className="text-xs text-zinc-400">
-                    Gitee {giteeSyncRepoState === SyncStateEnum.success ? <span className="text-green-500">●</span> : <span className="text-red-500">●</span>}
-                  </div>
-                </div>
-                <div className="text-xs font-medium text-zinc-500 mt-2">{t('settings.sync.isPrimaryBackup', { type: 'Gitee' })}</div>
-              </div>
-            ) : (
-              <div className="flex items-center justify-center py-4">
-                <div>
-                  <div className="text-center mb-4">
-                    {primaryBackupMethod === 'github' && accessToken ? t('navigation.loading') : 
-                    primaryBackupMethod === 'gitee' && giteeAccessToken ? t('navigation.loading') : 
-                    t('navigation.login')}
-                  </div>
-                  <div className="flex justify-center">
-                    {
-                      loading ? <LoaderPinwheel size={32} className="animate-spin" /> : 
-                      ((primaryBackupMethod === 'github' && !accessToken) || 
-                      (primaryBackupMethod === 'gitee' && !giteeAccessToken)) && 
-                      <Button className="w-full" onClick={handleGetUserInfo}>{t('navigation.login')}</Button>
-                    }
-                  </div>
-                </div>
-              </div>
-            )}
-          </PopoverContent>
-        </Popover>
+          ) : primaryBackupMethod === 'gitee' ? (
+            <div className={`absolute right-0.5 bottom-0.5 rounded-full size-2
+              ${giteeSyncRepoState === SyncStateEnum.fail ? 'bg-red-700' : 
+              giteeSyncRepoState === SyncStateEnum.checking ? 'bg-orange-400' : ''}`}>
+            </div>
+          ) : null
+        }
       </div>
     </SidebarMenuButton>
   )
