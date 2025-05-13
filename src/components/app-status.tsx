@@ -35,7 +35,7 @@ export default function AppStatus() {
   async function handleGetUserInfo() {
     setLoading(true)
     try {
-      if (primaryBackupMethod === 'github' && accessToken) {
+      if (accessToken) {
         // 获取 GitHub 用户信息
         setImageRepoInfo(undefined)
         setSyncRepoInfo(undefined)
@@ -49,7 +49,7 @@ export default function AppStatus() {
 
         // 检查仓库状态 - GitHub
         await checkGithubRepos()
-      } else if (primaryBackupMethod === 'gitee' && giteeAccessToken) {
+      } else if (giteeAccessToken) {
         // 获取 Gitee 用户信息
         setGiteeSyncRepoInfo(undefined)
         setGiteeSyncRepoState(SyncStateEnum.checking)
@@ -73,6 +73,7 @@ export default function AppStatus() {
 
   // 检查 GitHub 仓库状态
   async function checkGithubRepos() {
+    console.log('checkGithubRepos');
     try {
       // 检查图床仓库状态
       const imageRepo = await checkSyncRepoState(RepoNames.image)
@@ -141,12 +142,10 @@ export default function AppStatus() {
 
   // 监听 token 变化，获取用户信息
   useEffect(() => {
-    if (primaryBackupMethod === 'github' && accessToken) {
-      handleGetUserInfo()
-    } else if (primaryBackupMethod === 'gitee' && giteeAccessToken) {
+    if (accessToken || giteeAccessToken) {
       handleGetUserInfo()
     }
-  }, [accessToken, giteeAccessToken, primaryBackupMethod])
+  }, [accessToken, giteeAccessToken])
 
   return (
     <SidebarMenuButton size="lg" asChild className="md:h-8 md:p-0">

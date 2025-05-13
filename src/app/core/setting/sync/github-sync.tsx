@@ -18,7 +18,17 @@ dayjs.extend(relativeTime)
 
 export function GithubSync() {
   const t = useTranslations();
-  const { accessToken, setAccessToken, useImageRepo, setUseImageRepo, jsdelivr, setJsdelivr, autoSync, setAutoSync, primaryBackupMethod, setPrimaryBackupMethod } = useSettingStore()
+  const { accessToken,
+    setAccessToken,
+    useImageRepo,
+    setUseImageRepo,
+    jsdelivr,
+    setJsdelivr,
+    autoSync,
+    setAutoSync,
+    primaryBackupMethod,
+    setPrimaryBackupMethod
+  } = useSettingStore()
   const {
     imageRepoState,
     setImageRepoState,
