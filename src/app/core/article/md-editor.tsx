@@ -379,7 +379,7 @@ export function MdEditor() {
     setContent(currentArticle)
   }, [currentArticle])
 
-  return <div className='flex-1 h-screen flex flex-col overflow-hidden'>
+  return <div className='flex-1 h-screen flex flex-col overflow-hidden dark:bg-zinc-950'>
     {
       editor && <CustomToolbar editor={editor} />
     }
