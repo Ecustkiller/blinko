@@ -133,8 +133,10 @@ export default function AppStatus() {
 
   function openUserHome() {
     if (primaryBackupMethod === 'github') {
+      if (!userInfo) return
       open(`https://github.com/${userInfo?.login}`)
     } else if (primaryBackupMethod === 'gitee') {
+      if (!giteeUserInfo) return
       open(`https://gitee.com/${giteeUserInfo?.login}`)
     }
   }
@@ -153,15 +155,15 @@ export default function AppStatus() {
           {primaryBackupMethod === 'github' ? (
             <>
               <AvatarImage src={userInfo?.avatar_url} />
-              <AvatarFallback>{userInfo? userInfo.login.slice(0, 1): <CircleUserRound size={14}/>}</AvatarFallback>
+              <AvatarFallback className="rounded bg-primary text-primary-foreground">{userInfo? userInfo.login.slice(0, 1): <CircleUserRound className="size-5"/>}</AvatarFallback>
             </>
           ) : primaryBackupMethod === 'gitee' ? (
             <>
               <AvatarImage src={giteeUserInfo?.avatar_url} />
-              <AvatarFallback>{giteeUserInfo? giteeUserInfo.login.slice(0, 1): <CircleUserRound size={14}/>}</AvatarFallback>
+              <AvatarFallback className="rounded bg-primary text-primary-foreground">{giteeUserInfo? giteeUserInfo.login.slice(0, 1): <CircleUserRound className="size-5"/>}</AvatarFallback>
             </>
           ) : (
-            <AvatarFallback><CircleUserRound size={14}/></AvatarFallback>
+            <AvatarFallback className="rounded bg-primary text-primary-foreground"><CircleUserRound className="size-5"/></AvatarFallback>
           )}
         </Avatar>
         {
