@@ -5,11 +5,12 @@ NoteGen 是一款的跨端的 `Markdown` 笔记应用，致力于使用 AI 建�
 
 ## 为什么选择 NoteGen？
 
-- 轻量，[安装包](https://github.com/codexu/note-gen/releases)**仅十几兆**，免费且无任何广告，无任何捆绑。
+- 轻量，[安装包](https://github.com/codexu/note-gen/releases)**仅20MB**，免费且无任何广告，无任何捆绑。
 - 跨端，支持 Mac、Windows、Linux，得益于 `Tauri2` 的跨平台能力，未来将支持 IOS、Android。
 - 支持`截图`、`文本`、`插图`、`文件`、`链接`等多种记录方式，满足各类场景的碎片化记录需求。
-- 默认支持本地离线使用，原生 `Markdown(.md)` 作为存储格式，同时支持实时同步到 `Github 私有仓库`，支持历史回滚。
-- AI 加持，可配置 ChatGPT、Gemini、Ollama、LM Studio、DeepSeek 等多种模型，支持自定义配置使用第三方模型。
+- 原生 `Markdown(.md)` 作为存储格式，拒绝魔改，方便迁移。
+- 默认支持本地离线使用，支持实时同步到 `Github、Gitee 私有仓库`，支持历史回滚，支持 WebDAV 同步。
+- AI 加持，可配置 ChatGPT、Gemini、Ollama、LM Studio、Grok 等多种模型，支持自定义配置使用第三方模型。
 
 ## 截图
 

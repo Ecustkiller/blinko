@@ -14,11 +14,12 @@ NoteGen is a cross-platform `Markdown` note-taking application dedicated to usin
 
 ## Why Choose NoteGen?
 
-- Lightweight: [Installation package](https://github.com/codexu/note-gen/releases) is **only about 10MB**, free with no ads or bundled software.
+- Lightweight: [Installation package](https://github.com/codexu/note-gen/releases) is **only 20MB**, free with no ads or bundled software.
 - Cross-platform: Supports Mac, Windows, Linux, and thanks to `Tauri2`'s cross-platform capabilities, will support iOS and Android in the future.
 - Supports multiple recording methods including `screenshots`, `text`, `illustrations`, `files`, `links`, etc., meeting fragmented recording needs across various scenarios.
-- Native offline usage with `Markdown(.md)` as the storage format, while also supporting real-time synchronization to `private GitHub repositories` with history rollback.
-- AI-enhanced: Configurable with ChatGPT, Gemini, Ollama, LM Studio, DeepSeek, and other models, with support for custom third-party model configuration.
+- Native `Markdown(.md)` as storage format, no modifications, easy to migrate.
+- Native offline usage, supporting real-time synchronization to `GitHub, Gitee private repositories` with history rollback, and WebDAV synchronization.
+- AI-enhanced: Configurable with ChatGPT, Gemini, Ollama, LM Studio, Grok, and other models, with support for custom third-party model configuration.
 
 ## Screenshots
 

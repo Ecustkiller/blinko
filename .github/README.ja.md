@@ -4,11 +4,12 @@ NoteGenは、AIを使用して記録と執筆を橋渡しし、断片化され�
 
 ## なぜNoteGenを選ぶのか？
 
-- 軽量：[インストールパッケージ](https://github.com/codexu/note-gen/releases)は**わずか約10MB**、無料で広告やバンドルソフトウェアはありません。
+- 軽量：[インストールパッケージ](https://github.com/codexu/note-gen/releases)は**わずか20MB**、無料で広告やバンドルソフトウェアはありません。
 - クロスプラットフォーム：Mac、Windows、Linuxをサポートし、`Tauri2`のクロスプラットフォーム機能のおかげで、将来的にはiOSとAndroidもサポートします。
 - `スクリーンショット`、`テキスト`、`イラスト`、`ファイル`、`リンク`など、さまざまな記録方法をサポートし、さまざまなシナリオでの断片化された記録ニーズに対応します。
-- ネイティブのオフライン使用をサポートし、`Markdown(.md)`をストレージ形式として使用し、`プライベートGitHubリポジトリ`へのリアルタイム同期と履歴のロールバックもサポートします。
-- AI強化：ChatGPT、Gemini、Ollama、LM Studio、DeepSeekなどのモデルを設定可能で、サードパーティのモデル設定もサポートします。
+- ネイティブの`Markdown(.md)`をストレージ形式として使用し、修正を加えず、簡単に移行できます。
+- ネイティブのオフライン使用をサポートし、`GitHub、Giteeプライベートリポジトリ`へのリアルタイム同期と履歴のロールバック、WebDAV同期をサポートします。
+- AI強化：ChatGPT、Gemini、Ollama、LM Studio、Grokなどのモデルを設定可能で、サードパーティのモデル設定もサポートします。
 
 ## スクリーンショット
 
@@ -90,6 +91,7 @@ NoteGenコミュニティグループに参加して、質問をしたり、使�
 
 ## 貢献
 
+- [貢献ガイドを読む](CONTRIBUTING.md)
 - [更新計画](https://github.com/codexu/note-gen/issues/46)
 - [バグや改善提案を提出する](https://github.com/codexu/note-gen/issues)
 - [ディスカッション](https://github.com/codexu/note-gen/discussions)
