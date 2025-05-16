@@ -3,7 +3,7 @@ import * as React from "react"
 import { useEffect, useRef, useState } from "react"
 import { Send, Square } from "lucide-react"
 import useSettingStore from "@/stores/setting"
-import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Tabs,
   TabsList,
@@ -15,10 +15,14 @@ import useMarkStore from "@/stores/mark"
 import { fetchAi, fetchAiStream } from "@/lib/ai"
 import { MarkGen } from "./mark-gen"
 import { useTranslations } from 'next-intl'
-import { useI18n } from "@/hooks/useI18n"
 import { ChatLink } from "./chat-link"
 import { TooltipButton } from "@/components/tooltip-button"
 import { useLocalStorage } from 'react-use';
+import { ModelSelect } from "./model-select"
+import { PromptSelect } from "./prompt-select"
+import { ClearChat } from "./clear-chat"
+import { ClearContext } from "./clear-context"
+import { ChatLanguage } from "./chat-language"
 
 export function ChatInput() {
   const [text, setText] = useState("")
@@ -29,9 +33,8 @@ export function ChatInput() {
   const [isComposing, setIsComposing] = useState(false)
   const [placeholder, setPlaceholder] = useState('')
   const t = useTranslations()
-  const { currentLocale } = useI18n()
   const [inputType, setInputType] = useLocalStorage('chat-input-type', 'chat')
-  const markGenRef = useRef<{ openGen: () => void }>(null)
+  const markGenRef = useRef<any>(null) // Fix markGenRef type
   const { isLinkMark } = useChatStore()
   const abortControllerRef = useRef<AbortController | null>(null)
 
@@ -69,13 +72,13 @@ export function ChatInput() {
     if (!message) return
 
     await fetchMarks()
-    
     const scanMarks = isLinkMark ? marks.filter(item => item.type === 'scan') : []
     const textMarks = isLinkMark ? marks.filter(item => item.type === 'text') : []
     const imageMarks = isLinkMark ? marks.filter(item => item.type === 'image') : []
     const linkMarks = isLinkMark ? marks.filter(item => item.type === 'link') : []
     const fileMarks = isLinkMark ? marks.filter(item => item.type === 'file') : []
-
+    const lastClearIndex = chats.findLastIndex(item => item.type === 'clear')
+    const chatsAfterClear = chats.slice(lastClearIndex + 1)
     const request_content = `
       可以参考以下内容笔记的记录：
       以下是通过截图后，使用OCR识别出的文字片段：
@@ -90,9 +93,11 @@ export function ChatInput() {
       ${fileMarks.map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')}。
       以下聊天记录：
       ${
-        chats.filter((item) => item.tagId === currentTagId && item.type === "chat").map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')
+        chatsAfterClear
+          .filter((item) => item.tagId === currentTagId && item.type === "chat")
+          .map((item, index) => `${index + 1}. ${item.content}`)
+          .join(';\n\n')
       }。
-      使用 ${currentLocale} 语言
       ${text}
     `
     
@@ -142,8 +147,8 @@ export function ChatInput() {
     const imageMarks = isLinkMark ? marks.filter(item => item.type === 'image') : []
     const fileMarks = isLinkMark ? marks.filter(item => item.type === 'file') : []
     const linkMarks = isLinkMark ? marks.filter(item => item.type === 'link') : []
-
-    const userQuestionHistorys = chats.filter((item) => item.tagId === currentTagId && item.type === "chat" && item.role === 'user').map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')
+    const lastClearIndex = chats.findLastIndex(item => item.type === 'clear')
+    const chatsAfterClear = chats.slice(lastClearIndex + 1)
     const request_content = `
       请你扮演一个笔记软件的智能助手的 placeholder，可以参考以下内容笔记的记录，
       以下是通过截图后，使用OCR识别出的文字片段：
@@ -157,12 +162,17 @@ export function ChatInput() {
       以下是链接记录的片段描述：
       ${linkMarks.map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')}。
       以下聊天记录：
-      ${
-        chats.filter((item) => item.tagId === currentTagId && item.type === "chat").map((item, index) => `${index + 1}. ${item.content}`).join(';\n\n')
+      ${chatsAfterClear
+        .filter((item) => item.tagId === currentTagId && item.type === "chat")
+        .map((item, index) => `${index + 1}. ${item.content}`)
+        .join(';\n\n')
       }。
       以下是用户之前的提问记录：
-      ${userQuestionHistorys}。
-      使用 ${currentLocale} 语言，分析这些记录的内容，编写一个可能会向你提问的问题，用于辅助用户向你提问，不要返回用户已经提过的类似问题，不许超过 20 个字。
+      ${chatsAfterClear
+        .filter((item) => item.tagId === currentTagId && item.type === "chat" && item.role === 'user')
+        .map((item, index) => `${index + 1}. ${item.content}`)
+        .join(';\n\n')}。
+      分析这些记录的内容，编写一个可能会向你提问的问题，用于辅助用户向你提问，不要返回用户已经提过的类似问题，不许超过 20 个字。
     `
     // 使用非流式请求获取placeholder内容
     const content = await fetchAi(request_content)
@@ -189,55 +199,79 @@ export function ChatInput() {
   }, [apiKey, marks, isLinkMark, t])
 
   return (
-    <footer className="relative flex items-center border rounded-lg p-2 gap-1 my-4 w-3/4 max-w-[860px]">
-      <ChatLink inputType={inputType} />
-      <Input
-        className="flex-1 relative border-none focus-visible:ring-0 shadow-none"
-        disabled={!apiKey || loading}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder={placeholder}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !isComposing && e.keyCode === 13) {
-            e.preventDefault()
-            if (inputType === "gen") {
-              markGenRef.current?.openGen()
-            } else if (inputType === "chat") {
-              handleSubmit()
+    <footer className="relative flex flex-col border rounded-xl p-2 gap-2 mb-2 w-[calc(100%-1rem)]">
+      <div className="relative w-full flex items-start">
+        <Textarea
+          className="flex-1 p-2 relative border-none focus-visible:ring-0 shadow-none min-h-[36px] max-h-[240px] resize-none overflow-y-auto"
+          rows={1}
+          disabled={!apiKey || loading}
+          value={text}
+          onChange={(e) => {
+            setText(e.target.value)
+            const textarea = e.target
+            textarea.style.height = 'auto'
+            const newHeight = Math.min(textarea.scrollHeight, 240)
+            textarea.style.height = `${newHeight}px`
+          }}
+          placeholder={placeholder}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !isComposing && !e.shiftKey && e.keyCode === 13) {
+              e.preventDefault()
+              if (inputType === "gen") {
+                markGenRef.current?.openGen()
+              } else if (inputType === "chat") {
+                handleSubmit()
+              }
             }
+            if (e.key === "Tab") {
+              e.preventDefault()
+              setText(placeholder.replace('[Tab]', ''))
+            }
+          }}
+          onCompositionStart={() => setIsComposing(true)}
+          onCompositionEnd={() => setTimeout(() => {
+            setIsComposing(false)
+          }, 0)}
+        />
+      </div>
+      <div className="flex justify-between items-center w-full">
+        <div className="flex">
+          <ChatLink inputType={inputType} />
+          <ModelSelect />
+          <PromptSelect />
+          <ChatLanguage />
+          <ClearContext />
+          <ClearChat />
+        </div>
+        <div className="flex items-center justify-end gap-2 pr-1">
+          <Tabs value={inputType} onValueChange={inputTypeChangeHandler}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="gen">{t('record.chat.input.organize')}</TabsTrigger>
+              <TabsTrigger value="chat">{t('record.chat.input.chat')}</TabsTrigger>
+            </TabsList>
+          </Tabs>
+          {
+            inputType === 'gen' ?
+              <MarkGen inputValue={text} ref={markGenRef} /> :
+              loading ? 
+                <TooltipButton 
+                  variant={"ghost"}
+                  size="sm"
+                  icon={<Square className="text-destructive" />} 
+                  tooltipText={t('record.chat.input.terminate')} 
+                  onClick={terminateChat} 
+                /> :
+                <TooltipButton 
+                  variant={"default"}
+                  size="sm"
+                  icon={<Send className="size-4" />} 
+                  disabled={!apiKey} 
+                  tooltipText={t('record.chat.input.send')} 
+                  onClick={handleSubmit} 
+                />
           }
-          if (e.key === "Tab") {
-            e.preventDefault()
-            setText(placeholder.replace('[Tab]', ''))
-          }
-        }}
-        onCompositionStart={() => setIsComposing(true)}
-        onCompositionEnd={() => setTimeout(() => {
-          setIsComposing(false)
-        }, 0)}
-      />
-      <Tabs value={inputType} onValueChange={inputTypeChangeHandler}>
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="gen">{t('record.chat.input.organize')}</TabsTrigger>
-          <TabsTrigger value="chat">{t('record.chat.input.chat')}</TabsTrigger>
-        </TabsList>
-      </Tabs>
-      {
-        inputType === 'gen' ?
-          <MarkGen inputValue={text} ref={markGenRef} /> :
-          loading ? 
-            <TooltipButton 
-              icon={<Square className="text-destructive" />} 
-              tooltipText={t('record.chat.input.terminate')} 
-              onClick={terminateChat} 
-            /> :
-            <TooltipButton 
-              icon={<Send className="size-4" />} 
-              disabled={!apiKey} 
-              tooltipText={t('record.chat.input.send')} 
-              onClick={handleSubmit} 
-            />
-      }
+        </div>
+      </div>
     </footer>
   )
 }

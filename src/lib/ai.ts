@@ -4,7 +4,7 @@ import OpenAI from 'openai';
 import { GoogleGenAI } from "@google/genai";
 
 /**
- * 获取当前的面具内容
+ * 获取当前的prompt内容
  */
 async function getPromptContent(): Promise<string> {
   const store = await Store.load('store.json')
@@ -72,7 +72,7 @@ export async function fetchAi(text: string): Promise<string> {
       return ''
     }
     
-    // 获取面具内容
+    // 获取prompt内容
     const promptContent = await getPromptContent()
     
     // 创建 OpenAI 客户端
@@ -169,6 +169,7 @@ export async function fetchAiStream(text: string, onUpdate: (content: string) =>
     const aiType = await store.get<string>('aiType') || 'openai'
     const temperature = await store.get<number>('temperature') || 0.7
     const topP = await store.get<number>('topP') || 1
+    const chatLanguage = await store.get<string>('chatLanguage') || 'en'
     
     if (!baseURL) {
       toast({
@@ -179,9 +180,8 @@ export async function fetchAiStream(text: string, onUpdate: (content: string) =>
       return ''
     }
     
-    // 获取面具内容
-    const promptContent = await getPromptContent()
-    
+    // 获取prompt内容
+    const promptContent = await getPromptContent() + '\n\n' + `Use **${chatLanguage}** to answer.`
     // 创建 OpenAI 客户端
     const openai = await createOpenAIClient()
     
@@ -313,6 +313,7 @@ export async function fetchAiStreamToken(text: string, onUpdate: (content: strin
     const aiType = await store.get<string>('aiType') || 'openai'
     const temperature = await store.get<number>('temperature') || 0.7
     const topP = await store.get<number>('topP') || 1
+    const chatLanguage = await store.get<string>('chatLanguage') || 'en'
     
     if (!baseURL) {
       toast({
@@ -323,8 +324,8 @@ export async function fetchAiStreamToken(text: string, onUpdate: (content: strin
       return ''
     }
     
-    // 获取面具内容
-    const promptContent = await getPromptContent()
+    // 获取prompt内容
+    const promptContent = await getPromptContent() + '\n\n' + `Use **${chatLanguage}** to answer.`
     
     // 创建 OpenAI 客户端
     const openai = await createOpenAIClient()

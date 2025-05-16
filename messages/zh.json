@@ -21,17 +21,17 @@
   },
   "settings": {
     "prompt": {
-      "title": "面具",
-      "promptTitle": "面具名称",
-      "desc": "在这里，你可以添加和管理面具，帮助 AI 更好地理解你的需求。",
-      "addPrompt": "新增面具",
-      "selectPrompt": "选择面具",
-      "configPrompt": "配置面具",
+      "title": "Prompt",
+      "promptTitle": "Prompt 名称",
+      "desc": "在这里，你可以添加和管理 Prompt，帮助 AI 更好地理解你的需求。",
+      "addPrompt": "新增 Prompt",
+      "selectPrompt": "选择 Prompt",
+      "configPrompt": "配置 Prompt",
       "noContent": "暂无内容",
-      "addPromptDesc": "请输入面具名称和内容，帮助AI更好地理解你的需求。",
-      "promptTitlePlaceholder": "请输入面具名称",
-      "promptContentPlaceholder": "请输入面具内容",
-      "promptContent": "面具内容"
+      "addPromptDesc": "请输入 Prompt 名称和内容，帮助AI更好地理解你的需求。",
+      "promptTitlePlaceholder": "请输入 Prompt 名称",
+      "promptContentPlaceholder": "请输入 Prompt 内容",
+      "promptContent": "Prompt 内容"
     },
     "about": {
       "title": "关于",
@@ -246,8 +246,8 @@
           "header": {
             "configApiKey": "配置 API KEY",
             "clearChat": "清空对话",
-            "configPrompt": "配置面具",
-            "selectPrompt": "选择面具"
+            "configPrompt": "配置 Prompt",
+            "selectPrompt": "选择 Prompt"
           },
           "clipboard": {
             "image": {
@@ -368,6 +368,12 @@
           }
         ]
       },
+      "newChat": "使用新标签开始对话",
+      "removeChat": "删除当前标签对话",
+      "confirmNew": "创建新标签",
+      "confirmNewDescription": "请确认要创建一个新的标签开始对话吗？",
+      "confirmRemove": "删除标签",
+      "confirmRemoveDescription": "请注意，删除此标签会连带删除内部的记录，请再次确认。",
       "input": {
         "organize": "整理",
         "chat": "聊天",
@@ -376,13 +382,33 @@
           "noApiKey": "无 API KEY 配置，无法使用 AI 聊天..."
         },
         "send": "发送",
-        "terminate": "终止"
+        "terminate": "终止",
+        "tagLink": {
+          "on": "已关联标签",
+          "off": "未关联标签"
+        },
+        "modelSelect": {
+          "tooltip": "选择 AI 模型",
+          "placeholder": "搜索 AI 模型"
+        },
+        "promptSelect": {
+          "tooltip": "选择 Prompt",
+          "placeholder": "搜索 Prompt"
+        },
+        "clearChat": "清空对话",
+        "clearContext": {
+          "tooltip": "清除上下文"
+        },
+        "chatLanguage": {
+          "tooltip": "选择对话语言",
+          "placeholder": "搜索语言"
+        }
       },
       "header": {
         "configApiKey": "配置 API KEY",
         "clearChat": "清空聊天",
-        "configPrompt": "配置面具",
-        "selectPrompt": "选择面具"
+        "configPrompt": "配置 Prompt",
+        "selectPrompt": "选择 Prompt"
       },
       "clipboard": {
         "image": {

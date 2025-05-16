@@ -1,6 +1,6 @@
 import useChatStore from '@/stores/chat'
 import useTagStore from '@/stores/tag'
-import { BotMessageSquare, ClipboardCheck, LoaderPinwheel, UserRound } from 'lucide-react'
+import { BotMessageSquare, ClipboardCheck, LoaderPinwheel, UserRound, X } from 'lucide-react'
 import { useEffect } from 'react'
 import { Chat } from '@/db/chats'
 import ChatPreview from './chat-preview'
@@ -14,23 +14,32 @@ import { useTranslations } from 'next-intl'
 import useSyncStore from '@/stores/sync'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import ChatThinking from './chat-thinking'
+import { Separator } from '@/components/ui/separator'
+import { debounce } from 'lodash-es'
 
 export default function ChatContent() {
   const { chats, init } = useChatStore()
   const { currentTagId } = useTagStore()
+
+  function scrollToBottom() {
+    const md = document.querySelector('#chats-wrapper')
+    if (md) {
+      md.scroll(0, md.scrollHeight)
+      setTimeout(() => {
+        md.scroll(0, md.scrollHeight)
+      }, 1000)
+    }
+  }
+
+  // debounce
+  const scrollToBottomDebounce = debounce(scrollToBottom, 500)
 
   useEffect(() => {
     init(currentTagId)
   }, [currentTagId])
 
   useEffect(() => {
-    const md = document.querySelector('#chats-wrapper')
-    if (md) {
-      md.scroll(0, md.scrollHeight)
-      setTimeout(() => {
-        md.scroll(0, md.scrollHeight)
-      }, 500)
-    }
+    scrollToBottomDebounce()
   }, [chats])
 
   return <div id="chats-wrapper" className="flex-1 overflow-y-auto overflow-x-hidden w-full flex flex-col items-end p-4 gap-6">
@@ -75,9 +84,24 @@ function MessageWrapper({ chat, children }: { chat: Chat, children: React.ReactN
 
 function Message({ chat }: { chat: Chat }) {
   const t = useTranslations()
+  const { deleteChat } = useChatStore()
   const content = chat.content?.includes('thinking') ? chat.content.split('<thinking>')[2] : chat.content
 
+  const handleRemoveClearContext = () => {
+    deleteChat(chat.id)
+  }
+
   switch (chat.type) {
+    case 'clear':
+      return <div className="w-full flex justify-center items-center gap-4 px-10">
+        <Separator className='flex-1' />
+        <div className="flex justify-center items-center gap-2 w-32 group h-8">
+          <p className="text-sm text-center text-muted-foreground">{t('record.chat.input.clearContext.tooltip')}</p>
+          <X className="size-4 hidden group-hover:flex cursor-pointer" onClick={handleRemoveClearContext} />
+        </div>
+        <Separator className='flex-1' />
+      </div>
+
     case 'clipboard':
       return <MessageWrapper chat={chat}>
         <ChatClipboard chat={chat} />
