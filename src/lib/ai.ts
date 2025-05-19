@@ -25,6 +25,111 @@ async function getPromptContent(): Promise<string> {
 }
 
 /**
+ * 获取AI设置
+ */
+async function getAISettings() {
+  const store = await Store.load('store.json')
+  const baseURL = await store.get<string>('baseURL')
+  const apiKey = await store.get<string>('apiKey')
+  const model = await store.get<string>('model') || 'gpt-3.5-turbo'
+  const aiType = await store.get<string>('aiType') || 'openai'
+  const temperature = await store.get<number>('temperature') || 0.7
+  const topP = await store.get<number>('topP') || 1
+  const chatLanguage = await store.get<string>('chatLanguage') || 'en'
+  const proxyUrl = await store.get<string>('proxy')
+  
+  return {
+    baseURL,
+    apiKey,
+    model,
+    aiType,
+    temperature,
+    topP,
+    chatLanguage,
+    proxyUrl
+  }
+}
+
+/**
+ * 检查AI服务配置是否有效
+ */
+async function validateAIService(baseURL: string | undefined): Promise<string | null> {
+  if (!baseURL) {
+    toast({
+      title: 'AI 错误',
+      description: '请先设置 AI 地址',
+      variant: 'destructive',
+    })
+    return null
+  }
+  return baseURL
+}
+
+/**
+ * 处理AI请求错误
+ */
+function handleAIError(error: unknown, withToast = true): string | null {
+  const errorMessage = error instanceof Error ? error.message : '未知错误'
+  
+  if (withToast) {
+    toast({
+      title: 'AI 错误',
+      description: errorMessage,
+      variant: 'destructive',
+    })
+  }
+  
+  return `请求失败: ${errorMessage}`
+}
+
+/**
+ * 为不同AI类型准备消息
+ */
+async function prepareMessages(text: string, aiType: string, includeLanguage = false): Promise<{
+  messages: OpenAI.Chat.ChatCompletionMessageParam[],
+  geminiText?: string
+}> {
+  // 获取prompt内容
+  let promptContent = await getPromptContent()
+  
+  if (includeLanguage) {
+    const store = await Store.load('store.json')
+    const chatLanguage = await store.get<string>('chatLanguage') || 'en'
+    promptContent += '\n\n' + `Use **${chatLanguage}** to answer.`
+  }
+  
+  // 定义消息数组
+  let messages: OpenAI.Chat.ChatCompletionMessageParam[] = []
+  let geminiText: string | undefined
+  
+  // 根据不同AI类型构建请求
+  if (aiType === 'gemini') {
+    // 对于Gemini，我们将使用@google/genai库
+    const finalText = promptContent ? `${promptContent}\n\n${text}` : text
+    messages = [{
+      role: 'user', 
+      content: finalText
+    }]
+    geminiText = finalText
+  } else {
+    // OpenAI/Ollama 请求
+    if (promptContent) {
+      messages.push({
+        role: 'system',
+        content: promptContent
+      })
+    }
+    
+    messages.push({
+      role: 'user',
+      content: text
+    })
+  }
+  
+  return { messages, geminiText }
+}
+
+/**
  * 创建OpenAI客户端，适用于所有AI类型
  */
 async function createOpenAIClient() {
@@ -66,85 +171,33 @@ async function createGeminiClient() {
  */
 export async function fetchAi(text: string): Promise<string> {
   try {
-    const store = await Store.load('store.json')
-    const baseURL = await store.get<string>('baseURL')
-    const model = await store.get<string>('model') || 'gpt-3.5-turbo'
-    const aiType = await store.get<string>('aiType') || 'openai'
-    const temperature = await store.get<number>('temperature') || 0.7
-    const topP = await store.get<number>('topP') || 1
+    // 获取AI设置
+    const { baseURL, model, aiType, temperature, topP } = await getAISettings()
     
-    if (!baseURL) {
-      toast({
-        title: 'AI 错误',
-        description: '请先设置 AI 地址',
-        variant: 'destructive',
-      })
-      return ''
-    }
+    // 验证AI服务
+    if (validateAIService(baseURL) === null) return ''
     
-    // 获取prompt内容
-    const promptContent = await getPromptContent()
-    
-    // 创建 OpenAI 客户端
-    const openai = await createOpenAIClient()
+    // 准备消息
+    const { messages, geminiText } = await prepareMessages(text, aiType)
     
     // 根据不同AI类型构建请求
     if (aiType === 'gemini') {
-      // Gemini API请求使用@google/genai
-      const finalText = promptContent ? `${promptContent}\n\n${text}` : text
-      
       // 创建Gemini客户端
       const genAI = await createGeminiClient()
       
       const result = await genAI.models.generateContent({
         model: model,
         contents: {
-          parts: [{ text: finalText }]
+          parts: [{ text: geminiText || text }]
         },
         temperature: temperature,
         topP: topP
       })
       
       return result.text || ''
-    } else if (aiType === 'ollama') {
-      // Ollama API请求
-      const messages = []
-      
-      if (promptContent) {
-        messages.push({
-          role: 'system' as const,
-          content: promptContent
-        })
-      }
-      
-      messages.push({
-        role: 'user' as const,
-        content: text
-      })
-      
-      const completion = await openai.chat.completions.create({
-        model: model,
-        messages: messages,
-        temperature: temperature,
-        top_p: topP,
-      })
-      
-      return completion.choices[0].message.content || ''
     } else {
-      // OpenAI 请求
-      const messages = []
-      
-      if (promptContent) {
-        messages.push({
-          role: 'system' as const,
-          content: promptContent
-        })
-      }
-      
-      messages.push({
-        role: 'user' as const,
-        content: text
-      })
+      // OpenAI/Ollama请求
+      const openai = await createOpenAIClient()
       
       const completion = await openai.chat.completions.create({
         model: model,
@@ -156,12 +209,7 @@ export async function fetchAi(text: string): Promise<string> {
       return completion.choices[0].message.content || ''
     }
   } catch (error) {
-    toast({
-      title: 'AI 错误',
-      description: error instanceof Error ? error.message : '未知错误',
-      variant: 'destructive',
-    })
-    return `请求失败: ${error instanceof Error ? error.message : '未知错误'}`
+    return handleAIError(error) || ''
   }
 }
 
@@ -173,81 +221,25 @@ export async function fetchAi(text: string): Promise<string> {
  */
 export async function fetchAiStream(text: string, onUpdate: (content: string) => void, abortSignal?: AbortSignal): Promise<string> {
   try {
-    const store = await Store.load('store.json')
-    const baseURL = await store.get<string>('baseURL')
-    const model = await store.get<string>('model') || 'gpt-3.5-turbo'
-    const aiType = await store.get<string>('aiType') || 'openai'
-    const temperature = await store.get<number>('temperature') || 0.7
-    const topP = await store.get<number>('topP') || 1
-    const chatLanguage = await store.get<string>('chatLanguage') || 'en'
+    // 获取AI设置
+    const { baseURL, model, aiType, temperature, topP } = await getAISettings()
     
-    if (!baseURL) {
-      toast({
-        title: 'AI 错误',
-        description: '请先设置 AI 地址',
-        variant: 'destructive',
-      })
-      return ''
-    }
+    // 验证AI服务
+    if (await validateAIService(baseURL) === null) return ''
     
-    // 获取prompt内容
-    const promptContent = await getPromptContent() + '\n\n' + `Use **${chatLanguage}** to answer.`
-    // 创建 OpenAI 客户端
-    const openai = await createOpenAIClient()
-    
-    // 定义消息数组
-    let messages: OpenAI.Chat.ChatCompletionMessageParam[] = []
-    
-    // 根据不同AI类型构建请求
-    if (aiType === 'gemini') {
-      // 对于Gemini，我们将使用@google/genai库，这里的messages只是占位
-      // 实际执行时会创建Gemini客户端
-      const finalText = promptContent ? `${promptContent}\n\n${text}` : text
-      messages = [{
-        role: 'user', 
-        content: finalText
-      }]
-    } else if (aiType === 'ollama') {
-      // Ollama API请求
-      if (promptContent) {
-        messages.push({
-          role: 'system',
-          content: promptContent
-        })
-      }
-      
-      messages.push({
-        role: 'user',
-        content: text
-      })
-    } else {
-      // OpenAI 请求
-      if (promptContent) {
-        messages.push({
-          role: 'system',
-          content: promptContent
-        })
-      }
-      
-      messages.push({
-        role: 'user',
-        content: text
-      })
-    }
+    // 准备消息
+    const { messages, geminiText } = await prepareMessages(text, aiType, true)
     
     // 根据不同AI类型进行流式请求
     if (aiType === 'gemini') {
       // Gemini API流式请求使用@google/genai
       const genAI = await createGeminiClient()
       
-      // 从消息中提取出用户文本
-      const userMessage = messages[0].content as string
-      
       let fullContent = ''
       const response = await genAI.models.generateContentStream({
         model: model,
         contents: {
-          parts: [{ text: userMessage }]
+          parts: [{ text: geminiText || text }]
         },
         temperature: temperature,
         topP: topP
@@ -268,6 +260,7 @@ export async function fetchAiStream(text: string, onUpdate: (content: string) =>
       return fullContent
     } else {
       // OpenAI/Ollama流式请求
+      const openai = await createOpenAIClient()
       const stream = await openai.chat.completions.create({
         model: model,
         messages: messages,
@@ -301,12 +294,7 @@ export async function fetchAiStream(text: string, onUpdate: (content: string) =>
       return fullContent
     }
   } catch (error) {
-    toast({
-      title: 'AI 错误',
-      description: error instanceof Error ? error.message : '未知错误',
-      variant: 'destructive',
-    })
-    return `请求失败: ${error instanceof Error ? error.message : '未知错误'}`
+    return handleAIError(error) || ''
   }
 }
 
@@ -317,81 +305,24 @@ export async function fetchAiStream(text: string, onUpdate: (content: string) =>
  */
 export async function fetchAiStreamToken(text: string, onUpdate: (content: string) => void): Promise<string> {
   try {
-    const store = await Store.load('store.json')
-    const baseURL = await store.get<string>('baseURL')
-    const model = await store.get<string>('model') || 'gpt-3.5-turbo'
-    const aiType = await store.get<string>('aiType') || 'openai'
-    const temperature = await store.get<number>('temperature') || 0.7
-    const topP = await store.get<number>('topP') || 1
-    const chatLanguage = await store.get<string>('chatLanguage') || 'en'
+    // 获取AI设置
+    const { baseURL, model, aiType, temperature, topP } = await getAISettings()
     
-    if (!baseURL) {
-      toast({
-        title: 'AI 错误',
-        description: '请先设置 AI 地址',
-        variant: 'destructive',
-      })
-      return ''
-    }
+    // 验证AI服务
+    if (await validateAIService(baseURL) === null) return ''
     
-    // 获取prompt内容
-    const promptContent = await getPromptContent() + '\n\n' + `Use **${chatLanguage}** to answer.`
-    
-    // 创建 OpenAI 客户端
-    const openai = await createOpenAIClient()
-    
-    // 定义消息数组
-    let messages: OpenAI.Chat.ChatCompletionMessageParam[] = []
-    
-    // 根据不同AI类型构建请求
-    if (aiType === 'gemini') {
-      // 对于Gemini，我们将使用@google/genai库，这里的messages只是占位
-      // 实际执行时会创建Gemini客户端
-      const finalText = promptContent ? `${promptContent}\n\n${text}` : text
-      messages = [{
-        role: 'user', 
-        content: finalText
-      }]
-    } else if (aiType === 'ollama') {
-      // Ollama API请求
-      if (promptContent) {
-        messages.push({
-          role: 'system',
-          content: promptContent
-        })
-      }
-      
-      messages.push({
-        role: 'user',
-        content: text
-      })
-    } else {
-      // OpenAI 请求
-      if (promptContent) {
-        messages.push({
-          role: 'system',
-          content: promptContent
-        })
-      }
-      
-      messages.push({
-        role: 'user',
-        content: text
-      })
-    }
+    // 准备消息
+    const { messages, geminiText } = await prepareMessages(text, aiType, true)
     
     // 根据不同AI类型进行流式请求
     if (aiType === 'gemini') {
       // Gemini API流式请求使用@google/genai
       const genAI = await createGeminiClient()
       
-      // 从消息中提取出用户文本
-      const userMessage = messages[0].content as string
-      
       const streamingResult = await genAI.models.generateContentStream({
         model: model,
         contents: {
-          parts: [{ text: userMessage }]
+          parts: [{ text: geminiText || text }]
         },
         temperature: temperature,
         topP: topP
@@ -406,6 +337,7 @@ export async function fetchAiStreamToken(text: string, onUpdate: (content: strin
       return ''
     } else {
       // OpenAI/Ollama流式请求
+      const openai = await createOpenAIClient()
       const stream = await openai.chat.completions.create({
         model: model,
         messages: messages,
@@ -424,23 +356,14 @@ export async function fetchAiStreamToken(text: string, onUpdate: (content: strin
       return ''
     }
   } catch (error) {
-    toast({
-      title: 'AI 错误',
-      description: error instanceof Error ? error.message : '未知错误',
-      variant: 'destructive',
-    })
-    return `请求失败: ${error instanceof Error ? error.message : '未知错误'}`
+    return handleAIError(error) || ''
   }
 }
 
 export async function fetchAiDesc(text: string) {
   try {
-    const store = await Store.load('store.json')
-    const baseURL = await store.get<string>('baseURL')
-    const model = await store.get<string>('model') || 'gpt-3.5-turbo'
-    const aiType = await store.get<string>('aiType') || 'openai'
-    const temperature = await store.get<number>('temperature') || 0.7
-    const topP = await store.get<number>('topP') || 1
+    // 获取AI设置
+    const { baseURL, model, aiType, temperature, topP } = await getAISettings()
     
     if (!baseURL) return null;
     
@@ -480,27 +403,17 @@ export async function fetchAiDesc(text: string) {
       return completion.choices[0].message.content || ''
     }
   } catch (error) {
-    toast({
-      title: 'AI 错误',
-      description: error instanceof Error ? error.message : '未知错误',
-      variant: 'destructive',
-    })
-    return null
+    return handleAIError(error, false) || null
   }
 }
 
 export async function checkAiStatus() {
   try {
-    const store = await Store.load('store.json')
-    const baseURL = await store.get<string>('baseURL')
-    const aiType = await store.get<string>('aiType')
-    const model = await store.get<string>('model') || 'gpt-3.5-turbo'
+    // 获取AI设置
+    const { baseURL, model, aiType } = await getAISettings()
     
     if (!baseURL || !aiType) return false
-
-    // 创建 OpenAI 客户端
-    const openai = await createOpenAIClient()
-
+    
     if (aiType === 'gemini') {
       // Gemini - 使用@google/genai
       const genAI = await createGeminiClient()
@@ -511,18 +424,9 @@ export async function checkAiStatus() {
           parts: [{ text: 'Hello' }]
         }
       })
-    } else if (aiType === 'ollama') {
-      // Ollama
-      await openai.chat.completions.create({
-        model,
-        messages: [{
-          role: 'user' as const,
-          content: 'Hello'
-        }],
-      })
     } else {
-      // OpenAI
-       // 检测连接
+      // OpenAI/Ollama
+      const openai = await createOpenAIClient()
       await openai.chat.completions.create({
         model,
         messages: [{
@@ -540,9 +444,9 @@ export async function checkAiStatus() {
 
 export async function getModels() {
   try {
-    const store = await Store.load('store.json')
-    const baseURL = await store.get<string>('baseURL')
-    const aiType = await store.get<string>('aiType')
+    // 获取AI设置
+    const { baseURL, aiType } = await getAISettings()
+    
     if (!baseURL || !aiType) return []
     
     if (aiType === 'gemini') {
