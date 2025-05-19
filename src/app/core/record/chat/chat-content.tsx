@@ -1,6 +1,6 @@
 import useChatStore from '@/stores/chat'
 import useTagStore from '@/stores/tag'
-import { BotMessageSquare, ClipboardCheck, LoaderPinwheel, UserRound, X } from 'lucide-react'
+import { BotMessageSquare, ClipboardCheck, LoaderPinwheel, Undo2, UserRound, X } from 'lucide-react'
 import { useEffect } from 'react'
 import { Chat } from '@/db/chats'
 import ChatPreview from './chat-preview'
@@ -17,6 +17,8 @@ import ChatThinking from './chat-thinking'
 import { Separator } from '@/components/ui/separator'
 import { debounce } from 'lodash-es'
 import { scrollToBottom } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import emitter from '@/lib/emitter'
 
 export default function ChatContent() {
   const { chats, init } = useChatStore()
@@ -25,6 +27,7 @@ export default function ChatContent() {
   // debounce
   const scrollToBottomDebounce = debounce(scrollToBottom, 500)
 
+  
   useEffect(() => {
     init(currentTagId)
   }, [currentTagId])
@@ -46,6 +49,10 @@ function MessageWrapper({ chat, children }: { chat: Chat, children: React.ReactN
   const { chats, loading } = useChatStore()
   const { userInfo } = useSyncStore()
 
+  const revertChat = () => {
+    emitter.emit('revertChat', chat.content)
+  }
+
   const index = chats.findIndex(item => item.id === chat.id)
   if (chat.role === 'system') {
     return <div className="flex w-full gap-4">
@@ -58,17 +65,21 @@ function MessageWrapper({ chat, children }: { chat: Chat, children: React.ReactN
       </div>
     </div>
   } else {
-    return <div className="flex items-center gap-4">
+    return <div className="flex group items-center gap-4">
       <div className="bg-primary text-primary-foreground px-4 py-2 rounded-lg max-w-[calc(100vw-600px)]">
         {chat.content}
       </div>
-      {
-        userInfo?.avatar_url ?
-          <Avatar className='rounded size-9'>
-            <AvatarImage src={userInfo?.avatar_url} />
-          </Avatar> :
-          <UserRound />
-      }
+      <div className="relative">
+        <Avatar className='rounded size-9 flex items-center justify-center'>
+          {
+            userInfo?.avatar_url ?
+            <AvatarImage src={userInfo?.avatar_url} /> : <UserRound />
+          }
+        </Avatar>
+        <Button onClick={revertChat} size="icon" className="absolute top-0 right-0 hidden group-hover:flex">
+          <Undo2 />
+        </Button>
+      </div>
     </div>
   }
 }

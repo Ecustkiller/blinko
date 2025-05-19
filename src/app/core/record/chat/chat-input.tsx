@@ -24,6 +24,7 @@ import { ClearChat } from "./clear-chat"
 import { ClearContext } from "./clear-context"
 import { ChatLanguage } from "./chat-language"
 import ChatPlaceholder from "./chat-placeholder"
+import emitter from "@/lib/emitter"
 
 export function ChatInput() {
   const [text, setText] = useState("")
@@ -219,6 +220,15 @@ export function ChatInput() {
       setPlaceholder(t('record.chat.input.placeholder.default'))
     }
   }, [placeholder, isPlaceholderEnabled])
+
+  useEffect(() => {
+    emitter.on('revertChat', (event: unknown) => {
+      setText(event as string)
+    })
+    return () => {
+      emitter.off('revertChat')
+    }
+  }, [])
 
   return (
     <footer className="relative flex flex-col border rounded-xl p-2 gap-2 mb-2 w-[calc(100%-1rem)]">
