@@ -383,6 +383,12 @@
           "on": "AIサジェスト有効",
           "off": "AIサジェスト無効"
         },
+        "translate": {
+          "tooltip": "翻訳",
+          "translating": "翻訳中...",
+          "showOriginal": "原文表示",
+          "alreadyTranslated": "翻訳済み"
+        },
         "send": "送信",
         "terminate": "終了",
         "tagLink": {

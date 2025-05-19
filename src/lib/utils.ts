@@ -26,3 +26,13 @@ export function arrayBuffer2String(buffer: ArrayBuffer) {
   const decoder = new TextDecoder('iso-8859-1');
   return decoder.decode(buffer);
 }
+
+export function scrollToBottom() {
+  const md = document.querySelector('#chats-wrapper')
+  if (md) {
+    md.scroll(0, md.scrollHeight)
+    setTimeout(() => {
+      md.scroll(0, md.scrollHeight)
+    }, 1000)
+  }
+}

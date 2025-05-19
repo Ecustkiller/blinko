@@ -16,20 +16,11 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import ChatThinking from './chat-thinking'
 import { Separator } from '@/components/ui/separator'
 import { debounce } from 'lodash-es'
+import { scrollToBottom } from '@/lib/utils'
 
 export default function ChatContent() {
   const { chats, init } = useChatStore()
   const { currentTagId } = useTagStore()
-
-  function scrollToBottom() {
-    const md = document.querySelector('#chats-wrapper')
-    if (md) {
-      md.scroll(0, md.scrollHeight)
-      setTimeout(() => {
-        md.scroll(0, md.scrollHeight)
-      }, 1000)
-    }
-  }
 
   // debounce
   const scrollToBottomDebounce = debounce(scrollToBottom, 500)

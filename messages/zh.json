@@ -385,6 +385,12 @@
           "on": "AI 建议 (开启)",
           "off": "AI 建议 (关闭)"
         },
+        "translate": {
+          "tooltip": "翻译",
+          "translating": "翻译中...",
+          "showOriginal": "显示原文",
+          "alreadyTranslated": "已翻译为"
+        },
         "send": "发送",
         "terminate": "终止",
         "tagLink": {

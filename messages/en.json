@@ -414,6 +414,12 @@
           "on": "AI suggestions on",
           "off": "AI suggestions off"
         },
+        "translate": {
+          "tooltip": "Translate",
+          "translating": "Translating...",
+          "showOriginal": "Show Original",
+          "alreadyTranslated": "Translated to"
+        },
         "send": "Send",
         "terminate": "Terminate",
         "tagLink": {

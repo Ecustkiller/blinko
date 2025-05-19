@@ -169,6 +169,56 @@ async function createGeminiClient() {
 /**
  * 非流式方式获取AI结果
  */
+/**
+ * 翻译对话内容
+ */
+export async function fetchAiTranslate(text: string, targetLanguage: string): Promise<string> {
+  try {
+    // 获取AI设置
+    const { baseURL, model, aiType, temperature, topP } = await getAISettings()
+    
+    // 验证AI服务
+    if (validateAIService(baseURL) === null) return ''
+    
+    // 构建翻译提示词
+    const translationPrompt = `Translate the following text to ${targetLanguage}. Maintain the original formatting, markdown syntax, and structure:`
+    
+    // 准备消息
+    const { messages, geminiText } = await prepareMessages(`${translationPrompt}\n\n${text}`, aiType, false)
+    
+    // 根据不同AI类型构建请求
+    if (aiType === 'gemini') {
+      // 创建Gemini客户端
+      const genAI = await createGeminiClient()
+      
+      const result = await genAI.models.generateContent({
+        model: model,
+        contents: {
+          parts: [{ text: geminiText || `${translationPrompt}\n\n${text}` }]
+        },
+        temperature: temperature,
+        topP: topP
+      })
+      
+      return result.text || ''
+    } else {
+      // OpenAI/Ollama请求
+      const openai = await createOpenAIClient()
+      
+      const completion = await openai.chat.completions.create({
+        model: model,
+        messages: messages,
+        temperature: temperature,
+        top_p: topP
+      })
+      
+      return completion.choices[0]?.message?.content || ''
+    }
+  } catch (error) {
+    return handleAIError(error) || ''
+  }
+}
+
 export async function fetchAi(text: string): Promise<string> {
   try {
     // 获取AI设置
