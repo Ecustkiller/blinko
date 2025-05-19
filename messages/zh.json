@@ -241,7 +241,9 @@
         "chat": {
           "placeholder": {
             "default": "你可以提问或将记录整理为文章...",
-            "noApiKey": "未配置 API Key，无法使用 AI 对话功能..."
+            "noApiKey": "未配置 API Key，无法使用 AI 对话功能...",
+            "on": "AI建议开启",
+            "off": "AI建议关闭"
           },
           "header": {
             "configApiKey": "配置 API KEY",
@@ -378,8 +380,10 @@
         "organize": "整理",
         "chat": "聊天",
         "placeholder": {
-          "default": "输入消息...",
-          "noApiKey": "无 API KEY 配置，无法使用 AI 聊天..."
+          "default": "你可以提问或将记录整理为文章...",
+          "noApiKey": "未配置 API Key，无法使用 AI 对话功能...",
+          "on": "AI 建议 (开启)",
+          "off": "AI 建议 (关闭)"
         },
         "send": "发送",
         "terminate": "终止",

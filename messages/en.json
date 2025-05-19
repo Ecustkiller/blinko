@@ -410,7 +410,9 @@
         "chat": "Chat",
         "placeholder": {
           "default": "Type a message...",
-          "noApiKey": "No API Key configured, can't use AI chat..."
+          "noApiKey": "No API Key configured, can't use AI chat...",
+          "on": "AI suggestions on",
+          "off": "AI suggestions off"
         },
         "send": "Send",
         "terminate": "Terminate",

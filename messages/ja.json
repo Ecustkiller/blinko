@@ -379,7 +379,9 @@
         "chat": "チャット",
         "placeholder": {
           "default": "メッセージを入力...",
-          "noApiKey": "無 API KEY 設定、AI 話題できません..."
+          "noApiKey": "無 API KEY 設定、AI 話題できません...",
+          "on": "AIサジェスト有効",
+          "off": "AIサジェスト無効"
         },
         "send": "送信",
         "terminate": "終了",

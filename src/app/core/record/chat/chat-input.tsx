@@ -23,12 +23,13 @@ import { PromptSelect } from "./prompt-select"
 import { ClearChat } from "./clear-chat"
 import { ClearContext } from "./clear-context"
 import { ChatLanguage } from "./chat-language"
+import ChatPlaceholder from "./chat-placeholder"
 
 export function ChatInput() {
   const [text, setText] = useState("")
   const { apiKey } = useSettingStore()
   const { currentTagId } = useTagStore()
-  const { insert, loading, setLoading, saveChat, chats } = useChatStore()
+  const { insert, loading, setLoading, saveChat, chats, isPlaceholderEnabled } = useChatStore()
   const { fetchMarks, marks, trashState } = useMarkStore()
   const [isComposing, setIsComposing] = useState(false)
   const [placeholder, setPlaceholder] = useState('')
@@ -142,6 +143,11 @@ export function ChatInput() {
     setPlaceholder('...')
     if (!apiKey) return
     if (trashState) return
+    // 检查是否启用了AI占位符功能
+    if (!isPlaceholderEnabled) {
+      setPlaceholder(t('record.chat.input.placeholder.default'))
+      return
+    }
     const scanMarks = isLinkMark ? marks.filter(item => item.type === 'scan') : []
     const textMarks = isLinkMark ? marks.filter(item => item.type === 'text') : []
     const imageMarks = isLinkMark ? marks.filter(item => item.type === 'image') : []
@@ -195,8 +201,18 @@ export function ChatInput() {
       setPlaceholder(t('record.chat.input.placeholder.default'))
       return
     }
+    if (!isPlaceholderEnabled) {
+      setPlaceholder(t('record.chat.input.placeholder.default'))
+      return
+    }
     genInputPlaceholder()
-  }, [apiKey, marks, isLinkMark, t])
+  }, [apiKey, marks, isLinkMark, isPlaceholderEnabled, t])
+
+  useEffect(() => {
+    if (!isPlaceholderEnabled) {
+      setPlaceholder(t('record.chat.input.placeholder.default'))
+    }
+  }, [placeholder, isPlaceholderEnabled])
 
   return (
     <footer className="relative flex flex-col border rounded-xl p-2 gap-2 mb-2 w-[calc(100%-1rem)]">
@@ -237,6 +253,7 @@ export function ChatInput() {
       <div className="flex justify-between items-center w-full">
         <div className="flex">
           <ChatLink inputType={inputType} />
+          <ChatPlaceholder />
           <ModelSelect />
           <PromptSelect />
           <ChatLanguage />
