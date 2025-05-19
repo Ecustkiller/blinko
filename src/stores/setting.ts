@@ -43,6 +43,15 @@ interface SettingState {
   model: string
   setModel: (language: string) => void
 
+  placeholderModel: string
+  setPlaceholderModel: (placeholderModel: string) => Promise<void>
+
+  translateModel: string
+  setTranslateModel: (translateModel: string) => Promise<void>
+
+  markDescModel: string
+  setMarkDescModel: (markDescModel: string) => Promise<void>
+
   templateList: GenTemplate[]
   setTemplateList: (templateList: GenTemplate[]) => Promise<void>
 
@@ -138,6 +147,27 @@ const useSettingStore = create<SettingState>((set, get) => ({
 
   model: '',
   setModel: (model) => set({ model }),
+
+  placeholderModel: '',
+  setPlaceholderModel: async (placeholderModel) => {
+    const store = await Store.load('store.json');
+    await store.set('placeholderModel', placeholderModel)
+    set({ placeholderModel })
+  },
+
+  translateModel: '',
+  setTranslateModel: async (translateModel) => {
+    const store = await Store.load('store.json');
+    await store.set('translateModel', translateModel)
+    set({ translateModel })
+  },
+
+  markDescModel: '',
+  setMarkDescModel: async (markDescModel) => {
+    const store = await Store.load('store.json');
+    await store.set('markDescModel', markDescModel)
+    set({ markDescModel })
+  },
 
   templateList: [
     {

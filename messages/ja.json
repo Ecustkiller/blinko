@@ -33,6 +33,27 @@
       "promptContentPlaceholder": "マスク内容を入力してください",
       "promptContent": "マスク内容"
     },
+    "defaultModel": {
+      "title": "デフォルトモデル",
+      "desc": "ここでは、異なるシーンに応じて異なるモデルを使用し、効率を高めコストを削減できます。",
+      "tooltip": "メインモデルを使用",
+      "placeholder": "モデルを選択または検索してください",
+      "main": "メインモデル",
+      "options" : {
+        "markDesc": {
+          "title": "記録の説明",
+          "desc": "OCR認識後の記録を処理し、記録の説明を生成します。"
+        },
+        "placeholder": {
+          "title": "AIサジェスト",
+          "desc": "AIサジェスト機能は記録ページのAI対話プレースホルダーの内容生成に使用されます。"
+        },
+        "translate": {
+          "title": "翻訳",
+          "desc": "翻訳内容のシーン。"
+        }
+      }
+    },
     "about": {
       "title": "このアプリについて",
       "version": "NoteGen v{version}",

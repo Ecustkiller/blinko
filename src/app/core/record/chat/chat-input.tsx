@@ -12,7 +12,7 @@ import {
 import useChatStore from "@/stores/chat"
 import useTagStore from "@/stores/tag"
 import useMarkStore from "@/stores/mark"
-import { fetchAi, fetchAiStream } from "@/lib/ai"
+import { fetchAiPlaceholder, fetchAiStream } from "@/lib/ai"
 import { MarkGen } from "./mark-gen"
 import { useTranslations } from 'next-intl'
 import { ChatLink } from "./chat-link"
@@ -187,7 +187,7 @@ export function ChatInput() {
       分析这些记录的内容，编写一个可能会向你提问的问题，用于辅助用户向你提问，不要返回用户已经提过的类似问题，不许超过 20 个字。
     `
     // 使用非流式请求获取placeholder内容
-    const content = await fetchAi(request_content)
+    const content = await fetchAiPlaceholder(request_content)
     if (content.length < 30 && content.length > 10) {
       setPlaceholder(content + '[Tab]')
     }

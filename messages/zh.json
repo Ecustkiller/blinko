@@ -33,6 +33,27 @@
       "promptContentPlaceholder": "请输入 Prompt 内容",
       "promptContent": "Prompt 内容"
     },
+    "defaultModel": {
+      "title": "默认模型",
+      "desc": "在这里，你可以针对不同的场景使用不同的模型，提高效率降低成本。",
+      "tooltip": "使用主要模型",
+      "placeholder": "请选择或搜索模型",
+      "mainModel": "主要模型",
+      "options" : {
+        "markDesc": {
+          "title": "记录描述",
+          "desc": "用于处理 OCR 识别后的记录，生成记录描述。"
+        },
+        "placeholder": {
+          "title": "AI 建议",
+          "desc": "AI 建议提示作用于记录页面 AI 对话 placeholder 内容生成。"
+        },
+        "translate": {
+          "title": "翻译",
+          "desc": "用于翻译内容的场景。"
+        }
+      }
+    },
     "about": {
       "title": "关于",
       "version": "NoteGen v{version}",

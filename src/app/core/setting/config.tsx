@@ -1,9 +1,13 @@
-import { BotMessageSquare, LayoutTemplate, Command, FileUp, Palette, ScanText, Store, UserRoundCog, Drama, FolderOpen } from "lucide-react"
+import { BotMessageSquare, LayoutTemplate, Command, FileUp, Palette, ScanText, Store, UserRoundCog, Drama, FolderOpen, Package } from "lucide-react"
 
 const baseConfig = [
   {
     icon: <BotMessageSquare />,
     anchor: 'ai',
+  },
+  {
+    icon: <Package />,
+    anchor: 'defaultModel',
   },
   {
     icon: <Drama />,

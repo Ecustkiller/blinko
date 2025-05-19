@@ -29,6 +29,27 @@
       "checkUpdate": "Check for Updates",
       "language": "Language"
     },
+    "defaultModel": {
+      "title": "Default Model",
+      "desc": "Here, you can use different models for different scenes, to improve efficiency and reduce costs.",
+      "tooltip": "Use main model",
+      "placeholder": "Please select or search for models",
+      "main": "Main model",
+      "options" : {
+        "markDesc": {
+          "title": "Record Description",
+          "desc": "Used to process records after OCR recognition, generating record descriptions."
+        },
+        "placeholder": {
+          "title": "AI Suggestion",
+          "desc": "AI suggestion prompts are used for content generation in the placeholder of the record page AI conversation."
+        },
+        "translate": {
+          "title": "Translation",
+          "desc": "Used for translation content scenes."
+        }
+      }
+    },
     "prompt": {
       "title": "Prompt",
       "promptTitle": "Prompt Title",
