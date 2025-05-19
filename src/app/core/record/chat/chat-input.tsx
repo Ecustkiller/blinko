@@ -52,6 +52,12 @@ export function ChatInput() {
   async function handleSubmit() {
     if (text === '') return
     setText('')
+    
+    // 重置 textarea 的高度为默认值
+    const textarea = document.querySelector('textarea')
+    if (textarea) {
+      textarea.style.height = 'auto'
+    }
     setLoading(true)
     await insert({
       tagId: currentTagId,
