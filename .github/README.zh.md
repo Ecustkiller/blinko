@@ -16,15 +16,15 @@ NoteGen 是一款的跨端的 `Markdown` 笔记应用，致力于使用 AI 建�
 
 记录：
 
-![record](https://github.com/user-attachments/assets/34f7fdc7-ebab-473f-ad8b-e2e93ed0f9e3)
+![1.png](https://s2.loli.net/2025/05/19/Cs5viKfkqb2HJmd.png)
 
 写作：
 
-![writing](https://s2.loli.net/2025/04/16/LcgMvUa86IpRi4V.png)
+![2.png](https://s2.loli.net/2025/05/19/5vwQBPoLr6jzgUA.png)
 
-深色模式：
+主题：
 
-![dark](https://s2.loli.net/2025/04/14/9JhgTie2X4tZLdz.png)
+![3.png](https://s2.loli.net/2025/05/19/8yU72prmWdsCHeu.png)
 
 ## 从记录到写作
 

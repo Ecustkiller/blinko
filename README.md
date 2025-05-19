@@ -25,15 +25,15 @@ NoteGen is a cross-platform `Markdown` note-taking application dedicated to usin
 
 Recording:
 
-![record](https://github.com/user-attachments/assets/34f7fdc7-ebab-473f-ad8b-e2e93ed0f9e3)
+![1.png](https://s2.loli.net/2025/05/19/Cs5viKfkqb2HJmd.png)
 
 Writing:
 
-![writing](https://s2.loli.net/2025/04/16/LcgMvUa86IpRi4V.png)
+![2.png](https://s2.loli.net/2025/05/19/5vwQBPoLr6jzgUA.png)
 
-Dark Mode:
+Theme:
 
-![dark](https://s2.loli.net/2025/04/14/9JhgTie2X4tZLdz.png)
+![3.png](https://s2.loli.net/2025/05/19/8yU72prmWdsCHeu.png)
 
 ## From Recording to Writing
 

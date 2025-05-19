@@ -15,15 +15,15 @@ NoteGenは、AIを使用して記録と執筆を橋渡しし、断片化され�
 
 記録：
 
-![record](https://github.com/user-attachments/assets/34f7fdc7-ebab-473f-ad8b-e2e93ed0f9e3)
+![1.png](https://s2.loli.net/2025/05/19/Cs5viKfkqb2HJmd.png)
 
 執筆：
 
-![writing](https://s2.loli.net/2025/04/16/LcgMvUa86IpRi4V.png)
+![2.png](https://s2.loli.net/2025/05/19/5vwQBPoLr6jzgUA.png)
 
-ダークモード：
+テーマ：
 
-![dark](https://s2.loli.net/2025/04/14/9JhgTie2X4tZLdz.png)
+![3.png](https://s2.loli.net/2025/05/19/8yU72prmWdsCHeu.png)
 
 ## 記録から執筆へ
 
