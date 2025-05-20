@@ -31,8 +31,5 @@ export function scrollToBottom() {
   const md = document.querySelector('#chats-wrapper')
   if (md) {
     md.scroll(0, md.scrollHeight)
-    setTimeout(() => {
-      md.scroll(0, md.scrollHeight)
-    }, 1000)
   }
 }

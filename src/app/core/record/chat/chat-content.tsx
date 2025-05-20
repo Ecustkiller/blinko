@@ -1,7 +1,7 @@
 import useChatStore from '@/stores/chat'
 import useTagStore from '@/stores/tag'
 import { BotMessageSquare, ClipboardCheck, LoaderPinwheel, Undo2, UserRound, X } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Chat } from '@/db/chats'
 import ChatPreview from './chat-preview'
 import './chat.scss'
@@ -15,7 +15,6 @@ import useSyncStore from '@/stores/sync'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import ChatThinking from './chat-thinking'
 import { Separator } from '@/components/ui/separator'
-import { debounce } from 'lodash-es'
 import { scrollToBottom } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import emitter from '@/lib/emitter'
@@ -23,17 +22,29 @@ import emitter from '@/lib/emitter'
 export default function ChatContent() {
   const { chats, init } = useChatStore()
   const { currentTagId } = useTagStore()
+  const [isOnBottom, setIsOnBottom] = useState(true)
 
-  // debounce
-  const scrollToBottomDebounce = debounce(scrollToBottom, 500)
+  function handleScroll() {
+    const md = document.querySelector('#chats-wrapper')
+    if (!md) return
+    setIsOnBottom(md.scrollHeight - md.scrollTop - md.clientHeight < 1)
+  }
 
+  useEffect(() => {
+    const md = document.querySelector('#chats-wrapper')
+    if (!md) return
+    md.addEventListener('scroll', handleScroll)
+    setTimeout(() => scrollToBottom(), 1000)
+    return () => md.removeEventListener('scroll', handleScroll)
+  }, [])
   
   useEffect(() => {
     init(currentTagId)
   }, [currentTagId])
 
   useEffect(() => {
-    scrollToBottomDebounce()
+    if (!isOnBottom) return
+    scrollToBottom()
   }, [chats])
 
   return <div id="chats-wrapper" className="flex-1 overflow-y-auto overflow-x-hidden w-full flex flex-col items-end p-4 gap-6">
