@@ -410,6 +410,10 @@
           "showOriginal": "原文表示",
           "alreadyTranslated": "翻訳済み"
         },
+        "clipboardMonitor": {
+          "enable": "クリップボード監視(有効)",
+          "disable": "クリップボード監視(無効)"
+        },
         "send": "送信",
         "terminate": "終了",
         "tagLink": {
@@ -427,6 +431,10 @@
         "clearChat": "会話をクリア",
         "clearContext": {
           "tooltip": "コンテキストをクリア"
+        },
+        "chatLanguage": {
+          "tooltip": "会話言語を選択",
+          "placeholder": "言語を検索"
         }
       },
       "header": {

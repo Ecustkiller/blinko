@@ -244,6 +244,7 @@
         "characterCount": "{count} characters",
         "save": "Save"
       },
+
       "link": {
         "title": "Record Link",
         "description": "Enter a webpage link, and the system will automatically crawl the page content and save it",
@@ -441,6 +442,10 @@
           "showOriginal": "Show Original",
           "alreadyTranslated": "Translated to"
         },
+        "clipboardMonitor": {
+          "enable": "Clipboard monitoring (on)",
+          "disable": "Clipboard monitoring (off)"
+        },
         "send": "Send",
         "terminate": "Terminate",
         "tagLink": {
@@ -458,6 +463,10 @@
         "clearChat": "Clear conversation",
         "clearContext": {
           "tooltip": "Clear context"
+        },
+        "chatLanguage": {
+          "tooltip": "Select chat language",
+          "placeholder": "Search language"
         }
       },
       "header": {

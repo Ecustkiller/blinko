@@ -412,6 +412,10 @@
           "showOriginal": "显示原文",
           "alreadyTranslated": "已翻译为"
         },
+        "clipboardMonitor": {
+          "enable": "剪贴板监听(开启)",
+          "disable": "剪贴板监听(关闭)"
+        },
         "send": "发送",
         "terminate": "终止",
         "tagLink": {

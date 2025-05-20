@@ -24,6 +24,7 @@ import { ClearChat } from "./clear-chat"
 import { ClearContext } from "./clear-context"
 import { ChatLanguage } from "./chat-language"
 import ChatPlaceholder from "./chat-placeholder"
+import { ClipboardMonitor } from "./clipboard-monitor"
 import emitter from "@/lib/emitter"
 
 export function ChatInput() {
@@ -268,11 +269,12 @@ export function ChatInput() {
       </div>
       <div className="flex justify-between items-center w-full">
         <div className="flex">
-          <ChatLink inputType={inputType} />
-          <ChatPlaceholder />
           <ModelSelect />
           <PromptSelect />
           <ChatLanguage />
+          <ChatLink inputType={inputType} />
+          <ChatPlaceholder />
+          <ClipboardMonitor />
           <ClearContext />
           <ClearChat />
         </div>
