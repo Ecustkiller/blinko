@@ -1,6 +1,6 @@
 import useChatStore from '@/stores/chat'
 import useTagStore from '@/stores/tag'
-import { BotMessageSquare, ClipboardCheck, LoaderPinwheel, Undo2, UserRound, X } from 'lucide-react'
+import { ArrowDownToLine, BotMessageSquare, ClipboardCheck, LoaderPinwheel, Undo2, UserRound, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Chat } from '@/db/chats'
 import ChatPreview from './chat-preview'
@@ -47,11 +47,16 @@ export default function ChatContent() {
     scrollToBottom()
   }, [chats])
 
-  return <div id="chats-wrapper" className="flex-1 overflow-y-auto overflow-x-hidden w-full flex flex-col items-end p-4 gap-6">
+  return <div id="chats-wrapper" className="flex-1 relative overflow-y-auto overflow-x-hidden w-full flex flex-col items-end p-4 gap-6">
     {
       chats.length ? chats.map((chat) => {
         return <Message key={chat.id} chat={chat} />
       }) : <ChatEmpty />
+    }
+    {
+      !isOnBottom && <Button variant="outline" className='sticky bottom-0 size-8 right-0' onClick={scrollToBottom}>
+        <ArrowDownToLine className='size-4' />
+      </Button>
     }
   </div>
 }
