@@ -2,6 +2,10 @@ import { BotMessageSquare, LayoutTemplate, Command, FileUp, Palette, ScanText, S
 
 const baseConfig = [
   {
+    icon: <Store />,
+    anchor: 'about',
+  },
+  {
     icon: <BotMessageSquare />,
     anchor: 'ai',
   },
@@ -40,11 +44,7 @@ const baseConfig = [
   {
     icon: <UserRoundCog />,
     anchor: 'dev',
-  },
-  {
-    icon: <Store />,
-    anchor: 'about',
-  },
+  }
 ]
 
 export default baseConfig

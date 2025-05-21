@@ -30,9 +30,10 @@
       "language": "Language",
       "checkUpdate": "Check for Updates",
       "checkError": "Failed to check for updates",
-      "updateAvailable": "New version available",
+      "updateAvailable": "Update to new version",
       "updateDownloading": "Updating {downloaded} / {contentLength}",
       "updateInstalled": "Restart app",
+      "noUpdate": "Current version is the latest",
       "items": {
         "github": {
           "title": "GitHub",

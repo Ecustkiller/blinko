@@ -62,9 +62,10 @@
       "language": "语言",
       "checkUpdate": "检查更新",
       "checkError": "检查更新失败",
-      "updateAvailable": "检测到新版本",
+      "updateAvailable": "更新至最新版本",
       "updateDownloading": "更新中 {downloaded} / {contentLength}",
       "updateInstalled": "重启应用",
+      "noUpdate": "当前已是最新版本",
       "items": {
         "github": {
           "title": "GitHub",
