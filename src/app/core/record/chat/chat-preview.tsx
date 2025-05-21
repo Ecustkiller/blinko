@@ -44,6 +44,20 @@ export default function ChatPreview({text}: {text: string}) {
       setMdTheme(theme as Themes)
     }
   }, [theme])
+
+  useEffect(() => {
+    const matchMedia = window.matchMedia('(prefers-color-scheme: dark)')
+    const handler = () => {
+      if (theme === 'system') {
+        const mdTheme = matchMedia.matches ? 'dark' : 'light'
+        setMdTheme(mdTheme)
+      }
+    }
+    matchMedia.addEventListener('change', handler)
+    return () => {
+      matchMedia.removeEventListener('change', handler)
+    }
+  }, [theme])
   
   return <div>
     <MdPreview

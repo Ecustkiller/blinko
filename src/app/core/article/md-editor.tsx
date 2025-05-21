@@ -25,7 +25,7 @@ import { open } from '@tauri-apps/plugin-shell'
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
   const { currentArticle, saveCurrentArticle, loading, activeFilePath, matchPosition, setMatchPosition } = useArticleStore()
-  const { theme, setTheme } = useTheme()
+  const { theme } = useTheme()
   const t = useTranslations('article.editor')
   const { currentLocale } = useI18n()
   const [localMode, setLocalMode] = useLocalStorage<'ir' | 'sv' | 'wysiwyg'>('useLocalMode', 'ir')
@@ -330,6 +330,15 @@ export function MdEditor() {
     }
   }
 
+  function setTheme(theme: string) {
+    if (editor) {
+      const editorTheme = theme === 'dark' ? 'dark' : 'light'
+      const contentTheme = theme === 'dark' ? 'dark' : 'light'
+      const codeTheme = theme === 'dark' ? 'github-dark' : 'github-light'
+      editor.setTheme(editorTheme === 'dark' ? 'dark' : 'classic', contentTheme, codeTheme)
+    }
+  }
+
   useEffect(() => {
     if (!activeFilePath) {
       editor?.destroy()
@@ -359,19 +368,30 @@ export function MdEditor() {
   }, [loading])
 
   useEffect(() => {
+    let editorTheme: string | undefined
     if (theme === 'system') {
       if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        setTheme('dark')  
-      } else {
-        setTheme('light')
+        editorTheme = 'dark'
       }
     } else {
-      if (editor) {
-        const editorTheme = theme === 'dark' ? 'dark' : 'light'
-        const contentTheme = theme === 'dark' ? 'dark' : 'light'
-        const codeTheme = theme === 'dark' ? 'github-dark' : 'github-light'
-        editor.setTheme(editorTheme === 'dark' ? 'dark' : 'classic', contentTheme, codeTheme)
+      editorTheme = theme
+    }
+    if (editor) {
+      setTheme(editorTheme || 'light')
+    }
+  }, [theme, editor])
+
+  useEffect(() => {
+    const matchMedia = window.matchMedia('(prefers-color-scheme: dark)')
+    const handler = () => {
+      if (editor && theme === 'system') {
+        const editorTheme = matchMedia.matches ? 'dark' : 'light'
+        setTheme(editorTheme)
       }
+    }
+    matchMedia.addEventListener('change', handler)
+    return () => {
+      matchMedia.removeEventListener('change', handler)
     }
   }, [theme, editor])
 
