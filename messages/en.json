@@ -159,6 +159,7 @@
       "addCustomModel": "Add",
       "deleteCustomModel": "Delete",
       "deleteCustomModelConfirm": "Are you sure to delete this custom model?",
+      "copyConfig": "Copy",
       "builtin": "Built-in",
       "modelSupport": "Only supports AI models with OpenAI protocol",
       "modelList": {

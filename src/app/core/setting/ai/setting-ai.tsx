@@ -168,6 +168,31 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
     await store.set('aiModelList', aiModelList)
     await store.set('topP', value[0] || 0.1)
   }
+
+  // 复制当前配置
+  async function copyConfig() {
+    const model = await getModelByStore(aiType)
+    if (!model) return
+    
+    const id = v4()
+    const newModel: AiConfig = {
+      ...model,
+      key: id,
+      title: `${model.title || 'Copy'} (Copy)`,
+      type: 'custom',
+    }
+    
+    const store = await Store.load('store.json');
+    const aiModelList = await store.get<AiConfig[]>('aiModelList')
+    if (!aiModelList) return
+    
+    const updatedList = [...aiModelList, newModel]
+    await store.set('aiModelList', updatedList)
+    setAiConfig(updatedList)
+    
+    selectChangeHandler(id)
+    setCurrentAi(newModel)
+  }
   
   useEffect(() => {
     async function init() {
@@ -248,6 +273,8 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
               )
             }
             <Button onClick={addCustomModelHandler}>{t('addCustomModel')}</Button>
+            {/* 复制当前配置 */}
+            <Button onClick={copyConfig}>{t('copyConfig')}</Button>
           </div>
         </FormItem>
       </SettingRow>

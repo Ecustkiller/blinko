@@ -157,6 +157,7 @@
       "addCustomModel": "追加",
       "deleteCustomModel": "削除",
       "deleteCustomModelConfirm": "この自定義モデル設定を削除してもよろしいですか？",
+      "copyConfig": "コピー",
       "builtin": "内蔵",
       "modelSupport": "OpenAIプロトコル対応のAIモデルのみサポート",
       "modelList": {
