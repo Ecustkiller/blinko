@@ -23,6 +23,8 @@ export default function Sync({editor}: {editor?: Vditor}) {
   const syncTimeoutRef = useRef<number | null>(null)
   const t = useTranslations('article.footer.sync')
   const [syncText, setSyncText] = useState(t('sync'))
+  const [progressPercentage, setProgressPercentage] = useState(0)
+  const progressIntervalRef = useRef<number | null>(null)
 
   async function handleSync() {
     try {
@@ -215,6 +217,7 @@ export default function Sync({editor}: {editor?: Vditor}) {
       // 检查上传结果并更新状态
       if (uploadRes?.data?.commit?.message) {
         setSyncText(t('synced'));
+        setProgressPercentage(0);
         emitter.emit('sync-success');
       }
     } catch (error) {
@@ -267,13 +270,39 @@ export default function Sync({editor}: {editor?: Vditor}) {
       if (syncTimeoutRef.current) {
         window.clearTimeout(syncTimeoutRef.current);
       }
+      // 清除进度条定时器
+      if (progressIntervalRef.current) {
+        window.clearInterval(progressIntervalRef.current);
+        setProgressPercentage(0);
+      }
       
       // 获取配置的同步时间间隔
       const syncInterval = getSyncInterval();
       
       // 如果时间间隔大于0，设置定时器
       if (syncInterval > 0) {
+        // 重置进度
+        setProgressPercentage(0);
+        
+        // 设置进度条更新间隔 (每100ms更新一次)
+        const updateInterval = 100;
+        const steps = syncInterval / updateInterval;
+        const increment = 100 / steps;
+        
+        // 开始更新进度
+        progressIntervalRef.current = window.setInterval(() => {
+          setProgressPercentage(prev => {
+            const newValue = prev + increment;
+            return newValue > 100 ? 100 : newValue;
+          });
+        }, updateInterval);
+        
+        // 设置自动同步定时器
         syncTimeoutRef.current = window.setTimeout(() => {
+          if (progressIntervalRef.current) {
+            window.clearInterval(progressIntervalRef.current);
+          }
+          setProgressPercentage(0);
           handleAutoSync();
         }, syncInterval);
       }
@@ -293,6 +322,9 @@ export default function Sync({editor}: {editor?: Vditor}) {
       if (syncTimeoutRef.current) {
         window.clearTimeout(syncTimeoutRef.current);
       }
+      if (progressIntervalRef.current) {
+        window.clearInterval(progressIntervalRef.current);
+      }
       emitter.off('editor-input', handleInput);
     };
   }, [autoSync, giteeAutoSync, accessToken, giteeAccessToken, syncText, editor, t, primaryBackupMethod]);
@@ -303,17 +335,24 @@ export default function Sync({editor}: {editor?: Vditor}) {
       variant="ghost"
       size="sm"
       disabled={(primaryBackupMethod === 'github' && !accessToken) || (primaryBackupMethod === 'gitee' && !giteeAccessToken) || isLoading}
-      className="relative outline-none"
+      className="relative outline-none overflow-hidden"
     >
+      {/* 进度条背景 */}
+      {progressPercentage > 0 && (
+        <div 
+          className="absolute inset-0 bg-zinc-200 dark:bg-zinc-800 transition-all duration-100 z-0" 
+          style={{ width: `${progressPercentage}%` }}
+        />
+      )}
       {isLoading ? (
         <>
-          <Loader2 className="h-3 w-3 animate-spin mr-1" />
-          <span className="text-xs">{t('syncing')}</span>
+          <Loader2 className="h-3 w-3 animate-spin mr-1 relative z-10" />
+          <span className="text-xs relative z-10">{t('syncing')}</span>
         </>
       ) : (
         <>
-          <Upload className="!size-3" />
-          <span className="text-xs">{syncText}</span>
+          <Upload className="!size-3 relative z-10" />
+          <span className="text-xs relative z-10">{syncText}</span>
         </>
       )}
     </Button>
