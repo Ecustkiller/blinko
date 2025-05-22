@@ -120,7 +120,8 @@ export default function History({editor}: {editor?: Vditor}) {
             commitsLoading && <LoaderCircle className="animate-spin !size-3" />
           }
           <span className="text-xs">
-            {commitsLoading ? t('loadingHistory') : commits.length ? `${t('historyRecords')}(${commits.length})` : t('noHistory')}
+            {commitsLoading ? t('loadingHistory') : commits.length ? 
+              `${t('historyRecords')} (${dayjs(commits[0].commit.committer.date).fromNow()})` : t('noHistory')}
           </span>
         </Button>
       </SheetTrigger>
