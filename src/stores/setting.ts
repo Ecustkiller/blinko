@@ -80,15 +80,15 @@ interface SettingState {
   useImageRepo: boolean
   setUseImageRepo: (useImageRepo: boolean) => Promise<void>
 
-  autoSync: boolean
-  setAutoSync: (autoSync: boolean) => Promise<void>
+  autoSync: string
+  setAutoSync: (autoSync: string) => Promise<void>
   
   // Gitee 相关设置
   giteeAccessToken: string
   setGiteeAccessToken: (giteeAccessToken: string) => void
 
-  giteeAutoSync: boolean
-  setGiteeAutoSync: (giteeAutoSync: boolean) => Promise<void>
+  giteeAutoSync: string
+  setGiteeAutoSync: (giteeAutoSync: string) => Promise<void>
   
   // 主要备份方式设置
   primaryBackupMethod: 'github' | 'gitee'
@@ -237,8 +237,8 @@ const useSettingStore = create<SettingState>((set, get) => ({
     await store.set('useImageRepo', useImageRepo)
   },
 
-  autoSync: true,
-  setAutoSync: async (autoSync: boolean) => {
+  autoSync: 'disabled',
+  setAutoSync: async (autoSync: string) => {
     set({ autoSync })
     const store = await Store.load('store.json');
     await store.set('autoSync', autoSync)
@@ -266,8 +266,8 @@ const useSettingStore = create<SettingState>((set, get) => ({
     await store.set('giteeAccessToken', giteeAccessToken)
   },
 
-  giteeAutoSync: true,
-  setGiteeAutoSync: async (giteeAutoSync: boolean) => {
+  giteeAutoSync: 'disabled',
+  setGiteeAutoSync: async (giteeAutoSync: string) => {
     set({ giteeAutoSync })
     const store = await Store.load('store.json');
     await store.set('giteeAutoSync', giteeAutoSync)

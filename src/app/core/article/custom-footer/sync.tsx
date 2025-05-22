@@ -237,9 +237,23 @@ export default function Sync({editor}: {editor?: Vditor}) {
       
       // 检查自动同步条件
       if (!editor) return false;
-      if (backupMethod === 'github' && (!autoSync || !accessToken)) return false;
-      if (backupMethod === 'gitee' && (!giteeAutoSync || !giteeAccessToken)) return false;
+      if (backupMethod === 'github' && (autoSync === 'disabled' || !accessToken)) return false;
+      if (backupMethod === 'gitee' && (giteeAutoSync === 'disabled' || !giteeAccessToken)) return false;
       return true;
+    };
+    
+    // 获取自动同步的时间间隔（毫秒）
+    const getSyncInterval = () => {
+      // 如果是GitHub备份方式，使用autoSync设置的时间
+      if (primaryBackupMethod === 'github') {
+        if (autoSync === 'disabled') return 0;
+        // autoSync存储的是秒数，转换为毫秒
+        return parseInt(autoSync) * 1000;
+      }
+      // 如果是Gitee备份方式，使用giteeAutoSync设置的时间
+      if (giteeAutoSync === 'disabled') return 0;
+      // giteeAutoSync存储的是秒数，转换为毫秒
+      return parseInt(giteeAutoSync) * 1000;
     };
     
     // 处理编辑器输入事件
@@ -254,10 +268,15 @@ export default function Sync({editor}: {editor?: Vditor}) {
         window.clearTimeout(syncTimeoutRef.current);
       }
       
-      // 设置新的定时器，10秒后自动同步
-      syncTimeoutRef.current = window.setTimeout(() => {
-        handleAutoSync();
-      }, 10000);
+      // 获取配置的同步时间间隔
+      const syncInterval = getSyncInterval();
+      
+      // 如果时间间隔大于0，设置定时器
+      if (syncInterval > 0) {
+        syncTimeoutRef.current = window.setTimeout(() => {
+          handleAutoSync();
+        }, syncInterval);
+      }
     };
     
     // 注册事件监听
@@ -276,7 +295,7 @@ export default function Sync({editor}: {editor?: Vditor}) {
       }
       emitter.off('editor-input', handleInput);
     };
-  }, [autoSync, giteeAutoSync, accessToken, giteeAccessToken, syncText, editor, t]);
+  }, [autoSync, giteeAutoSync, accessToken, giteeAccessToken, syncText, editor, t, primaryBackupMethod]);
 
   return (
     <Button 

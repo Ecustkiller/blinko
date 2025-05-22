@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { FormItem, SettingPanel, SettingRow } from "../components/setting-base";
 import { useEffect } from "react";
 import { useTranslations } from 'next-intl';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
 import useSyncStore, { SyncStateEnum } from "@/stores/sync";
@@ -11,7 +12,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { OpenBroswer } from "@/components/open-broswer";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { Switch } from "@/components/ui/switch";
 import { checkSyncRepoState, getUserInfo } from "@/lib/gitee";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -140,11 +140,23 @@ export function GiteeSync() {
         giteeSyncRepoInfo &&
         <>
           <SettingPanel title={t('settings.sync.autoSync')} desc={t('settings.sync.giteeAutoSyncDesc')}>
-            <Switch 
-              checked={giteeAutoSync} 
-              onCheckedChange={(checked) => setGiteeAutoSync(checked)} 
+            <Select
+              value={giteeAutoSync}
+              onValueChange={(value) => setGiteeAutoSync(value)}
               disabled={!giteeAccessToken || giteeSyncRepoState !== SyncStateEnum.success}
-            />
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder={t('settings.sync.autoSyncOptions.placeholder')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="disabled">{t('settings.sync.autoSyncOptions.disabled')}</SelectItem>
+                <SelectItem value="10">{t('settings.sync.autoSyncOptions.10s')}</SelectItem>
+                <SelectItem value="30">{t('settings.sync.autoSyncOptions.30s')}</SelectItem>
+                <SelectItem value="60">{t('settings.sync.autoSyncOptions.1m')}</SelectItem>
+                <SelectItem value="300">{t('settings.sync.autoSyncOptions.5m')}</SelectItem>
+                <SelectItem value="1800">{t('settings.sync.autoSyncOptions.30m')}</SelectItem>
+              </SelectContent>
+            </Select>
           </SettingPanel>
         </>
       }

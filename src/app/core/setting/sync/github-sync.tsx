@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { FormItem, SettingPanel, SettingRow } from "../components/setting-base";
 import { useEffect } from "react";
 import { useTranslations } from 'next-intl';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
 import useSyncStore, { SyncStateEnum } from "@/stores/sync";
@@ -125,12 +126,24 @@ export function GithubSync() {
       {
         syncRepoInfo &&
         <>
-          <SettingPanel title="自动同步" desc="启用后，编辑器在输入停止10秒后将自动同步到GitHub">
-            <Switch 
-              checked={autoSync} 
-              onCheckedChange={(checked) => setAutoSync(checked)} 
+          <SettingPanel title="自动同步" desc="选择编辑器在输入停止后自动同步的时间间隔">
+            <Select
+              value={autoSync}
+              onValueChange={(value) => setAutoSync(value)}
               disabled={!accessToken || syncRepoState !== SyncStateEnum.success}
-            />
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder={t('settings.sync.autoSyncOptions.placeholder')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="disabled">{t('settings.sync.autoSyncOptions.disabled')}</SelectItem>
+                <SelectItem value="10">{t('settings.sync.autoSyncOptions.10s')}</SelectItem>
+                <SelectItem value="30">{t('settings.sync.autoSyncOptions.30s')}</SelectItem>
+                <SelectItem value="60">{t('settings.sync.autoSyncOptions.1m')}</SelectItem>
+                <SelectItem value="300">{t('settings.sync.autoSyncOptions.5m')}</SelectItem>
+                <SelectItem value="1800">{t('settings.sync.autoSyncOptions.30m')}</SelectItem>
+              </SelectContent>
+            </Select>
           </SettingPanel>
         </>
       }

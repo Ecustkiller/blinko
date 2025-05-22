@@ -114,7 +114,16 @@
       "backupMethod": "Backup Method",
       "backupMethodDesc": "After setting as the primary backup method, all sync-related functions in writing will use the current backup method (except for image hosting)",
       "isPrimaryBackup": "{type} is current primary backup",
-      "setPrimaryBackup": "Set as Primary Backup"
+      "setPrimaryBackup": "Set as Primary Backup",
+      "autoSyncOptions": {
+        "placeholder": "Select auto sync time",
+        "disabled": "Disabled",
+        "10s": "10 seconds",
+        "30s": "30 seconds",
+        "1m": "1 minute",
+        "5m": "5 minutes",
+        "30m": "30 minutes"
+      }
     },
     "template": {
       "title": "Template",

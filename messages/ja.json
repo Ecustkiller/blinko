@@ -112,7 +112,16 @@
       "backupMethod": "バックアップ方法",
       "backupMethodDesc": "主要バックアップ方法として設定すると、文章作成中のすべての同期関連機能が現在のバックアップ方法を使用します（画像ホスティング機能を除く）",
       "isPrimaryBackup": "現在の {type} 主要バックアップ方法",
-      "setPrimaryBackup": "主要バックアップ方法として設定"
+      "setPrimaryBackup": "主要バックアップ方法として設定",
+      "autoSyncOptions": {
+        "placeholder": "自動同步时间",
+        "disabled": "無効",
+        "10s": "10 秒",
+        "30s": "30 秒",
+        "1m": "1 分",
+        "5m": "5 分",
+        "30m": "30 分"
+      }
     },
     "template": {
       "title": "整理テンプレート",
