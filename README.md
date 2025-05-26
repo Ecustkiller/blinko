@@ -12,6 +12,10 @@ English | [简体中文](.github/README.zh.md) | [日本語](.github/README.ja.m
 
 NoteGen is a cross-platform `Markdown` note-taking application dedicated to using AI to bridge recording and writing, organizing fragmented knowledge into a readable note.
 
+## Guide
+
+[https://notegen.top](https://notegen.top)
+
 ## Why Choose NoteGen?
 
 - Lightweight: [Installation package](https://github.com/codexu/note-gen/releases) is **only 20MB**, free with no ads or bundled software.

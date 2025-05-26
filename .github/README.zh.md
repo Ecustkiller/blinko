@@ -3,6 +3,10 @@
 
 NoteGen 是一款的跨端的 `Markdown` 笔记应用，致力于使用 AI 建立记录和写作的桥梁，将碎片化知识整理成一篇可读的笔记。
 
+## 文档
+
+[https://notegen.top](https://notegen.top)
+
 ## 为什么选择 NoteGen？
 
 - 轻量，[安装包](https://github.com/codexu/note-gen/releases)**仅20MB**，免费且无任何广告，无任何捆绑。

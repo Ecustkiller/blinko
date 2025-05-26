@@ -2,6 +2,10 @@
 
 NoteGenは、AIを使用して記録と執筆を橋渡しし、断片化された知識を読みやすいノートに整理することに専念するクロスプラットフォームの`Markdown`ノートアプリケーションです。
 
+## Guide
+
+[https://notegen.top](https://notegen.top)
+
 ## なぜNoteGenを選ぶのか？
 
 - 軽量：[インストールパッケージ](https://github.com/codexu/note-gen/releases)は**わずか20MB**、無料で広告やバンドルソフトウェアはありません。
