@@ -90,12 +90,6 @@ NoteGen 分为`记录`和`写作`两个页面，其关系是：
 
 笔记本身可以无配置直接使用，如果你想得到更好的体验，请打开设置页面，对 AI 和同步进行配置。
 
-## 交流群
-
-欢迎加入 NoteGen 交流群，这里你可以向我提出问题，分享使用心得，或者提出改进建议。也可以以学习 Tauri 为目的，和我一起交流。
-
-扫码加入[交流群](https://github.com/codexu/note-gen/discussions/110)，如果二维码失效，可以加微信 xu461229187 备注 NoteGen 进群。
-
 ## Contribute
 
 - [阅读贡献指南](CONTRIBUTING.md)

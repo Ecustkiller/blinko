@@ -99,12 +99,6 @@ Currently supports Mac, Windows, and Linux. Thanks to Tauri2's cross-platform ca
 
 The note-taking application can be used directly without configuration. If you want a better experience, please open the settings page to configure AI and synchronization.
 
-## Community
-
-Welcome to join the NoteGen community group where you can ask questions, share usage experiences, or suggest improvements. You can also join to learn about Tauri and discuss it with me.
-
-Scan the QR code to join the [discussion group](https://github.com/codexu/note-gen/discussions/110). If the QR code expires, you can add WeChat xu461229187 to join the group.
-
 ## Contribute
 
 - [Read contribution guide](.github/CONTRIBUTING.md)
