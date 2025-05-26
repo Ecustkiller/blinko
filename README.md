@@ -1,4 +1,4 @@
-<img src="https://cdn.jsdelivr.net/gh/codexu/note-gen@dev/app-icon.png" width="128" height="128" />
+<img src="https://s2.loli.net/2025/05/26/YMNgxKVDrB84ZtW.png" width="128" height="128" />
 
 # NoteGen
 
