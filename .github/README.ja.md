@@ -4,7 +4,9 @@ NoteGenは、AIを使用して記録と執筆を橋渡しし、断片化され�
 
 ## Guide
 
-[https://notegen.top](https://notegen.top)
+🖥️ Official Document: [https://notegen.top](https://notegen.top)
+
+💬 Join [WeChat Group](https://github.com/codexu/note-gen/discussions/110) | [Discord](https://discord.gg/9vs3qFkb)
 
 ## なぜNoteGenを選ぶのか？
 

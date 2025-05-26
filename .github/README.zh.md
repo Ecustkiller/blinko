@@ -3,9 +3,11 @@
 
 NoteGen 是一款的跨端的 `Markdown` 笔记应用，致力于使用 AI 建立记录和写作的桥梁，将碎片化知识整理成一篇可读的笔记。
 
-## 文档
+## 指南
 
-[https://notegen.top](https://notegen.top)
+🖥️ 官方文档：[https://notegen.top](https://notegen.top)
+
+💬 交流群：[WeChat Group](https://github.com/codexu/note-gen/discussions/110) | [Discord](https://discord.gg/9vs3qFkb)
 
 ## 为什么选择 NoteGen？
 
