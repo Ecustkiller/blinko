@@ -35,8 +35,9 @@ pub fn screenshot(app: AppHandle) -> Vec<ScreenshotImage> {
         .path()
         .resolve("temp_screenshot", BaseDirectory::AppData)
         .unwrap();
-    
-    std::fs::remove_dir_all(&temp_screenshot_folder).unwrap();
+    if std::fs::metadata(&temp_screenshot_folder).is_ok() {
+        std::fs::remove_dir_all(&temp_screenshot_folder).unwrap();
+    }
     std::fs::create_dir(&temp_screenshot_folder).unwrap();
 
     let mut files: Vec<ScreenshotImage> = Vec::new();
