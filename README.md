@@ -16,7 +16,7 @@ NoteGen is a cross-platform `Markdown` note-taking application dedicated to usin
 
 🖥️ Official Document: [https://notegen.top](https://notegen.top)
 
-💬 Join [WeChat Group](https://github.com/codexu/note-gen/discussions/110) | [Discord](https://discord.gg/9vs3qFkb)
+💬 Join [WeChat/QQ Group](https://github.com/codexu/note-gen/discussions/110) | [Discord](https://discord.gg/9vs3qFkb)
 
 ## Why Choose NoteGen?
 
