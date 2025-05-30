@@ -179,6 +179,16 @@
       "copyConfig": "Copy",
       "builtin": "Built-in",
       "modelSupport": "Only supports AI models with OpenAI protocol",
+      "modelType": {
+        "title": "Model Type",
+        "desc": "Select the type of AI model based on its capability",
+        "chat": "Chat",
+        "image": "Image",
+        "video": "Video",
+        "audio": "Audio",
+        "embedding": "Embedding",
+        "rerank": "Reranking"
+      },
       "modelList": {
         "error": {
           "title": "Failed to get model list",

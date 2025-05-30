@@ -177,6 +177,16 @@
       "copyConfig": "コピー",
       "builtin": "内蔵",
       "modelSupport": "OpenAIプロトコル対応のAIモデルのみサポート",
+      "modelType": {
+        "title": "モデルタイプ",
+        "desc": "能力に基づいてAIモデルのタイプを選択します",
+        "chat": "チャット",
+        "image": "画像生成",
+        "video": "動画",
+        "audio": "音声",
+        "embedding": "埋め込み",
+        "rerank": "再ランキング"
+      },
       "modelList": {
         "error": {
           "title": "モデルリストの取得に失敗しました",

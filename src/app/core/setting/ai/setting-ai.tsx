@@ -6,7 +6,7 @@ import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
 import { InfoIcon } from "lucide-react";
 import ModelSelect from "./model-select";
-import { AiConfig, baseAiConfig } from "../config";
+import { AiConfig, ModelType, baseAiConfig } from "../config";
 import * as React from "react"
 import {
   Select,
@@ -22,6 +22,8 @@ import { Slider } from "@/components/ui/slider"
 import { v4 } from 'uuid';
 import { confirm } from '@tauri-apps/plugin-dialog';
 import { AiCheck } from "./ai-check";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   const t = useTranslations('settings.ai');
@@ -31,6 +33,7 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   const [title, setTitle] = useState<string>('')
   const [temperature, setTemperature] = useState<number>(0.7)
   const [topP, setTopP] = useState<number>(1.0)
+  const [modelType, setModelType] = useState<ModelType>('chat')
 
   // 通过本地存储查询当前的模型配置
   async function getModelByStore(key: string) {
@@ -39,6 +42,11 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
     if (!aiModelList) return
     setAiType(key)
     const model = aiModelList.find(item => item.key === key)
+    if (model?.modelType) {
+      setModelType(model.modelType)
+    } else {
+      setModelType('chat')
+    }
     return model
   }
 
@@ -113,7 +121,15 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   async function addCustomModelHandler() {
     const id = v4()
     setAiType(id)
-    const newModel: AiConfig = { key: id, baseURL: '', type: 'custom', title: 'Untitled', temperature: 0.7, topP: 1.0 }
+    const newModel: AiConfig = { 
+      key: id, 
+      baseURL: '', 
+      type: 'custom', 
+      title: 'Untitled', 
+      temperature: 0.7, 
+      topP: 1.0, 
+      modelType: modelType // Use the current modelType
+    }
     const store = await Store.load('store.json');
     await store.set('aiType', id)
     await store.set('aiModelList', [...aiConfig, newModel])
@@ -168,6 +184,23 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
     await store.set('aiModelList', aiModelList)
     await store.set('topP', value[0] || 0.1)
   }
+  
+  // 模型类型变更处理
+  async function modelTypeChangeHandler(value: ModelType) {
+    setModelType(value)
+    const store = await Store.load('store.json');
+    const aiModelList = await store.get<AiConfig[]>('aiModelList')
+    if (!aiModelList) return
+    
+    const modelIndex = aiModelList.findIndex(item => item.key === aiType);
+    if (modelIndex === -1) return;
+    
+    const model = aiModelList[modelIndex];
+    model.modelType = value;
+    
+    aiModelList[modelIndex] = model;
+    await store.set('aiModelList', aiModelList);
+  }
 
   // 复制当前配置
   async function copyConfig() {
@@ -180,6 +213,7 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
       key: id,
       title: `${model.title || 'Copy'} (Copy)`,
       type: 'custom',
+      modelType: model.modelType || 'chat', // Preserve the model type or default to chat
     }
     
     const store = await Store.load('store.json');
@@ -229,6 +263,8 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
       await store.set('temperature', model.temperature)
       setTopP(model.topP || 0.1)
       await store.set('topP', model.topP || 0.1)
+      // Initialize modelType
+      setModelType(model.modelType || 'chat')
     }
     init()
   }, [])
@@ -302,6 +338,40 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
       <SettingRow>
         <FormItem title="API Key">
           <Input value={apiKey} onChange={apiKeyChangeHandler} />
+        </FormItem>
+      </SettingRow>
+      <SettingRow>
+        <FormItem title={t('modelType.title')} desc={t('modelType.desc')}>
+          <RadioGroup
+            value={modelType}
+            onValueChange={(value) => modelTypeChangeHandler(value as ModelType)}
+            className="flex flex-wrap gap-6 m-2"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="chat" id="chat" />
+              <Label htmlFor="chat">{t('modelType.chat')}</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="image" id="image" disabled />
+              <Label htmlFor="image" className="text-muted-foreground">{t('modelType.image')}</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="video" id="video" disabled />
+              <Label htmlFor="video" className="text-muted-foreground">{t('modelType.video')}</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="audio" id="audio" disabled />
+              <Label htmlFor="audio" className="text-muted-foreground">{t('modelType.audio')}</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="embedding" id="embedding" />
+              <Label htmlFor="embedding">{t('modelType.embedding')}</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="rerank" id="rerank" />
+              <Label htmlFor="rerank">{t('modelType.rerank')}</Label>
+            </div>
+          </RadioGroup>
         </FormItem>
       </SettingRow>
       <SettingRow>
