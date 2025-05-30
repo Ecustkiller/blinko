@@ -187,7 +187,6 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   
   // 模型类型变更处理
   async function modelTypeChangeHandler(value: ModelType) {
-    console.log(value);
     setModelType(value)
     const store = await Store.load('store.json');
     const aiModelList = await store.get<AiConfig[]>('aiModelList')

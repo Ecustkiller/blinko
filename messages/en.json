@@ -439,7 +439,10 @@
         "sortByModified": "Sort by Modified",
         "sortAsc": "Sort Ascending",
         "sortDesc": "Sort Descending",
-        "sort": "Sort"
+        "sort": "Sort",
+        "processingVectors": "Processing Vector Data",
+        "calculateVectors": "Calculate Document Vectors",
+        "enableVectorDb": "Enable Vector Database"
       }
     },
     "chat": {
@@ -523,6 +526,10 @@
         "chatLanguage": {
           "tooltip": "Select chat language",
           "placeholder": "Search language"
+        },
+        "rag": {
+          "enabled": "Knowledge Base Search Enabled",
+          "disabled": "Knowledge Base Search Disabled"
         }
       },
       "header": {
@@ -619,7 +626,10 @@
         "sortByModified": "Sort by Modified",
         "sortAsc": "Sort Ascending",
         "sortDesc": "Sort Descending",
-        "sort": "Sort"
+        "sort": "Sort",
+        "processingVectors": "Processing Vector Data",
+        "calculateVectors": "Calculate Document Vectors",
+        "enableVectorDb": "Enable Vector Database"
       },
       "context": {
         "viewDirectory": "View Directory",

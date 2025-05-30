@@ -25,7 +25,9 @@ import { ClearContext } from "./clear-context"
 import { ChatLanguage } from "./chat-language"
 import ChatPlaceholder from "./chat-placeholder"
 import { ClipboardMonitor } from "./clipboard-monitor"
+import { RagSwitch } from "./rag-switch"
 import emitter from "@/lib/emitter"
+import useVectorStore from "@/stores/vector"
 
 export function ChatInput() {
   const [text, setText] = useState("")
@@ -39,6 +41,7 @@ export function ChatInput() {
   const [inputType, setInputType] = useLocalStorage('chat-input-type', 'chat')
   const markGenRef = useRef<any>(null) // Fix markGenRef type
   const { isLinkMark } = useChatStore()
+  const { isRagEnabled } = useVectorStore()
   const abortControllerRef = useRef<AbortController | null>(null)
 
   // 终止对话功能
@@ -88,6 +91,32 @@ export function ChatInput() {
     const fileMarks = isLinkMark ? marks.filter(item => item.type === 'file') : []
     const lastClearIndex = chats.findLastIndex(item => item.type === 'clear')
     const chatsAfterClear = chats.slice(lastClearIndex + 1)
+    
+    // 准备请求内容
+    let ragContext = ''
+    
+    // 如果启用RAG，获取相关上下文
+    if (isRagEnabled) {
+      try {
+        // 导入getContextForQuery函数
+        const { getContextForQuery } = await import('@/lib/rag')
+        // 获取相关文档内容
+        ragContext = await getContextForQuery(text)
+        
+        if (ragContext) {
+          // 如果获取到了相关内容，将其作为独立部分添加到请求中
+          ragContext = `
+以下是你的知识库中与该问题最相关的内容，请充分利用这些信息来回答问题：
+
+${ragContext}
+
+`
+        }
+      } catch (error) {
+        console.error('获取RAG上下文失败:', error)
+      }
+    }
+    
     const request_content = `
       可以参考以下内容笔记的记录：
       以下是通过截图后，使用OCR识别出的文字片段：
@@ -107,6 +136,7 @@ export function ChatInput() {
           .map((item, index) => `${index + 1}. ${item.content}`)
           .join(';\n\n')
       }。
+      ${ragContext}
       ${text}
     `
     
@@ -275,6 +305,7 @@ export function ChatInput() {
           <ChatLink inputType={inputType} />
           <ChatPlaceholder />
           <ClipboardMonitor />
+          <RagSwitch />
           <ClearContext />
           <ClearChat />
         </div>

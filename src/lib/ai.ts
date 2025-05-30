@@ -130,7 +130,6 @@ export async function fetchEmbedding(text: string): Promise<number[] | null> {
     
     // 获取嵌入模型信息
     const modelInfo = await getEmbeddingModelInfo();
-    console.log(modelInfo);
     if (!modelInfo) {
       throw new Error('未配置嵌入模型或模型配置不正确');
     }
@@ -140,13 +139,6 @@ export async function fetchEmbedding(text: string): Promise<number[] | null> {
     if (!baseURL || !apiKey || !model) {
       throw new Error('嵌入模型配置不完整');
     }
-
-    console.log(apiKey);
-    console.log(JSON.stringify({
-      model: model,
-      input: text,
-      encoding_format: 'float'
-    }));
     
     // 发送嵌入请求
     const response = await fetch(baseURL + '/embeddings', {
@@ -162,14 +154,11 @@ export async function fetchEmbedding(text: string): Promise<number[] | null> {
       })
     });
 
-    console.log(response)
-    
     if (!response.ok) {
       throw new Error(`嵌入请求失败: ${response.status} ${response.statusText}`);
     }
     
     const data = await response.json() as EmbeddingResponse;
-    console.log(data)
     if (!data || !data.data || !data.data[0] || !data.data[0].embedding) {
       throw new Error('嵌入结果格式不正确');
     }
@@ -691,7 +680,6 @@ export async function checkAiStatus() {
       }
       
       const data = await response.json();
-      console.log(data)
       if (!data || !data.data || !data.data[0] || !data.data[0].embedding) {
         throw new Error('嵌入结果格式不正确');
       }

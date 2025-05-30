@@ -493,6 +493,10 @@
         "chatLanguage": {
           "tooltip": "选择对话语言",
           "placeholder": "搜索语言"
+        },
+        "rag": {
+          "enabled": "知识库检索已启用",
+          "disabled": "知识库检索未启用"
         }
       },
       "header": {
@@ -608,7 +612,10 @@
         "sortByModified": "按修改时间排序",
         "sortAsc": "升序排列",
         "sortDesc": "降序排列",
-        "sort": "排序"
+        "sort": "排序",
+        "processingVectors": "正在处理向量数据",
+        "calculateVectors": "计算文档向量",
+        "enableVectorDb": "启用向量数据库"
       },
       "context": {
         "viewDirectory": "查看目录",

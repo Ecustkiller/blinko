@@ -3,6 +3,7 @@ import { GithubContent, RepoNames } from '@/lib/github.types'
 import { decodeBase64ToString as giteeDecodeBase64ToString, getFiles as getGiteeFiles } from '@/lib/gitee'
 import { GiteeFile } from '@/lib/gitee'
 import { getCurrentFolder } from '@/lib/path'
+import useVectorStore from './vector'
 import { join } from '@tauri-apps/api/path'
 import { BaseDirectory, DirEntry, exists, mkdir, readDir, readTextFile, writeTextFile, stat } from '@tauri-apps/plugin-fs'
 import { Store } from '@tauri-apps/plugin-store'
@@ -764,6 +765,21 @@ const useArticleStore = create<NoteState>((set, get) => ({
           current.isLocale = true
         }
         set({ fileTree: cacheTree })
+      }
+      
+      // 如果文件是Markdown文件，且向量数据库已启用，则更新向量
+      if (path.endsWith('.md')) {
+        try {
+          // 访问向量存储
+          const vectorStore = useVectorStore.getState()
+          // 如果向量数据库已启用，更新向量
+          if (vectorStore.isVectorDbEnabled) {
+            // 异步处理文档向量，无需等待完成
+            vectorStore.processDocument(path, content)
+          }
+        } catch (error) {
+          console.error('更新文档向量失败:', error)
+        }
       }
     }
   },
