@@ -29,6 +29,10 @@ NoteGen is a cross-platform `Markdown` note-taking application dedicated to usin
 
 ## Screenshots
 
+
+https://github.com/user-attachments/assets/4f8a3bc5-17f5-4b36-9b17-d87128685257
+
+
 Recording:
 
 ![1.png](https://s2.loli.net/2025/05/19/Cs5viKfkqb2HJmd.png)
