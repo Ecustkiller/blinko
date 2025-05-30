@@ -3,6 +3,7 @@ import { Store } from "@tauri-apps/plugin-store";
 import OpenAI from 'openai';
 import { GoogleGenAI } from "@google/genai";
 import { AiConfig } from "@/app/core/setting/config";
+import { fetch } from "@tauri-apps/plugin-http";
 
 /**
  * 获取当前的prompt内容
@@ -69,18 +70,116 @@ async function validateAIService(baseURL: string | undefined): Promise<string | 
 /**
  * 处理AI请求错误
  */
-function handleAIError(error: unknown, withToast = true): string | null {
+export function handleAIError(error: any, showToast = true): string | null {
+  console.error(error)
   const errorMessage = error instanceof Error ? error.message : '未知错误'
   
-  if (withToast) {
+  if (showToast) {
     toast({
-      title: 'AI 错误',
-      description: errorMessage,
+      description: errorMessage || 'AI错误',
       variant: 'destructive',
     })
   }
   
   return `请求失败: ${errorMessage}`
+}
+
+// 嵌入请求响应类型
+interface EmbeddingResponse {
+  object: string;
+  model: string;
+  data: Array<{
+    object: string;
+    embedding: number[];
+    index: number;
+  }>;
+  usage: {
+    prompt_tokens: number;
+    total_tokens: number;
+  };
+}
+
+/**
+ * 获取嵌入模型信息
+ */
+async function getEmbeddingModelInfo() {
+  const store = await Store.load('store.json');
+  const embeddingModel = await store.get<string>('embeddingModel');
+  if (!embeddingModel) return null;
+  
+  const aiModelList = await store.get<AiConfig[]>('aiModelList');
+  if (!aiModelList) return null;
+  
+  const modelInfo = aiModelList.find(item => 
+    item.key === embeddingModel && item.modelType === 'embedding'
+  );
+  
+  return modelInfo || null;
+}
+
+/**
+ * 请求嵌入向量
+ * @param text 需要嵌入的文本
+ * @returns 嵌入向量结果，如果失败则返回null
+ */
+export async function fetchEmbedding(text: string): Promise<number[] | null> {
+  try {
+    if (!text || text.trim() === '') {
+      throw new Error('文本不能为空');
+    }
+    
+    // 获取嵌入模型信息
+    const modelInfo = await getEmbeddingModelInfo();
+    console.log(modelInfo);
+    if (!modelInfo) {
+      throw new Error('未配置嵌入模型或模型配置不正确');
+    }
+    
+    const { baseURL, apiKey, model } = modelInfo;
+    
+    if (!baseURL || !apiKey || !model) {
+      throw new Error('嵌入模型配置不完整');
+    }
+
+    console.log(apiKey);
+    console.log(JSON.stringify({
+      model: model,
+      input: text,
+      encoding_format: 'float'
+    }));
+    
+    // 发送嵌入请求
+    const response = await fetch(baseURL + '/embeddings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: model,
+        input: text,
+        encoding_format: 'float'
+      })
+    });
+
+    console.log(response)
+    
+    if (!response.ok) {
+      throw new Error(`嵌入请求失败: ${response.status} ${response.statusText}`);
+    }
+    
+    const data = await response.json() as EmbeddingResponse;
+    console.log(data)
+    if (!data || !data.data || !data.data[0] || !data.data[0].embedding) {
+      throw new Error('嵌入结果格式不正确');
+    }
+
+    
+    return data.data[0].embedding;
+  } catch (error) {
+    handleAIError(error);
+    return null;
+  }
 }
 
 /**
@@ -429,7 +528,8 @@ export async function fetchAiDesc(text: string) {
       return completion.choices[0].message.content || ''
     }
   } catch (error) {
-    return handleAIError(error, false) || null
+    await handleAIError(error, false)
+    return null
   }
 }
 
@@ -538,18 +638,67 @@ export async function checkAiStatus() {
     
     if (!baseURL || !aiType) return false
     
-    if (aiType === 'gemini') {
-      // Gemini - 使用@google/genai
-      const genAI = await createGeminiClient()
+    // 获取模型配置信息
+    const store = await Store.load('store.json');
+    const aiModelList = await store.get<AiConfig[]>('aiModelList');
+    if (!aiModelList) return false;
+    
+    const modelConfig = aiModelList.find(item => item.key === aiType);
+    if (!modelConfig) return false;
+    
+    // 根据模型类型选择测试方法
+    if (!modelConfig.modelType || modelConfig.modelType === 'chat') {
+      // 原来的测试方式，对话模型
+      if (aiType === 'gemini') {
+        // Gemini - 使用@google/genai
+        const genAI = await createGeminiClient()
+        
+        await genAI.models.generateContent({
+          model: model,
+          contents: {
+            parts: [{ text: 'Hello' }]
+          }
+        })
+      } else {
+        // OpenAI/Ollama
+        const openai = await createOpenAIClient()
+        await openai.chat.completions.create({
+          model,
+          messages: [{
+            role: 'user' as const,
+            content: 'Hello'
+          }],
+        })
+      }
+    } else if (modelConfig.modelType === 'embedding') {
+      // 测试嵌入模型
+      // 直接发送请求而不是调用 fetchEmbedding 函数
+      const response = await fetch(baseURL + '/embeddings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${modelConfig.apiKey || ''}`
+        },
+        body: JSON.stringify({
+          model: modelConfig.model || model,
+          input: 'Hello world',
+          encoding_format: 'float'
+        })
+      });
       
-      await genAI.models.generateContent({
-        model: model,
-        contents: {
-          parts: [{ text: 'Hello' }]
-        }
-      })
-    } else {
-      // OpenAI/Ollama
+      if (!response.ok) {
+        throw new Error(`嵌入测试请求失败: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log(data)
+      if (!data || !data.data || !data.data[0] || !data.data[0].embedding) {
+        throw new Error('嵌入结果格式不正确');
+      }
+    } else if (modelConfig.modelType === 'rerank') {
+      // 重排模型测试通常需要多条候选数据
+      // 这里先使用我们已有的 OpenAI 客户端发送完成请求
+      // 实际上应该使用特定的重排请求形式，未来可扩展
       const openai = await createOpenAIClient()
       await openai.chat.completions.create({
         model,
@@ -558,10 +707,15 @@ export async function checkAiStatus() {
           content: 'Hello'
         }],
       })
+    } else {
+      // 其他模型类型暂不处理，返回 false
+      return false;
     }
+    
     return true
-  } catch {
+  } catch (error) {
     // 捕获错误但不处理
+    console.error('AI 状态检查失败:', error);
     return false
   }
 }

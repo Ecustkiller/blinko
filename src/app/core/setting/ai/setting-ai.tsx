@@ -187,6 +187,7 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   
   // 模型类型变更处理
   async function modelTypeChangeHandler(value: ModelType) {
+    console.log(value);
     setModelType(value)
     const store = await Store.load('store.json');
     const aiModelList = await store.get<AiConfig[]>('aiModelList')
@@ -200,6 +201,15 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
     
     aiModelList[modelIndex] = model;
     await store.set('aiModelList', aiModelList);
+    
+    // 重新测试 AI 状态
+    // 通过触发 baseURL 的改变，间接让 AiCheck 组件重新检测
+    // 先保存当前值，然后再恢复以触发检测
+    const currentBaseURL = model.baseURL || '';
+    setBaseURL('');
+    setTimeout(() => {
+      setBaseURL(currentBaseURL);
+    }, 50);
   }
 
   // 复制当前配置
@@ -341,6 +351,11 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
         </FormItem>
       </SettingRow>
       <SettingRow>
+        <FormItem title="Model" desc={t('modelDesc')}>
+          <ModelSelect />
+        </FormItem>
+      </SettingRow>
+      <SettingRow>
         <FormItem title={t('modelType.title')} desc={t('modelType.desc')}>
           <RadioGroup
             value={modelType}
@@ -372,11 +387,6 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
               <Label htmlFor="rerank">{t('modelType.rerank')}</Label>
             </div>
           </RadioGroup>
-        </FormItem>
-      </SettingRow>
-      <SettingRow>
-        <FormItem title="Model" desc={t('modelDesc')}>
-          <ModelSelect />
         </FormItem>
       </SettingRow>
       <SettingRow>
