@@ -27,7 +27,7 @@ import { TooltipButton } from "@/components/tooltip-button"
 
 export function ModelSelect({modelKey}: {modelKey: string}) {
   const [list, setList] = useState<AiConfig[]>([])
-  const { setPlaceholderModel, setTranslateModel, setMarkDescModel } = useSettingStore()
+  const { setPlaceholderModel, setTranslateModel, setMarkDescModel, setEmbeddingModel, setRerankingModel } = useSettingStore()
   const [model, setModel] = useState<string>('')
   const [open, setOpen] = React.useState(false)
   const t = useTranslations('settings.defaultModel')
@@ -43,6 +43,12 @@ export function ModelSelect({modelKey}: {modelKey: string}) {
         break;
       case 'markDesc':
         setMarkDescModel(aiType)
+        break;
+      case 'embedding':
+        setEmbeddingModel(aiType)
+        break;
+      case 'reranking':
+        setRerankingModel(aiType)
         break;
       default:
         break;

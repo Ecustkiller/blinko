@@ -23,6 +23,16 @@ export function Setting({id, icon}: {id: string, icon?: React.ReactNode}) {
       desc: t('options.translate.desc'),
       modelKey: 'translate'
     },
+    {
+      title: t('options.embedding.title'),
+      desc: t('options.embedding.desc'),
+      modelKey: 'embedding'
+    },
+    {
+      title: t('options.reranking.title'),
+      desc: t('options.reranking.desc'),
+      modelKey: 'reranking'
+    },
   ]
 
   return (

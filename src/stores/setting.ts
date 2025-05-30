@@ -52,6 +52,12 @@ interface SettingState {
   markDescModel: string
   setMarkDescModel: (markDescModel: string) => Promise<void>
 
+  embeddingModel: string
+  setEmbeddingModel: (embeddingModel: string) => Promise<void>
+
+  rerankingModel: string
+  setRerankingModel: (rerankingModel: string) => Promise<void>
+
   templateList: GenTemplate[]
   setTemplateList: (templateList: GenTemplate[]) => Promise<void>
 
@@ -167,6 +173,20 @@ const useSettingStore = create<SettingState>((set, get) => ({
     const store = await Store.load('store.json');
     await store.set('markDescModel', markDescModel)
     set({ markDescModel })
+  },
+
+  embeddingModel: '',
+  setEmbeddingModel: async (embeddingModel) => {
+    const store = await Store.load('store.json');
+    await store.set('embeddingModel', embeddingModel)
+    set({ embeddingModel })
+  },
+
+  rerankingModel: '',
+  setRerankingModel: async (rerankingModel) => {
+    const store = await Store.load('store.json');
+    await store.set('rerankingModel', rerankingModel)
+    set({ rerankingModel })
   },
 
   templateList: [

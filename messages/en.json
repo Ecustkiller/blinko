@@ -74,6 +74,14 @@
         "translate": {
           "title": "Translation",
           "desc": "Used for translation content scenes."
+        },
+        "embedding": {
+          "title": "Embedding Model",
+          "desc": "Used for text embedding and vectorization scenarios."
+        },
+        "reranking": {
+          "title": "Reranking Model",
+          "desc": "Used for reordering and optimizing search results."
         }
       }
     },
