@@ -74,7 +74,7 @@ export function ModelSelect() {
           <CommandList>
             <CommandEmpty>No model found.</CommandEmpty>
             <CommandGroup>
-              {list.map((item) => (
+              {list.filter(item => item.modelType === 'chat' || !item.modelType).map((item) => (
                 <CommandItem
                   key={item.key}
                   value={item.key}

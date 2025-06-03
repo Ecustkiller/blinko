@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { TooltipButton } from "@/components/tooltip-button"
+import { Badge } from "@/components/ui/badge"
 
 export function ModelSelect({modelKey}: {modelKey: string}) {
   const [list, setList] = useState<AiConfig[]>([])
@@ -127,6 +128,10 @@ export function ModelSelect({modelKey}: {modelKey: string}) {
                     setOpen(false)
                   }}
                 >
+                  { !item.modelType && <Badge variant="outline">Chat</Badge> }
+                  { item.modelType === 'chat' && <Badge variant="outline">Chat</Badge> }
+                  { item.modelType === 'embedding' && <Badge variant="outline">Embedding</Badge> }
+                  { item.modelType === 'rerank' && <Badge variant="outline">Rerank</Badge> }
                   {`${item.model}(${item.title})`}
                   <Check
                     className={cn(
