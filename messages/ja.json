@@ -612,7 +612,7 @@
         "sortDesc": "降順",
         "sort": "並べ替え",
         "processingVectors": "ベクトルデータ処理中",
-        "calculateVectors": "文書ベクトルを計算",
+        "calculateVectors": "知識庫計算（全量）",
         "enableVectorDb": "ベクトルデータベースを有効化"
       },
       "context": {

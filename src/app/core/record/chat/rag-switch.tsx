@@ -1,6 +1,6 @@
 'use client'
 
-import { Database } from "lucide-react"
+import { Book, BookCheck } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { TooltipButton } from "@/components/tooltip-button"
 import useVectorStore from "@/stores/vector"
@@ -38,7 +38,13 @@ export function RagSwitch() {
     <TooltipButton
       variant="ghost"
       size="icon"
-      icon={<Database className={isRagEnabled ? "text-primary" : ""} />}
+      icon={
+        isRagEnabled ? (
+          <BookCheck />
+        ) : (
+          <Book />
+        )
+      }
       tooltipText={isRagEnabled ? t('rag.enabled') : t('rag.disabled')}
       onClick={handleClick}
       disabled={isDisabled}

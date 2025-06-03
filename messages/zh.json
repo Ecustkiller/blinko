@@ -495,8 +495,8 @@
           "placeholder": "搜索语言"
         },
         "rag": {
-          "enabled": "知识库检索已启用",
-          "disabled": "知识库检索未启用"
+          "enabled": "知识库检索（开启）",
+          "disabled": "知识库检索（关闭）"
         }
       },
       "header": {
@@ -614,7 +614,7 @@
         "sortDesc": "降序排列",
         "sort": "排序",
         "processingVectors": "正在处理向量数据",
-        "calculateVectors": "计算文档向量",
+        "calculateVectors": "知识库计算（全量）",
         "enableVectorDb": "启用向量数据库"
       },
       "context": {

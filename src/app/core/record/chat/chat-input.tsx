@@ -303,9 +303,9 @@ ${ragContext}
           <PromptSelect />
           <ChatLanguage />
           <ChatLink inputType={inputType} />
+          <RagSwitch />
           <ChatPlaceholder />
           <ClipboardMonitor />
-          <RagSwitch />
           <ClearContext />
           <ClearChat />
         </div>

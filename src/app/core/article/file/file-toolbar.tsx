@@ -14,7 +14,7 @@ import {
   ArrowDownAZ,
   ChevronsDownUp,
   ChevronsUpDown,
-  Database,
+  BookA,
 } from "lucide-react"
 import * as React from "react"
 import { TooltipButton } from "@/components/tooltip-button"
@@ -54,6 +54,16 @@ export function FileToolbar() {
   return (
     <div className="flex justify-between items-center h-12 border-b px-2">
       <div>
+        {/* 新建 */}
+        <TooltipButton icon={<FilePlus />} tooltipText={t('newArticle')} onClick={debounceNewFile} />
+        {/* 新建文件夹 */}
+        <TooltipButton icon={<FolderPlus />} tooltipText={t('newFolder')} onClick={debounceNewFolder} />
+        <TooltipButton 
+          icon={isProcessing ? <LoaderCircle className="animate-spin size-4" /> : <BookA className={isVectorDbEnabled ? "text-primary" : ""} />} 
+          tooltipText={isProcessing ? t('processingVectors') : (isVectorDbEnabled ? t('calculateVectors') : t('enableVectorDb'))} 
+          onClick={isVectorDbEnabled ? processAllDocuments : () => setVectorDbEnabled(true)}
+          disabled={isProcessing} 
+        />
         {
           accessToken ? (
             <TooltipButton
@@ -69,10 +79,6 @@ export function FileToolbar() {
       </div>
       <div>
         <TooltipProvider>
-          {/* 新建 */}
-          <TooltipButton icon={<FilePlus />} tooltipText={t('newArticle')} onClick={debounceNewFile} />
-          {/* 新建文件夹 */}
-          <TooltipButton icon={<FolderPlus />} tooltipText={t('newFolder')} onClick={debounceNewFolder} />
           {/* 排序 */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -118,12 +124,6 @@ export function FileToolbar() {
         {/* 刷新 */}
         <TooltipButton icon={<FolderSync />} tooltipText={t('refresh')} onClick={loadFileTree} />
         {/* 向量数据库 */}
-        <TooltipButton 
-          icon={isProcessing ? <LoaderCircle className="animate-spin size-4" /> : <Database className={isVectorDbEnabled ? "text-primary" : ""} />} 
-          tooltipText={isProcessing ? t('processingVectors') : (isVectorDbEnabled ? t('calculateVectors') : t('enableVectorDb'))} 
-          onClick={isVectorDbEnabled ? processAllDocuments : () => setVectorDbEnabled(true)}
-          disabled={isProcessing} 
-        />
       </div>
     </div>
   )

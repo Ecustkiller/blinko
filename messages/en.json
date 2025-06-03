@@ -528,8 +528,8 @@
           "placeholder": "Search language"
         },
         "rag": {
-          "enabled": "Knowledge Base Search Enabled",
-          "disabled": "Knowledge Base Search Disabled"
+          "enabled": "Knowledge Base Search (Enabled)",
+          "disabled": "Knowledge Base Search (Disabled)"
         }
       },
       "header": {
@@ -628,7 +628,7 @@
         "sortDesc": "Sort Descending",
         "sort": "Sort",
         "processingVectors": "Processing Vector Data",
-        "calculateVectors": "Calculate Document Vectors",
+        "calculateVectors": "Knowledge Base Calculation (Full)",
         "enableVectorDb": "Enable Vector Database"
       },
       "context": {
