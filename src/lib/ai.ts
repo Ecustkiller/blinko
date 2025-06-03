@@ -124,47 +124,46 @@ async function getEmbeddingModelInfo() {
  */
 export async function fetchEmbedding(text: string): Promise<number[] | null> {
   try {
-    if (!text || text.trim() === '') {
-      throw new Error('文本不能为空');
-    }
-    
-    // 获取嵌入模型信息
-    const modelInfo = await getEmbeddingModelInfo();
-    if (!modelInfo) {
-      throw new Error('未配置嵌入模型或模型配置不正确');
-    }
-    
-    const { baseURL, apiKey, model } = modelInfo;
-    
-    if (!baseURL || !apiKey || !model) {
-      throw new Error('嵌入模型配置不完整');
-    }
-    
-    // 发送嵌入请求
-    const response = await fetch(baseURL + '/embeddings', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: model,
-        input: text,
-        encoding_format: 'float'
-      })
-    });
+    if (text.length) {
+      // 获取嵌入模型信息
+      const modelInfo = await getEmbeddingModelInfo();
+      if (!modelInfo) {
+        throw new Error('未配置嵌入模型或模型配置不正确');
+      }
+      
+      const { baseURL, apiKey, model } = modelInfo;
+      
+      if (!baseURL || !apiKey || !model) {
+        throw new Error('嵌入模型配置不完整');
+      }
+      
+      // 发送嵌入请求
+      const response = await fetch(baseURL + '/embeddings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: model,
+          input: text,
+          encoding_format: 'float'
+        })
+      });
 
-    if (!response.ok) {
-      throw new Error(`嵌入请求失败: ${response.status} ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`嵌入请求失败: ${response.status} ${response.statusText}`);
+      }
+      
+      const data = await response.json() as EmbeddingResponse;
+      if (!data || !data.data || !data.data[0] || !data.data[0].embedding) {
+        throw new Error('嵌入结果格式不正确');
+      }
+      
+      return data.data[0].embedding;
     }
     
-    const data = await response.json() as EmbeddingResponse;
-    if (!data || !data.data || !data.data[0] || !data.data[0].embedding) {
-      throw new Error('嵌入结果格式不正确');
-    }
-
-    
-    return data.data[0].embedding;
+    return null;
   } catch (error) {
     handleAIError(error);
     return null;
