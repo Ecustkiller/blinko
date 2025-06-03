@@ -26,6 +26,7 @@ NoteGen is a cross-platform `Markdown` note-taking application dedicated to usin
 - Native `Markdown(.md)` as storage format, no modifications, easy to migrate.
 - Native offline usage, supporting real-time synchronization to `GitHub, Gitee private repositories` with history rollback, and WebDAV synchronization.
 - AI-enhanced: Configurable with ChatGPT, Gemini, Ollama, LM Studio, Grok, and other models, with support for custom third-party model configuration.
+- RAG: Your notes are your knowledge base. Support embedding models and reranking models.
 
 ## Screenshots
 

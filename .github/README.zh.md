@@ -17,6 +17,7 @@ NoteGen 是一款的跨端的 `Markdown` 笔记应用，致力于使用 AI 建�
 - 原生 `Markdown(.md)` 作为存储格式，拒绝魔改，方便迁移。
 - 默认支持本地离线使用，支持实时同步到 `Github、Gitee 私有仓库`，支持历史回滚，支持 WebDAV 同步。
 - AI 加持，可配置 ChatGPT、Gemini、Ollama、LM Studio、Grok 等多种模型，支持自定义配置使用第三方模型。
+- RAG 支持，你的笔记就是你的知识库，支持嵌入模型、重排序模型。
 
 ## 截图
 
