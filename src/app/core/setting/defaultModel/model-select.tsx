@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { AiConfig } from "../../setting/config"
 import { Store } from "@tauri-apps/plugin-store"
 import useSettingStore from "@/stores/setting"
-import { ChevronsUpDown, Redo2 } from "lucide-react"
+import { ChevronsUpDown, X } from "lucide-react"
 import {
   Popover,
   PopoverContent,
@@ -24,7 +24,6 @@ import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { TooltipButton } from "@/components/tooltip-button"
-import { Badge } from "@/components/ui/badge"
 
 export function ModelSelect({modelKey}: {modelKey: string}) {
   const [list, setList] = useState<AiConfig[]>([])
@@ -97,18 +96,28 @@ export function ModelSelect({modelKey}: {modelKey: string}) {
             >
               {model
                 ? `${list.find((item) => item.key === model)?.model}(${list.find((item) => item.key === model)?.title})`
-                : t('tooltip')}
+                : modelKey === 'markDesc' || modelKey === 'placeholder' || modelKey === 'translate' ? t('tooltip') : t('noModel')}
               <ChevronsUpDown className="opacity-50" />
             </Button>
           </div>
         </PopoverTrigger>
         {
-          model && (
+          (modelKey === 'markDesc' || modelKey === 'placeholder' || modelKey === 'translate') && model && (
             <TooltipButton
-              icon={<Redo2 className="h-4 w-4" />}
+              icon={<X className="h-4 w-4" />}
               onClick={resetDefaultModel}
               variant="default"
               tooltipText={t('tooltip')}
+            />
+          )
+        }
+        {
+          (modelKey === 'embedding' || modelKey === 'reranking') && model && (
+            <TooltipButton
+              icon={<X className="h-4 w-4" />}
+              onClick={resetDefaultModel}
+              variant="default"
+              tooltipText={t('noModel')}
             />
           )
         }
@@ -119,7 +128,7 @@ export function ModelSelect({modelKey}: {modelKey: string}) {
           <CommandList>
             <CommandEmpty>No model found.</CommandEmpty>
             <CommandGroup>
-              {list.map((item) => (
+              {(modelKey === 'markDesc' || modelKey === 'placeholder' || modelKey === 'translate') && list.filter(item => item.modelType === 'chat' || !item.modelType).map((item) => (
                 <CommandItem
                   key={item.key}
                   value={item.key}
@@ -128,10 +137,42 @@ export function ModelSelect({modelKey}: {modelKey: string}) {
                     setOpen(false)
                   }}
                 >
-                  { !item.modelType && <Badge variant="outline">Chat</Badge> }
-                  { item.modelType === 'chat' && <Badge variant="outline">Chat</Badge> }
-                  { item.modelType === 'embedding' && <Badge variant="outline">Embedding</Badge> }
-                  { item.modelType === 'rerank' && <Badge variant="outline">Rerank</Badge> }
+                  {`${item.model}(${item.title})`}
+                  <Check
+                    className={cn(
+                      "ml-auto",
+                      model === item.key ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                </CommandItem>
+              ))}
+              {modelKey === 'embedding' && list.filter(item => item.modelType === 'embedding').map((item) => (
+                <CommandItem
+                  key={item.key}
+                  value={item.key}
+                  onSelect={(currentValue) => {
+                    modelSelectChangeHandler(currentValue)
+                    setOpen(false)
+                  }}
+                >
+                  {`${item.model}(${item.title})`}
+                  <Check
+                    className={cn(
+                      "ml-auto",
+                      model === item.key ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                </CommandItem>
+              ))}
+              {modelKey === 'reranking' && list.filter(item => item.modelType === 'rerank').map((item) => (
+                <CommandItem
+                  key={item.key}
+                  value={item.key}
+                  onSelect={(currentValue) => {
+                    modelSelectChangeHandler(currentValue)
+                    setOpen(false)
+                  }}
+                >
                   {`${item.model}(${item.title})`}
                   <Check
                     className={cn(

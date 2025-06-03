@@ -40,6 +40,7 @@
       "title": "默认模型",
       "desc": "在这里，你可以针对不同的场景使用不同的模型，提高效率降低成本。",
       "tooltip": "使用主要模型",
+      "noModel": "不使用模型",
       "placeholder": "请选择或搜索模型",
       "mainModel": "主要模型",
       "options" : {

@@ -60,6 +60,7 @@
       "title": "Default Model",
       "desc": "Here, you can use different models for different scenes, to improve efficiency and reduce costs.",
       "tooltip": "Use main model",
+      "noModel": "Do not use",
       "placeholder": "Please select or search for models",
       "main": "Main model",
       "options" : {
