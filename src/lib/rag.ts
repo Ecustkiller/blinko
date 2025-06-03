@@ -1,5 +1,5 @@
 import { readTextFile, readDir, BaseDirectory, DirEntry } from "@tauri-apps/plugin-fs";
-import { fetchEmbedding } from "./ai";
+import { fetchEmbedding, rerankDocuments } from "./ai";
 import { 
   upsertVectorDocument, 
   deleteVectorDocumentsByFilename, 
@@ -298,18 +298,18 @@ export async function getContextForQuery(query: string): Promise<string> {
   try {
     // 计算查询文本的向量
     const queryEmbedding = await fetchEmbedding(query);
-    
     if (!queryEmbedding) {
       return '';
     }
     
     // 查询最相关的文档
-    const similarDocs = await getSimilarDocuments(queryEmbedding, 5, 0.6);
-    
+    let similarDocs = await getSimilarDocuments(queryEmbedding, 5, 0.7);
     if (!similarDocs.length) {
       return '';
     }
     
+    // 如果配置了重排序模型，使用它进一步优化结果
+    similarDocs = await rerankDocuments(query, similarDocs);
     // 构建上下文，包括文件名和内容
     return similarDocs.map(doc => {
       return `文件：${doc.filename}\n${doc.content}\n`;
@@ -319,7 +319,6 @@ export async function getContextForQuery(query: string): Promise<string> {
     return '';
   }
 }
-
 /**
  * 当文件被更新时处理，更新向量数据库
  */

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { initVectorDb, processAllMarkdownFiles, processMarkdownFile, checkEmbeddingModelAvailable } from '@/lib/rag';
+import { checkRerankModelAvailable } from '@/lib/ai';
 import { Store } from "@tauri-apps/plugin-store";
 import { toast } from '@/hooks/use-toast';
 
@@ -9,6 +10,7 @@ interface VectorState {
   isRagEnabled: boolean;           // 是否启用RAG检索功能
   isProcessing: boolean;           // 是否正在处理向量
   lastProcessTime: number | null;  // 最后一次处理向量的时间
+  hasRerankModel: boolean;         // 是否有可用的重排序模型
   
   // 统计数据
   documentCount: number;           // 文档数量
@@ -24,6 +26,7 @@ interface VectorState {
   processAllDocuments: () => Promise<void>;
   processDocument: (filename: string, content: string) => Promise<void>;
   checkEmbeddingModel: () => Promise<boolean>;
+  checkRerankModel: () => Promise<boolean>;
 }
 
 const useVectorStore = create<VectorState>((set, get) => ({
@@ -31,6 +34,7 @@ const useVectorStore = create<VectorState>((set, get) => ({
   isRagEnabled: false,
   isProcessing: false,
   lastProcessTime: null,
+  hasRerankModel: false,
   documentCount: 0,
   
   // 初始化向量数据库
@@ -59,6 +63,10 @@ const useVectorStore = create<VectorState>((set, get) => ({
           await get().setRagEnabled(false);
         }
       }
+      
+      // 检查重排序模型是否可用
+      const hasRerankModel = await get().checkRerankModel();
+      set({ hasRerankModel });
     } catch (error) {
       console.error('初始化向量数据库失败:', error);
     }
@@ -181,12 +189,26 @@ const useVectorStore = create<VectorState>((set, get) => ({
   // 检查嵌入模型可用性
   checkEmbeddingModel: async () => {
     try {
-      return await checkEmbeddingModelAvailable();
+      const modelAvailable = await checkEmbeddingModelAvailable();
+      return modelAvailable;
     } catch (error) {
       console.error('检查嵌入模型失败:', error);
       return false;
     }
   },
+  
+  // 检查重排序模型可用性
+  checkRerankModel: async () => {
+    try {
+      const modelAvailable = await checkRerankModelAvailable();
+      set({ hasRerankModel: modelAvailable });
+      return modelAvailable;
+    } catch (error) {
+      console.error('检查重排序模型失败:', error);
+      set({ hasRerankModel: false });
+      return false;
+    }
+  }
 }));
 
 export default useVectorStore;

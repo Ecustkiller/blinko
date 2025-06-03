@@ -118,6 +118,69 @@ async function getEmbeddingModelInfo() {
 }
 
 /**
+ * 获取重排序模型信息
+ */
+export async function getRerankModelInfo() {
+  const store = await Store.load('store.json');
+  const rerankModel = await store.get<string>('rerankingModel');
+  if (!rerankModel) return null;
+  
+  const aiModelList = await store.get<AiConfig[]>('aiModelList');
+  if (!aiModelList) return null;
+  
+  const modelInfo = aiModelList.find(item => 
+    item.key === rerankModel && item.modelType === 'rerank'
+  );
+  
+  return modelInfo || null;
+}
+
+/**
+ * 检查是否有重排序模型可用
+ */
+export async function checkRerankModelAvailable(): Promise<boolean> {
+  try {
+    // 获取重排序模型信息
+    const modelInfo = await getRerankModelInfo();
+    if (!modelInfo) return false;
+    
+    const { baseURL, apiKey, model } = modelInfo;
+    if (!baseURL || !apiKey || !model) return false;
+    
+    // 测试重排序模型
+    const testQuery = '测试查询';
+    const testDocuments = [
+      '这是一个测试文档', 
+      '这是另一个测试文档'
+    ];
+    
+    // 发送测试请求
+    const response = await fetch(baseURL + '/rerank', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: model,
+        query: testQuery,
+        documents: testDocuments
+      })
+    });
+    
+    if (!response.ok) {
+      return false;
+    }
+    
+    const data = await response.json();
+    return !!(data && data.results);
+  } catch (error) {
+    console.error('重排序模型检查失败:', error);
+    return false;
+  }
+}
+
+/**
  * 请求嵌入向量
  * @param text 需要嵌入的文本
  * @returns 嵌入向量结果，如果失败则返回null
@@ -167,6 +230,82 @@ export async function fetchEmbedding(text: string): Promise<number[] | null> {
   } catch (error) {
     handleAIError(error);
     return null;
+  }
+}
+
+/**
+ * 使用重排序模型重新排序检索的文档
+ * @param query 用户查询
+ * @param documents 要重新排序的文档列表
+ * @returns 重新排序后的文档列表
+ */
+export async function rerankDocuments(
+  query: string,
+  documents: {id: number, filename: string, content: string, similarity: number}[]
+): Promise<{id: number, filename: string, content: string, similarity: number}[]> {
+  try {
+    // 检查是否有文档需要重排序
+    if (!documents.length) {
+      return documents;
+    }
+    
+    // 获取重排序模型信息
+    const modelInfo = await getRerankModelInfo();
+    if (!modelInfo) {
+      // 如果没有配置重排序模型，返回原始排序
+      return documents;
+    }
+    
+    const { baseURL, apiKey, model } = modelInfo;
+    
+    if (!baseURL || !apiKey || !model) {
+      return documents; // 配置不完整，返回原始排序
+    }
+    
+    // 构建重排序请求数据
+    // 注意：这里使用了OpenAI的格式，但可能需要根据实际使用的模型调整
+    const passages = documents.map(doc => doc.content);
+    
+    const response = await fetch(baseURL + '/rerank', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: model,
+        query: query,
+        documents: passages
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`重排序请求失败: ${response.status} ${response.statusText}`);
+    }
+    
+    // 解析响应
+    const data = await response.json();
+    
+    // 检查响应格式
+    if (!data || !data.results) {
+      throw new Error('重排序结果格式不正确');
+    }
+    
+    // 处理重排序结果
+    // 将原始文档与新的相似度分数结合
+    const rerankResults = data.results.map((result: any, index: number) => {
+      return {
+        ...documents[result.document_index || index],
+        similarity: result.relevance_score || result.score || documents[index].similarity
+      };
+    });
+    
+    // 根据新的相似度分数排序
+    return rerankResults.sort((a: {similarity: number}, b: {similarity: number}) => b.similarity - a.similarity);
+  } catch (error) {
+    console.error('重排序失败:', error);
+    // 发生错误时返回原始排序
+    return documents;
   }
 }
 
@@ -339,7 +478,7 @@ export async function fetchAiStream(text: string, onUpdate: (content: string) =>
     
     // 准备消息
     const { messages, geminiText } = await prepareMessages(text, aiType, true)
-    
+
     // 根据不同AI类型进行流式请求
     if (aiType === 'gemini') {
       // Gemini API流式请求使用@google/genai
@@ -356,7 +495,6 @@ export async function fetchAiStream(text: string, onUpdate: (content: string) =>
       })
       
       for await (const chunk of response) {
-        // Check if the request has been aborted
         if (abortSignal?.aborted) {
           break;
         }
@@ -369,7 +507,6 @@ export async function fetchAiStream(text: string, onUpdate: (content: string) =>
       
       return fullContent
     } else {
-      // OpenAI/Ollama流式请求
       const openai = await createOpenAIClient()
       const stream = await openai.chat.completions.create({
         model: model,
@@ -383,14 +520,12 @@ export async function fetchAiStream(text: string, onUpdate: (content: string) =>
       let fullContent = ''
       
       for await (const chunk of stream) {
-        // Check if the request has been aborted
         if (abortSignal?.aborted) {
           break;
         }
         
         const thinkingContent = (chunk.choices[0]?.delta as any)?.reasoning_content || ''
         const content = chunk.choices[0]?.delta?.content || ''
-        // 如果存在 thinkingContent 则每次将内容插入到 fullContent 的 <thinking></thinking> 标签中，只保留一个<thinking></thinking>标签
         if (thinkingContent) {
           thinking += thinkingContent
           fullContent = `<thinking>${thinking}<thinking>`
@@ -635,8 +770,45 @@ export async function checkAiStatus() {
     if (!modelConfig) return false;
     
     // 根据模型类型选择测试方法
-    if (!modelConfig.modelType || modelConfig.modelType === 'chat') {
-      // 原来的测试方式，对话模型
+    if (modelConfig.modelType === 'rerank') {
+      // 重排序模型测试
+      const testQuery = '测试查询';
+      const testDocuments = [
+        '这是一个测试文档', 
+        '这是另一个测试文档'
+      ];
+      
+      // 发送重排序测试请求
+      const response = await fetch(baseURL + '/rerank', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${modelConfig.apiKey}`
+        },
+        body: JSON.stringify({
+          model: model,
+          query: testQuery,
+          documents: testDocuments
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`重排序请求失败: ${response.status} ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      if (!data || !data.results) {
+        throw new Error('重排序结果格式不正确');
+      }
+    } else if (modelConfig.modelType === 'embedding') {
+      // 嵌入模型测试
+      const testText = '测试文本';
+      const embedding = await fetchEmbedding(testText);
+      if (!embedding) {
+        throw new Error('嵌入模型测试失败');
+      }
+    } else {
+      // 对话模型测试 (!modelConfig.modelType || modelConfig.modelType === 'chat')
       if (aiType === 'gemini') {
         // Gemini - 使用@google/genai
         const genAI = await createGeminiClient()
@@ -658,45 +830,6 @@ export async function checkAiStatus() {
           }],
         })
       }
-    } else if (modelConfig.modelType === 'embedding') {
-      // 测试嵌入模型
-      // 直接发送请求而不是调用 fetchEmbedding 函数
-      const response = await fetch(baseURL + '/embeddings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${modelConfig.apiKey || ''}`
-        },
-        body: JSON.stringify({
-          model: modelConfig.model || model,
-          input: 'Hello world',
-          encoding_format: 'float'
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`嵌入测试请求失败: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      if (!data || !data.data || !data.data[0] || !data.data[0].embedding) {
-        throw new Error('嵌入结果格式不正确');
-      }
-    } else if (modelConfig.modelType === 'rerank') {
-      // 重排模型测试通常需要多条候选数据
-      // 这里先使用我们已有的 OpenAI 客户端发送完成请求
-      // 实际上应该使用特定的重排请求形式，未来可扩展
-      const openai = await createOpenAIClient()
-      await openai.chat.completions.create({
-        model,
-        messages: [{
-          role: 'user' as const,
-          content: 'Hello'
-        }],
-      })
-    } else {
-      // 其他模型类型暂不处理，返回 false
-      return false;
     }
     
     return true

@@ -4,17 +4,10 @@ import { Book, BookCheck } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { TooltipButton } from "@/components/tooltip-button"
 import useVectorStore from "@/stores/vector"
-import { useEffect, useState } from "react"
 
 export function RagSwitch() {
   const { isRagEnabled, setRagEnabled, isVectorDbEnabled, setVectorDbEnabled } = useVectorStore()
-  const [isDisabled, setIsDisabled] = useState(false)
   const t = useTranslations('record.chat.input')
-
-  // 检查RAG是否可用
-  useEffect(() => {
-    setIsDisabled(!isVectorDbEnabled)
-  }, [isVectorDbEnabled])
 
   // 处理开关点击
   const handleClick = async () => {
@@ -47,7 +40,6 @@ export function RagSwitch() {
       }
       tooltipText={isRagEnabled ? t('rag.enabled') : t('rag.disabled')}
       onClick={handleClick}
-      disabled={isDisabled}
     />
   )
 }
