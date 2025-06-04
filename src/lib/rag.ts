@@ -9,7 +9,7 @@ import {
 
 // 重新导出initVectorDb，使其可在其他模块中导入
 export { initVectorDb };
-import { getWorkspacePath } from "./workspace";
+import { getFilePathOptions, getWorkspacePath } from "./workspace";
 import { DirTree } from "@/stores/article";
 import { toast } from "@/hooks/use-toast";
 import { join } from "@tauri-apps/api/path";
@@ -110,10 +110,14 @@ export async function processMarkdownFile(
   fileContent?: string
 ): Promise<boolean> {
   try {
-    // 如果未提供文件内容，则读取文件
-    const content = fileContent || await readTextFile(filePath);
-    
-    // 分块处理文本
+    const workspace = await getWorkspacePath()
+    let content = ''
+    if (workspace.isCustom) {
+      content = fileContent || await readTextFile(filePath)
+    } else {
+      const { path, baseDir } = await getFilePathOptions(filePath)
+      content = fileContent || await readTextFile(path, { baseDir })
+    }
     const chunks = chunkText(content);
     
     // 文件名（不含路径）
