@@ -172,7 +172,7 @@
       "desc": "在这里，你可以添加和管理各种自定义模型提供服务，配置后将解锁 AI 相关功能，例如整理和对话功能。",
       "modelTitle": "自定义名称",
       "custom": "自定义",
-      "addCustomModel": "新增",
+      "addCustomModel": "自定义",
       "deleteCustomModel": "删除",
       "deleteCustomModelConfirm": "确认删除此自定义模型配置吗?",
       "copyConfig": "复制",

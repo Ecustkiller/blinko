@@ -172,7 +172,7 @@
       "desc": "ここでさまざまなカスタムモデルサービスを追加・管理できます。設定後、整理や会話などAI機能が有効になります。",
       "modelTitle": "カスタム名",
       "custom": "自定義",
-      "addCustomModel": "追加",
+      "addCustomModel": "自定義",
       "deleteCustomModel": "削除",
       "deleteCustomModelConfirm": "この自定義モデル設定を削除してもよろしいですか？",
       "copyConfig": "コピー",

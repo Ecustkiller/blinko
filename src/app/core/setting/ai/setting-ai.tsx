@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useState } from "react";
 import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
-import { InfoIcon } from "lucide-react";
+import { Copy, InfoIcon, Plus, X } from "lucide-react";
 import ModelSelect from "./model-select";
 import { AiConfig, ModelType, baseAiConfig } from "../config";
 import * as React from "react"
@@ -346,12 +346,12 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
             </Select>
             {
               currentAi?.type === 'custom' && (
-                <Button variant={'destructive'} onClick={deleteCustomModelHandler}>{t('deleteCustomModel')}</Button>
+                <Button variant={'destructive'} onClick={deleteCustomModelHandler}><X />{t('deleteCustomModel')}</Button>
               )
             }
-            <Button onClick={addCustomModelHandler}>{t('addCustomModel')}</Button>
             {/* 复制当前配置 */}
-            <Button onClick={copyConfig}>{t('copyConfig')}</Button>
+            <Button onClick={copyConfig}><Copy />{t('copyConfig')}</Button>
+            <Button onClick={addCustomModelHandler}><Plus />{t('addCustomModel')}</Button>
           </div>
         </FormItem>
       </SettingRow>
@@ -420,35 +420,40 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
           </RadioGroup>
         </FormItem>
       </SettingRow>
-      <SettingRow>
-        <FormItem title="Temperature" desc={t('temperatureDesc')}>
-          <div className="flex gap-2 py-2">
-            <Slider 
-              className="w-64"
-              value={[temperature]} 
-              max={2} 
-              step={0.01} 
-              onValueChange={temperatureChangeHandler}
-            />
-            <span className="text-zinc-500">{temperature}</span>
-          </div>
-        </FormItem>
-      </SettingRow>
-      <SettingRow>
-        <FormItem title="Top P" desc={t('topPDesc')}>
-          <div className="flex gap-2 py-2">
-            <Slider 
-              className="w-64"
-              value={[topP]} 
-              max={1} 
-              min={0}
-              step={0.01} 
-              onValueChange={topPChangeHandler}
-            />
-            <span className="text-zinc-500">{topP}</span>
-          </div>
-        </FormItem>
-      </SettingRow>
+      {
+        modelType === 'chat' && (
+          <>
+            <SettingRow>
+              <FormItem title="Temperature" desc={t('temperatureDesc')}>
+                <div className="flex gap-2 py-2">
+                  <Slider 
+                    className="w-64"
+                    value={[temperature]} 
+                  max={2} 
+                  step={0.01} 
+                  onValueChange={temperatureChangeHandler}
+                  />
+                  <span className="text-zinc-500">{temperature}</span>
+                </div>
+              </FormItem>
+          </SettingRow>
+          <SettingRow>
+            <FormItem title="Top P" desc={t('topPDesc')}>
+              <div className="flex gap-2 py-2">
+                <Slider 
+                  className="w-64"
+                  value={[topP]} 
+                  max={1} 
+                  min={0}
+                  step={0.01} 
+                  onValueChange={topPChangeHandler}
+                />
+                <span className="text-zinc-500">{topP}</span>
+              </div>  
+            </FormItem>
+          </SettingRow>
+        </>)
+      }
     </SettingType>
   )
 }
