@@ -195,7 +195,7 @@ export async function fetchEmbedding(text: string): Promise<number[] | null> {
       }
       
       const { baseURL, apiKey, model } = modelInfo;
-      
+
       if (!baseURL || !apiKey || !model) {
         throw new Error('嵌入模型配置不完整');
       }
@@ -768,7 +768,6 @@ export async function checkAiStatus() {
     
     const modelConfig = aiModelList.find(item => item.key === aiType);
     if (!modelConfig) return false;
-    
     // 根据模型类型选择测试方法
     if (modelConfig.modelType === 'rerank') {
       // 重排序模型测试

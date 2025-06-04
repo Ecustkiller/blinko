@@ -52,11 +52,22 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
 
   // 模型选择变更
   async function selectChangeHandler(key: string) {
+    const store = await Store.load('store.json');
+    const model = await getModelByStore(key)
+    if (!model) return
+    switch (model.modelType) {
+      case 'embedding':
+        await store.set('embeddingModel', key)
+        break;
+      case 'rerank':
+        await store.set('rerankingModel', key)
+        break;
+      default:
+        break;
+    }
+    await store.set('aiType', key)
     setCurrentAi(aiConfig.find(item => item.key === key))
     setAiType(key)
-    const store = await Store.load('store.json');
-    await store.set('aiType', key)
-    const model = await getModelByStore(key)
     if (!model) return
     setBaseURL(model.baseURL || '')
     store.set('baseURL', model.baseURL || '')
@@ -189,6 +200,16 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   async function modelTypeChangeHandler(value: ModelType) {
     setModelType(value)
     const store = await Store.load('store.json');
+    switch (value) {
+      case 'embedding':
+        store.set('embeddingModel', aiType)
+        break;
+      case 'rerank':
+        store.set('rerankingModel', aiType)
+        break;
+      default:
+        break;
+    }
     const aiModelList = await store.get<AiConfig[]>('aiModelList')
     if (!aiModelList) return
     
@@ -258,6 +279,17 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
       }
       const model = await getModelByStore(aiType)
       if (!model) return
+      switch (model.modelType) {
+        case 'embedding':
+          await store.set('embeddingModel', model.key)
+          break;
+        case 'rerank':
+          await store.set('rerankingModel', model.key)
+          break;
+        default:
+          break;
+      }
+      await store.set('aiType', aiType)
       setCurrentAi(model)
       setBaseURL(model.baseURL || '')
       store.set('baseURL', model.baseURL || '')
