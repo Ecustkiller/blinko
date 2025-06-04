@@ -661,6 +661,8 @@
       "deleteConfirm": "Are you sure you want to delete this file?"
     },
     "editor": {
+      "copySuccess": "Copied to clipboard",
+      "copySuccessDescription": "Copied to clipboard",
       "upload": {
         "error": "Upload Failed",
         "needToken": "Upload image requires accessToken configuration",

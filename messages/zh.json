@@ -647,6 +647,8 @@
       "deleteConfirm": "确认删除此文件吗？"
     },
     "editor": {
+      "copySuccess": "复制成功",
+      "copySuccessDescription": "已复制到剪贴板",
       "upload": {
         "error": "上传失败",
         "needToken": "上传图片需配置 accessToken",

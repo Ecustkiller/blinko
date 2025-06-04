@@ -340,6 +340,39 @@ export function MdEditor() {
   }
 
   useEffect(() => {
+    emitter.on('toolbar-copy-html', () => {
+      const html = editor?.getHTML()
+      navigator.clipboard.writeText(html || '')
+      toast({
+        title: t('copySuccess'),
+        description: `HTML ${t('copySuccessDescription')}`,
+      })
+    })
+    emitter.on('toolbar-copy-markdown', () => {
+      const markdown = editor?.getValue()
+      navigator.clipboard.writeText(markdown || '')
+      toast({
+        title: t('copySuccess'),
+        description: `Markdown ${t('copySuccessDescription')}`,
+      })
+    })  
+    emitter.on('toolbar-copy-json', () => {
+      const markdown = editor?.getValue()
+      const json = editor?.exportJSON(markdown || '')
+      navigator.clipboard.writeText(json || '')
+      toast({
+        title: t('copySuccess'),
+        description: `JSON ${t('copySuccessDescription')}`,
+      })
+    })
+    return () => {
+      emitter.off('toolbar-copy-html')
+      emitter.off('toolbar-copy-markdown')
+      emitter.off('toolbar-copy-json')
+    }
+  }, [editor])
+
+  useEffect(() => {
     if (!activeFilePath) {
       editor?.destroy()
       setEditor(undefined)

@@ -645,6 +645,8 @@
       "deleteConfirm": "このファイルを削除してもよろしいですか？"
     },
     "editor": {
+      "copySuccess": "コピー成功",
+      "copySuccessDescription": "クリップボードにコピーしました",
       "upload": {
         "error": "画像のアップロードに失敗しました",
         "needToken": "画像のアップロードには accessToken の設定が必要です",
