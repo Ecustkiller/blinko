@@ -111,6 +111,12 @@ The note-taking application can be used directly without configuration. If you w
 - [Submit bugs or improvement suggestions](https://github.com/codexu/note-gen/issues)
 - [Discussions](https://github.com/codexu/note-gen/discussions)
 
+## Contributors
+
+<a href="https://github.com/codexu/note-gen/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=codexu/note-gen" />
+</a>
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=codexu/note-gen&type=Date)](https://www.star-history.com/#codexu/note-gen&Date)

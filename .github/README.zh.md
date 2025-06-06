@@ -91,12 +91,18 @@ NoteGen 分为`记录`和`写作`两个页面，其关系是：
 
 笔记本身可以无配置直接使用，如果你想得到更好的体验，请打开设置页面，对 AI 和同步进行配置。
 
-## Contribute
+## 贡献
 
 - [阅读贡献指南](CONTRIBUTING.md)
 - [更新计划](https://github.com/codexu/note-gen/issues/46)
 - [提交 Bug 或改进建议](https://github.com/codexu/note-gen/issues)
 - [讨论](https://github.com/codexu/note-gen/discussions)
+
+## 贡献者
+
+<a href="https://github.com/codexu/note-gen/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=codexu/note-gen" />
+</a>
 
 ## Star History
 

@@ -97,6 +97,12 @@ NoteGenは`記録`と`執筆`のページに分かれており、次の関係が
 - [バグや改善提案を提出する](https://github.com/codexu/note-gen/issues)
 - [ディスカッション](https://github.com/codexu/note-gen/discussions)
 
+## 貢献者
+
+<a href="https://github.com/codexu/note-gen/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=codexu/note-gen" />
+</a>
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=codexu/note-gen&type=Date)](https://www.star-history.com/#codexu/note-gen&Date)
