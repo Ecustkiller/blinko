@@ -1,5 +1,4 @@
 import { TooltipButton } from "@/components/tooltip-button";
-import { toast } from "@/hooks/use-toast";
 import { fetchAiStreamToken } from "@/lib/ai";
 import emitter from "@/lib/emitter";
 import useArticleStore from "@/stores/article";
@@ -21,20 +20,13 @@ export default function Question({editor}: {editor?: Vditor}) {
     const button = (editor?.vditor.toolbar?.elements?.question.childNodes[0] as HTMLButtonElement)
     button.classList.add('vditor-menu--disabled')
     const selectedText = rang?.startContainer.textContent;
-    if (selectedText) {
-      const req = t('promptTemplate', {
-        content: currentArticle,
-        question: selectedText
-      })
-      await fetchAiStreamToken(req, (text) => {
-        editor?.insertValue(text, true)
-      })
-    } else {
-      toast({
-        title: t('selectContent'),
-        variant: 'destructive'
-      })
-    }
+    const req = t('promptTemplate', {
+      content: currentArticle,
+      question: selectedText
+    })
+    await fetchAiStreamToken(req, (text) => {
+      editor?.insertValue(text, true)
+    })
     button.classList.remove('vditor-menu--disabled')
   }
 
