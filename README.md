@@ -125,8 +125,8 @@ The note-taking application can be used directly without configuration. If you w
 ## Sponsors
 
 <div>
-  <a href="https://sm.ms/image/PDNBYc1KTgOLnje" target="_blank"><img src="https://s2.loli.net/2025/06/09/PDNBYc1KTgOLnje.png" ></a>
-  <a href="https://sm.ms/image/dyX97jPiH6YlaKU" target="_blank"><img src="https://s2.loli.net/2025/06/09/dyX97jPiH6YlaKU.png" ></a>
+  <a href="https://docs.siliconflow.cn/cn/usercases/use-siliconcloud-in-NoteGen" target="_blank"><img src="https://s2.loli.net/2025/06/09/PDNBYc1KTgOLnje.png" ></a>
+  <a href="https://www.qiniu.com?utm_source=NoteGen" target="_blank"><img src="https://s2.loli.net/2025/06/09/dyX97jPiH6YlaKU.png" ></a>
 </div>
 
 ## Star History
