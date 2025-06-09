@@ -133,7 +133,6 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
   // 添加自定义模型
   async function addCustomModelHandler() {
     const id = v4()
-    setAiType(id)
     const newModel: AiConfig = {
       key: id,
       baseURL: '',
@@ -141,14 +140,44 @@ export function SettingAI({id, icon}: {id: string, icon?: React.ReactNode}) {
       title: 'Untitled',
       temperature: 0.7,
       topP: 1.0,
-      modelType: modelType // Use the current modelType
+      modelType: modelType || 'chat'
     }
-    const store = await Store.load('store.json');
-    await store.set('aiType', id)
-    await store.set('aiModelList', [...aiConfig, newModel])
-    setAiConfig([...aiConfig, newModel])
-    selectChangeHandler(id)
+    
     setCurrentAi(newModel)
+    setAiType(id)
+    setTitle('Untitled')
+    setBaseURL('')
+    setApiKey('')
+    setTemperature(0.7)
+    setTopP(1.0)
+    
+    setAiConfig(prevConfig => {
+      const updatedConfig = [...prevConfig, newModel]
+      
+      const updateStore = async () => {
+        const store = await Store.load('store.json');
+        await store.set('aiType', id)
+        await store.set('aiModelList', updatedConfig)
+        await store.set('baseURL', '')
+        await store.set('apiKey', '')
+        await store.set('temperature', 0.7)
+        await store.set('topP', 1.0)
+        
+        switch(newModel.modelType) {
+          case 'embedding':
+            await store.set('embeddingModel', id)
+            break;
+          case 'rerank':
+            await store.set('rerankingModel', id)
+            break;
+          default:
+            break;
+        }
+      }
+      
+      updateStore()
+      return updatedConfig
+    })
   }
 
   // 删除自定义模型
