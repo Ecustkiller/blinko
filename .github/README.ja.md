@@ -8,7 +8,7 @@ NoteGenは、AIを使用して記録と執筆を橋渡しし、断片化され�
 
 🖥️ Official Document: [https://notegen.top](https://notegen.top)
 
-💬 Join [WeChat Group](https://github.com/codexu/note-gen/discussions/110) | [Discord](https://discord.gg/9vs3qFkb)
+💬 Join [WeChat Group](https://github.com/codexu/note-gen/discussions/110) | [Discord](https://discord.gg/SXyVZGpbpk) | [Telegram](https://t.me/notegen)
 
 ## なぜNoteGenを選ぶのか？
 
@@ -98,13 +98,3 @@ NoteGenは`記録`と`執筆`のページに分かれており、次の関係が
 - [更新計画](https://github.com/codexu/note-gen/issues/46)
 - [バグや改善提案を提出する](https://github.com/codexu/note-gen/issues)
 - [ディスカッション](https://github.com/codexu/note-gen/discussions)
-
-## 貢献者
-
-<a href="https://github.com/codexu/note-gen/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=codexu/note-gen" />
-</a>
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=codexu/note-gen&type=Date)](https://www.star-history.com/#codexu/note-gen&Date)

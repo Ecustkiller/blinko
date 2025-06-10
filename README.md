@@ -9,8 +9,8 @@
 ![](https://img.shields.io/github/commit-activity/m/codexu/note-gen)
 
 <div>
-  <a href="https://www.producthunt.com/products/notegen-2?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-notegen&#0045;2" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=956348&theme=light&t=1749194675492" alt="NoteGen - A&#0032;cross&#0045;platform&#0032;Markdown&#0032;note&#0045;taking&#0032;application | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
   <a href="https://trendshift.io/repositories/12784" target="_blank"><img src="https://trendshift.io/api/badge/repositories/12784" alt="codexu%2Fnote-gen | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+  <a href="https://www.producthunt.com/products/notegen-2?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-notegen&#0045;2" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=956348&theme=light&t=1749194675492" alt="NoteGen - A&#0032;cross&#0045;platform&#0032;Markdown&#0032;note&#0045;taking&#0032;application | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 </div>
 
 English | [简体中文](.github/README.zh.md) | [日本語](.github/README.ja.md)
@@ -21,7 +21,7 @@ NoteGen is a cross-platform `Markdown` note-taking application dedicated to usin
 
 🖥️ Official Document: [https://notegen.top](https://notegen.top)
 
-💬 Join [WeChat/QQ Group](https://github.com/codexu/note-gen/discussions/110)
+💬 Join [WeChat/QQ Group](https://github.com/codexu/note-gen/discussions/110) | [Discord](https://discord.gg/SXyVZGpbpk) | [Telegram](https://t.me/notegen)
 
 ## Why Choose NoteGen?
 

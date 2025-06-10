@@ -8,7 +8,7 @@ NoteGen 是一款跨端的 `Markdown` 笔记应用，致力于使用 AI 建立�
 
 🖥️ 官方文档：[https://notegen.top](https://notegen.top)
 
-💬 交流群：[WeChat Group](https://github.com/codexu/note-gen/discussions/110) | [Discord](https://discord.gg/9vs3qFkb)
+💬 交流群：[WeChat Group](https://github.com/codexu/note-gen/discussions/110) | [Discord](https://discord.gg/SXyVZGpbpk) | [Telegram](https://t.me/notegen)
 
 ## 为什么选择 NoteGen？
 
@@ -98,13 +98,3 @@ NoteGen 分为`记录`和`写作`两个页面，其关系是：
 - [更新计划](https://github.com/codexu/note-gen/issues/46)
 - [提交 Bug 或改进建议](https://github.com/codexu/note-gen/issues)
 - [讨论](https://github.com/codexu/note-gen/discussions)
-
-## 贡献者
-
-<a href="https://github.com/codexu/note-gen/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=codexu/note-gen" />
-</a>
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=codexu/note-gen&type=Date)](https://www.star-history.com/#codexu/note-gen&Date)
