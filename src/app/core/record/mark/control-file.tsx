@@ -2,15 +2,13 @@ import { TooltipButton } from "@/components/tooltip-button"
 import { FilePlus } from "lucide-react"
 import { useTranslations } from 'next-intl'
 import { open } from '@tauri-apps/plugin-dialog';
-import { readTextFile, readFile } from "@tauri-apps/plugin-fs";
+import { readTextFile } from "@tauri-apps/plugin-fs";
 import useTagStore from "@/stores/tag";
 import useMarkStore from "@/stores/mark";
 import { insertMark } from "@/db/marks";
-import { getDocument } from 'pdfjs-dist'
-import "pdfjs-dist/build/pdf.worker.mjs";
 
 const textFileExtensions = ['txt', 'md', 'csv'];
-const fileExtensions = ['pdf']
+const fileExtensions: string[] = []
 
 export function ControlFile() {
   const t = useTranslations();
@@ -39,29 +37,6 @@ export function ControlFile() {
       await fetchMarks()
       await fetchTags()
       getCurrentTag()
-    }
-    if (ext === 'pdf') {
-      const file = await readFile(path)
-      getDocument(file).promise.then(pdf => {
-        const numPages = pdf.numPages;
-        for (let i = 1; i <= numPages; i++) {
-          pdf.getPage(i).then(page => {
-            page.getTextContent().then(content => {
-              const text = content.items.map(item => {
-                if ('str' in item) {
-                  return item.str
-                }
-                return ''
-              }).join('');
-              if (!text) return
-              insertMark({ tagId: currentTagId, type: 'file', desc: text, content: text })
-              fetchMarks()
-              fetchTags()
-              getCurrentTag()
-            });
-          });
-        }
-      })
     }
   }
 
