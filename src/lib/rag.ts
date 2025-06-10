@@ -67,7 +67,7 @@ export function chunkText(
       // 如果单个段落过长，需要强制分割
       if (paragraph.length > chunkSize) {
         // 先尝试按句子分割
-        const sentences = paragraph.split(/(?<=\.|\?|\!)\s+/);
+        const sentences = paragraph.split(/(?:\.|\?|\!)\s+/);
         let sentenceChunk = '';
         
         for (const sentence of sentences) {
