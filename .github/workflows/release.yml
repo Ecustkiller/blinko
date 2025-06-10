@@ -7,6 +7,8 @@ on:
 
 jobs:
   publish-tauri:
+    outputs:
+      appVersion: ${{ steps.set_output.outputs.appVersion }}
     permissions:
       contents: write
     strategy:
@@ -52,6 +54,7 @@ jobs:
         run: pnpm install
 
       - uses: tauri-apps/tauri-action@v0
+        id: tauri-action
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
@@ -60,6 +63,36 @@ jobs:
           tagName: note-gen-v__VERSION__
           releaseName: 'NoteGen v__VERSION__'
           releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: true
+          releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
+
+      - name: Generate release tag
+        id: save_tag
+        if: matrix.platform == 'ubuntu-24.04'
+        run: |
+          # 调试输出
+          echo ${{ steps.tauri-action.outputs.appVersion }}
+          # 输出到步骤级
+          echo "appVersion=${{ steps.tauri-action.outputs.appVersion }}" >> $GITHUB_OUTPUT
+
+      - name: Set job output
+        id: set_output
+        if: matrix.platform == 'ubuntu-24.04'
+        run: |
+          # 注意：这里引用的是 save_tag 步骤的 tag_name 输出
+          echo "appVersion=${{ steps.save_tag.outputs.appVersion }}" >> $GITHUB_OUTPUT
+
+  upgradeLink-upload:
+      needs:  publish-tauri
+      permissions:
+        contents: write
+      runs-on: ubuntu-latest
+      steps:
+        - name: Send a request to UpgradeLink
+          uses: toolsetlink/upgradelink-action@v5
+          with:
+            source-url: 'https://github.com/codexu/note-gen/releases/download/note-gen-v${{ needs.publish-tauri.outputs.appVersion }}/latest.json'
+            access-key: ${{ secrets.UPGRADE_LINK_ACCESS_KEY }}
+            tauri-key: ${{ secrets.UPGRADE_LINK_TAURI_KEY }}
+            github-token: ${{ secrets.GITHUB_TOKEN }}
