@@ -22,7 +22,11 @@ export default function Updater() {
     async function checkUpdate() {
       setChecking(true);
       try {
-        setUpdate(await check());
+        setUpdate(await check({
+          headers: {
+            'X-AccessKey': 'wHi8Tkuc5i6v1UCAuVk48A',
+          },
+        }));
         getRelease().then((release) => {
           if (release) {
             setLatestBody(release.body)
