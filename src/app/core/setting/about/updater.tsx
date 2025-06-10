@@ -26,6 +26,7 @@ export default function Updater() {
           headers: {
             'X-AccessKey': 'wHi8Tkuc5i6v1UCAuVk48A',
           },
+          timeout: 5000,
         }));
         getRelease().then((release) => {
           if (release) {
