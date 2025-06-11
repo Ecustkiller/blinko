@@ -2,9 +2,10 @@
 
 # NoteGen
 
+![](https://img.shields.io/badge/free-pricing?logo=free&color=%20%23155EEF&label=pricing&labelColor=%20%23528bff)
+![](https://img.shields.io/badge/version-beta-orange)
 ![](https://github.com/codexu/note-gen/actions/workflows/release.yml/badge.svg?branch=release)
 ![](https://img.shields.io/github/v/release/codexu/note-gen)
-![](https://img.shields.io/badge/version-alpha-orange)
 ![](https://img.shields.io/github/downloads/codexu/note-gen/total)
 ![](https://img.shields.io/github/commit-activity/m/codexu/note-gen)
 
@@ -105,6 +106,8 @@ Currently supports Mac, Windows, and Linux. Thanks to Tauri2's cross-platform ca
 
 [Download NoteGen (alpha)](https://github.com/codexu/note-gen/releases)
 
+Provided by [UpgradeLink](http://upgrade.toolsetlink.com/upgrade/example/tauri-example.html)
+
 ### Enhancement
 
 The note-taking application can be used directly without configuration. If you want a better experience, please open the settings page to configure AI and synchronization.
@@ -125,8 +128,15 @@ The note-taking application can be used directly without configuration. If you w
 ## Sponsors
 
 <div>
-  <a href="https://docs.siliconflow.cn/cn/usercases/use-siliconcloud-in-NoteGen" target="_blank"><img src="https://s2.loli.net/2025/06/09/PDNBYc1KTgOLnje.png" ></a>
-  <a href="https://www.qiniu.com/products/ai-token-api" target="_blank"><img src="https://s2.loli.net/2025/06/09/dyX97jPiH6YlaKU.png" ></a>
+  <a href="https://docs.siliconflow.cn/cn/usercases/use-siliconcloud-in-NoteGen?utm_source=NoteGen" target="_blank">
+    <img src="https://s2.loli.net/2025/06/11/65TLRh813e2YFzr.png" />
+  </a>
+  <a href="https://www.qiniu.com/products/ai-token-api?utm_source=NoteGen" target="_blank">
+    <img src="https://s2.loli.net/2025/06/11/OKJq542lTs7U9xg.png" />
+  </a>
+  <a href="http://upgrade.toolsetlink.com/upgrade/example/tauri-example.html" target="_blank">
+    <img src="https://s2.loli.net/2025/06/11/r2dqNIWVXp4RaFe.png" />
+  </a>
 </div>
 
 ## Star History
