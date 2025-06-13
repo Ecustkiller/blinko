@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowBigRightDash, Link, Loader2 } from 'lucide-react';
 import { getRelease } from '@/lib/github';
 import { open } from '@tauri-apps/plugin-shell';
+import { isMobileDevice } from '@/lib/check';
 
 export default function Updater() {
     const t = useTranslations('settings.about');
@@ -18,9 +19,9 @@ export default function Updater() {
     const { version } = useSettingStore();
     const [update, setUpdate] = useState<Update | null>(null);
     const [latestBody, setLatestBody] = useState(null);
+    const [isMobile, setIsMobile] = useState(false);
 
     async function checkUpdate() {
-      setChecking(true);
       try {
         setUpdate(await check({
           headers: {
@@ -72,19 +73,23 @@ export default function Updater() {
     }
 
     useEffect(() => {
-      checkUpdate();
+      const _isMobile = isMobileDevice();
+      setIsMobile(_isMobile);
+      if (!_isMobile) {
+        checkUpdate();
+      }
     }, []);
 
     return (
       <div className="flex flex-col gap-4 w-full">
-        <div className="flex justify-between w-full items-center">
+        <div className="flex flex-col lg:flex-row lg:justify-between w-full lg:items-center gap-4 lg:gap-0">
           <div className="flex items-center gap-4">
-            <div>
+            <div className="size-24">
               <Image src="/app-icon.png" alt="logo" className="size-24 dark:invert" width={0} height={0} />
             </div>
-            <div className="h-24 flex flex-col justify-between">
-              <span className="text-2xl font-bold flex items-center gap-2">NoteGen</span>
-              <span>
+            <div className="h-24 flex-1 flex flex-col justify-between">
+              <span className="text-xl lg:text-2xl font-bold flex items-center gap-2">NoteGen</span>
+              <span className='text-sm lg:text-base'>
                 {t('desc')}
               </span>
               <div className="flex items-center gap-2">
@@ -100,10 +105,14 @@ export default function Updater() {
               </div>
             </div>
           </div>
-          <Button disabled={!update || loading || checking} onClick={checkVersion}>
-            {checking || loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-            {checking ? t('checkUpdate') : update ? t('updateAvailable') : t('noUpdate')}
-          </Button>
+          {
+            !isMobile ? (
+              <Button disabled={!update || loading || checking} onClick={checkVersion}>
+                {checking || loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                {checking ? t('checkUpdate') : update ? t('updateAvailable') : t('noUpdate')}
+              </Button>
+            ) : null
+          }
         </div>
         {
           update && latestBody ? (
