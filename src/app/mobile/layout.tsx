@@ -53,7 +53,7 @@ export default function RootLayout({
       disableTransitionOnChange
     >
       <TooltipProvider>
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col h-screen pt-save">
           <main className="flex flex-1 w-full overflow-hidden">
             {children}
           </main>

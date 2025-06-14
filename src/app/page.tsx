@@ -1,17 +1,18 @@
 'use client'
 import { Store } from '@tauri-apps/plugin-store'
-import { redirect } from 'next/navigation'
+import { useRouter  } from 'next/navigation'
 import { useEffect } from 'react'
 import { isMobileDevice } from '@/lib/check'
 
 export default function Home() {
+  const router = useRouter()
   async function init() {
     const store = await Store.load('store.json')
     const currentPage = await store.get<string>('currentPage')
     if (isMobileDevice()) {
-      redirect('/mobile/chat')
+      router.push(currentPage || '/mobile/chat')
     } else {
-      redirect(currentPage || '/core/record')
+      router.push(currentPage || '/core/record')
     }
   }
   useEffect(() => {
