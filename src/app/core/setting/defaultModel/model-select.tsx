@@ -57,7 +57,7 @@ export function ModelSelect({modelKey}: {modelKey: string}) {
     const models = await store.get<AiConfig[]>('aiModelList')
     if (!models) return
     const filteredModels = models.filter(item => {
-      return item.apiKey && item.model && item.baseURL
+      return item.model && item.baseURL
     })
     setList(filteredModels)
     const primaryModel = await store.get<string>(modelKey === 'primaryModel' ? 'primaryModel' : `${modelKey}PrimaryModel`)
