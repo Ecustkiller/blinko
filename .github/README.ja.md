@@ -45,7 +45,7 @@ NoteGenは、AIを使用して記録と執筆を橋渡しし、断片化され�
 | ✅ beta | ✅ beta | ✅ beta | 🛠️ alpha | 🛠️ alpha |
 | [ダウンロード 17 MB](https://notegen.top/en/download.html) | [ダウンロード 20.7 MB](https://notegen.top/en/download.html) | [ダウンロード 21.7 MB](https://notegen.top/en/download.html) | [ダウンロード](https://notegen.top/en/download.html) | [ダウンロード](https://notegen.top/en/download.html) |
 
-> [UpgradeLink](http://upgrade.toolsetlink.com/upgrade/example/tauri-example.html)によって提供
+> [UpgradeLink アップデートとダウンロードサービスを提供します](http://upgrade.toolsetlink.com/upgrade/example/tauri-example.html)
 
 ### 強化
 
