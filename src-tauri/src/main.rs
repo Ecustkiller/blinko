@@ -3,11 +3,13 @@
 mod screenshot;
 use screenshot::{screenshot};
 mod webdav;
+mod fuzzy_search;
 use tauri::{
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
     Manager,
 };
 use webdav::{webdav_backup, webdav_sync, webdav_test};
+use fuzzy_search::{fuzzy_search, fuzzy_search_parallel};
 
 fn main() {
     tauri::Builder::default()
@@ -44,7 +46,9 @@ fn main() {
             screenshot,
             webdav_test,
             webdav_backup,
-            webdav_sync
+            webdav_sync,
+            fuzzy_search,
+            fuzzy_search_parallel
         ])
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_store::Builder::new().build())

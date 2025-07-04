@@ -1,5 +1,4 @@
-import { FuseResult, RangeTuple } from 'fuse.js'
-import { SearchResult } from './types'
+import { FuzzySearchResult } from '@/lib/fuzzy-search'
 import { LocalImage } from '@/components/local-image'
 import { LocateFixed, MapPin } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
@@ -9,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import useArticleStore from '@/stores/article'
 import { useTranslations } from 'next-intl'
 
-function highlightMatches(inputString: string, matches: readonly RangeTuple[]): string[] {
+function highlightMatches(inputString: string, matches: [number, number][]): string[] {
   const highlightedStringArray: string[] = [];
   let lastIndex = 0;
   for (const match of matches) {
@@ -26,7 +25,7 @@ function highlightMatches(inputString: string, matches: readonly RangeTuple[]): 
 function SearchMark({
   item,
 }: {
-  item: FuseResult<Partial<SearchResult>>
+  item: FuzzySearchResult
 }) {
   const t = useTranslations();
   const path = item.item?.type === 'scan' ? 'screenshot' : 'image'
@@ -39,7 +38,7 @@ function SearchMark({
           <Badge>{t('search.item.record')}</Badge>
         </div>
         <p className='text-sm line-clamp-1 mb-4' dangerouslySetInnerHTML={
-          {__html: highlightMatches(item.item?.desc || '', item.matches?.[0].indices || []).join('')}
+          {__html: highlightMatches(item.item?.desc || '', item.matches?.[0]?.indices || []).join('')}
         }>
         </p>
         <div className='flex gap-1'>
@@ -64,10 +63,10 @@ function SearchMark({
 function SearchArticle({
   item,
 }: {
-  item: FuseResult<Partial<SearchResult>>
+  item: FuzzySearchResult
 }) {
   const t = useTranslations();
-  const hightlightArticle = highlightMatches(item.item?.article || '', item.matches?.[0].indices || []).join('')
+  const hightlightArticle = highlightMatches(item.item?.article || '', item.matches?.[0]?.indices || []).join('')
 
   return (
     <div className="flex gap-4 w-full">
@@ -78,7 +77,7 @@ function SearchArticle({
         </div>
         <div className='flex flex-col gap-1 flex-1 mb-4'>
           {
-            item.matches?.[0].indices.slice(0, 3).map((range, index) => {
+            item.matches?.[0]?.indices.slice(0, 3).map((range: [number, number], index: number) => {
               return <div key={index} className='flex items-center gap-2'>
                 <MapPin className='size-3' />
                 <p className='text-sm line-clamp-1 overflow-hidden flex-1' dangerouslySetInnerHTML={{
@@ -100,7 +99,7 @@ function SearchArticle({
 function SearchType({
   item,
 }: {
-  item: FuseResult<Partial<SearchResult>>
+  item: FuzzySearchResult
 }) {
 
   switch (item.item.searchType) {
@@ -114,7 +113,7 @@ function SearchType({
 function RouteTo({
   item,
 }: {
-  item: FuseResult<Partial<SearchResult>>
+  item: FuzzySearchResult
 }) {
   const { setCurrentTagId } = useTagStore()
   const { setActiveFilePath, setMatchPosition, setCollapsibleList } = useArticleStore()
@@ -180,7 +179,7 @@ function RouteTo({
 export function SearchItem({
   item,
 }: {
-  item: FuseResult<Partial<SearchResult>>
+  item: FuzzySearchResult
 }) {
   
   return (

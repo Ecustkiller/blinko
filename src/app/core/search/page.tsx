@@ -2,7 +2,6 @@
 import { Input } from "@/components/ui/input";
 import useMarkStore from "@/stores/mark";
 import { useEffect, useState } from "react";
-import Fuse, { FuseResult } from "fuse.js";
 import useArticleStore from "@/stores/article";
 import { SearchResult } from './types'
 import { SearchItem } from "./search-item";
@@ -10,6 +9,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Search } from "lucide-react";
 import { useTranslations } from 'next-intl';
+import { RustFuzzySearch, FuzzySearchResult } from '@/lib/fuzzy-search';
 
 dayjs.extend(relativeTime)
 
@@ -18,23 +18,36 @@ export default function Page() {
   const t = useTranslations();
   const [searchValue, setSearchValue] = useState('')
   const { fetchAllMarks, allMarks } = useMarkStore()
-  const [searchResult, setSearchResult] = useState<FuseResult<Partial<SearchResult>>[]>([])
+  const [searchResult, setSearchResult] = useState<FuzzySearchResult[]>([])
   const { allArticle, loadAllArticle } = useArticleStore()
 
-  function search(value: string) {
-    const fuse = new Fuse(searchList, {
+  async function search(value: string) {
+    if (!value) {
+      setSearchResult([]);
+      return;
+    }
+    
+    const fuzzySearch = new RustFuzzySearch(searchList, {
       keys: ['desc', 'article', 'title'],
       includeMatches: true,
       includeScore: true,
       threshold: 0.3,
-    })
-    const res = fuse.search(value).reverse()
-    setSearchResult(res)
+    });
+    
+    try {
+      // Use parallel search for better performance
+      const res = await fuzzySearch.searchParallel(value);
+      setSearchResult(res.reverse());
+    } catch (error) {
+      console.error('Error during search:', error);
+      setSearchResult([]);
+    }
   }
 
-  function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
-    setSearchValue(e.target.value)
-    search(e.target.value)
+  async function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    setSearchValue(value);
+    await search(value);
   }
   async function initSearch() {
     await fetchAllMarks()
@@ -49,11 +62,21 @@ export default function Page() {
   }
 
   function setSearchData() {
-    const marks = allMarks.map(item => ({...item, searchType: 'mark'}))
+    const marks = allMarks.map(item => ({
+      ...item,
+      searchType: 'mark',
+      id: item.id?.toString()
+    }))
     searchList.push(...marks)
-    const articles = allArticle.map(item => {
+    
+    const articles = allArticle.map((item, index) => {
       const title = extractTitleFromPath(item.path || '')
-      return {...item, searchType: 'article', title}
+      return {
+        ...item,
+        searchType: 'article',
+        title,
+        id: `article-${index}-${item.path?.replace(/[^a-zA-Z0-9]/g, '-')}`
+      }
     })
     searchList.push(...articles)
   }
@@ -90,7 +113,7 @@ export default function Page() {
         {
           searchResult.length === 0 && searchValue ? 
           <div className="text-center mt-12 text-gray-400 text-sm">{t('search.noResults')}</div> :
-          searchResult.map((item: FuseResult<Partial<SearchResult>>) => {
+          searchResult.map((item: FuzzySearchResult) => {
             return <SearchItem key={item.refIndex} item={item} />
           })
         }
