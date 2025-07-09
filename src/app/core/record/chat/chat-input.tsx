@@ -29,6 +29,7 @@ import { RagSwitch } from "./rag-switch"
 import emitter from "@/lib/emitter"
 import useVectorStore from "@/stores/vector"
 import { getContextForQuery } from '@/lib/rag'
+import { invoke } from "@tauri-apps/api/core"
 
 
 export function ChatInput() {
@@ -100,8 +101,10 @@ export function ChatInput() {
     // 如果启用RAG，获取相关上下文
     if (isRagEnabled) {
       try {
+        // 基于TextRank算法提取前3个关键词
+        const keywords = await invoke<{text: string, weight: number}[]>('rank_keywords', { text, topK: 5 })
         // 获取相关文档内容
-        ragContext = await getContextForQuery(text)
+        ragContext = await getContextForQuery(keywords)
         
         if (ragContext) {
           // 如果获取到了相关内容，将其作为独立部分添加到请求中
