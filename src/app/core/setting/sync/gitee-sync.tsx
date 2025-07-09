@@ -1,7 +1,7 @@
 'use client'
 import { Input } from "@/components/ui/input";
 import { FormItem, SettingPanel, SettingRow } from "../components/setting-base";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from 'next-intl';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useSettingStore from "@/stores/setting";
@@ -16,7 +16,7 @@ import { checkSyncRepoState, getUserInfo } from "@/lib/gitee";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { RepoNames, SyncStateEnum } from "@/lib/github.types";
-import { DatabaseBackup } from "lucide-react";
+import { DatabaseBackup, Eye, EyeOff } from "lucide-react";
 
 dayjs.extend(relativeTime)
 
@@ -37,6 +37,8 @@ export function GiteeSync() {
     giteeSyncRepoInfo,
     setGiteeSyncRepoInfo
   } = useSyncStore()
+
+  const [giteeAccessTokenVisible, setGiteeAccessTokenVisible] = useState<boolean>(false)
 
   async function checkRepoState() {
     try {
@@ -106,7 +108,12 @@ export function GiteeSync() {
       <SettingRow>
         <FormItem title="Gitee 私人令牌" desc={t('settings.sync.giteeTokenDesc')}>
           <OpenBroswer url="https://gitee.com/profile/personal_access_tokens/new" title={t('settings.sync.newToken')} className="mb-2" />
-          <Input value={giteeAccessToken} onChange={tokenChangeHandler} />
+          <div className="flex gap-2">
+            <Input value={giteeAccessToken} onChange={tokenChangeHandler} type={giteeAccessTokenVisible ? 'text' : 'password'} />
+            <Button variant="outline" size="icon" onClick={() => setGiteeAccessTokenVisible(!giteeAccessTokenVisible)}>
+              {giteeAccessTokenVisible ? <Eye /> : <EyeOff />}
+            </Button>
+          </div>
         </FormItem>
       </SettingRow>
       <SettingRow>

@@ -1,7 +1,7 @@
 'use client'
 import { Input } from "@/components/ui/input";
 import { FormItem, SettingPanel, SettingRow } from "../components/setting-base";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from 'next-intl';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useSettingStore from "@/stores/setting";
@@ -15,7 +15,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { Button } from "@/components/ui/button";
 import { checkSyncRepoState, createSyncRepo, getUserInfo } from "@/lib/github";
 import { RepoNames, SyncStateEnum } from "@/lib/github.types";
-import { DatabaseBackup } from "lucide-react";
+import { DatabaseBackup, Eye, EyeOff } from "lucide-react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 dayjs.extend(relativeTime)
@@ -35,6 +35,8 @@ export function GithubSync() {
     syncRepoInfo,
     setSyncRepoInfo
   } = useSyncStore()
+
+  const [accessTokenVisible, setAccessTokenVisible] = useState<boolean>(false)
 
   // 检查 GitHub 仓库状态
   async function checkGithubRepos() {
@@ -97,7 +99,12 @@ export function GithubSync() {
       <SettingRow>
         <FormItem title="Github Access Token" desc={t('settings.sync.newTokenDesc')}>
           <OpenBroswer url="https://github.com/settings/tokens/new" title={t('settings.sync.newToken')} className="mb-2" />
-          <Input value={accessToken} onChange={tokenChangeHandler} />
+          <div className="flex gap-2">
+            <Input value={accessToken} onChange={tokenChangeHandler} type={accessTokenVisible ? 'text' : 'password'} />
+            <Button variant="outline" size="icon" onClick={() => setAccessTokenVisible(!accessTokenVisible)}>
+              {accessTokenVisible ? <Eye /> : <EyeOff />}
+            </Button>
+          </div>
         </FormItem>
       </SettingRow>
       <SettingRow>

@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useState } from "react";
 import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
-import { BotMessageSquare, Copy, X } from "lucide-react";
+import { BotMessageSquare, Copy, Eye, EyeOff, X } from "lucide-react";
 import ModelSelect from "./modelSelect";
 import { AiConfig, ModelType } from "../config";
 import * as React from "react"
@@ -43,6 +43,7 @@ export default function AiPage() {
   const [temperature, setTemperature] = useState<number>(0.7)
   const [topP, setTopP] = useState<number>(1.0)
   const [modelType, setModelType] = useState<ModelType>('chat')
+  const [apiKeyVisible, setApiKeyVisible] = useState<boolean>(false)
 
   // 通过本地存储查询当前的模型配置
   async function getModelByStore(key: string) {
@@ -225,7 +226,10 @@ export default function AiPage() {
         <SettingRow>
           <FormItem title="API Key">
             <div className="flex gap-2">
-              <Input value={apiKey} onChange={(e) => valueChangeHandler('apiKey', e.target.value)} />
+              <Input className="flex-1" value={apiKey} type={apiKeyVisible ? 'text' : 'password'} onChange={(e) => valueChangeHandler('apiKey', e.target.value)} />
+              <Button variant="outline" size="icon" onClick={() => setApiKeyVisible(!apiKeyVisible)}>
+                {apiKeyVisible ? <Eye /> : <EyeOff />}
+              </Button>
               {
                 baseAiConfig.find(item => item.baseURL === baseURL)?.apiKeyUrl &&
                 <OpenBroswer
