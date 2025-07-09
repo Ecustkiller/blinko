@@ -6,6 +6,7 @@ import {
   getSimilarDocuments,
   initVectorDb
 } from "@/db/vector";
+import { invoke } from "@tauri-apps/api/core";
 
 // 重新导出initVectorDb，使其可在其他模块中导入
 export { initVectorDb };
@@ -281,30 +282,192 @@ async function getFilePath(item: DirTree): Promise<string> {
 }
 
 /**
+ * 为fuzzy_search准备的搜索项结构
+ */
+interface SearchItem {
+  id?: string;
+  desc?: string;
+  title?: string;
+  article?: string;
+  url?: string;
+  search_type?: string;
+  score?: number;
+  matches?: {
+    key: string;
+    indices: [number, number][];
+    value: string;
+  }[];
+}
+
+/**
+ * fuzzy_search返回的结果结构
+ */
+interface FuzzySearchResult {
+  item: SearchItem;
+  refindex: number;
+  score: number;
+  matches: {
+    key: string;
+    indices: [number, number][];
+    value: string;
+  }[];
+}
+
+/**
+ * 从工作区中收集所有Markdown文件内容，用于模糊搜索
+ */
+async function collectMarkdownContents(): Promise<SearchItem[]> {
+  try {
+    // 获取工作区中的所有文件
+    const fileTree = await getWorkspaceFiles();
+    const items: SearchItem[] = [];
+    
+    // 递归处理文件树
+    async function processTree(tree: DirTree[]): Promise<void> {
+      for (const item of tree) {
+        if (item.isFile && item.name.endsWith('.md')) {
+          // 获取完整路径
+          const filePath = await getFilePath(item);
+          
+          try {
+            // 读取文件内容
+            let content = '';
+            const workspace = await getWorkspacePath();
+            if (workspace.isCustom) {
+              content = await readTextFile(filePath);
+            } else {
+              const { path, baseDir } = await getFilePathOptions(filePath);
+              content = await readTextFile(path, { baseDir });
+            }
+            
+            // 创建搜索项
+            items.push({
+              id: filePath,
+              title: item.name,
+              article: content,
+              search_type: 'markdown'
+            });
+          } catch (error) {
+            console.error(`读取文件 ${filePath} 内容失败:`, error);
+          }
+        }
+        
+        // 递归处理子目录
+        if (item.children && item.children.length > 0) {
+          await processTree(item.children);
+        }
+      }
+    }
+    
+    await processTree(fileTree);
+    return items;
+  } catch (error) {
+    console.error('收集Markdown内容失败:', error);
+    return [];
+  }
+}
+
+/**
  * 根据查询文本获取相关上下文
  */
 export async function getContextForQuery(query: string): Promise<string> {
   try {
-    // 计算查询文本的向量
-    const queryEmbedding = await fetchEmbedding(query);
-    if (!queryEmbedding) {
-      return '';
-    }
-    
-    // 查询最相关的文档
-    const store = await Store.load('store.json')
+    const store = await Store.load('store.json');
     const resultCount = await store.get<number>('ragResultCount') || 5;
     const similarityThreshold = await store.get<number>('ragSimilarityThreshold') || 0.7;
-    let similarDocs = await getSimilarDocuments(queryEmbedding, resultCount, similarityThreshold);
-    if (!similarDocs.length) {
+    // 存储所有相关上下文的结果集
+    let allContexts: { filename: string, content: string, score: number }[] = [];
+    
+    // 1. 使用模糊搜索找到相关文件内容
+    try {
+      // 收集所有Markdown文件内容
+      const items = await collectMarkdownContents();
+      if (items.length > 0) {
+        // 调用Rust的fuzzy_search函数
+        const fuzzyResults: FuzzySearchResult[] = await invoke('fuzzy_search', {
+          items,
+          query,
+          keys: ['title', 'article'],
+          threshold: 0.3, // 模糊搜索阈值
+          includeScore: true,
+          includeMatches: true
+        });
+        
+        // 处理模糊搜索结果
+        for (const result of fuzzyResults) {
+          if (result.score > 0) {
+            const item = result.item;
+            // 提取匹配的文本片段作为上下文
+            const articleMatches = result.matches.filter(m => m.key === 'article');
+            if (articleMatches.length > 0) {
+              // 使用匹配部分的上下文（周围大约500个字符）
+              const match = articleMatches[0];
+              const content = match.value;
+              
+              // 找到第一个匹配位置的索引
+              let startIdx = 0;
+              let endIdx = content.length;
+              if (match.indices.length > 0) {
+                const firstMatch = match.indices[0];
+                startIdx = Math.max(0, firstMatch[0] - 250);
+                endIdx = Math.min(content.length, firstMatch[1] + 250);
+              }
+              
+              const contextSnippet = content.substring(startIdx, endIdx);
+              
+              allContexts.push({
+                filename: item.title || '未命名文件',
+                content: contextSnippet,
+                score: result.score
+              });
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('模糊搜索失败:', error);
+    }
+
+    // 2. 使用向量搜索找到相关文档
+    try {
+      // 计算查询文本的向量
+      const queryEmbedding = await fetchEmbedding(query);
+      if (queryEmbedding) {
+        // 查询最相关的文档
+        let similarDocs = await getSimilarDocuments(queryEmbedding, resultCount, similarityThreshold);
+        
+        if (similarDocs.length > 0) {
+          // 如果配置了重排序模型，使用它进一步优化结果
+          similarDocs = await rerankDocuments(query, similarDocs);
+          
+          // 添加到结果集
+          for (const doc of similarDocs) {
+            allContexts.push({
+              filename: doc.filename,
+              content: doc.content,
+              score: doc.similarity || 0 // Use similarity as score
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('向量搜索失败:', error);
+    }
+    
+    // 如果没有找到任何相关上下文，返回空字符串
+    if (allContexts.length === 0) {
       return '';
     }
     
-    // 如果配置了重排序模型，使用它进一步优化结果
-    similarDocs = await rerankDocuments(query, similarDocs);
-    // 构建上下文，包括文件名和内容
-    return similarDocs.map(doc => {
-      return `文件：${doc.filename}\n${doc.content}\n`;
+    // 对所有上下文按相关性得分排序
+    allContexts.sort((a, b) => b.score - a.score);
+    
+    // 限制结果数量
+    allContexts = allContexts.slice(0, resultCount);
+
+    // 构建最终的上下文字符串
+    return allContexts.map(ctx => {
+      return `文件：${ctx.filename}\n${ctx.content}\n`;
     }).join('\n---\n\n');
   } catch (error) {
     console.error('获取查询上下文失败:', error);
