@@ -47,6 +47,8 @@ export function MdEditor() {
   async function init() {
     const store = await Store.load('store.json');
     const typewriterMode = await store.get<boolean>('typewriterMode') || false
+    const outlinePosition = await store.get<'left' | 'right'>('outlinePosition') || 'left'
+    const enableOutline = await store.get<boolean>('enableOutline') || false
 
     let toolbarConfig = [
       { name: 'undo', tipPosition: 's' },
@@ -125,6 +127,10 @@ export function MdEditor() {
       theme: theme === 'dark' ? 'dark' : 'classic',
       toolbar: toolbarConfig,
       typewriterMode,
+      outline: {
+        enable: enableOutline,
+        position: outlinePosition,
+      },
       link: {
         isOpen: false,
         click: (dom: Element) => {
