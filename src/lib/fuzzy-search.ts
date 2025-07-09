@@ -103,6 +103,8 @@ export class RustFuzzySearch {
         includeScore: this.options.includeScore ?? true,
         includeMatches: this.options.includeMatches ?? true
       });
+
+      console.log(rawResults);
       
       return rawResults.map((result: { item: SearchItem; refindex: number; score: number; matches: MatchInfo[] }) => {
         const item = result.item;
@@ -110,13 +112,13 @@ export class RustFuzzySearch {
           item.searchType = item.search_type;
           delete item.search_type;
         }
-        
+
         return {
-        item: result.item,
-        refIndex: result.refindex,
-        score: result.score,
-        matches: result.matches
-      };
+          item: result.item,
+          refIndex: result.refindex,
+          score: result.score,
+          matches: result.matches
+        };
       });
     } catch (error) {
       console.error('并行模糊搜索出错:', error);

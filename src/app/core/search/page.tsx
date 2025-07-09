@@ -28,15 +28,15 @@ export default function Page() {
     }
     
     const fuzzySearch = new RustFuzzySearch(searchList, {
-      keys: ['desc', 'article', 'title'],
+      keys: ['desc', 'article', 'title', 'path'],
       includeMatches: true,
       includeScore: true,
       threshold: 0.3,
     });
     
     try {
-      // Use parallel search for better performance
       const res = await fuzzySearch.searchParallel(value);
+      console.log(res);
       setSearchResult(res.reverse());
     } catch (error) {
       console.error('Error during search:', error);
@@ -75,10 +75,12 @@ export default function Page() {
         ...item,
         searchType: 'article',
         title,
-        id: `article-${index}-${item.path?.replace(/[^a-zA-Z0-9]/g, '-')}`
+        id: `article-${index}-${item.path?.replace(/[^a-zA-Z0-9]/g, '-')}`,
+        path: item.path
       }
     })
     searchList.push(...articles)
+    console.log(searchList);
   }
 
   useEffect(() => {

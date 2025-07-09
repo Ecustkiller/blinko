@@ -12,6 +12,7 @@ pub struct SearchItem {
     pub title: Option<String>,
     pub article: Option<String>,
     pub url: Option<String>,
+    pub path: Option<String>,
     pub search_type: Option<String>,
     pub score: Option<i64>,
     pub matches: Option<Vec<MatchInfo>>,
@@ -48,6 +49,7 @@ fn search_item(
             "desc" => item.desc.as_deref().unwrap_or(""),
             "title" => item.title.as_deref().unwrap_or(""),
             "article" => item.article.as_deref().unwrap_or(""),
+            "path" => item.path.as_deref().unwrap_or(""),
             _ => continue,
         };
         
