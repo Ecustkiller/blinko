@@ -32,18 +32,6 @@ pub struct FuzzySearchResult {
     pub matches: Vec<MatchInfo>,
 }
 
-fn get_match_indices(text: &str, pattern: &str) -> Option<Vec<[usize; 2]>> {
-    let matcher = SkimMatcherV2::default();
-    
-    match matcher.fuzzy_indices(text, pattern) {
-        Some((_, indices)) => {
-            let ranges = indices.iter().map(|&i| [i, i]).collect::<Vec<_>>();
-            Some(ranges)
-        },
-        None => None,
-    }
-}
-
 fn search_item(
     item: &SearchItem,
     pattern: &str,
