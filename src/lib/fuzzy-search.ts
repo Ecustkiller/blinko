@@ -104,8 +104,6 @@ export class RustFuzzySearch {
         includeMatches: this.options.includeMatches ?? true
       });
 
-      console.log(rawResults);
-      
       return rawResults.map((result: { item: SearchItem; refindex: number; score: number; matches: MatchInfo[] }) => {
         const item = result.item;
         if ('search_type' in item && typeof item.search_type === 'string') {

@@ -50,6 +50,7 @@ fn search_item(
             "title" => item.title.as_deref().unwrap_or(""),
             "article" => item.article.as_deref().unwrap_or(""),
             "path" => item.path.as_deref().unwrap_or(""),
+            "search_type" => item.search_type.as_deref().unwrap_or(""),
             _ => continue,
         };
         

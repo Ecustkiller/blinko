@@ -1,6 +1,5 @@
 'use client'
 import { Input } from "@/components/ui/input";
-import useMarkStore from "@/stores/mark";
 import { useEffect, useState } from "react";
 import useArticleStore from "@/stores/article";
 import { SearchResult } from './types'
@@ -17,7 +16,6 @@ const searchList: Partial<SearchResult>[] = []
 export default function Page() {
   const t = useTranslations();
   const [searchValue, setSearchValue] = useState('')
-  const { fetchAllMarks, allMarks } = useMarkStore()
   const [searchResult, setSearchResult] = useState<FuzzySearchResult[]>([])
   const { allArticle, loadAllArticle } = useArticleStore()
 
@@ -36,7 +34,6 @@ export default function Page() {
     
     try {
       const res = await fuzzySearch.searchParallel(value);
-      console.log(res);
       setSearchResult(res.reverse());
     } catch (error) {
       console.error('Error during search:', error);
@@ -50,7 +47,6 @@ export default function Page() {
     await search(value);
   }
   async function initSearch() {
-    await fetchAllMarks()
     await loadAllArticle()
   }
 
@@ -62,13 +58,6 @@ export default function Page() {
   }
 
   function setSearchData() {
-    const marks = allMarks.map(item => ({
-      ...item,
-      searchType: 'mark',
-      id: item.id?.toString()
-    }))
-    searchList.push(...marks)
-    
     const articles = allArticle.map((item, index) => {
       const title = extractTitleFromPath(item.path || '')
       return {
@@ -80,7 +69,6 @@ export default function Page() {
       }
     })
     searchList.push(...articles)
-    console.log(searchList);
   }
 
   useEffect(() => {
@@ -90,7 +78,7 @@ export default function Page() {
   useEffect(() => {
     searchList.length = 0
     setSearchData()
-  }, [allArticle, allMarks])
+  }, [allArticle])
 
   return <div className="h-screen flex flex-col justify-center items-center overflow-y-auto">
     <div className={`${searchValue ? 'border-b' : ''} w-full h-20 flex justify-center items-center`}>
