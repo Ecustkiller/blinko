@@ -1,7 +1,8 @@
 'use client'
 import { Input } from "@/components/ui/input";
+import { Eye, EyeOff } from "lucide-react";
 import { FormItem, SettingPanel, SettingRow } from "../components/setting-base";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from 'next-intl';
 import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
@@ -25,6 +26,7 @@ export function GithubImageHosting() {
 
   const t = useTranslations();
   const { setImageRepoUserInfo, mainImageHosting, setMainImageHosting } = useImageStore()
+  const [accessTokenVisible, setAccessTokenVisible] = useState(false)
 
   const {
     githubImageAccessToken,
@@ -102,7 +104,12 @@ export function GithubImageHosting() {
       <SettingRow>
         <FormItem title="Github Access Token" desc={t('settings.sync.newTokenDesc')}>
           <OpenBroswer url="https://github.com/settings/tokens/new" title={t('settings.sync.newToken')} className="mb-2" />
-          <Input value={githubImageAccessToken} onChange={tokenChangeHandler} />
+          <div className="flex gap-2">
+            <Input value={githubImageAccessToken} onChange={tokenChangeHandler} type={accessTokenVisible ? 'text' : 'password'} />
+            <Button variant="outline" size="icon" onClick={() => setAccessTokenVisible(!accessTokenVisible)}>
+              {accessTokenVisible ? <Eye /> : <EyeOff />}
+            </Button>
+          </div>
         </FormItem>
       </SettingRow>
       <SettingRow>
