@@ -193,7 +193,8 @@ export async function fetchEmbedding(text: string): Promise<number[] | null> {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
+          'Authorization': `Bearer ${apiKey}`,
+          'Origin': ""
         },
         body: JSON.stringify({
           model: model,
@@ -258,7 +259,8 @@ export async function rerankDocuments(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
+        'Authorization': `Bearer ${apiKey}`,
+        'Origin': ""
       },
       body: JSON.stringify({
         model: model,

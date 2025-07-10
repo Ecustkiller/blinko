@@ -41,7 +41,8 @@ export function AiCheck() {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${model.apiKey}`
+              'Authorization': `Bearer ${model.apiKey}`,
+              'Origin': ""
             },
             body: JSON.stringify({
               model: model.model,
@@ -65,7 +66,8 @@ export function AiCheck() {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${model.apiKey}`
+              'Authorization': `Bearer ${model.apiKey}`,
+              'Origin': ""
             },
             body: JSON.stringify({
               model: model.model,
@@ -112,7 +114,7 @@ export function AiCheck() {
     } else {
       setState('init')
     }
-  }, [currentAi, aiModelList])
+  }, [aiModelList])
 
   if (state === 'ok') {
     return <CircleCheck className="text-green-500 size-4" />

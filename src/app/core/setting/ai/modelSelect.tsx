@@ -76,12 +76,8 @@ export default function ModelSelect(
   }
 
   const handleSelectOrCreate = (value: string) => {
-    // 只用于列表中的已有模型选择
-    // 关闭弹窗并更新模型
     setOpen(false)
-    setTimeout(() => {
-      syncModelList(value)
-    }, 0)
+    syncModelList(value)
   }
 
   const handleInputChange = (value: string) => {
@@ -91,12 +87,8 @@ export default function ModelSelect(
 
   const handleCustomValue = () => {
     if (inputValue.trim()) {
-      // 先关闭弹窗，再同步更新model，避免渲染冲突
       setOpen(false)
-      // 等待下一个事件循环再更新model值
-      setTimeout(() => {
-        syncModelList(inputValue)
-      }, 0)
+      syncModelList(inputValue)
     }
   }
 
