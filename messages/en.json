@@ -778,27 +778,32 @@
         "question": {
           "tooltip": "Q&A",
           "selectContent": "Please select content first",
-          "promptTemplate": "Reference text: {content}\nBased on the question: {question}, directly provide the answer content."
+          "promptTemplate": "Reference text: \n{content}\nBased on the question: \n{question}\n, directly provide the answer content."
         },
         "continue": {
           "tooltip": "Continue",
-          "promptTemplate": "Based on the preceding text: \"{content}\" continue writing and return content not exceeding 100 words.\nYou can reference the following text: \"{endContent}\", but avoid duplicating its content."
+          "promptTemplate": "Based on the preceding text: \n{content}\n continue writing and return content not exceeding 100 words.\nYou can reference the following text: \n{endContent}\n, but avoid duplicating its content."
         },
         "polish": {
           "tooltip": "Polish",
           "selectContent": "Please select content first",
-          "promptTemplate": "Polish this text: {content}, keep the language unchanged, fix typos and grammatical errors, directly return the polished result."
+          "promptTemplate": "Polish this text: \n{content}\n, keep the language unchanged, fix typos and grammatical errors, directly return the polished result."
         },
         "eraser": {
           "tooltip": "Simplify",
           "selectContent": "Please select content first",
-          "promptTemplate": "Simplify this text: {content}, this text is too verbose, reduce the word count by at least half, keep the language unchanged, directly return the optimized result."
+          "promptTemplate": "Simplify this text: \n{content}\n, this text is too verbose, reduce the word count by at least half, keep the language unchanged, directly return the optimized result."
+        },
+        "expansion": {
+          "tooltip": "Expand",
+          "selectContent": "Please select content first",
+          "promptTemplate": "Expand this text: \n{content}\n, this text is too short, increase the word count by at least half, keep the language unchanged, directly return the expanded result."
         },
         "translation": {
           "tooltip": "Translate",
           "description": "Translate the selected text",
           "selectContent": "Please select content first",
-          "promptTemplate": "Translate this text: {content}, into {language}, directly return the translated result."
+          "promptTemplate": "Translate this text: \n{content}\n, into {language}, directly return the translated result."
         }
       }
     },

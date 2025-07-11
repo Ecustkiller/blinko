@@ -767,27 +767,32 @@
         "question": {
           "tooltip": "質問応答",
           "selectContent": "先に内容を選択してください",
-          "promptTemplate": "参考文：{content}\n質問内容：{question}に基づいて、直接回答を返してください。"
+          "promptTemplate": "参考文：\n{content}\n質問内容：\n{question}\nに基づいて、直接回答を返してください。"
         },
         "continue": {
           "tooltip": "文章続き",
-          "promptTemplate": "前文：\"{content}\"に基づいて、100文字以内で続きを書いてください。\n後文：\"{endContent}\"を参考にしても良いですが、重複は避けてください。"
+          "promptTemplate": "前文：\n{content}\n内容に基づいて、100文字以内で続きを書いてください。\n後文：\n{endContent}\nを参考にしても良いですが、重複は避けてください。"
         },
         "polish": {
           "tooltip": "最適化",
           "selectContent": "先に内容を選択してください",
-          "promptTemplate": "この文章を校正してください：{content}。言語はそのままに、誤字脱字や不自然な表現を修正し、校正後の結果を直接返してください。"
+          "promptTemplate": "この文章を校正してください：\n{content}\n。言語はそのままに、誤字脱字や不自然な表現を修正し、校正後の結果を直接返してください。"
         },
         "eraser": {
           "tooltip": "簡潔化",
           "selectContent": "先に内容を選択してください",
-          "promptTemplate": "この文章を要約してください：{content}。文章があまりに冗長なので、文字数を半分以上に減らしてください。言語は変更しないで、要約した結果を直接返してください。"
+          "promptTemplate": "この文章を要約してください：\n{content}\n。文章があまりに冗長なので、文字数を半分以上に減らしてください。言語は変更しないで、要約した結果を直接返してください。"
+        },
+        "expansion": {
+          "tooltip": "拡張",
+          "selectContent": "先に内容を選択してください",
+          "promptTemplate": "この文章を拡張してください：\n{content}\n。文章があまりに短いので、文字数を半分以上に増やしてください。言語は変更しないで、拡張した結果を直接返してください。"
         },
         "translation": {
           "tooltip": "翻訳",
           "description": "選択したテキストを翻訳します",
           "selectContent": "まず内容を選択してください",
-          "promptTemplate": "このテキスト：{content} を{language}に翻訳してください。翻訳結果のみを返してください。"
+          "promptTemplate": "このテキスト：\n{content}\nを{language}に翻訳してください。翻訳結果のみを返してください。"
         }
       }
     },

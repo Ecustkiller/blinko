@@ -18,16 +18,19 @@ import { convertImage } from '@/lib/utils'
 import CustomFooter from './custom-footer'
 import { useLocalStorage } from 'react-use'
 import { open } from '@tauri-apps/plugin-shell'
-import { isMobileDevice } from '@/lib/check'
 import { getWorkspacePath } from '@/lib/workspace'
 import { convertFileSrc } from "@tauri-apps/api/core";
 import useSettingStore from '@/stores/setting'
 import { uploadImage } from '@/lib/imageHosting'
+import FloatBar from './floatbar'
+import { createToolbarConfig } from './toolbar.config'
 
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
   const { currentArticle, saveCurrentArticle, loading, activeFilePath, matchPosition, setMatchPosition } = useArticleStore()
   const { assetsPath } = useSettingStore()
+  const [floatBarPosition, setFloatBarPosition] = useState<{left: number, top: number} | null>(null)
+  const [selectedText, setSelectedText] = useState<string>('')
   const { theme } = useTheme()
   const t = useTranslations('article.editor')
   const { currentLocale } = useI18n()
@@ -49,75 +52,8 @@ export function MdEditor() {
     const typewriterMode = await store.get<boolean>('typewriterMode') || false
     const outlinePosition = await store.get<'left' | 'right'>('outlinePosition') || 'left'
     const enableOutline = await store.get<boolean>('enableOutline') || false
+    const toolbarConfig = createToolbarConfig(t)
 
-    let toolbarConfig = [
-      { name: 'undo', tipPosition: 's' },
-      { name: 'redo', tipPosition: 's' },
-      '|',{
-        name: 'mark',
-        tipPosition: 's',
-        tip: t('toolbar.mark.tooltip'),
-        className: 'right',
-        icon: '<svg><use xlink:href="#vditor-icon-mark"></svg>',
-        click: () => emitter.emit('toolbar-mark'),
-      },
-      {
-        name: 'question',
-        tipPosition: 's',
-        tip: t('toolbar.question.tooltip'),
-        className: 'right',
-        icon: '<svg><use xlink:href="#vditor-icon-question"></svg>',
-        click: () => emitter.emit('toolbar-question'),
-      },
-      {
-        name: 'continue',
-        tipPosition: 's',
-        tip: t('toolbar.continue.tooltip'),
-        className: 'right',
-        icon: '<svg><use xlink:href="#vditor-icon-list-plus"></svg>',
-        click: () => emitter.emit('toolbar-continue'),
-      },
-      {
-        name: 'polish',
-        tipPosition: 's',
-        tip: t('toolbar.polish.tooltip'),
-        className: 'right',
-        icon: '<svg><use xlink:href="#vditor-icon-polish"></svg>',
-        click: () => emitter.emit('toolbar-polish')
-      },
-      {
-        name: 'translation',
-        tipPosition: 's',
-        tip: t('toolbar.translation.tooltip'),
-        className: 'right',
-        icon: '<svg><use xlink:href="#vditor-icon-translation"></svg>',
-        click: () => emitter.emit('toolbar-translation'),
-      },
-      '|',
-      { name: 'headings', tipPosition: 's', className: 'bottom' },
-      { name: 'bold', tipPosition: 's' },
-      { name: 'italic', tipPosition: 's' },
-      { name: 'strike', tipPosition: 's' },
-      '|',
-      { name: 'line', tipPosition: 's' },
-      { name: 'quote', tipPosition: 's' },
-      { name: 'list', tipPosition: 's' },
-      { name: 'ordered-list', tipPosition: 's' },
-      { name: 'check', tipPosition: 's' },
-      { name: 'code', tipPosition: 's' },
-      { name: 'inline-code', tipPosition: 's' },
-      { name: 'upload', tipPosition: 's' },
-      { name: 'link', tipPosition: 's' },
-      { name: 'table', tipPosition: 's' },
-      '|',
-      { name: 'edit-mode', tipPosition: 's', className: 'bottom edit-mode-button' },
-      { name: 'preview', tipPosition: 's' },
-      { name: 'outline', tipPosition: 's' },
-    ]
-
-    if (isMobileDevice()) {
-      toolbarConfig = toolbarConfig.slice(0, 12).filter((item) => item !== '|')
-    }
     const vditor = new Vditor('aritcle-md-editor', {
       lang: getLang(),
       height: document.documentElement.clientHeight - 100,
@@ -129,6 +65,13 @@ export function MdEditor() {
       outline: {
         enable: enableOutline,
         position: outlinePosition,
+      },
+      select: (value: string) => {
+        setSelectedText(value)
+        setFloatBarPosition(vditor.getCursorPosition())
+      },
+      unSelect: () => {
+        resetSelectedText()
       },
       link: {
         isOpen: false,
@@ -222,6 +165,11 @@ export function MdEditor() {
         }
       }
     })
+  }
+
+  function resetSelectedText() {
+    setSelectedText('')
+    setFloatBarPosition(null)
   }
 
   // 处理本地相对路径图片
@@ -402,10 +350,12 @@ export function MdEditor() {
         description: `JSON ${t('copySuccessDescription')}`,
       })
     })
+    emitter.on('toolbar-reset-selected-text', resetSelectedText)
     return () => {
       emitter.off('toolbar-copy-html')
       emitter.off('toolbar-copy-markdown')
       emitter.off('toolbar-copy-json')
+      emitter.off('toolbar-reset-selected-text')
     }
   }, [editor])
 
@@ -472,9 +422,10 @@ export function MdEditor() {
     handleLocalImage(editor)
   }, [currentArticle, editor])
 
-  return <div className='flex-1 w-full h-full lg:h-screen flex flex-col overflow-hidden dark:bg-zinc-950'>
+  return <div className='flex-1 relative w-full h-full lg:h-screen flex flex-col overflow-hidden dark:bg-zinc-950'>
     <CustomToolbar editor={editor} />
     <div id="aritcle-md-editor" className='flex-1'></div>
     <CustomFooter editor={editor} />
+    <FloatBar left={floatBarPosition?.left} top={floatBarPosition?.top} value={selectedText} editor={editor} />
   </div>
 }

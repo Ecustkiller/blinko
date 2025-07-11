@@ -777,27 +777,32 @@
         "question": {
           "tooltip": "问答",
           "selectContent": "请先选择一段内容",
-          "promptTemplate": "参考原文：{content}\n根据提问：{question}，直接返回回答内容。"
+          "promptTemplate": "参考原文：\n{content}\n根据提问：\n{question}\n，直接返回回答内容。"
         },
         "continue": {
           "tooltip": "续写",
-          "promptTemplate": "根据前文：\"{content}\" 内容，直接返回续写内容，不要超过100字。\n内容可以参考后文：\"{endContent}\"，不要与后文内容重复。"
+          "promptTemplate": "根据前文：\n{content}\n内容，直接返回续写内容，不要超过100字。\n内容可以参考后文：\n{endContent}\n，不要与后文内容重复。"
         },
         "polish": {
-          "tooltip": "优化",
+          "tooltip": "润色",
           "selectContent": "请先选择一段内容",
-          "promptTemplate": "润色这段文字：{content}，要求语言不变，修复错别字和病句，直接返回润色后的结果。"
+          "promptTemplate": "润色这段文字：\n{content}\n要求语言不变，修复错别字和病句，直接返回润色后的结果。"
         },
         "eraser": {
           "tooltip": "精简",
           "selectContent": "请先选择一段内容",
-          "promptTemplate": "精简这段文字：{content}，这段文字过于臃肿，字数要求缩减一半以上，要求语言不变，直接返回优化后的结果。"
+          "promptTemplate": "精简这段文字：\n{content}\n这段文字过于臃肿，字数要求缩减一半以上，要求语言不变，直接返回优化后的结果。"
+        },
+        "expansion": {
+          "tooltip": "扩写",
+          "selectContent": "请先选择一段内容",
+          "promptTemplate": "扩写这段文字：\n{content}\n这段文字过于简短，字数要求增加一倍以上，要求语言不变，直接返回扩写后的结果。"
         },
         "translation": {
           "tooltip": "翻译",
           "description": "将选中的文本进行翻译",
           "selectContent": "请先选择一段内容",
-          "promptTemplate": "将这段文字：{content}，翻译为{language}语言，直接返回翻译后的结果。"
+          "promptTemplate": "将这段文字：\n{content}\n翻译为{language}语言，直接返回翻译后的结果。"
         }
       }
     },
