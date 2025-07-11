@@ -118,7 +118,6 @@ export function MdEditor() {
     if (isMobileDevice()) {
       toolbarConfig = toolbarConfig.slice(0, 12).filter((item) => item !== '|')
     }
-    
     const vditor = new Vditor('aritcle-md-editor', {
       lang: getLang(),
       height: document.documentElement.clientHeight - 100,
@@ -468,6 +467,7 @@ export function MdEditor() {
 
   useEffect(() => {
     setContent(currentArticle)
+    editor?.clearStack()
     if (!editor) return
     handleLocalImage(editor)
   }, [currentArticle, editor])
