@@ -44,7 +44,7 @@ Currently supports Mac, Windows, and Linux. Thanks to Tauri2's cross-platform ca
 | Windows | MacOS | Linux | Android | iOS |
 | --- | --- | --- | --- | --- |
 | ✅ beta | ✅ beta | ✅ beta | 🛠️ alpha | 🛠️ alpha |
-| [Download](https://notegen.top/en/download.html) | [Download](https://notegen.top/en/download.html) | [Download](https://notegen.top/en/download.html) | [Download](https://notegen.top/en/download.html) | [Download](https://notegen.top/en/download.html) |
+| [Download](https://notegen.top/en/guide/download.html) | [Download](https://notegen.top/en/guide/download.html) | [Download](https://notegen.top/en/guide/download.html) | [Download](https://notegen.top/en/guide/download.html) | [Download](https://notegen.top/en/guide/download.html) |
 
 > [UpgradeLink offers application upgrade and download services](http://upgrade.toolsetlink.com/upgrade/example/tauri-example.html)
 

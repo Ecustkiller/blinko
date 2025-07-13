@@ -96,7 +96,7 @@ NoteGen 分为`记录`和`写作`两个页面，关系如下：
 | Windows | MacOS | Linux | Android | iOS |
 | --- | --- | --- | --- | --- |
 | ✅ beta | ✅ beta | ✅ beta | 🛠️ alpha | 🛠️ alpha |
-| [下载 17 MB](https://notegen.top/en/download.html) | [下载 20.7 MB](https://notegen.top/en/download.html) | [下载 21.7 MB](https://notegen.top/en/download.html) | [下载](https://notegen.top/en/download.html) | [下载](https://notegen.top/en/download.html) |
+| [下载 17 MB](https://notegen.top/zh/guide/download.html) | [下载 20.7 MB](https://notegen.top/zh/guide/download.html) | [下载 21.7 MB](https://notegen.top/zh/guide/download.html) | [下载](https://notegen.top/zh/guide/download.html) | [下载](https://notegen.top/zh/guide/download.html) |
 
 > [UpgradeLink 提供应用升级与下载服务](http://upgrade.toolsetlink.com/upgrade/example/tauri-example.html)
 
