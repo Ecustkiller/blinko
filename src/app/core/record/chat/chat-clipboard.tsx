@@ -6,7 +6,7 @@ import useSettingStore from "@/stores/setting";
 import useMarkStore from "@/stores/mark";
 import { v4 as uuid } from 'uuid'
 import ocr from "@/lib/ocr";
-import { fetchAiDesc } from "@/lib/ai";
+import { fetchAiDesc, fetchAiDescByImage } from "@/lib/ai";
 import { insertMark, Mark } from "@/db/marks";
 import { uint8ArrayToBase64, uploadFile } from "@/lib/github";
 import { RepoNames } from "@/lib/github.types";
@@ -24,7 +24,7 @@ export function ChatClipboard({chat}: { chat: Chat }) {
   const [countdown, setCountdown] = useState(5) // 5 seconds countdown
   const [isCountingDown, setIsCountingDown] = useState(!chat.inserted) // Start countdown if not recorded
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
-  const { primaryModel, githubUsername } = useSettingStore()
+  const { primaryModel, githubUsername, primaryImageMethod } = useSettingStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
   const { updateInsert, deleteChat } = useChatStore()
   const t = useTranslations('record.queue')
@@ -75,14 +75,25 @@ export function ChatClipboard({chat}: { chat: Chat }) {
     const fromPath = chat.image.slice(1)
     const toPath = fromPath.replace('clipboard', 'image')
     await copyFile(fromPath, toPath, { fromPathBaseDir: BaseDirectory.AppData, toPathBaseDir: BaseDirectory.AppData})
-    setQueue(queueId, { progress: t('ocr') });
-    const content = await ocr(toPath)
+    let content = ''
     let desc = ''
-    if (primaryModel) {
+    if (primaryImageMethod === 'vlm') {
+      // 使用 VLM 识别图片
       setQueue(queueId, { progress: t('ai') });
-      desc = await fetchAiDesc(content).then(res => res ? res : content)
-    } else {
+      const file = await readFile(toPath, { baseDir: BaseDirectory.AppData })
+      const base64 = `data:image/png;base64,${Buffer.from(file).toString('base64')}`
+      content = await fetchAiDescByImage(base64) || 'VLM Error'
       desc = content
+    } else {
+      // 使用 OCR 识别图片
+      setQueue(queueId, { progress: t('ocr') });
+      content = await ocr(toPath)
+      setQueue(queueId, { progress: t('ai') });
+      if (primaryModel) {
+        desc = await fetchAiDesc(content).then(res => res ? res : content) || content
+      } else {
+        desc = content
+      }
     }
     const mark: Partial<Mark> = {
       tagId: currentTagId,
