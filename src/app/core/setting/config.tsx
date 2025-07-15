@@ -50,7 +50,7 @@ const baseConfig = [
   },
   {
     icon: <ScanText className="size-4 lg:size-6" />,
-    anchor: 'ocr',
+    anchor: 'imageMethod',
   },
   '-',
   {

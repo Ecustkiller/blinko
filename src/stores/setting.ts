@@ -57,6 +57,9 @@ interface SettingState {
   rerankingModel: string
   setRerankingModel: (rerankingModel: string) => Promise<void>
 
+  imageMethodModel: string
+  setImageMethodModel: (imageMethodModel: string) => Promise<void>
+
   templateList: GenTemplate[]
   setTemplateList: (templateList: GenTemplate[]) => Promise<void>
 
@@ -111,6 +114,10 @@ interface SettingState {
   // 图床设置
   githubImageAccessToken: string
   setGithubImageAccessToken: (githubImageAccessToken: string) => Promise<void>
+
+  // 图片识别设置
+  primaryImageMethod: 'ocr' | 'vlm'
+  setPrimaryImageMethod: (method: 'ocr' | 'vlm') => Promise<void>
 }
 
 
@@ -191,6 +198,13 @@ const useSettingStore = create<SettingState>((set, get) => ({
     const store = await Store.load('store.json');
     await store.set('rerankingModel', rerankingModel)
     set({ rerankingModel })
+  },
+
+  imageMethodModel: '',
+  setImageMethodModel: async (imageMethodModel) => {
+    const store = await Store.load('store.json');
+    await store.set('imageMethodModel', imageMethodModel)
+    set({ imageMethodModel })
   },
 
   templateList: [
@@ -319,6 +333,15 @@ const useSettingStore = create<SettingState>((set, get) => ({
     set({ githubImageAccessToken })
     const store = await Store.load('store.json');
     await store.set('githubImageAccessToken', githubImageAccessToken)
+    await store.save()
+  },
+
+  // 图片识别设置
+  primaryImageMethod: 'ocr',
+  setPrimaryImageMethod: async (method: 'ocr' | 'vlm') => {
+    set({ primaryImageMethod: method })
+    const store = await Store.load('store.json');
+    await store.set('primaryImageMethod', method)
     await store.save()
   },
 }))

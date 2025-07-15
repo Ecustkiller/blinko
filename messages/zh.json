@@ -303,11 +303,21 @@
       "temperatureDesc": "使用什么采样温度，介于 0 和 2 之间。较高的值（如 0.8）将使输出更加随机，而较低的值（如 0.2）将使输出更加集中和确定。 我们通常建议改变这个或top_p但不是两者。",
       "topPDesc": "一种替代温度采样的方法，称为核采样，其中模型考虑具有 top_p 概率质量的标记的结果。所以 0.1 意味着只考虑构成前 10% 概率质量的标记。 我们通常建议改变这个或temperature但不是两者。"
     },
-    "ocr": {
-      "title": "OCR",
-      "languagePacks": "语言包",
-      "checkModels": "在此查询全部模型",
-      "modelInstruction": "以逗号分隔，例如：eng,chi_sim"
+    "imageMethod": {
+      "title": "图像识别",
+      "desc": "在这里，你可以配置图像识别相关设置，支持 OCR 和 VLM 两种方式。",
+      "setPrimary": "设置为默认",
+      "isPrimary": "{type} 已设置为默认",
+      "ocr": {
+        "title": "OCR",
+        "languagePacks": "语言包",
+        "checkModels": "在此查询全部模型",
+        "modelInstruction": "以逗号分隔，例如：eng,chi_sim"
+      },
+      "vlm": {
+        "title": "视觉语言模型",
+        "desc": "通过视觉语言模型识别图片内容。"
+      }
     },
     "file": {
       "title": "文件管理",

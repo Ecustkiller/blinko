@@ -27,7 +27,7 @@ import { TooltipButton } from "@/components/tooltip-button"
 
 export function ModelSelect({modelKey}: {modelKey: string}) {
   const [list, setList] = useState<AiConfig[]>([])
-  const { setPlaceholderModel, setTranslateModel, setMarkDescModel, setPrimaryModel } = useSettingStore()
+  const { setPlaceholderModel, setTranslateModel, setMarkDescModel, setPrimaryModel, setImageMethodModel } = useSettingStore()
   const [model, setModel] = useState<string>('')
   const [open, setOpen] = React.useState(false)
   const t = useTranslations('settings.defaultModel')
@@ -37,6 +37,9 @@ export function ModelSelect({modelKey}: {modelKey: string}) {
     switch (modelKey) {
       case 'primaryModel':
         setPrimaryModel(primaryModel)
+        break;
+      case 'imageMethod':
+        setImageMethodModel(primaryModel)
         break;
       case 'placeholder':
         setPlaceholderModel(primaryModel)
@@ -92,7 +95,7 @@ export function ModelSelect({modelKey}: {modelKey: string}) {
     <Popover open={open} onOpenChange={setOpen}>
       <div className="flex gap-2">
         <PopoverTrigger asChild>
-          <div className="flex-1">
+          <div className="flex-1 overflow-hidden">
             <Button
               variant="outline"
               role="combobox"

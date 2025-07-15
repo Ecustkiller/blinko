@@ -514,6 +514,42 @@ export async function fetchAiDesc(text: string) {
   }
 }
 
+export async function fetchAiDescByImage(base64: string) {
+  try {
+    // 获取AI设置
+    const aiConfig = await getAISettings('imageMethodPrimaryModel')
+
+    const descContent = `根据截图的内容，返回一条描述。`
+    
+    const openai = await createOpenAIClient(aiConfig)
+    const completion = await openai.chat.completions.create({
+      model: aiConfig?.model || '',
+      messages: [{
+        role: 'user' as const,
+        content: [
+          {
+            type: 'image_url',
+            image_url: {
+              url: base64
+            }
+          },
+          {
+            type: 'text',
+            text: descContent
+          }
+        ]
+      }],
+      temperature: aiConfig?.temperature || 1,
+      top_p: aiConfig?.topP || 1,
+    })
+    
+    return completion.choices[0].message.content || ''
+  } catch (error) {
+    handleAIError(error, false)
+    return null
+  }
+}
+
 // placeholder
 export async function fetchAiPlaceholder(text: string): Promise<string> {
   try {

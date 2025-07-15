@@ -1,13 +1,14 @@
 import { Input } from "@/components/ui/input";
-import { FormItem, SettingRow, SettingType } from "../components/setting-base";
+import { FormItem, SettingRow } from "../components/setting-base";
 import { useTranslations } from 'next-intl';
 import { useEffect } from "react";
 import useSettingStore from "@/stores/setting";
 import { Store } from "@tauri-apps/plugin-store";
 import { OpenBroswer } from "@/components/open-broswer";
+import { SetDefault } from "./setDefault";
 
-export function SettingOCR({id, icon}: {id: string, icon?: React.ReactNode}) {
-  const t = useTranslations();
+export function OcrSetting() {
+  const t = useTranslations('settings.imageMethod.ocr');
   const { tesseractList, setTesseractList } = useSettingStore()
 
   async function changeHandler(e: React.ChangeEvent<HTMLInputElement>) {
@@ -30,18 +31,19 @@ export function SettingOCR({id, icon}: {id: string, icon?: React.ReactNode}) {
   }, [])
 
   return (
-    <SettingType id={id} icon={icon} title={t('settings.ocr.title')}>
+    <div>
       <SettingRow>
-        <FormItem title={t('settings.ocr.languagePacks')}>
+        <FormItem title={t('languagePacks')}>
           <Input value={tesseractList} onChange={changeHandler} />
         </FormItem>
       </SettingRow>
       <SettingRow>
         <span>
-          <OpenBroswer title={t('settings.ocr.checkModels')} url="https://tesseract-ocr.github.io/tessdoc/Data-Files#data-files-for-version-400-november-29-2016" />
-          {t('settings.ocr.modelInstruction')}
+          <OpenBroswer title={t('checkModels')} url="https://tesseract-ocr.github.io/tessdoc/Data-Files#data-files-for-version-400-november-29-2016" />
+          {t('modelInstruction')}
         </span>
       </SettingRow>
-    </SettingType>
+      <SetDefault type="ocr" />
+    </div>
   )
 }
