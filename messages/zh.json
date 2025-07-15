@@ -182,7 +182,20 @@
       "title": "图床",
       "desc": "在这里，你可以配置图床，将图片上传到图床。",
       "isPrimaryBackup": "当前 {type} 为主要图床",
-      "setPrimaryBackup": "设为主要图床"
+      "setPrimaryBackup": "设为主要图床",
+      "smms": {
+        "token": {
+          "desc": "请创建并输入 SM.MS Token。",
+          "createToken": "创建 Token"
+        },
+        "disk": "磁盘使用情况",
+        "error": "获取失败，请检查网络或 Token 是否正确。"
+      },
+      "picgo": {
+        "desc": "PicGo 服务器地址",
+        "ok": "检测到服务正在运行，请确保 PicGo 图床已配置。",
+        "error": "服务未运行，请确保 PicGo（需要 v2.2.0+） 应用正在运行，否则无法上传图片。"
+      }
     },
     "backupSync": {
       "title": "备用方案",
