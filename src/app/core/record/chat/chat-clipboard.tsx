@@ -8,8 +8,6 @@ import { v4 as uuid } from 'uuid'
 import ocr from "@/lib/ocr";
 import { fetchAiDesc, fetchAiDescByImage } from "@/lib/ai";
 import { insertMark, Mark } from "@/db/marks";
-import { uint8ArrayToBase64, uploadFile } from "@/lib/github";
-import { RepoNames } from "@/lib/github.types";
 import { CheckCircle, Highlighter, ImagePlus, LoaderCircle } from "lucide-react";
 import { Chat } from "@/db/chats";
 import { LocalImage } from '@/components/local-image';
@@ -17,6 +15,7 @@ import MessageControl from './message-control';
 import useChatStore from '@/stores/chat';
 import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
+import { uploadImage } from '@/lib/imageHosting';
 
 export function ChatClipboard({chat}: { chat: Chat }) {
   const [loading, setLoading] = useState(false)
@@ -24,7 +23,7 @@ export function ChatClipboard({chat}: { chat: Chat }) {
   const [countdown, setCountdown] = useState(5) // 5 seconds countdown
   const [isCountingDown, setIsCountingDown] = useState(!chat.inserted) // Start countdown if not recorded
   const { currentTagId, fetchTags, getCurrentTag } = useTagStore()
-  const { primaryModel, githubUsername, primaryImageMethod } = useSettingStore()
+  const { primaryModel, primaryImageMethod } = useSettingStore()
   const { fetchMarks, addQueue, setQueue, removeQueue } = useMarkStore()
   const { updateInsert, deleteChat } = useChatStore()
   const t = useTranslations('record.queue')
@@ -102,22 +101,14 @@ export function ChatClipboard({chat}: { chat: Chat }) {
       url: `${queueId}.png`,
       desc,
     }
-    const file = await readFile(toPath, { baseDir: BaseDirectory.AppData  })
-    if (githubUsername) {
-      setQueue(queueId, { progress: t('upload') });
-      const res = await uploadFile({
-        ext: 'png',
-        file: uint8ArrayToBase64(file),
-        filename: `${queueId}.png`,
-        repo: RepoNames.image
-      })
-      if (res) {
-        setQueue(queueId, { progress: t('jsdelivr') });
-        await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`)
-        mark.url = `https://cdn.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`
-      } else {
-        mark.url = `${queueId}.png}`
-      }
+    setQueue(queueId, { progress: t('upload') });
+    const fileData = await readFile(toPath, { baseDir: BaseDirectory.AppData  })
+    const blob = new Blob([fileData], { type: 'image/png' })
+    const file = new File([blob], `${queueId}.png`, { type: 'image/png' })
+    // 上传图片
+    const url = await uploadImage(file)
+    if (url) {
+      mark.url = url
     }
     removeQueue(queueId)
     await updateInsert(chat.id)
