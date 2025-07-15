@@ -59,7 +59,7 @@ function DetailViewer({mark, content, path}: {mark: Mark, content: string, path?
             <LocalImage
               src={mark.url.includes('http') ? mark.url : `/${path}/${mark.url}`}
               alt=""
-              className="w-full"
+              className="w-full max-h-80 object-contain"
             /> :
             null
           }
