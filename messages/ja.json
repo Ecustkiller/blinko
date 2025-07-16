@@ -656,7 +656,14 @@
         "rootDirectory": "ルートディレクトリ",
         "deleteTag": "削除タグ、記録とノート（ゴミ箱で復元可能）",
         "warning": "変換後、執筆ページに移動します。",
-        "convert_button": "変換"
+        "convert_button": "変換",
+        "organizeAs": "記録を整理します...",
+        "templateContent": "テンプレート内容",
+        "recordRange": "記録範囲を選択",
+        "filterThinkingContent": "思考の記録を削除します",
+        "startOrganize": "開始整理",
+        "manageTemplate": "管理テンプレート",
+        "cancel": "キャンセル"
       },
       "mark": {
         "recorded": "記録済み",

@@ -586,7 +586,14 @@
         "rootDirectory": "Root directory",
         "deleteTag": "Delete current tag, records and notes (can be restored from trash)",
         "warning": "After conversion, you will be redirected to the writing page.",
-        "convert_button": "Convert"
+        "convert_button": "Convert",
+        "organizeAs": "Organize your records into an article:",
+        "templateContent": "Template content",
+        "recordRange": "Record range",
+        "filterThinkingContent": "Remove thinking content from records",
+        "startOrganize": "Start organizing",
+        "manageTemplate": "Manage template",
+        "cancel": "Cancel"
       },
       "mark": {
         "recorded": "Recorded",
