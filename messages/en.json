@@ -49,7 +49,21 @@
       "title": "Markdown Editor",
       "desc": "Here, you can customize the Markdown editor, creating a writing experience tailored to your needs.",
       "typewriterMode": "Typewriter Mode",
-      "typewriterModeDesc": "In typewriter mode, the editor will simulate a typewriter effect, helping you better immerse in writing."
+      "typewriterModeDesc": "In typewriter mode, the editor will simulate a typewriter effect, helping you better immerse in writing.",
+      "outlineEnable": "Default outline enabled",
+      "outlineEnableDesc": "Enabling it will make the outline visible by default.",
+      "outlinePosition": "Outline position",
+      "outlinePositionDesc": "Set outline position.",
+      "outlinePositionOptions": {
+        "left": "Left",
+        "right": "Right"
+      },
+      "pageView": "Page view",
+      "pageViewDesc": "In immersive view, the editor will reserve a large amount of blank space on both sides, and in panorama view, the editor content will occupy the entire editing area.",
+      "pageViewOptions": {
+        "immersiveView": "Immersive view",
+        "panoramaView": "Panorama view"
+      }
     },
     "uploadStore": {
       "uploadConfirm": "Upload configuration please ensure the sync repository is private, otherwise the data will be leaked!",

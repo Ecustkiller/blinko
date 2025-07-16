@@ -55,6 +55,12 @@
       "outlinePositionOptions": {
         "left": "左侧",
         "right": "右侧"
+      },
+      "pageView": "页面视图",
+      "pageViewDesc": "沉浸视图下编辑器两侧会保留大量空白，全景模式下编辑器内容占据整个编辑区域。",
+      "pageViewOptions": {
+        "immersiveView": "沉浸视图",
+        "panoramaView": "全景视图"
       }
     },
     "uploadStore": {

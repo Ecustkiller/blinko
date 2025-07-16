@@ -113,6 +113,7 @@ export function MdEditor() {
         if (activeFilePath === '') {
           vditor.setValue('', true)
         }
+        setEditorPadding(vditor)
       },
       input: (value) => {
         saveCurrentArticle(value)
@@ -170,6 +171,18 @@ export function MdEditor() {
   function resetSelectedText() {
     setSelectedText('')
     setFloatBarPosition(null)
+  }
+
+  // 设置编辑器 padding
+  async function setEditorPadding(vditor: Vditor) {
+    const store = await Store.load('store.json');
+    const pageView = await store.get<'immersiveView' | 'panoramaView'>('pageView') || 'immersiveView'
+    const resetDom = vditor.vditor.element.querySelectorAll('.vditor-reset')
+    if (resetDom && pageView === "panoramaView") {
+      resetDom.forEach(dom => {
+        (dom as HTMLElement).style.setProperty('padding', '10px', 'important')
+      })
+    }
   }
 
   // 处理本地相对路径图片
@@ -421,6 +434,19 @@ export function MdEditor() {
     if (!editor) return
     handleLocalImage(editor)
   }, [currentArticle, editor])
+
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      if (!editor) return
+      setEditorPadding(editor)
+    })
+    return () => {
+      window.removeEventListener('resize', () => {
+        if (!editor) return
+        setEditorPadding(editor)
+      })
+    }
+  }, [editor])
 
   return <div className='flex-1 relative w-full h-full lg:h-screen flex flex-col overflow-hidden dark:bg-zinc-950'>
     <CustomToolbar editor={editor} />
