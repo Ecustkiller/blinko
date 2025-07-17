@@ -12,6 +12,9 @@ import en from "dayjs/locale/en";
 import { useI18n } from "@/hooks/useI18n"
 import useVectorStore from "@/stores/vector"
 import useImageStore from "@/stores/imageHosting"
+import useShortcutStore from "@/stores/shortcut"
+import initQuickRecordText from "@/lib/shortcut/quick-record-text"
+import { useRouter } from "next/navigation"
 
 export default function RootLayout({
   children,
@@ -21,17 +24,17 @@ export default function RootLayout({
   const { initSettingData } = useSettingStore()
   const { initMainHosting } = useImageStore()
   const { currentLocale } = useI18n()
+  const { initShortcut } = useShortcutStore()
+  const { initVectorDb } = useVectorStore()
+  const router = useRouter()
+
   useEffect(() => {
     initSettingData()
     initMainHosting()
     initAllDatabases()
-  }, [])
-
-  const { initVectorDb } = useVectorStore()
-  
-  // 初始化向量数据库
-  useEffect(() => {
+    initShortcut()
     initVectorDb()
+    initQuickRecordText(router)
   }, [])
 
   useEffect(() => {
