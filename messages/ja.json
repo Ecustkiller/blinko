@@ -131,6 +131,14 @@
       "updateInstalled": "Restart app",
       "noUpdate": "現在已是最新版本",
       "items": {
+        "home": {
+          "title": "公式サイト",
+          "buttonName": "表示"
+        },
+        "guide": {
+          "title": "ガイド",
+          "buttonName": "表示"
+        },
         "github": {
           "title": "GitHub",
           "buttonName": "表示"

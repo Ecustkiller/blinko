@@ -131,21 +131,35 @@
       "updateInstalled": "重启应用",
       "noUpdate": "当前已是最新版本",
       "items": {
+        "home": {
+          "title": "官网",
+          "buttonName": "打开",
+          "desc": "访问官网，了解 NoteGen 的更多信息。"
+        },
+        "guide": {
+          "title": "配置指南",
+          "buttonName": "打开",
+          "desc": "查看配置指南，了解如何配置模型、同步等信息。"
+        },
         "github": {
           "title": "GitHub",
-          "buttonName": "查看"
+          "buttonName": "查看",
+          "desc": "如果 NoteGen 帮助到了你，请给颗 star 鼓励一下！"
         },
         "releases": {
           "title": "更新日志",
-          "buttonName": "查看"
+          "buttonName": "查看",
+          "desc": "查看更新日志，了解 NoteGen 的更新信息。"
         },
         "issues": {
           "title": "问题反馈",
-          "buttonName": "反馈"
+          "buttonName": "反馈",
+          "desc": "如果发现 NoteGen 有 bug，请在这里反馈。"
         },
         "discussions": {
           "title": "交流讨论",
-          "buttonName": "讨论"
+          "buttonName": "讨论",
+          "desc": "如果你想和作者或其他用户交流，可以加群讨论。"
         }
       }
     },

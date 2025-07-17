@@ -86,6 +86,14 @@
       "updateInstalled": "Restart app",
       "noUpdate": "Current version is the latest",
       "items": {
+        "home": {
+          "title": "Home",
+          "buttonName": "Open"
+        },
+        "guide": {
+          "title": "Guide",
+          "buttonName": "Open"
+        },
         "github": {
           "title": "GitHub",
           "buttonName": "View"
