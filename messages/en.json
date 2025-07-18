@@ -356,6 +356,23 @@
         "desc": "Set the path where resources (e.g. images, videos, files etc.) used in writing will be saved. Resources will be saved at the same level as the currently edited markdown file.",
         "select": "Set the path where resources used in writing will be saved"
       }
+    },
+    "shortcuts": {
+      "title": "Shortcuts",
+      "desc": "Here, you can configure shortcuts to help you use NoteGen more efficiently.",
+      "resetDefaults": "Reset",
+      "clear": "Clear",
+      "noShortcut": "No Shortcut",
+      "shortcuts": {
+        "openWindow": {
+          "title": "Open/Hide Window",
+          "desc": "Open/Hide the main window."
+        },
+        "quickRecordText": {
+          "title": "Quick Record Text",
+          "desc": "Quickly open the main window and switch to text recording."
+        }
+      }
     }
   },
   "record": {

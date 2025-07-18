@@ -370,6 +370,23 @@
         "desc": "设置写作资源的保存路径，例如图片、视频、文件等，与当前编辑的 markdown 文件同级。",
         "select": "请设置写作资源路径，例如：assets"
       }
+    },
+    "shortcuts": {
+      "title": "快捷键",
+      "desc": "在这里，你可以配置快捷键，帮助你更高效地使用 NoteGen。",
+      "resetDefaults": "重置",
+      "clear": "清空",
+      "noShortcut": "未设置",
+      "shortcuts": {
+        "openWindow": {
+          "title": "打开/隐藏窗口",
+          "desc": "打开/隐藏程序主窗口。"
+        },
+        "quickRecordText": {
+          "title": "快速记录文本",
+          "desc": "快速打开程序主窗口，并调出文本记录。"
+        }
+      }
     }
   },
   "record": {

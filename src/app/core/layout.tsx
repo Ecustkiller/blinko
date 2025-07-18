@@ -15,6 +15,7 @@ import useImageStore from "@/stores/imageHosting"
 import useShortcutStore from "@/stores/shortcut"
 import initQuickRecordText from "@/lib/shortcut/quick-record-text"
 import { useRouter } from "next/navigation"
+import initShowWindow from "@/lib/shortcut/show-window"
 
 export default function RootLayout({
   children,
@@ -35,6 +36,7 @@ export default function RootLayout({
     initShortcut()
     initVectorDb()
     initQuickRecordText(router)
+    initShowWindow()
   }, [])
 
   useEffect(() => {
