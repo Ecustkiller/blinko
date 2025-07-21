@@ -2,7 +2,8 @@ import { toast } from "@/hooks/use-toast";
 import { fetchAi } from "@/lib/ai";
 import { decodeBase64ToString, getFileCommits as getGithubFileCommits, getFiles as getGithubFiles, uint8ArrayToBase64, uploadFile as uploadGithubFile } from "@/lib/github";
 import { RepoNames } from "@/lib/github.types";
-import { decodeBase64ToString as giteeDecodeBase64ToString, getFileCommits as getGiteeFileCommits, getFiles as getGiteeFiles, uint8ArrayToBase64 as giteeUint8ArrayToBase64, uploadFile as uploadGiteeFile } from "@/lib/gitee";
+import { getFileCommits as getGiteeFileCommits, getFiles as getGiteeFiles, uploadFile as uploadGiteeFile } from "@/lib/gitee";
+import { getFileCommits as getGitlabFileCommits, getFiles as getGitlabFiles, uploadFile as uploadGitlabFile } from "@/lib/gitlab";
 import useArticleStore from "@/stores/article";
 import { readFile } from "@tauri-apps/plugin-fs";
 import { diffWordsWithSpace } from 'diff';
@@ -18,7 +19,7 @@ import { useTranslations } from "next-intl";
 
 export default function Sync({editor}: {editor?: Vditor}) {
   const { currentArticle } = useArticleStore()
-  const { accessToken, giteeAccessToken, autoSync, giteeAutoSync, primaryBackupMethod, primaryModel } = useSettingStore()
+  const { accessToken, giteeAccessToken, gitlabAccessToken, autoSync, giteeAutoSync, gitlabAutoSync, primaryBackupMethod, primaryModel } = useSettingStore()
   const [isLoading, setIsLoading] = useState(false)
   const syncTimeoutRef = useRef<number | null>(null)
   const t = useTranslations('article.footer.sync')
@@ -60,14 +61,29 @@ export default function Sync({editor}: {editor?: Vditor}) {
               contentText = decodeBase64ToString(githubContent.content);
             }
           }
-        } else {
+        } else if (backupMethod === 'gitee') {
           // 获取Gitee提交历史
           const giteeCommits = await getGiteeFileCommits({ path: activeFilePath, repo: RepoNames.sync });
           if (Array.isArray(giteeCommits) && giteeCommits.length > 0) {
             const lastCommit = giteeCommits[0];
             const giteeContent = await getGiteeFiles({path: `${activeFilePath}?ref=${lastCommit.sha}`, repo: RepoNames.sync});
             if (giteeContent?.content) {
-              contentText = giteeDecodeBase64ToString(giteeContent.content);
+              contentText = decodeBase64ToString(giteeContent.content);
+            }
+          }
+        } else if (backupMethod === 'gitlab') {
+          // 获取Gitlab提交历史
+          const gitlabCommits = await getGitlabFileCommits({ path: activeFilePath, repo: RepoNames.sync });
+          if (gitlabCommits?.data && Array.isArray(gitlabCommits.data) && gitlabCommits.data.length > 0) {
+            const lastCommit = gitlabCommits.data[0];
+            const gitlabContent = await getGitlabFiles({path: `${activeFilePath}?ref=${lastCommit.id}`, repo: RepoNames.sync});
+            if (gitlabContent?.data && Array.isArray(gitlabContent.data) && gitlabContent.data.length > 0) {
+              // Gitlab 返回的是文件列表，需要获取具体文件内容
+              const fileContent = gitlabContent.data.find(f => f.name === activeFilePath.split('/').pop());
+              if (fileContent) {
+                // 这里需要额外的API调用来获取文件内容，暂时跳过
+                contentText = '';
+              }
             }
           }
         }
@@ -112,24 +128,40 @@ export default function Sync({editor}: {editor?: Vditor}) {
       
       // 根据备份方式上传文件
       let uploadRes;
-      if (backupMethod === 'github') {
-        uploadRes = await uploadGithubFile({
-          ext: 'md',
-          file: uint8ArrayToBase64(file),
-          filename: `${_path && _path + '/'}${filename}`,
-          sha,
-          message,
-          repo: RepoNames.sync
-        });
-      } else {
-        uploadRes = await uploadGiteeFile({
-          ext: 'md',
-          file: giteeUint8ArrayToBase64(file),
-          filename: `${_path && _path + '/'}${filename}`,
-          sha,
-          message,
-          repo: RepoNames.sync
-        });
+      console.log(backupMethod);
+      switch (backupMethod) {
+        case 'github':
+          uploadRes = await uploadGithubFile({
+            ext: 'md',
+            file: uint8ArrayToBase64(file),
+            filename: `${_path && _path + '/'}${filename}`,
+            sha,
+            message,
+            repo: RepoNames.sync
+          });
+          break;
+        case 'gitee':
+          uploadRes = await uploadGiteeFile({
+            ext: 'md',
+            file: uint8ArrayToBase64(file),
+            filename: `${_path && _path + '/'}${filename}`,
+            sha,
+            message,
+            repo: RepoNames.sync
+          });
+          break;
+        case 'gitlab':
+          uploadRes = await uploadGitlabFile({
+            ext: 'md',
+            file: uint8ArrayToBase64(file),
+            filename: `${_path && _path + '/'}${filename}`,
+            sha,
+            message,
+            repo: RepoNames.sync
+          });
+          break;
+        default:
+          break;
       }
       
       // 检查上传结果并更新状态
@@ -194,24 +226,39 @@ export default function Sync({editor}: {editor?: Vditor}) {
       
       // 根据备份方式上传文件
       let uploadRes;
-      if (backupMethod === 'github') {
-        uploadRes = await uploadGithubFile({
-          ext: 'md',
-          file: uint8ArrayToBase64(file),
-          filename: `${_path && _path + '/'}${filename}`,
-          sha,
-          message,
-          repo: RepoNames.sync
-        });
-      } else {
-        uploadRes = await uploadGiteeFile({
-          ext: 'md',
-          file: giteeUint8ArrayToBase64(file),
-          filename: `${_path && _path + '/'}${filename}`,
-          sha,
-          message,
-          repo: RepoNames.sync
-        });
+      switch (backupMethod) {
+        case 'github':
+          uploadRes = await uploadGithubFile({
+            ext: 'md',
+            file: uint8ArrayToBase64(file),
+            filename: `${_path && _path + '/'}${filename}`,
+            sha,
+            message,
+            repo: RepoNames.sync
+          });
+          break;
+        case 'gitee':
+          uploadRes = await uploadGiteeFile({
+            ext: 'md',
+            file: uint8ArrayToBase64(file),
+            filename: `${_path && _path + '/'}${filename}`,
+            sha,
+            message,
+            repo: RepoNames.sync
+          });
+          break;
+        case 'gitlab':
+          uploadRes = await uploadGitlabFile({
+            ext: 'md',
+            file: uint8ArrayToBase64(file),
+            filename: `${_path && _path + '/'}${filename}`,
+            sha,
+            message,
+            repo: RepoNames.sync
+          }); 
+          break;
+        default:
+          break;
       }
       
       // 检查上传结果并更新状态
@@ -242,6 +289,7 @@ export default function Sync({editor}: {editor?: Vditor}) {
       if (!editor) return false;
       if (backupMethod === 'github' && (autoSync === 'disabled' || !accessToken)) return false;
       if (backupMethod === 'gitee' && (giteeAutoSync === 'disabled' || !giteeAccessToken)) return false;
+      if (backupMethod === 'gitlab' && (gitlabAutoSync === 'disabled' || !gitlabAccessToken)) return false;
       return true;
     };
     
@@ -254,9 +302,15 @@ export default function Sync({editor}: {editor?: Vditor}) {
         return parseInt(autoSync) * 1000;
       }
       // 如果是Gitee备份方式，使用giteeAutoSync设置的时间
-      if (giteeAutoSync === 'disabled') return 0;
-      // giteeAutoSync存储的是秒数，转换为毫秒
-      return parseInt(giteeAutoSync) * 1000;
+      if (primaryBackupMethod === 'gitee') {
+        if (giteeAutoSync === 'disabled') return 0;
+        // giteeAutoSync存储的是秒数，转换为毫秒
+        return parseInt(giteeAutoSync) * 1000;
+      }
+      // 如果是Gitlab备份方式，使用gitlabAutoSync设置的时间
+      if (gitlabAutoSync === 'disabled') return 0;
+      // gitlabAutoSync存储的是秒数，转换为毫秒
+      return parseInt(gitlabAutoSync) * 1000;
     };
     
     // 处理编辑器输入事件
@@ -327,14 +381,14 @@ export default function Sync({editor}: {editor?: Vditor}) {
       }
       emitter.off('editor-input', handleInput);
     };
-  }, [autoSync, giteeAutoSync, accessToken, giteeAccessToken, syncText, editor, t, primaryBackupMethod]);
+  }, [autoSync, giteeAutoSync, gitlabAutoSync, accessToken, giteeAccessToken, gitlabAccessToken, syncText, editor, t, primaryBackupMethod]);
 
   return (
     <Button 
       onClick={handleSync}
       variant="ghost"
       size="sm"
-      disabled={(primaryBackupMethod === 'github' && !accessToken) || (primaryBackupMethod === 'gitee' && !giteeAccessToken) || isLoading}
+      disabled={(primaryBackupMethod === 'github' && !accessToken) || (primaryBackupMethod === 'gitee' && !giteeAccessToken) || (primaryBackupMethod === 'gitlab' && !gitlabAccessToken) || isLoading}
       className="relative outline-none overflow-hidden"
     >
       {/* 进度条背景 */}

@@ -2,7 +2,8 @@ import { GitPullRequestArrow, HistoryIcon, LoaderCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { decodeBase64ToString, getFileCommits as getGithubFileCommits, getFiles as getGithubFiles } from "@/lib/github";
-import { decodeBase64ToString as giteeDecodeBase64ToString, getFileCommits as getGiteeFileCommits, getFiles as getGiteeFiles } from "@/lib/gitee";
+import { getFileCommits as getGiteeFileCommits, getFiles as getGiteeFiles } from "@/lib/gitee";
+import { getFileCommits as getGitlabFileCommits, getFiles as getGitlabFiles } from "@/lib/gitlab";
 import { useTranslations } from "next-intl";
 import useArticleStore from "@/stores/article";
 import { RepoNames, ResCommit } from "@/lib/github.types";
@@ -24,7 +25,7 @@ dayjs.extend(relativeTime)
 export default function History({editor}: {editor?: Vditor}) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const { activeFilePath, setCurrentArticle, currentArticle, loadFileTree } = useArticleStore()
-  const { accessToken, giteeAccessToken, primaryBackupMethod } = useSettingStore()
+  const { accessToken, giteeAccessToken, gitlabAccessToken, primaryBackupMethod } = useSettingStore()
   const [commits, setCommits] = useState<ResCommit[]>([])
   const [commitsLoading, setCommitsLoading] = useState(false)
   const [filterQuick, setFilterQuick] = useState(false)
@@ -46,8 +47,36 @@ export default function History({editor}: {editor?: Vditor}) {
     
     if (backupMethod === 'github') {
       res = await getGithubFileCommits({ path: activeFilePath, repo: RepoNames.sync });
-    } else {
+    } else if (backupMethod === 'gitee') {
       res = await getGiteeFileCommits({ path: activeFilePath, repo: RepoNames.sync });
+    } else if (backupMethod === 'gitlab') {
+      const gitlabRes = await getGitlabFileCommits({ path: activeFilePath, repo: RepoNames.sync });
+      console.log(gitlabRes);
+      if (gitlabRes?.data) {
+        // 转换 Gitlab 提交格式为通用格式
+        res = gitlabRes.data.map(commit => ({
+          sha: commit.id,
+          commit: {
+            message: commit.message,
+            author: {
+              name: commit.author_name,
+              email: commit.author_email,
+              date: commit.authored_date
+            },
+            committer: {
+              name: commit.committer_name,
+              email: commit.committer_email,
+              date: commit.committed_date
+            }
+          },
+          html_url: commit.web_url,
+          author: {
+            login: commit.author_name,
+            avatar_url: '', // Gitlab API 不直接提供头像
+            html_url: commit.web_url
+          }
+        }));
+      }
     }
 
     setCommits(res || [])
@@ -65,19 +94,35 @@ export default function History({editor}: {editor?: Vditor}) {
     const backupMethod = await store.get<string>('primaryBackupMethod') || 'github';
     
     let res;
-    if (backupMethod === 'github') {
-      res = await getGithubFiles({path: `${activeFilePath}?ref=${sha}`, repo: RepoNames.sync});
-      if (res && res.content) {
-        setCurrentArticle(decodeBase64ToString(res.content));
-      } else {
-        setCurrentArticle(cacheArticle);
-      }
-    } else {
-      res = await getGiteeFiles({path: `${activeFilePath}?ref=${sha}`, repo: RepoNames.sync});
-      if (res && res.content) {
-        setCurrentArticle(giteeDecodeBase64ToString(res.content));
-      } else {
-        setCurrentArticle(cacheArticle);
+    switch (backupMethod) {
+      case 'github':
+        res = await getGithubFiles({path: `${activeFilePath}?ref=${sha}`, repo: RepoNames.sync});
+        if (res && res.content) {
+          setCurrentArticle(decodeBase64ToString(res.content));
+        } else {
+          setCurrentArticle(cacheArticle);
+        }
+        break;
+      case 'gitee':
+        res = await getGiteeFiles({path: `${activeFilePath}?ref=${sha}`, repo: RepoNames.sync});
+        if (res && res.content) {
+          setCurrentArticle(decodeBase64ToString(res.content));
+        } else {
+          setCurrentArticle(cacheArticle);
+        }
+        break;
+      case 'gitlab':
+        res = await getGitlabFiles({path: `${activeFilePath}`, ref: sha, repo: RepoNames.sync});
+        if (res?.data && Array.isArray(res.data)) {
+        const fileName = activeFilePath.split('/').pop();
+        const fileInfo = res.data.find(f => f.name === fileName);
+        if (fileInfo) {
+          // 这里需要额外的 API 调用来获取文件内容，暂时使用占位符
+          setCurrentArticle(t('gitlabHistoryNotSupported'));
+        } else {
+          setCurrentArticle(cacheArticle);
+        }
+        break;
       }
     }
     
@@ -109,6 +154,7 @@ export default function History({editor}: {editor?: Vditor}) {
           size="sm" 
           disabled={(primaryBackupMethod === 'github' && !accessToken) || 
                   (primaryBackupMethod === 'gitee' && !giteeAccessToken) || 
+                  (primaryBackupMethod === 'gitlab' && !gitlabAccessToken) || 
                   commitsLoading} 
           className="outline-none">
           {

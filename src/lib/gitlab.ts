@@ -14,32 +14,6 @@ import {
 } from './gitlab.types';
 import { RepoNames } from './github.types';
 
-// Base64 编码工具函数
-export function uint8ArrayToBase64(data: Uint8Array) {
-  return Buffer.from(data).toString('base64');
-}
-
-// File 转换 Base64
-export async function fileToBase64(file: File) {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      // 删除前缀
-      const base64 = reader.result?.toString().replace(/^data:image\/\w+;base64,/, '');
-      resolve(base64 || '');
-    }
-    reader.onerror = error => reject(error);
-  });
-}
-
-// Base64 解码为字符串
-export function decodeBase64ToString(str: string) {
-  return decodeURIComponent(atob(str).split('').map(function (c) {
-    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
-}
-
 // 获取 Gitlab 实例的 API 基础 URL
 async function getGitlabApiBaseUrl(): Promise<string> {
   const store = await Store.load('store.json');
@@ -192,7 +166,7 @@ export async function getFiles({ path, repo }: { path: string; repo: RepoNames }
     const headers = await getCommonHeaders();
     const proxy = await getProxyConfig();
 
-    const url = `${baseUrl}/projects/${projectId}/repository/tree?path=${path}&recursive=true&per_page=100`;
+    const url = `${baseUrl}/projects/${projectId}/repository/tree?path=${path}`;
     
     const response = await fetch(url, {
       method: 'GET',
@@ -202,16 +176,25 @@ export async function getFiles({ path, repo }: { path: string; repo: RepoNames }
 
     if (response.status >= 200 && response.status < 300) {
       const data = await response.json() as GitlabRepositoryFile[];
-      return { data } as GitlabResponse<GitlabRepositoryFile[]>;
+      return data.map(item => {
+        return {
+          name: item.name,
+          path: item.path,
+          type: item.type === 'tree' ? 'dir' : 'file',
+          sha: item.id,
+        }
+      })
     }
 
     const errorData = await response.json();
+    console.log(errorData);
     throw {
       status: response.status,
       message: errorData.message || '获取文件列表失败'
     } as GitlabError;
 
   } catch (error) {
+    console.log(error);
     console.error('Gitlab 获取文件列表失败:', error);
     toast({
       title: '获取文件列表失败',
@@ -307,7 +290,7 @@ export async function getFileCommits({ path, repo }: { path: string; repo: RepoN
     const headers = await getCommonHeaders();
     const proxy = await getProxyConfig();
 
-    const url = `${baseUrl}/projects/${projectId}/repository/commits?path=${path}&per_page=50`;
+    const url = `${baseUrl}/projects/${projectId}/repository/commits?path=${path}`;
     
     const response = await fetch(url, {
       method: 'GET',

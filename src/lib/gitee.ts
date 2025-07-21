@@ -11,10 +11,6 @@ type GiteeResponse<T> = {
   headers?: Record<string, string>;
 }
 
-export function uint8ArrayToBase64(data: Uint8Array) {
-  return Buffer.from(data).toString('base64');
-}
-
 // File 转换 Base64
 export async function fileToBase64(file: File) {
   return new Promise<string>((resolve, reject) => {

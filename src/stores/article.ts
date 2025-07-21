@@ -1,6 +1,7 @@
 import { decodeBase64ToString, getFiles as getGithubFiles } from '@/lib/github'
 import { GithubContent, RepoNames } from '@/lib/github.types'
-import { decodeBase64ToString as giteeDecodeBase64ToString, getFiles as getGiteeFiles } from '@/lib/gitee'
+import { getFiles as getGiteeFiles } from '@/lib/gitee'
+import { getFiles as getGitlabFiles } from '@/lib/gitlab'
 import { GiteeFile } from '@/lib/gitee'
 import { getCurrentFolder } from '@/lib/path'
 import useVectorStore from './vector'
@@ -335,12 +336,18 @@ const useArticleStore = create<NoteState>((set, get) => ({
       const primaryBackupMethod = await store.get<string>('primaryBackupMethod') || 'github';
       
       let files;
-      if (primaryBackupMethod === 'github') {
-        files = await getGithubFiles({ path, repo: RepoNames.sync });
-      } else {
-        files = await getGiteeFiles({ path, repo: RepoNames.sync });
+      switch (primaryBackupMethod) {
+        case 'github':
+          files = await getGithubFiles({ path, repo: RepoNames.sync });
+          break;
+        case 'gitee':
+          files = await getGiteeFiles({ path, repo: RepoNames.sync });
+          break;
+        case 'gitlab':
+          files = await getGitlabFiles({ path, repo: RepoNames.sync });
+          break;
       }
-      
+
       if (files) {
         files.forEach((file: GithubContent | GiteeFile) => {
           // 过滤以"."开头的文件和文件夹
@@ -694,7 +701,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
           if (primaryBackupMethod === 'github') {
             content = decodeBase64ToString(await getGithubFiles({ path, repo: RepoNames.sync }))
           } else {
-            content = giteeDecodeBase64ToString(await getGiteeFiles({ path, repo: RepoNames.sync }))
+            content = decodeBase64ToString(await getGiteeFiles({ path, repo: RepoNames.sync }))
           }
           set({ currentArticle: content })
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -712,7 +719,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
         set({ currentArticle: decodeBase64ToString(res.content) })
       } else {
         res = await getGiteeFiles({ path, repo: RepoNames.sync })
-        set({ currentArticle: giteeDecodeBase64ToString(res.content) })
+        set({ currentArticle: decodeBase64ToString(res.content) })
       }
     }
     get().setLoading(false)
