@@ -133,7 +133,7 @@ export async function checkRerankModelAvailable(): Promise<boolean> {
     if (!modelInfo) return false;
     
     const { baseURL, apiKey, model } = modelInfo;
-    if (!baseURL || !apiKey || !model) return false;
+    if (!baseURL || !model) return false;
     
     // 测试重排序模型
     const testQuery = '测试查询';
@@ -184,7 +184,7 @@ export async function fetchEmbedding(text: string): Promise<number[] | null> {
       
       const { baseURL, apiKey, model } = modelInfo;
 
-      if (!baseURL || !apiKey || !model) {
+      if (!baseURL || !model) {
         throw new Error('嵌入模型配置不完整');
       }
       
@@ -247,7 +247,7 @@ export async function rerankDocuments(
     
     const { baseURL, apiKey, model } = modelInfo;
     
-    if (!baseURL || !apiKey || !model) {
+    if (!baseURL || !model) {
       return documents; // 配置不完整，返回原始排序
     }
     
