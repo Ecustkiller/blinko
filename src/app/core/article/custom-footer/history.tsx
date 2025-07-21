@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { decodeBase64ToString, getFileCommits as getGithubFileCommits, getFiles as getGithubFiles } from "@/lib/github";
 import { getFileCommits as getGiteeFileCommits, getFiles as getGiteeFiles } from "@/lib/gitee";
-import { getFileCommits as getGitlabFileCommits, getFiles as getGitlabFiles } from "@/lib/gitlab";
+import { getFileCommits as getGitlabFileCommits, getFileContent } from "@/lib/gitlab";
 import { useTranslations } from "next-intl";
 import useArticleStore from "@/stores/article";
 import { RepoNames, ResCommit } from "@/lib/github.types";
@@ -112,18 +112,19 @@ export default function History({editor}: {editor?: Vditor}) {
         }
         break;
       case 'gitlab':
-        res = await getGitlabFiles({path: `${activeFilePath}`, ref: sha, repo: RepoNames.sync});
-        if (res?.data && Array.isArray(res.data)) {
-        const fileName = activeFilePath.split('/').pop();
-        const fileInfo = res.data.find(f => f.name === fileName);
-        if (fileInfo) {
-          // 这里需要额外的 API 调用来获取文件内容，暂时使用占位符
-          setCurrentArticle(t('gitlabHistoryNotSupported'));
-        } else {
+        try {
+          // 使用新的 getFileContent 方法获取特定 commit 的文件内容
+          const fileContent = await getFileContent({path: activeFilePath, ref: sha, repo: RepoNames.sync});
+          if (fileContent && fileContent.content) {
+            setCurrentArticle(decodeBase64ToString(fileContent.content));
+          } else {
+            setCurrentArticle(cacheArticle);
+          }
+        } catch (error) {
+          console.error('Gitlab 获取文件历史内容失败:', error);
           setCurrentArticle(cacheArticle);
         }
         break;
-      }
     }
     
     setCommitsLoading(false);

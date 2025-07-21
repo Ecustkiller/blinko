@@ -99,10 +99,13 @@ export async function uploadFile({
       encoding: 'base64'
     };
 
+    console.log(sha);
+
     // 如果是更新文件，需要添加 last_commit_id
     if (sha) {
       // 获取文件的最新提交 ID
-      const commitsUrl = `${baseUrl}/projects/${projectId}/repository/commits?path=${_path}&per_page=1`;
+      const commitsUrl = `${baseUrl}/projects/${projectId}/repository/commits?path=${_path}`;
+      console.log(commitsUrl);
       const commitsResponse = await fetch(commitsUrl, {
         method: 'GET',
         headers,
@@ -167,6 +170,7 @@ export async function getFiles({ path, repo }: { path: string; repo: RepoNames }
     const proxy = await getProxyConfig();
 
     const url = `${baseUrl}/projects/${projectId}/repository/tree?path=${path}`;
+    console.log(url);
     
     const response = await fetch(url, {
       method: 'GET',
@@ -314,6 +318,64 @@ export async function getFileCommits({ path, repo }: { path: string; repo: RepoN
     toast({
       title: '获取提交历史失败',
       description: (error as GitlabError).message || '获取提交历史时发生错误',
+      variant: 'destructive',
+    });
+    throw error;
+  }
+}
+
+/**
+ * 获取特定 commit 的文件内容
+ * @param params 查询参数
+ */
+export async function getFileContent({ path, ref, repo }: { path: string; ref: string; repo: RepoNames }) {
+  try {
+    const store = await Store.load('store.json');
+    const projectId = await store.get<string>(`gitlab_${repo}_project_id`);
+    
+    if (!projectId) {
+      throw new Error('项目 ID 未配置');
+    }
+
+    const baseUrl = await getGitlabApiBaseUrl();
+    const headers = await getCommonHeaders();
+    const proxy = await getProxyConfig();
+
+    // 使用 Gitlab API 获取特定 commit 的文件内容
+    const url = `${baseUrl}/projects/${projectId}/repository/files/${encodeURIComponent(path).replace('.', '%2E')}/raw?ref=${ref}`;
+
+    console.log(url);
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers,
+      proxy
+    });
+
+    console.log(response);
+
+    if (response.status >= 200 && response.status < 300) {
+      const content = await response.text();
+      console.log(content);
+      // 将内容转换为 base64 编码，保持与 GitHub/Gitee 接口一致
+      const base64Content = btoa(unescape(encodeURIComponent(content)));
+      return {
+        content: base64Content,
+        encoding: 'base64'
+      };
+    }
+
+    const errorData = await response.text();
+    throw {
+      status: response.status,
+      message: errorData || '获取文件内容失败'
+    } as GitlabError;
+
+  } catch (error) {
+    console.error('Gitlab 获取文件内容失败:', error);
+    toast({
+      title: '获取文件内容失败',
+      description: (error as GitlabError).message || '获取文件内容时发生错误',
       variant: 'destructive',
     });
     throw error;

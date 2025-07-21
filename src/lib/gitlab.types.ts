@@ -125,7 +125,7 @@ export interface GitlabFile {
   blob_id: string;
   commit_id: string;
   last_commit_id: string;
-  content: string;
+  content?: string; // 文件内容，base64 编码
 }
 
 // Gitlab 仓库文件列表项类型

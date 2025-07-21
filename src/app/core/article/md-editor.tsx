@@ -27,7 +27,7 @@ import { createToolbarConfig } from './toolbar.config'
 
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();
-  const { currentArticle, saveCurrentArticle, loading, activeFilePath, matchPosition, setMatchPosition } = useArticleStore()
+  const { currentArticle, saveCurrentArticle, setCurrentArticle, loading, activeFilePath, matchPosition, setMatchPosition } = useArticleStore()
   const { assetsPath } = useSettingStore()
   const [floatBarPosition, setFloatBarPosition] = useState<{left: number, top: number} | null>(null)
   const [selectedText, setSelectedText] = useState<string>('')
@@ -116,6 +116,7 @@ export function MdEditor() {
         setEditorPadding(vditor)
       },
       input: (value) => {
+        setCurrentArticle(value)
         saveCurrentArticle(value)
         emitter.emit('editor-input')
         handleLocalImage(vditor)
