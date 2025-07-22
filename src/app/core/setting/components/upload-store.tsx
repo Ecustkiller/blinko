@@ -54,7 +54,7 @@ export default function UploadStore() {
         })
         break;
       case 'gitlab':
-        files = await gitlabGetFiles({ path: `${path}/${filename}`, repo: RepoNames.sync })
+        files = await gitlabGetFiles({ path, repo: RepoNames.sync })
         const storeFile = files?.find(file => file.name === filename)
         res = await uploadGitlabFile({
           ext: 'json',
