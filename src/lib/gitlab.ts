@@ -295,7 +295,7 @@ export async function getFileCommits({ path, repo }: { path: string; repo: RepoN
     const proxy = await getProxyConfig();
 
     const url = `${baseUrl}/projects/${projectId}/repository/commits?path=${path}`;
-    
+
     const response = await fetch(url, {
       method: 'GET',
       headers,
@@ -358,6 +358,13 @@ export async function getFileContent({ path, ref, repo }: { path: string; ref: s
         content: base64Content,
         encoding: 'base64'
       };
+    }
+
+    if (response.status >= 400 && response.status < 500) {
+      return {
+        content: '',
+        encoding: 'base64'
+      }
     }
 
     const errorData = await response.text();

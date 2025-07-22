@@ -79,7 +79,6 @@ export default function Sync({editor}: {editor?: Vditor}) {
             contentText = decodeBase64ToString(content);
             break;
         } 
-        
         // 如果有历史内容，使用AI分析差异并生成提交信息
         if (contentText) {
           const diff = diffWordsWithSpace(contentText, currentArticle);
@@ -108,7 +107,7 @@ export default function Sync({editor}: {editor?: Vditor}) {
         res = await getGiteeFiles({path: activeFilePath, repo: RepoNames.sync});
       } else if (backupMethod === 'gitlab') {
         const { data } = await getGitlabFileCommits({path: activeFilePath, repo: RepoNames.sync});
-        res = { sha: data[0].id };
+        res = { sha: data?.[0]?.id };
       }
       
       if (res) {
@@ -157,9 +156,8 @@ export default function Sync({editor}: {editor?: Vditor}) {
         default:
           break;
       }
-      
       // 检查上传结果并更新状态
-      if (uploadRes?.data?.commit?.message) {
+      if (uploadRes?.data?.commit?.message || uploadRes?.data?.file_path) {
         setSyncText(t('synced'));
         emitter.emit('sync-success');
         setTimeout(() => {
