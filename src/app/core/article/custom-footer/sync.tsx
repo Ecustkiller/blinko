@@ -83,8 +83,6 @@ export default function Sync({editor}: {editor?: Vditor}) {
         // 如果有历史内容，使用AI分析差异并生成提交信息
         if (contentText) {
           const diff = diffWordsWithSpace(contentText, currentArticle);
-          console.log(contentText);
-          console.log(currentArticle);
           const addDiff = diff.filter(item => item.added).map(item => item.value).join('');
           const removeDiff = diff.filter(item => item.removed).map(item => item.value).join('');
           const text = `
@@ -125,7 +123,6 @@ export default function Sync({editor}: {editor?: Vditor}) {
       
       // 根据备份方式上传文件
       let uploadRes;
-      console.log(backupMethod);
       switch (backupMethod) {
         case 'github':
           uploadRes = await uploadGithubFile({
@@ -156,7 +153,6 @@ export default function Sync({editor}: {editor?: Vditor}) {
             message,
             repo: RepoNames.sync
           });
-          console.log(uploadRes);
           break;
         default:
           break;

@@ -51,7 +51,6 @@ export default function History({editor}: {editor?: Vditor}) {
       res = await getGiteeFileCommits({ path: activeFilePath, repo: RepoNames.sync });
     } else if (backupMethod === 'gitlab') {
       const gitlabRes = await getGitlabFileCommits({ path: activeFilePath, repo: RepoNames.sync });
-      console.log(gitlabRes);
       if (gitlabRes?.data) {
         // 转换 Gitlab 提交格式为通用格式
         res = gitlabRes.data.map(commit => ({

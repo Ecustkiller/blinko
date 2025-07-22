@@ -2,6 +2,7 @@ import { toast } from '@/hooks/use-toast';
 import { Store } from '@tauri-apps/plugin-store';
 import { v4 as uuid } from 'uuid';
 import { fetch, Proxy } from '@tauri-apps/plugin-http';
+import { fetch as encodeFetch } from './encode-fetch'
 import { 
   GitlabError, 
   GitlabUserInfo, 
@@ -29,13 +30,14 @@ async function getGitlabApiBaseUrl(): Promise<string> {
 }
 
 // 获取通用请求头
-async function getCommonHeaders(): Promise<Headers> {
+async function getCommonHeaders(): Promise<any> {
   const store = await Store.load('store.json');
   const accessToken = await store.get<string>('gitlabAccessToken');
   
-  const headers = new Headers();
-  headers.append('Authorization', `Bearer ${accessToken}`);
-  headers.append('Content-Type', 'application/json');
+  const headers = {
+    "Content-Type": 'application/json;charset=iso-8859-1',
+    "PRIVATE-TOKEN": accessToken,
+  };
   
   return headers;
 }
@@ -99,13 +101,10 @@ export async function uploadFile({
       encoding: 'base64'
     };
 
-    console.log(sha);
-
     // 如果是更新文件，需要添加 last_commit_id
     if (sha) {
       // 获取文件的最新提交 ID
       const commitsUrl = `${baseUrl}/projects/${projectId}/repository/commits?path=${_path}`;
-      console.log(commitsUrl);
       const commitsResponse = await fetch(commitsUrl, {
         method: 'GET',
         headers,
@@ -170,7 +169,6 @@ export async function getFiles({ path, repo }: { path: string; repo: RepoNames }
     const proxy = await getProxyConfig();
 
     const url = `${baseUrl}/projects/${projectId}/repository/tree?path=${path}`;
-    console.log(url);
     
     const response = await fetch(url, {
       method: 'GET',
@@ -191,14 +189,12 @@ export async function getFiles({ path, repo }: { path: string; repo: RepoNames }
     }
 
     const errorData = await response.json();
-    console.log(errorData);
     throw {
       status: response.status,
       message: errorData.message || '获取文件列表失败'
     } as GitlabError;
 
   } catch (error) {
-    console.log(error);
     console.error('Gitlab 获取文件列表失败:', error);
     toast({
       title: '获取文件列表失败',
@@ -342,21 +338,16 @@ export async function getFileContent({ path, ref, repo }: { path: string; ref: s
     const proxy = await getProxyConfig();
 
     // 使用 Gitlab API 获取特定 commit 的文件内容
-    const url = `${baseUrl}/projects/${projectId}/repository/files/${encodeURIComponent(path).replace('.', '%2E')}/raw?ref=${ref}`;
+    const url = `${baseUrl}/projects/${projectId}/repository/files/${path}/raw?ref=${ref}`;
 
-    console.log(url);
-    
-    const response = await fetch(url, {
+    const response = await encodeFetch(url, {
       method: 'GET',
       headers,
       proxy
     });
 
-    console.log(response);
-
     if (response.status >= 200 && response.status < 300) {
       const content = await response.text();
-      console.log(content);
       // 将内容转换为 base64 编码，保持与 GitHub/Gitee 接口一致
       const base64Content = btoa(unescape(encodeURIComponent(content)));
       return {
