@@ -169,7 +169,7 @@ export async function getFiles({ path, repo }: { path: string; repo: RepoNames }
     const proxy = await getProxyConfig();
 
     const url = `${baseUrl}/projects/${projectId}/repository/tree?path=${path}`;
-    
+
     const response = await fetch(url, {
       method: 'GET',
       headers,
@@ -186,6 +186,10 @@ export async function getFiles({ path, repo }: { path: string; repo: RepoNames }
           sha: item.id,
         }
       })
+    }
+
+    if (response.status >= 400 && response.status < 500) {
+      return null
     }
 
     const errorData = await response.json();
@@ -338,7 +342,7 @@ export async function getFileContent({ path, ref, repo }: { path: string; ref: s
     const proxy = await getProxyConfig();
 
     // 使用 Gitlab API 获取特定 commit 的文件内容
-    const url = `${baseUrl}/projects/${projectId}/repository/files/${path}/raw?ref=${ref}`;
+    const url = `${baseUrl}/projects/${projectId}/repository/files/${path.replace(/\//g, '%2F')}/raw?ref=${ref}`;
 
     const response = await encodeFetch(url, {
       method: 'GET',
