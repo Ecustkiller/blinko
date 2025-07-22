@@ -51,11 +51,22 @@ fn main() {
                         ..
                     } => {
                         if let Some(window) = tray.app_handle().get_webview_window("main") {
-                            if let Ok(true) = window.is_visible() {
-                                let _ = window.hide();
-                            } else {
+                            let is_visible = window.is_visible().unwrap_or(false);
+                            let is_minimized = window.is_minimized().unwrap_or(false);
+                            if !is_visible {
                                 let _ = window.show();
                                 let _ = window.set_focus();
+                                let _ = window.set_always_on_top(true);
+                                let _ = window.set_always_on_top(false);
+                            } else if is_minimized {
+                                let _ = window.unminimize();
+                                std::thread::sleep(std::time::Duration::from_millis(100));
+                                let _ = window.show();
+                                let _ = window.set_focus();
+                                let _ = window.set_always_on_top(true);
+                                let _ = window.set_always_on_top(false);
+                            } else {
+                                let _ = window.hide();
                             }
                         }
                     }
