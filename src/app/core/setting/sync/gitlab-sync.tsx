@@ -37,6 +37,7 @@ export function GitlabSync() {
   } = useSettingStore()
   
   const {
+    gitlabUserInfo,
     gitlabSyncProjectState,
     setGitlabSyncProjectState,
     gitlabSyncProjectInfo,
@@ -222,7 +223,6 @@ export function GitlabSync() {
               value={gitlabAccessToken} 
               onChange={tokenChangeHandler} 
               type={gitlabAccessTokenVisible ? 'text' : 'password'} 
-              placeholder="glpat-xxxxxxxxxxxxxxxxxxxx"
             />
             <Button variant="outline" size="icon" onClick={() => setGitlabAccessTokenVisible(!gitlabAccessTokenVisible)}>
               {gitlabAccessTokenVisible ? <Eye /> : <EyeOff />}
@@ -251,7 +251,7 @@ export function GitlabSync() {
               gitlabSyncProjectInfo &&
               <CardContent className="flex items-center gap-4 mt-4">
                 <Avatar className="size-12">
-                  <AvatarImage src={gitlabSyncProjectInfo?.namespace.avatar_url || ''} />
+                  <AvatarImage src={gitlabUserInfo?.avatar_url || ''} />
                 </Avatar>
                 <div>
                   <h3 className="text-xl font-bold mb-1">
