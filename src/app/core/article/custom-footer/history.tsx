@@ -24,7 +24,7 @@ dayjs.extend(relativeTime)
 
 export default function History({editor}: {editor?: Vditor}) {
   const [sheetOpen, setSheetOpen] = useState(false);
-  const { activeFilePath, setCurrentArticle, currentArticle, loadFileTree } = useArticleStore()
+  const { activeFilePath, setCurrentArticle, currentArticle, loadFileTree, saveCurrentArticle } = useArticleStore()
   const { accessToken, giteeAccessToken, gitlabAccessToken, primaryBackupMethod } = useSettingStore()
   const [commits, setCommits] = useState<ResCommit[]>([])
   const [commitsLoading, setCommitsLoading] = useState(false)
@@ -95,18 +95,32 @@ export default function History({editor}: {editor?: Vditor}) {
     let res;
     switch (backupMethod) {
       case 'github':
-        res = await getGithubFiles({path: `${activeFilePath}?ref=${sha}`, repo: RepoNames.sync});
-        if (res && res.content) {
-          setCurrentArticle(decodeBase64ToString(res.content));
-        } else {
+        try {
+          res = await getGithubFiles({path: `${activeFilePath}?ref=${sha}`, repo: RepoNames.sync});
+          if (res && res.content) {
+            const content = decodeBase64ToString(res.content)
+            setCurrentArticle(content);
+            await saveCurrentArticle(content)
+          } else {
+            setCurrentArticle(cacheArticle);
+          }
+        } catch (error) {
+          console.error('GitHub 获取文件历史内容失败:', error);
           setCurrentArticle(cacheArticle);
         }
         break;
       case 'gitee':
-        res = await getGiteeFiles({path: `${activeFilePath}?ref=${sha}`, repo: RepoNames.sync});
-        if (res && res.content) {
-          setCurrentArticle(decodeBase64ToString(res.content));
-        } else {
+        try {
+          res = await getGiteeFiles({path: `${activeFilePath}?ref=${sha}`, repo: RepoNames.sync});
+          if (res && res.content) {
+            const content = decodeBase64ToString(res.content)
+            setCurrentArticle(content);
+            await saveCurrentArticle(content)
+          } else {
+            setCurrentArticle(cacheArticle);
+          }
+        } catch (error) {
+          console.error('Gitee 获取文件历史内容失败:', error);
           setCurrentArticle(cacheArticle);
         }
         break;
@@ -115,7 +129,9 @@ export default function History({editor}: {editor?: Vditor}) {
           // 使用新的 getFileContent 方法获取特定 commit 的文件内容
           const fileContent = await getFileContent({path: activeFilePath, ref: sha, repo: RepoNames.sync});
           if (fileContent && fileContent.content) {
-            setCurrentArticle(decodeBase64ToString(fileContent.content));
+            const content = decodeBase64ToString(fileContent.content)
+            setCurrentArticle(content);
+            await saveCurrentArticle(content)
           } else {
             setCurrentArticle(cacheArticle);
           }
@@ -123,6 +139,8 @@ export default function History({editor}: {editor?: Vditor}) {
           console.error('Gitlab 获取文件历史内容失败:', error);
           setCurrentArticle(cacheArticle);
         }
+        break;
+      default:
         break;
     }
     
