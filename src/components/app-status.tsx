@@ -3,11 +3,11 @@ import { createSyncRepo, checkSyncRepoState, getUserInfo } from "@/lib/github";
 import { useEffect } from "react";
 import useSettingStore from "@/stores/setting";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { CircleUserRound } from "lucide-react";
 import { SyncStateEnum, UserInfo } from "@/lib/github.types";
 import { RepoNames } from "@/lib/github.types";
 import useSyncStore from "@/stores/sync";
 import { open } from '@tauri-apps/plugin-shell'
+import Image from "next/image";
 
 export default function AppStatus() {
   const { accessToken, giteeAccessToken, gitlabAccessToken, primaryBackupMethod, setGithubUsername, setGitlabUsername } = useSettingStore()
@@ -176,41 +176,46 @@ export default function AppStatus() {
   }, [accessToken, giteeAccessToken, gitlabAccessToken, primaryBackupMethod])
 
   return (
-    <SidebarMenuButton size="lg" asChild className="md:h-8 md:p-0">
+    <SidebarMenuButton size="lg" asChild className="md:size-8 md:p-0">
       <div className="relative flex items-center gap-2 cursor-pointer" onClick={openUserHome} >
-        <Avatar className="h-8 w-8 rounded">
+        <Avatar className="size-8 rounded overflow-hidden">
           {primaryBackupMethod === 'github' ? (
             <>
               <AvatarImage src={userInfo?.avatar_url} />
-              <AvatarFallback className="rounded bg-primary text-primary-foreground"><CircleUserRound className="size-5"/></AvatarFallback>
+              <AvatarFallback>
+                <Image src="/app-icon.png" alt="" width={0} height={0} className="size-8" />
+              </AvatarFallback>
             </>
           ) : primaryBackupMethod === 'gitee' ? (
             <>
               <AvatarImage src={giteeUserInfo?.avatar_url} />
-              <AvatarFallback className="rounded bg-primary text-primary-foreground"><CircleUserRound className="size-5"/></AvatarFallback>
+              <AvatarFallback>
+                <Image src="/app-icon.png" alt="" width={0} height={0} className="size-8" />
+              </AvatarFallback>
             </>
           ) : primaryBackupMethod === 'gitlab' ? (
             <>
               <AvatarImage src={gitlabUserInfo?.avatar_url} />
-              <AvatarFallback className="rounded bg-primary text-primary-foreground"><CircleUserRound className="size-5"/></AvatarFallback>
+              <AvatarFallback>
+                <Image src="/app-icon.png" alt="" width={0} height={0} className="size-8" />
+              </AvatarFallback>
             </>
-          ) : (
-            <AvatarFallback className="rounded bg-primary text-primary-foreground"><CircleUserRound className="size-5"/></AvatarFallback>
-          )}
+          ) : null
+        }
         </Avatar>
         {
-          primaryBackupMethod === 'github' ? (  
+          primaryBackupMethod === 'github' && accessToken ? (  
             <div className={`
               absolute right-0.5 bottom-0.5 rounded-full size-2 
               ${syncRepoState === SyncStateEnum.fail ? 'bg-red-700' : 
                 syncRepoState === SyncStateEnum.checking ? 'bg-orange-400' : ''}`}>
             </div>
-          ) : primaryBackupMethod === 'gitee' ? (
+          ) : primaryBackupMethod === 'gitee' && giteeAccessToken ? (
             <div className={`absolute right-0.5 bottom-0.5 rounded-full size-2
               ${giteeSyncRepoState === SyncStateEnum.fail ? 'bg-red-700' : 
               giteeSyncRepoState === SyncStateEnum.checking ? 'bg-orange-400' : ''}`}>
             </div>
-          ) : primaryBackupMethod === 'gitlab' ? (
+          ) : primaryBackupMethod === 'gitlab' && gitlabAccessToken ? (
             <div className={`absolute right-0.5 bottom-0.5 rounded-full size-2
               ${gitlabSyncProjectState === SyncStateEnum.fail ? 'bg-red-700' : 
               gitlabSyncProjectState === SyncStateEnum.checking ? 'bg-orange-400' : ''}`}>
