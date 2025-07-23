@@ -735,12 +735,13 @@ const useArticleStore = create<NoteState>((set, get) => ({
           res = await getGiteeFiles({ path, repo: RepoNames.sync })
           break;
         case 'gitlab':
-          res = (await getGitlabFileContent({ path, ref: 'main', repo: RepoNames.sync })).content
+          res = await getGitlabFileContent({ path, ref: 'main', repo: RepoNames.sync })
           break;
         default:
           break;
       }
-      set({ currentArticle: decodeBase64ToString(res) })
+      set({ currentArticle: decodeBase64ToString(res.content) })
+      get().saveCurrentArticle(decodeBase64ToString(res.content))
     }
     get().setLoading(false)
   },
