@@ -16,6 +16,7 @@ import { Loader2, Upload } from "lucide-react";
 import emitter from "@/lib/emitter";
 import { getFilePathOptions } from "@/lib/workspace";
 import { useTranslations } from "next-intl";
+import useUsername from "@/hooks/use-username";
 
 export default function Sync({editor}: {editor?: Vditor}) {
   const { currentArticle } = useArticleStore()
@@ -26,6 +27,7 @@ export default function Sync({editor}: {editor?: Vditor}) {
   const [syncText, setSyncText] = useState(t('sync'))
   const [progressPercentage, setProgressPercentage] = useState(0)
   const progressIntervalRef = useRef<number | null>(null)
+  const username = useUsername()
 
   async function handleSync() {
     try {
@@ -383,31 +385,33 @@ export default function Sync({editor}: {editor?: Vditor}) {
   }, [autoSync, giteeAutoSync, gitlabAutoSync, accessToken, giteeAccessToken, gitlabAccessToken, syncText, editor, t, primaryBackupMethod]);
 
   return (
-    <Button 
-      onClick={handleSync}
-      variant="ghost"
-      size="sm"
-      disabled={(primaryBackupMethod === 'github' && !accessToken) || (primaryBackupMethod === 'gitee' && !giteeAccessToken) || (primaryBackupMethod === 'gitlab' && !gitlabAccessToken) || isLoading}
-      className="relative outline-none overflow-hidden"
-    >
-      {/* 进度条背景 */}
-      {progressPercentage > 0 && (
-        <div 
-          className="absolute inset-0 bg-zinc-200 dark:bg-zinc-800 transition-all duration-100 z-0" 
-          style={{ width: `${progressPercentage}%` }}
-        />
-      )}
-      {isLoading ? (
-        <>
-          <Loader2 className="h-3 w-3 animate-spin mr-1 relative z-10" />
-          <span className="text-xs relative z-10">{t('syncing')}</span>
-        </>
-      ) : (
-        <>
-          <Upload className="!size-3 relative z-10" />
-          <span className="text-xs relative z-10">{syncText}</span>
-        </>
-      )}
-    </Button>
+    username ?
+      <Button 
+        onClick={handleSync}
+        variant="ghost"
+        size="sm"
+        disabled={(primaryBackupMethod === 'github' && !accessToken) || (primaryBackupMethod === 'gitee' && !giteeAccessToken) || (primaryBackupMethod === 'gitlab' && !gitlabAccessToken) || isLoading}
+        className="relative outline-none overflow-hidden"
+      >
+        {/* 进度条背景 */}
+        {progressPercentage > 0 && (
+          <div 
+            className="absolute inset-0 bg-zinc-200 dark:bg-zinc-800 transition-all duration-100 z-0" 
+            style={{ width: `${progressPercentage}%` }}
+          />
+        )}
+        {isLoading ? (
+          <>
+            <Loader2 className="h-3 w-3 animate-spin mr-1 relative z-10" />
+            <span className="text-xs relative z-10">{t('syncing')}</span>
+          </>
+        ) : (
+          <>
+            <Upload className="!size-3 relative z-10" />
+            <span className="text-xs relative z-10">{syncText}</span>
+          </>
+        )}
+      </Button> 
+      : null  
   )
 }

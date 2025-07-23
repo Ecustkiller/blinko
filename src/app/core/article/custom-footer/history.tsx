@@ -13,23 +13,24 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TooltipButton } from "@/components/tooltip-button";
 import { open } from "@tauri-apps/plugin-shell";
-import useSettingStore from "@/stores/setting";
 import Vditor from "vditor";
-import { Store } from "@tauri-apps/plugin-store";
 import emitter from "@/lib/emitter";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import useUsername from "@/hooks/use-username";
+import { Store } from "@tauri-apps/plugin-store";
 
 dayjs.extend(relativeTime)
 
 export default function History({editor}: {editor?: Vditor}) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const { activeFilePath, setCurrentArticle, currentArticle, loadFileTree, saveCurrentArticle } = useArticleStore()
-  const { accessToken, giteeAccessToken, gitlabAccessToken, primaryBackupMethod } = useSettingStore()
   const [commits, setCommits] = useState<ResCommit[]>([])
   const [commitsLoading, setCommitsLoading] = useState(false)
   const [filterQuick, setFilterQuick] = useState(false)
   const t = useTranslations('article.footer.history')
+
+  const username = useUsername()
 
   async function onOpenChange(e: boolean) {
     setSheetOpen(e)
@@ -167,22 +168,23 @@ export default function History({editor}: {editor?: Vditor}) {
   return (
     <Sheet open={sheetOpen} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          disabled={(primaryBackupMethod === 'github' && !accessToken) || 
-                  (primaryBackupMethod === 'gitee' && !giteeAccessToken) || 
-                  (primaryBackupMethod === 'gitlab' && !gitlabAccessToken) || 
-                  commitsLoading} 
-          className="outline-none">
-          {
-            commitsLoading && <LoaderCircle className="animate-spin !size-3" />
-          }
-          <span className="text-xs">
-            {commitsLoading ? t('loadingHistory') : commits.length ? 
-              `${t('historyRecords')} (${dayjs(commits[0].commit.committer.date).fromNow()})` : t('noHistory')}
-          </span>
-        </Button>
+        {
+          username ?
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              disabled={commitsLoading} 
+              className="outline-none">
+              {
+                commitsLoading && <LoaderCircle className="animate-spin !size-3" />
+              }
+              <span className="text-xs">
+                {commitsLoading ? t('loadingHistory') : commits.length ? 
+                  `${t('historyRecords')} (${dayjs(commits[0].commit.committer.date).fromNow()})` : t('noHistory')}
+              </span>
+            </Button> :
+            null
+        }
       </SheetTrigger>
       <SheetContent className="p-0 w-full lg:min-w-[500px]">
         <SheetHeader className="p-4 border-b">

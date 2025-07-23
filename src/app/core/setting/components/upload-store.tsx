@@ -13,11 +13,13 @@ import { isMobileDevice } from "@/lib/check";
 import { relaunch } from "@tauri-apps/plugin-process";
 import { confirm } from "@tauri-apps/plugin-dialog";
 import { useTranslations } from "next-intl";
+import useUsername from "@/hooks/use-username";
 
 export default function UploadStore() {
   const [upLoading, setUploading] = useState(false)
   const [downLoading, setDownLoading] = useState(false)
   const t = useTranslations('settings.uploadStore')
+  const username = useUsername()
 
   async function upload() {
     const confirmRef = await confirm(t('uploadConfirm'))
@@ -112,6 +114,7 @@ export default function UploadStore() {
   }
 
   return (
+    username ? (
     <div className="flex gap-1 flex-col lg:border-t justify-center items-center">
       <div className="flex gap-2">
         <Button variant={'ghost'} size={'sm'} onClick={upload} disabled={upLoading}>
@@ -124,5 +127,6 @@ export default function UploadStore() {
         </Button>
       </div>
     </div>
+    ) : null
   )
 }
