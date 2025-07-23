@@ -5,12 +5,12 @@ import { ImageCard } from './image-card'
 import useImageStore from '@/stores/imageHosting'
 import useMarkStore from '@/stores/mark'
 import { ImageHeader } from './image-header'
-import useSettingStore from '@/stores/setting'
 import { NoData } from './no-data'
 import { v4 as uuid } from 'uuid'
 import { RepoNames } from '@/lib/github.types'
 import { CheckCircle, LoaderCircle } from 'lucide-react'
 import { FolderCard } from './folder-card'
+import { Store } from '@tauri-apps/plugin-store'
 
 interface FileUploader {
   id: string
@@ -22,10 +22,23 @@ export default function Page() {
   const [loading, setLoading] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [files, setFiles] = useState<FileUploader[]>([])
+  const [accessToken, setAccessToken] = useState('')
+  const [githubImageUsername, setGithubImageUsername] = useState('')
 
   const { images, getImages, pushImage, path } = useImageStore()
-  const { githubUsername, accessToken } = useSettingStore()
   const { fetchAllMarks } = useMarkStore()
+
+  async function init() {
+    const store = await Store.load('store.json');
+    const githubImageAccessToken = await store.get<string>('githubImageAccessToken')
+    const githubImageUsername = await store.get<string>('githubImageUsername')
+    if (githubImageAccessToken) {
+      setAccessToken(githubImageAccessToken)
+    }
+    if (githubImageUsername) {
+      setGithubImageUsername(githubImageUsername)
+    }
+  }
 
   async function uploadImage(fileUploader: FileUploader, index: number) {
     const ext = fileUploader.file.name.substring(fileUploader.file.name.lastIndexOf('.') + 1)
@@ -46,9 +59,9 @@ export default function Page() {
       })
       if (res) {
         if (path) {
-          await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${path}/${res.data.content.name}`)
+          await fetch(`https://purge.jsdelivr.net/gh/${githubImageUsername}/${RepoNames.image}@main/${path}/${res.data.content.name}`)
         } else {
-          await fetch(`https://purge.jsdelivr.net/gh/${githubUsername}/${RepoNames.image}@main/${res.data.content.name}`)
+          await fetch(`https://purge.jsdelivr.net/gh/${githubImageUsername}/${RepoNames.image}@main/${res.data.content.name}`)
         }
         fileUploader.status = 'success'
         pushImage({
@@ -97,11 +110,15 @@ export default function Page() {
   }
 
   useEffect(() => {
-    if (githubUsername && images.length === 0) {
+    if (githubImageUsername && images.length === 0) {
       getImages()
       fetchAllMarks()
     }
-  }, [githubUsername])
+  }, [githubImageUsername])
+
+  useEffect(() => {
+    init()
+  }, [])
   
   return (
     <div
