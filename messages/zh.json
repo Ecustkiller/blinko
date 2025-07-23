@@ -808,6 +808,11 @@
         "delete": "删除",
         "newFile": "新建文件",
         "newFolder": "新建文件夹",
+        "syncFolder": "同步",
+        "syncFolderDesc": "同步当前文件夹下的所有 Markdown 文件",
+        "syncFolderSuccess": "文件夹同步成功",
+        "syncFolderError": "文件夹同步失败",
+        "syncFolderProgress": "正在同步文件夹...",
         "deleteSyncFileSuccess": "删除成功",
         "deleteSyncFileError": "删除失败"
       },

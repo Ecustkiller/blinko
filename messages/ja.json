@@ -790,6 +790,11 @@
         "delete": "削除",
         "newFile": "新規ファイル",
         "newFolder": "新規フォルダ",
+        "syncFolder": "同期",
+        "syncFolderDesc": "同期するファイル夹下的所有 Markdown 文件",
+        "syncFolderSuccess": "ファイル夹同步成功",
+        "syncFolderError": "ファイル夹同步失败",
+        "syncFolderProgress": "正在同步文件夹...",
         "deleteSyncFileSuccess": "削除しました",
         "deleteSyncFileError": "削除に失敗しました"
       },

@@ -801,6 +801,11 @@
         "delete": "Delete",
         "newFile": "New File",
         "newFolder": "New Folder",
+        "syncFolder": "Sync Folder",
+        "syncFolderDesc": "Sync all Markdown files in the current folder",
+        "syncFolderSuccess": "Sync folder success",
+        "syncFolderError": "Sync folder error",
+        "syncFolderProgress": "Syncing folder...",
         "deleteSyncFileSuccess": "Delete Sync File Success",
         "deleteSyncFileError": "Delete Sync File Error"
       },

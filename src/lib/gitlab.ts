@@ -134,6 +134,10 @@ export async function uploadFile({
       return { data } as GitlabResponse<any>;
     }
 
+    if (response.status === 400) {
+      return null;
+    }
+
     const errorData = await response.json();
     throw {
       status: response.status,
