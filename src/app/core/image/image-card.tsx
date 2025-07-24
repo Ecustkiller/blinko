@@ -17,7 +17,6 @@ import { Badge } from '@/components/ui/badge'
 
 
 export function ImageCard({file}: {file: GithubFile}) {
-  console.log(file);
   const [loading, setLoading] = useState(false)
   const { deleteImage } = useImageStore()
   const { imageRepoUserInfo } = useImageStore()

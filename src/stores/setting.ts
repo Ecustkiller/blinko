@@ -285,7 +285,7 @@ const useSettingStore = create<SettingState>((set, get) => ({
     await store.set('jsdelivr', jsdelivr)
   },
 
-  useImageRepo: true,
+  useImageRepo: false,
   setUseImageRepo: async (useImageRepo: boolean) => {
     set({ useImageRepo })
     const store = await Store.load('store.json');
