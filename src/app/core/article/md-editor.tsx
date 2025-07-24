@@ -124,9 +124,8 @@ export function MdEditor() {
       upload: {
         async handler(files: File[]) {
           const store = await Store.load('store.json');
-          const accessToken = await store.get('githubImageAccessToken')
           const useImageRepo = await store.get('useImageRepo')
-          if (accessToken && useImageRepo) {
+          if (useImageRepo) {
             const filesUrls = await uploadImages(files)
             if (vditor) {
               for (let i = 0; i < filesUrls.length; i++) {

@@ -203,25 +203,25 @@ export default function History({editor}: {editor?: Vditor}) {
         </SheetHeader>
         <div className="max-h-[calc(100vh-90px)] overflow-y-auto">
           {
-            commits.filter(commit => !filterQuick || !commit.commit.message.includes(t('quickSync'))).map((commit) => (
-              <div className="flex justify-between items-center gap-4 border-b px-4 py-2" key={commit.sha}>
+            commits.filter(commit => !filterQuick || !commit?.commit?.message.includes(t('quickSync'))).map((commit) => (
+              <div className="flex justify-between items-center gap-4 border-b px-4 py-2" key={commit?.sha}>
                 <div className="flex-1 flex flex-col">
                   <span
                     className="text-sm line-clamp-1 hover:underline cursor-pointer"
-                    onClick={() => openHandler(commit.html_url)}
-                  >{commit.commit.message}</span>
+                    onClick={() => openHandler(commit?.html_url)}
+                  >{commit?.commit?.message}</span>
                   <div className="flex gap-1 items-center mt-2">
                     <Avatar className="size-5">
-                      <AvatarImage src={commit.author?.avatar_url} alt={commit.author.login} />
+                      <AvatarImage src={commit?.author?.avatar_url} alt={commit?.author?.login} />
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <span className="text-xs text-zinc-500">
-                      {commit.author.login} {t('committedAt')} {dayjs(commit.commit.committer.date).fromNow()}
+                      {commit?.author?.login} {t('committedAt')} {dayjs(commit?.commit?.committer?.date).fromNow()}
                     </span>
                   </div>
                 </div>
                 <div className="w-8">
-                  <TooltipButton icon={<GitPullRequestArrow />} tooltipText={t('pull')} onClick={() => handleCommit(commit.sha)} />
+                  <TooltipButton icon={<GitPullRequestArrow />} tooltipText={t('pull')} onClick={() => handleCommit(commit?.sha)} />
                 </div>
               </div>
             ))
