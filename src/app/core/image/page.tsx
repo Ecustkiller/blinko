@@ -1,5 +1,6 @@
 'use client'
-import { fileToBase64, GithubFile, uploadFile } from '@/lib/github'
+import { GithubFile } from '@/lib/github'
+import { uploadImageByGithub } from '@/lib/imageHosting/github'
 import { useEffect, useState } from 'react'
 import { ImageCard } from './image-card'
 import useImageStore from '@/stores/imageHosting'
@@ -7,7 +8,6 @@ import useMarkStore from '@/stores/mark'
 import { ImageHeader } from './image-header'
 import { NoData } from './no-data'
 import { v4 as uuid } from 'uuid'
-import { RepoNames } from '@/lib/github.types'
 import { CheckCircle, LoaderCircle } from 'lucide-react'
 import { FolderCard } from './folder-card'
 import { Store } from '@tauri-apps/plugin-store'
@@ -25,7 +25,7 @@ export default function Page() {
   const [accessToken, setAccessToken] = useState('')
   const [githubImageUsername, setGithubImageUsername] = useState('')
 
-  const { images, getImages, pushImage, path } = useImageStore()
+  const { images, getImages, pushImage } = useImageStore()
   const { fetchAllMarks } = useMarkStore()
 
   async function init() {
@@ -41,31 +41,25 @@ export default function Page() {
   }
 
   async function uploadImage(fileUploader: FileUploader, index: number) {
-    const ext = fileUploader.file.name.substring(fileUploader.file.name.lastIndexOf('.') + 1)
-    const filename = `${fileUploader.id}.${ext}`
     if (accessToken) {
-      const res = await uploadFile({
-        ext,
-        file: await fileToBase64(fileUploader.file),
-        filename,
-        repo: RepoNames.image,
-        path
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      }).catch((err) => {
-        fileUploader.status ='failed'
-        const newFiles = files.splice(index, 1, fileUploader)
-        setFiles(newFiles)
-        return null
-      })
+      const res = await uploadImageByGithub(fileUploader.file)
       if (res) {
-        if (path) {
-          await fetch(`https://purge.jsdelivr.net/gh/${githubImageUsername}/${RepoNames.image}@main/${path}/${res.data.content.name}`)
-        } else {
-          await fetch(`https://purge.jsdelivr.net/gh/${githubImageUsername}/${RepoNames.image}@main/${res.data.content.name}`)
-        }
         fileUploader.status = 'success'
         pushImage({
-          ...res.data.content,
+          name: fileUploader.file.name,
+          url: res,
+          path: fileUploader.file.name,
+          sha: '',
+          size: fileUploader.file.size,
+          html_url: res,
+          download_url: res,
+          git_url: res,
+          type: 'file',
+          _links: {
+            self: res,
+            git: res,
+            html: res
+          },
           isNew: true
         })
       } else {
