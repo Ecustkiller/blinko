@@ -237,6 +237,7 @@ export async function deleteFile({ path, repo }: { path: string; sha?: string; r
       headers,
       proxy
     });
+    console.log(commitsResponse);
 
     let lastCommitId = '';
     if (commitsResponse.ok) {
@@ -260,8 +261,7 @@ export async function deleteFile({ path, repo }: { path: string; sha?: string; r
     });
 
     if (response.status >= 200 && response.status < 300) {
-      const data = await response.json();
-      return { data } as GitlabResponse<any>;
+      return true
     }
 
     const errorData = await response.json();

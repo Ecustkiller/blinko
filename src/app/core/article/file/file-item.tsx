@@ -133,12 +133,9 @@ export function FileItem({ item }: { item: DirTree }) {
             break;
         }
         
-        const index = currentFolder?.children?.findIndex(file => file.name === item.name);
-        if (index !== undefined && index !== -1 && currentFolder?.children) {
-          currentFolder.children[index].sha = '';
-        }
-        setFileTree(cacheTree);
-        
+        // 更新文件树
+        await loadFileTree()
+
         toast({
           title: t('context.delete'),
           description: t('context.deleteSyncFileSuccess'),
