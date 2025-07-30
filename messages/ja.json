@@ -897,7 +897,7 @@
         "synced": "同期済み",
         "syncing": "同期中",
         "syncFailed": "同期に失敗しました",
-        "checkNetworkOrToken": "ネットワーク接続またはGitHubトークンを確認してください",
+        "checkNetworkOrToken": "ネットワーク接続またはトークンを確認してください",
         "quickSync": "クイック同期"
       },
       "history": {

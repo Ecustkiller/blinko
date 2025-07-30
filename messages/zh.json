@@ -893,7 +893,7 @@
         "synced": "已同步",
         "syncing": "同步中",
         "syncFailed": "同步失败",
-        "checkNetworkOrToken": "请检查网络连接或 GitHub 令牌",
+        "checkNetworkOrToken": "请检查网络连接或令牌是否正确",
         "quickSync": "快速同步"
       },
       "history": {

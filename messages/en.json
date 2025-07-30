@@ -908,7 +908,7 @@
         "synced": "Synced",
         "syncing": "Syncing",
         "syncFailed": "Sync Failed",
-        "checkNetworkOrToken": "Please check network connection or GitHub token",
+        "checkNetworkOrToken": "Please check network connection or token",
         "quickSync": "Quick Sync"
       },
       "history": {
