@@ -161,10 +161,10 @@ export function GitlabSync() {
     <div className="mt-4">
       {/* Gitlab 实例选择 */}
       <SettingRow>
-        <FormItem title="GitLab 实例类型" desc="选择要连接的 GitLab 实例">
+        <FormItem title={t('settings.sync.gitlabInstanceType')} desc={t('settings.sync.gitlabInstanceTypeDesc')}>
           <Select value={gitlabInstanceType} onValueChange={instanceTypeChangeHandler}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="选择 GitLab 实例类型" />
+              <SelectValue placeholder={t('settings.sync.gitlabInstanceTypePlaceholder')} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={GitlabInstanceType.OFFICIAL}>
@@ -187,7 +187,7 @@ export function GitlabSync() {
                 <div className="flex items-center gap-2">
                   <Server className="size-4" />
                   <div>
-                    <div className="font-medium">自建实例</div>
+                    <div className="font-medium">{t('settings.sync.gitlabInstanceTypeOptions.selfHosted')}</div>
                   </div>
                 </div>
               </SelectItem>
@@ -199,7 +199,7 @@ export function GitlabSync() {
       {/* 自建实例 URL 输入 */}
       {gitlabInstanceType === GitlabInstanceType.SELF_HOSTED && (
         <SettingRow>
-          <FormItem title="GitLab 服务器地址" desc="输入您的自建 GitLab 服务器地址（如：https://gitlab.example.com）">
+          <FormItem title="GitLab URL" desc={t('settings.sync.gitlabInstanceTypeOptions.selfHostedDesc')}>
             <Input 
               value={gitlabCustomUrl} 
               onChange={customUrlChangeHandler} 
@@ -212,7 +212,7 @@ export function GitlabSync() {
 
       {/* Access Token 输入 */}
       <SettingRow>
-        <FormItem title="GitLab Access Token" desc={`在 ${getInstanceDisplayName()} 创建个人访问令牌，需要 api 权限`}>
+        <FormItem title="GitLab Access Token" desc={t('settings.sync.gitlabAccessTokenDesc', { instanceDisplayName: getInstanceDisplayName() })}>
           <OpenBroswer 
             url={getTokenCreateUrl()} 
             title={t('settings.sync.newToken')} 

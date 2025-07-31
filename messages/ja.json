@@ -190,8 +190,16 @@
       "backupMethodDesc": "主要バックアップ方法として設定すると、文章作成中のすべての同期関連機能が現在のバックアップ方法を使用します（画像ホスティング機能を除く）",
       "isPrimaryBackup": "現在の {type} 主要バックアップ方法",
       "setPrimaryBackup": "主要バックアップ方法として設定",
+      "gitlabInstanceType": "GitLab インスタンスタイプ",
+      "gitlabInstanceTypeDesc": "接続する GitLab インスタンスタイプを選択してください",
+      "gitlabInstanceTypePlaceholder": "GitLab インスタンスタイプを選択してください",
+      "gitlabInstanceTypeOptions": {
+        "selfHosted": "自建インスタンス",
+        "selfHostedDesc": "自建 GitLab インスタンスの URL を入力してください（例：https://gitlab.example.com）"
+      },
+      "gitlabAccessTokenDesc": "{instanceDisplayName}でパーソナルアクセストークンを作成するには、api権限が必要です",
       "autoSyncOptions": {
-        "placeholder": "自動同步时间",
+        "placeholder": "自動同期時間",
         "disabled": "無効",
         "10s": "10 秒",
         "30s": "30 秒",
