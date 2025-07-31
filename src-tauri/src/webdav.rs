@@ -197,6 +197,8 @@ pub async fn webdav_sync(
     let client = create_client(&url, &username, &password).await?; 
     let webdav_path = normalize_path(&path, true);
 
+    println!("webdav_path: {}", webdav_path);
+
     // 远程路径存在性检查
     let entries = match client.list(&webdav_path, Depth::Number(1)).await {
         Ok(entries) => entries,
@@ -216,6 +218,7 @@ pub async fn webdav_sync(
 
     // 远程文件列表获取
     let markdown_files = get_webdav_markdown_files(entries, &webdav_path, &client).await?;
+    println!("markdown_files: {:?}", markdown_files);
     let total_files = markdown_files.len();
 
     if total_files == 0 {
@@ -247,11 +250,14 @@ pub async fn webdav_sync(
             }
         };
 
+        // 处理保存路径
+        let save_path = path_for_request.trim_start_matches(&format!("{}/", webdav_path));
+
         // 本地保存路径处理
-        let local_file_path = match process_local_path(&relative_path, &base_workspace_path) {
+        let local_file_path = match process_local_path(&save_path, &base_workspace_path) {
             Ok(path) => path,
         Err(e) => {
-                eprintln!("路径处理失败 {}: {}", relative_path, e);
+                eprintln!("路径处理失败 {}: {}", save_path, e);
                 continue;
             }
         };

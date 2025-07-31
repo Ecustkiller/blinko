@@ -8,6 +8,7 @@ import { Upload, Download, LoaderCircle } from "lucide-react";
 import useWebDAVStore, { WebDAVConnectionState } from "@/stores/webdav";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
+import useArticleStore from "@/stores/article";
 
 export default function WebdavSync() {
   const t = useTranslations("settings.backupSync.webdav");
@@ -24,6 +25,8 @@ export default function WebdavSync() {
     backupState,
     createWebDAVDir,
   } = useWebDAVStore();
+  const { loadFileTree } = useArticleStore()
+
 
   useEffect(() => {
     initWebDAVData();
@@ -96,6 +99,8 @@ export default function WebdavSync() {
           description: t("error.connectionTimeOut"),
         });
       }
+    } finally {
+      loadFileTree()
     }
   };
 
