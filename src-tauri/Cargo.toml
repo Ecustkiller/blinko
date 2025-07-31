@@ -51,6 +51,9 @@ reqwest_dav = "=0.2.1"
 tauri-plugin-process = "=2.0.0"
 jieba-rs = { version = "0.7", features = ["textrank"] }
 
+[target.'cfg(target_os = "android")'.dependencies]
+openssl = { version = "0.10", features = ["vendored"] }
+
 [target.'cfg(target_os = "macos")'.dependencies]
 core-graphics = "0.23"
 
