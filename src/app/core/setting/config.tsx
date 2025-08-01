@@ -12,7 +12,8 @@ import {
   ImageUp,
   FileCog,
   Book,
-  KeyboardIcon
+  KeyboardIcon,
+  Volume2
 } from "lucide-react"
 
 const baseConfig = [
@@ -71,6 +72,10 @@ const baseConfig = [
     icon: <ScanText className="size-4 lg:size-6" />,
     anchor: 'imageMethod',
   },
+  {
+    icon: <Volume2 className="size-4 lg:size-6" />,
+    anchor: 'readAloud',
+  },
   '-',
   {
     icon: <UserRoundCog className="size-4 lg:size-6" />,
@@ -94,6 +99,8 @@ export interface AiConfig {
   icon?: string
   apiKeyUrl?: string
   customHeaders?: Record<string, string>
+  voice?: string
+  speed?: number
 }
 
 export interface Model {

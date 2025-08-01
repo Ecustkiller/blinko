@@ -43,6 +43,7 @@ export default function AiPage() {
   const [temperature, setTemperature] = useState<number>(0.7)
   const [topP, setTopP] = useState<number>(1.0)
   const [modelType, setModelType] = useState<ModelType>('chat')
+  const [voice, setVoice] = useState<string>('')
   const [apiKeyVisible, setApiKeyVisible] = useState<boolean>(false)
   const [headerPairs, setHeaderPairs] = useState<Array<{key: string, value: string, id: string}>>([])
 
@@ -80,6 +81,7 @@ export default function AiPage() {
     setTemperature(model.temperature || 0.7)
     setTopP(model.topP || 0.1)
     setModelType(model.modelType || 'chat')
+    setVoice(model.voice || '')
     setHeaderPairs(parseHeadersToKeyValue(model.customHeaders))
   }
 
@@ -108,6 +110,9 @@ export default function AiPage() {
         break;
       case 'modelType':
         setModelType(value as ModelType)
+        break;
+      case 'voice':
+        setVoice(value as string)
         break;
       case 'customHeaders':
         emitter.emit('getSettingModelList')
@@ -198,7 +203,7 @@ export default function AiPage() {
         {/* 模型配置选择 */}
         <SettingRow>
           <FormItem title={t('modelConfigTitle')} desc={t('modelConfigDesc')}>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 lg:flex-row flex-col">
               <Select value={currentAi} onValueChange={modelConfigSelectChange}>
                 <SelectTrigger className="w-full flex">
                   <div className="flex items-center gap-2">
@@ -223,8 +228,10 @@ export default function AiPage() {
                   }
                 </SelectContent>
               </Select>
-              <Button disabled={!aiModelList.length} variant={'outline'} onClick={copyConfig}><Copy />{t('copyConfig')}</Button>
-              <Button disabled={!aiModelList.length} variant={'destructive'} onClick={deleteCustomModelHandler}><X />{t('deleteCustomModel')}</Button>
+              <div className="flex items-center gap-2 lg:w-auto w-full">
+                <Button disabled={!aiModelList.length} variant={'outline'} onClick={copyConfig}><Copy />{t('copyConfig')}</Button>
+                <Button disabled={!aiModelList.length} variant={'destructive'} onClick={deleteCustomModelHandler}><X />{t('deleteCustomModel')}</Button>
+              </div>
             </div>
           </FormItem>
         </SettingRow>
@@ -286,7 +293,7 @@ export default function AiPage() {
                 <Label htmlFor="video" className="text-muted-foreground">{t('modelType.video')}</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="audio" id="audio" disabled />
+                <RadioGroupItem value="audio" id="audio" />
                 <Label htmlFor="audio" className="text-muted-foreground">{t('modelType.audio')}</Label>
               </div>
               <div className="flex items-center space-x-2">
@@ -317,7 +324,6 @@ export default function AiPage() {
                       }}
                       onBlur={() => {
                         const jsonObj = convertKeyValueToJson(headerPairs)
-                        console.log('Key blur, JSON object:', jsonObj)
                         valueChangeHandler('customHeaders', jsonObj)
                       }}
                       className="flex-1"
@@ -332,7 +338,6 @@ export default function AiPage() {
                       }}
                       onBlur={() => {
                         const jsonObj = convertKeyValueToJson(headerPairs)
-                        console.log('Value blur, JSON object:', jsonObj)
                         valueChangeHandler('customHeaders', jsonObj)
                       }}
                       className="flex-1"
@@ -397,6 +402,19 @@ export default function AiPage() {
               </FormItem>
             </SettingRow>
           </>)
+        }
+        {
+          modelType === 'audio' && (
+            <SettingRow>
+              <FormItem title={t('voice')} desc={t('voiceDesc')}>
+                <Input
+                  value={voice}
+                  onChange={(e) => valueChangeHandler('voice', e.target.value)}
+                  placeholder={t('voicePlaceholder')}
+                />
+              </FormItem>
+            </SettingRow>
+          )
         }
       </>
     }
