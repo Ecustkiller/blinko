@@ -19,7 +19,6 @@ import { Store } from "@tauri-apps/plugin-store";
 export function ImageCard({file}: {file: GithubFile}) {
   const [loading, setLoading] = useState(false)
   const { deleteImage } = useImageStore()
-  const { imageRepoUserInfo } = useImageStore()
 
   async function handleDelete(file: GithubFile) {
     setLoading(true)
@@ -44,20 +43,24 @@ export function ImageCard({file}: {file: GithubFile}) {
 
   async function handleCopyJsdelivrLink() {
     // 取 file.download_url 最后一个 / 后面的文件名
+    const store = await Store.load('store.json');
+    const username = await store.get<string>('githubImageUsername')
     const fileName = file.download_url.split('/').pop()
-    const jsdelivrLink = `https://cdn.jsdelivr.net/gh/${imageRepoUserInfo?.data.login}/${RepoNames.image}@main/${fileName}`
+    const jsdelivrLink = `https://cdn.jsdelivr.net/gh/${username}/${RepoNames.image}@main/${fileName}`
     navigator.clipboard.writeText(jsdelivrLink)
     toast({ title: '已复制 jsdelivr 链接 到剪切板', description: jsdelivrLink })
   }
 
   async function handleCopyMarkdown() {
-    navigator.clipboard.writeText(file.download_url)
-    toast({ title: '已复制 Markdown 到剪切板', description: file.download_url })
+    const text = `![${file.name}](${file.download_url})`
+    navigator.clipboard.writeText(text)
+    toast({ title: '已复制 Markdown 到剪切板', description: text })
   }
 
   async function handleCopyHTML() {
-    navigator.clipboard.writeText(file.download_url)
-    toast({ title: '已复制 HTML 到剪切板', description: file.download_url })
+    const text = `<img src="${file.download_url}" alt="${file.name}">`
+    navigator.clipboard.writeText(text)
+    toast({ title: '已复制 HTML 到剪切板', description: text })
   }
 
   return (
