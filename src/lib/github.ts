@@ -169,12 +169,15 @@ export async function getFiles({ path, repo }: { path: string, repo: RepoNames }
   }
 }
 
-export async function deleteFile({ path, sha, repo }: { path: string, sha: string, repo: RepoNames }) {
+export async function deleteFile(
+  { path, sha, repo, token, username }: 
+  { path: string, sha: string, repo: RepoNames, token?: string, username?: string }
+) {
   const store = await Store.load('store.json');
-  const accessToken = await store.get('accessToken')
+  const accessToken = token || await store.get('accessToken')
   if (!accessToken) return;
   
-  const githubUsername = await store.get('githubUsername')
+  const githubUsername = username || await store.get('githubUsername')
   
   // 获取代理设置
   const proxyUrl = await store.get<string>('proxy')

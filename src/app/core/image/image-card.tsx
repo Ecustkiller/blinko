@@ -14,7 +14,7 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSub, Conte
 import { useState } from 'react'
 import { LoaderCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-
+import { Store } from "@tauri-apps/plugin-store";
 
 export function ImageCard({file}: {file: GithubFile}) {
   const [loading, setLoading] = useState(false)
@@ -23,7 +23,11 @@ export function ImageCard({file}: {file: GithubFile}) {
 
   async function handleDelete(file: GithubFile) {
     setLoading(true)
-    const res = await deleteFile({path: file.path, sha: file.sha, repo: RepoNames.image})
+    const store = await Store.load('store.json');
+    const token = await store.get<string>('githubImageAccessToken')
+    const username = await store.get<string>('githubImageUsername')
+    if (!token || !username) return;
+    const res = await deleteFile({path: file.path, sha: file.sha, repo: RepoNames.image, token, username})
     if (res) {
       toast({ title: '文件已删除', description: file.name })
       deleteImage(file.name)
