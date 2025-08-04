@@ -312,7 +312,15 @@
       "selectScope": "範囲を選択",
       "addTemplateDesc": "カスタムテンプレート名称と内容を入力し、AIがあなたのニーズをよりよく理解できるようにしてください。",
       "editTemplate": "編集カスタムテンプレート",
-      "noContent": "内容がありません"
+      "noContent": "内容がありません",
+      "range": {
+        "all": "すべて",
+        "today": "今日",
+        "week": "過去1週間",
+        "month": "過去1ヶ月",
+        "threeMonth": "過去3ヶ月",
+        "year": "過去1年"
+      }
     },
     "shortcut": {
       "title": "ショートカットキー",

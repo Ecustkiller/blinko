@@ -228,7 +228,7 @@ pub async fn webdav_sync(
     //批量下载并保存文件
     let mut success_count = 0;
     
-    for (remote_path, relative_path) in markdown_files {
+    for (remote_path, _relative_path) in markdown_files {
         // 下载路径处理
         let prefix = extract_prefix(&remote_path, &webdav_path);
         let path_for_request = remote_path.trim_start_matches(&prefix);

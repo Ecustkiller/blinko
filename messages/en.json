@@ -314,7 +314,15 @@
       "selectScope": "Select Scope",
       "addTemplateDesc": "Please enter the custom template name and content, helping AI better understand your needs.",
       "editTemplate": "Edit Custom Template",
-      "noContent": "No content"
+      "noContent": "No content",
+      "range": {
+        "all": "All",
+        "today": "Today",
+        "week": "Past Week",
+        "month": "Past Month",
+        "threeMonth": "Past 3 Months",
+        "year": "Past Year"
+      }
     },
     "shortcut": {
       "title": "Shortcuts",

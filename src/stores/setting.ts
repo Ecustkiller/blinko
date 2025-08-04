@@ -5,12 +5,12 @@ import { AiConfig } from '@/app/core/setting/config'
 import { GitlabInstanceType } from '@/lib/gitlab.types'
 
 export enum GenTemplateRange {
-  All = '全部',
-  Today = '今天',
-  Week = '近一周',
-  Month = '近一月',
-  ThreeMonth = '近三个月',
-  Year = '近一年',
+  All = 'all',
+  Today = 'today',
+  Week = 'week',
+  Month = 'month',
+  ThreeMonth = 'threeMonth',
+  Year = 'year',
 }
 
 export interface GenTemplate {

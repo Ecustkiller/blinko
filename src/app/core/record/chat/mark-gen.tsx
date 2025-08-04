@@ -127,6 +127,9 @@ export const MarkGen = forwardRef<{ openGen: () => void }, MarkGenProps>(({ inpu
       case GenTemplateRange.Year:
         subtractDate = dayjs().subtract(1, 'year')
         break
+      default:
+        subtractDate = dayjs().subtract(99, 'year')
+        break
     };
     const marksByRange = marks.filter(item => dayjs(item.createdAt).isAfter(subtractDate))
     const scanMarks = marksByRange.filter(item => item.type === 'scan')
