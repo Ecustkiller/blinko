@@ -4,6 +4,7 @@
 [![GitHub Repo stars](https://img.shields.io/github/stars/codexu/note-gen)](https://github.com/codexu/note-gen)
 [![](https://gitcode.com/codexu/note-gen/star/badge.svg)](https://gitcode.com/codexu/note-gen)
 ![](https://github.com/codexu/note-gen/actions/workflows/release.yml/badge.svg?branch=release)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/8f7518c3-b627-4277-bc2f-e477960f5dc4/deploy-status)](https://app.netlify.com/projects/note-gen-docs/deploys)
 ![](https://img.shields.io/github/downloads/codexu/note-gen/total)
 ![](https://img.shields.io/github/issues-closed/codexu/note-gen)
 
