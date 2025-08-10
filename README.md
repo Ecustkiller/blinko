@@ -16,7 +16,7 @@
 
 ## Guide
 
-🖥️ Official Document: [English](https://notegen.top/en/) | [简体中文](https://notegen.top/zh/)
+🖥️ Official Document: [English](https://notegen.top/en/) | [简体中文](https://notegen.top/cn/)
 
 💬 Join [WeChat/QQ Group](https://github.com/codexu/note-gen/discussions/110), [Discord](https://discord.gg/SXyVZGpbpk), [Telegram](https://t.me/notegen)
 
