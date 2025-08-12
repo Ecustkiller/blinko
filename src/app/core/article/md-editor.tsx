@@ -24,7 +24,6 @@ import useSettingStore from '@/stores/setting'
 import { uploadImage } from '@/lib/imageHosting'
 import FloatBar from './floatbar'
 import { createToolbarConfig } from './toolbar.config'
-import { set } from 'lodash-es'
 
 export function MdEditor() {
   const [editor, setEditor] = useState<Vditor>();

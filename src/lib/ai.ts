@@ -558,7 +558,12 @@ export async function fetchAiPlaceholder(text: string): Promise<string> {
     const aiConfig = await getAISettings('placeholderPrimaryModel')
 
     // 构建 placeholder 提示词
-    const placeholderPrompt = `Generate a placeholder for the following text: ${text}`
+    const placeholderPrompt = `
+      You are an intelligent assistant of a note-taking software, you can refer to the records of the content notes.
+      Don't exceed 20 characters.
+      Do not generate any special characters.
+      Generate a question based on the following content:
+      ${text}`
 
     // 准备消息
     const { messages } = await prepareMessages(`${placeholderPrompt}\n\n${text}`, false)
@@ -573,8 +578,9 @@ export async function fetchAiPlaceholder(text: string): Promise<string> {
     })
 
     const result = completion.choices[0]?.message?.content || ''
-    // 去掉所有换行符和各种特殊符号
-    return result.replace(/\n/g, '').replace(/\s/g, '')
+
+    // 去掉所有换行符和各种特殊符号，不包括空格
+    return result.trim()
   } catch (error) {
     return handleAIError(error) || ''
   }
