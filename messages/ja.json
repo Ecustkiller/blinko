@@ -84,7 +84,12 @@
       "addPromptDesc": "マスク名と内容を入力し、AIがあなたのニーズをよりよく理解できるようにしてください。",
       "promptTitlePlaceholder": "マスク名を入力してください",
       "promptContentPlaceholder": "マスク内容を入力してください",
-      "promptContent": "マスク内容"
+      "promptContent": "マスク内容",
+      "optimizePrompt": "プロンプト最適化",
+      "optimizing": "最適化中...",
+      "optimizeSuccess": "プロンプトの最適化が成功しました",
+      "optimizeFailed": "プロンプトの最適化に失敗しました。後でもう一度お試しください",
+      "noContentToOptimize": "まずプロンプト内容を入力してください"
     },
     "defaultModel": {
       "title": "デフォルトモデル",

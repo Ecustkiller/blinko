@@ -180,7 +180,12 @@
       "addPromptDesc": "Please enter the prompt name and content, helping AI better understand your needs.",
       "promptTitlePlaceholder": "Please enter the prompt name",
       "promptContentPlaceholder": "Please enter the prompt content",
-      "promptContent": "Prompt Content"
+      "promptContent": "Prompt Content",
+      "optimizePrompt": "Optimize Prompt",
+      "optimizing": "Optimizing...",
+      "optimizeSuccess": "Prompt optimized successfully",
+      "optimizeFailed": "Failed to optimize prompt, please try again later",
+      "noContentToOptimize": "Please enter prompt content first"
     },
     "sync": {
       "title": "Sync",

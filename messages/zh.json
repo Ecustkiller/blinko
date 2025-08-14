@@ -90,7 +90,12 @@
       "addPromptDesc": "请输入 Prompt 名称和内容，帮助AI更好地理解你的需求。",
       "promptTitlePlaceholder": "请输入 Prompt 名称",
       "promptContentPlaceholder": "请输入 Prompt 内容",
-      "promptContent": "Prompt 内容"
+      "promptContent": "Prompt 内容",
+      "optimizePrompt": "优化提示词",
+      "optimizing": "优化中...",
+      "optimizeSuccess": "提示词优化成功",
+      "optimizeFailed": "提示词优化失败，请稍后重试",
+      "noContentToOptimize": "请先输入提示词内容"
     },
     "defaultModel": {
       "title": "默认模型",
