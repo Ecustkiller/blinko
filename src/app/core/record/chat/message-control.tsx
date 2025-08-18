@@ -229,8 +229,12 @@ export default function MessageControl({chat, children}: {chat: Chat, children: 
             </>
           )}
           
-          {children}
-          <Separator orientation="vertical" className="h-4" />
+          {
+            children && <>
+              {children}
+              <Separator orientation="vertical" className="h-4" />
+            </>
+          }
           <Button variant={"ghost"} size={"icon"} onClick={deleteHandler}>
             <XIcon className='size-4' />
           </Button>
