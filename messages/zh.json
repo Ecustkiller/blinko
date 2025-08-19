@@ -489,6 +489,15 @@
         "upload": "上传记录",
         "download": "下载记录"
       },
+      "note": {
+        "organizeAs": "整理为",
+        "template": "模板",
+        "setting": "设置",
+        "confirm": "确认",
+        "cancel": "取消",
+        "removeThinking": "移除思考过程",
+        "stop": "停止"
+      },
       "uploadSuccess": "记录上传成功",
       "downloadSuccess": "记录下载成功",
       "desc": "描述",
@@ -695,6 +704,7 @@
           "disable": "剪贴板监听(关闭)"
         },
         "send": "发送",
+        "stop": "停止",
         "terminate": "终止",
         "tagLink": {
           "on": "已关联标签",
@@ -720,6 +730,12 @@
           "notSupported": "向量模型不可用",
           "enabled": "知识库检索（开启）",
           "disabled": "知识库检索（关闭）"
+        },
+        "modeSelect": {
+          "tooltip": "选择输入模式",
+          "chat": "对话模式",
+          "gen": "整理模式",
+          "translate": "翻译模式"
         }
       },
       "header": {
@@ -764,6 +780,7 @@
         "organize": "将你的记录整理为文章："
       },
       "note": {
+        "organize": "整理",
         "writing": "写作",
         "convert": "转化文章",
         "description": "当前的笔记是由 AI 生成且无法编辑，将当前笔记转化为文章（生成本地文件），可在写作页面中进行二次创作。",
@@ -779,7 +796,8 @@
         "filterThinkingContent": "移除记录中的思考",
         "startOrganize": "开始整理",
         "manageTemplate": "管理模板",
-        "cancel": "取消"
+        "cancel": "取消",
+        "stop": "停止"
       },
       "mark": {
         "recorded": "已记录",

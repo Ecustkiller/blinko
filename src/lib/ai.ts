@@ -407,6 +407,7 @@ export async function fetchAi(text: string): Promise<string> {
  */
 export async function fetchAiStream(text: string, onUpdate: (content: string) => void, abortSignal?: AbortSignal): Promise<string> {
   try {
+    
     // 获取AI设置
     const aiConfig = await getAISettings()
     
@@ -417,13 +418,17 @@ export async function fetchAiStream(text: string, onUpdate: (content: string) =>
     const { messages } = await prepareMessages(text, true)
 
     const openai = await createOpenAIClient(aiConfig)
+    
     const stream = await openai.chat.completions.create({
       model: aiConfig?.model || '',
       messages: messages,
       temperature: aiConfig?.temperature,
       top_p: aiConfig?.topP,
       stream: true,
+    }, {
+      signal: abortSignal
     })
+    
     
     let thinking = ''
     let fullContent = ''
