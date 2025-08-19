@@ -213,6 +213,14 @@ ${ragContext}
     setInputType(value)
   }
 
+  // 插入占位符
+  function insertPlaceholder() {
+    if (placeholder.includes('[Tab]')) {
+      setText(placeholder.replace('[Tab]', ''))
+      setPlaceholder('')
+    }
+  }
+
   useEffect(() => {
     if (!primaryModel) {
       setPlaceholder(t('record.chat.input.placeholder.noPrimaryModel'))
@@ -271,7 +279,12 @@ ${ragContext}
             }
             if (e.key === "Tab") {
               e.preventDefault()
-              setText(placeholder.replace('[Tab]', ''))
+              insertPlaceholder()
+            }
+            if (e.key === "Backspace") {
+              if (text === '') {
+                setPlaceholder(t('record.chat.input.placeholder.default'))
+              }
             }
           }}
           onCompositionStart={() => setIsComposing(true)}
