@@ -7,7 +7,7 @@ mod fuzzy_search;
 mod keywords;
 use tauri::{
     tray::{MouseButton, TrayIconBuilder, TrayIconEvent},
-    Manager, WindowEvent, menu::{Menu, MenuItem}, 
+    Manager, WindowEvent, menu::{Menu, MenuItem}, RunEvent,
 };
 use webdav::{webdav_backup, webdav_sync, webdav_test, webdav_create_dir};
 use fuzzy_search::{fuzzy_search, fuzzy_search_parallel};
@@ -74,10 +74,14 @@ fn main() {
                             let is_visible = window.is_visible().unwrap_or(false);
                             if is_visible {
                                 let _ = window.hide();
+                                #[cfg(target_os = "macos")]
+                                let _ = tray.app_handle().hide();
                             } else {
                                 let _ = window.show();
                                 let _ = window.unminimize();
                                 let _ = window.set_focus();
+                                #[cfg(target_os = "macos")]
+                                let _ = tray.app_handle().show();
                             }
                         }
                     }
@@ -124,6 +128,20 @@ fn main() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_sql::Builder::default().build())
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .build(tauri::generate_context!())
+        .expect("error while running tauri application")
+        .run(|app_handle, event| match event {
+            #[cfg(target_os = "macos")]
+            RunEvent::Reopen { has_visible_windows, .. } => {
+                if !has_visible_windows {
+                    if let Some(window) = app_handle.get_webview_window("main") {
+                        let _ = window.show();
+                        let _ = window.unminimize();
+                        let _ = window.set_focus();
+                        let _ = app_handle.show();
+                    }
+                }
+            }
+            _ => {}
+        });
 }
