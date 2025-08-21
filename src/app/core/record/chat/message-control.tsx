@@ -145,14 +145,14 @@ export default function MessageControl({chat, children}: {chat: Chat, children: 
       <>
         <div className='flex items-center gap-1 -translate-x-3'>
           <Button variant={"ghost"} size="sm" disabled>
-            <Clock className="size-4 hidden lg:inline" />
+            <Clock className="size-4 hidden md:inline" />
             { dayjs(chat.createdAt).fromNow() }
           </Button>
           <Separator orientation="vertical" className="h-4" />
           {
             count ? <>
               <Button variant={"ghost"} size="sm" disabled>
-                <TypeIcon className="size-4 hidden lg:inline" />
+                <TypeIcon className="size-4 hidden md:inline" />
                 <span>{ count } {t('record.chat.messageControl.words')}</span>
               </Button>
               <Separator orientation="vertical" className="h-4" /> 
@@ -171,7 +171,7 @@ export default function MessageControl({chat, children}: {chat: Chat, children: 
                     disabled={isTranslating}
                   >
                     <GlobeIcon className="size-4 mr-1" />
-                    <span className="hidden lg:inline">
+                    <span className="hidden md:inline">
                       {
                         isTranslating ? 
                         translateT('translating') : 

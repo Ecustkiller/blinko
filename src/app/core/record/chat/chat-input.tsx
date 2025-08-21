@@ -123,10 +123,10 @@ export function ChatInput() {
   }, [])
 
   return (
-    <footer className="relative flex flex-col border rounded-xl p-2 gap-2 mb-2 lg:w-[calc(100%-1rem)] w-full">
+    <footer className="relative flex flex-col border rounded-xl p-2 gap-2 mb-2 md:w-[calc(100%-1rem)] w-full">
       <div className="relative w-full flex items-start">
         <Textarea
-          className="flex-1 p-2 relative border-none text-xs placeholder:text-xs lg:placeholder:text-sm lg:text-sm focus-visible:ring-0 shadow-none min-h-[36px] max-h-[240px] resize-none overflow-y-auto"
+          className="flex-1 p-2 relative border-none text-xs placeholder:text-xs md:placeholder:text-sm md:text-sm focus-visible:ring-0 shadow-none min-h-[36px] max-h-[240px] resize-none overflow-y-auto"
           rows={1}
           disabled={!primaryModel || loading}
           value={text}

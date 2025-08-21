@@ -17,9 +17,7 @@
         "title": "NoteGen",
         "label": "main",
         "width": 1360,
-        "minWidth": 1280,
         "height": 720,
-        "minHeight": 680,
         "dragDropEnabled": false
       }
     ],

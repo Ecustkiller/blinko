@@ -70,11 +70,11 @@ function MessageWrapper({ chat, children }: { chat: Chat, children: React.ReactN
   }
 
   const index = chats.findIndex(item => item.id === chat.id)
-  return <div className="flex w-full lg:gap-4">
+  return <div className="flex w-full md:gap-4">
     {
       chat.role === 'user' ?  
       <div className="relative">
-        <Avatar className='rounded size-6 items-center justify-center hidden lg:flex'>
+        <Avatar className='rounded size-6 items-center justify-center hidden md:flex'>
           {
             userInfo?.avatar_url ?
             <AvatarImage src={userInfo?.avatar_url} /> : <UserRound />
@@ -84,7 +84,7 @@ function MessageWrapper({ chat, children }: { chat: Chat, children: React.ReactN
           <Undo2 />
         </Button>
       </div> :
-      <div className='hidden lg:flex'>
+      <div className='hidden md:flex'>
         {loading && index === chats.length - 1 && chat.type === 'chat' ?
           <LoaderPinwheel className="animate-spin" /> :
           chat.type === 'clipboard' ? <ClipboardCheck /> : <BotMessageSquare />

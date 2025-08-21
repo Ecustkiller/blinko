@@ -58,11 +58,11 @@ ${chat.content}
     isRecorded ?
       <Button variant={"ghost"} size="sm" disabled>
         <CheckCircle className="size-4" />
-        <span className="hidden lg:inline">{t('mark.recorded')}</span>
+        <span className="hidden md:inline">{t('mark.recorded')}</span>
       </Button> :
       <Button variant={"ghost"} size="sm" onClick={handleSuccess}>
         <Highlighter className="size-4" />
-        <span className="hidden lg:inline">{t('mark.record')}</span>
+        <span className="hidden md:inline">{t('mark.record')}</span>
       </Button>
   )
 }

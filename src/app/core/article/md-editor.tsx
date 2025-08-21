@@ -430,7 +430,7 @@ export function MdEditor() {
     }
   }, [editor])
 
-  return <div className='flex-1 relative w-full h-full lg:h-screen flex flex-col overflow-hidden dark:bg-zinc-950'>
+  return <div className='flex-1 relative w-full h-full md:h-screen flex flex-col overflow-hidden dark:bg-zinc-950'>
     <CustomToolbar editor={editor} />
     <div id="aritcle-md-editor" className='flex-1'></div>
     <CustomFooter editor={editor} />
