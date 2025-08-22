@@ -410,10 +410,17 @@
         "title": "Workspace Settings",
         "desc": "Set the application's workspace directory where files will be saved",
         "current": "Current Workspace Path",
+        "defaultPath": "Default Workspace",
         "default": "Using default workspace path",
         "custom": "Using custom workspace path",
         "select": "Select Workspace Directory",
-        "reset": "Reset to Default Path"
+        "reset": "Reset to Default Path",
+        "history": "History Paths",
+        "selectFromHistory": "Select workspace from history",
+        "clearHistory": "Clear History",
+        "actions": "Actions",
+        "searchPlaceholder": "Search workspace paths...",
+        "noResults": "No results found"
       },
       "info": {
         "title": "Workspace Information", 
