@@ -305,6 +305,33 @@
           "createDirFailed": "Failed to create directory",
           "connectionTimeOut": "Connection timed out, please check network or server."
         }
+      },
+      "localBackup": {
+        "tabTitle": "Local Backup",
+        "export": {
+          "title": "Export Backup",
+          "desc": "Package application data into a .zip file and save to specified location.",
+          "button": "Choose Location and Export",
+          "exporting": "Exporting..."
+        },
+        "import": {
+          "title": "Import Backup",
+          "desc": "Restore application data from .zip file, will overwrite all current data.",
+          "button": "Choose File and Import",
+          "importing": "Importing...",
+          "warning": "Import operation will overwrite all current data, please ensure important content is backed up!"
+        },
+        "exportDialog": {
+          "title": "Choose backup file save location"
+        },
+        "importDialog": {
+          "title": "Choose backup file to import"
+        },
+        "exportSuccess": "Backup exported successfully!",
+        "exportError": "Backup export failed",
+        "importSuccess": "Backup imported successfully! Application will restart to apply changes.",
+        "importError": "Backup import failed",
+        "restartConfirm": "Import completed! Restart application now to apply changes?"
       }
     },
     "template": {
