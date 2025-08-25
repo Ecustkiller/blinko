@@ -796,7 +796,9 @@
         "readAloud": "朗读",
         "playing": "播放中",
         "loading": "准备中",
-        "stop": "停止播放"
+        "stop": "停止播放",
+        "copy": "复制",
+        "copied": "已复制"
       },
       "preview": {
         "close": "关闭",

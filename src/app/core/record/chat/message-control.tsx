@@ -2,12 +2,12 @@ import { Separator } from "@/components/ui/separator"
 import { Chat } from "@/db/chats"
 import useChatStore from "@/stores/chat"
 import dayjs from "dayjs"
-import { Clock, GlobeIcon, TypeIcon, XIcon, Volume2, VolumeX, Loader2 } from "lucide-react"
+import { Clock, GlobeIcon, TypeIcon, XIcon, Volume2, VolumeX, Loader2, Copy, Check } from "lucide-react"
 import relativeTime from "dayjs/plugin/relativeTime";
 import wordsCount from 'words-count';
 import { Button } from "@/components/ui/button"
 import { TooltipButton } from "@/components/tooltip-button"
-import { clear, hasText, readText } from "tauri-plugin-clipboard-api"
+import { clear, hasText, readText, writeText } from "tauri-plugin-clipboard-api"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { fetchAiTranslate } from "@/lib/ai"
@@ -34,6 +34,7 @@ export default function MessageControl({chat, children}: {chat: Chat, children: 
   const [selectedLanguage, setSelectedLanguage] = useState<string>('')
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isCopied, setIsCopied] = useState(false)
   const translateT = useTranslations('record.chat.input.translate')
   
   // 可翻译的语言列表
@@ -87,6 +88,37 @@ export default function MessageControl({chat, children}: {chat: Chat, children: 
   function resetTranslation() {
     setTranslatedContent('')
     setSelectedLanguage('')
+  }
+  
+  // 处理复制功能
+  async function handleCopy() {
+    if (!chat.content || isCopied) return
+    
+    try {
+      // 使用翻译后的内容或原始内容
+      let textToCopy = translatedContent || chat.content
+      
+      // 移除 <thinking> 标签及其内容
+      textToCopy = textToCopy.replace(/<thinking[^>]*>[\s\S]*?<thinking>/gi, '')
+      
+      // 清理多余的空白字符
+      textToCopy = textToCopy.trim()
+      
+      if (!textToCopy) {
+        console.warn('复制内容为空')
+        return
+      }
+      
+      await writeText(textToCopy)
+      setIsCopied(true)
+      
+      // 2秒后重置复制状态
+      setTimeout(() => {
+        setIsCopied(false)
+      }, 2000)
+    } catch (error) {
+      console.error('复制失败:', error)
+    }
   }
   
   // 处理朗读/停止
@@ -198,6 +230,30 @@ export default function MessageControl({chat, children}: {chat: Chat, children: 
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>
+              <Separator orientation="vertical" className="h-4" />
+            </>
+          )}
+          
+          {/* 复制功能 */}
+          {chat.content && chat.type === 'chat' && (
+            <>
+              <TooltipButton
+                icon={
+                  isCopied ? (
+                    <Check className="h-4 w-4" />
+                  ) : (
+                    <Copy className="h-4 w-4" />
+                  )
+                }
+                tooltipText={
+                  isCopied ? t('record.chat.messageControl.copied') : 
+                  t('record.chat.messageControl.copy')
+                }
+                onClick={handleCopy}
+                variant="ghost"
+                size="sm"
+                disabled={isCopied}
+              />
               <Separator orientation="vertical" className="h-4" />
             </>
           )}

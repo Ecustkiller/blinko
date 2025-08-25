@@ -815,7 +815,9 @@
         "readAloud": "Read Aloud",
         "playing": "Playing",
         "loading": "Loading",
-        "stop": "Stop Playing"
+        "stop": "Stop Playing",
+        "copy": "Copy",
+        "copied": "Copied"
       },
       "preview": {
         "close": "Close",
