@@ -25,6 +25,26 @@
     "error": "Failed"
   },
   "settings": {
+    "general": {
+      "title": "General Settings",
+      "desc": "Here, you can configure basic application settings, including interface theme, language and other options.",
+      "interface": {
+        "title": "Interface Settings",
+        "theme": {
+          "title": "Theme",
+          "desc": "Choose the application's appearance theme",
+          "options": {
+            "light": "Light",
+            "dark": "Dark",
+            "system": "System"
+          }
+        },
+        "language": {
+          "title": "Language",
+          "desc": "Choose the application's display language"
+        }
+      }
+    },
     "rag": {
       "title": "Knowledge Base",
       "desc": "Here, you can configure knowledge base related settings, knowledge base based on RAG technology, through embedding models to convert text into vectors, then through vector search to achieve intelligent search and intelligent answers.",
