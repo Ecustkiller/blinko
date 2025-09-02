@@ -6,7 +6,7 @@ import emitter from "@/lib/emitter";
 import { Sparkles } from "lucide-react";
 import Vditor from "vditor";
 import { useTranslations } from "next-intl";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 export default function Polish({editor, value}: {editor?: Vditor, value?: string}) {
   const { loading } = useArticleStore()
@@ -44,8 +44,9 @@ export default function Polish({editor, value}: {editor?: Vditor, value?: string
       }, currentController.signal)
     } catch (error) {
       // 如果是因为 abort 导致的错误，不需要处理
-      if (error instanceof Error && error.name === 'AbortError') {
-        console.log('Polish request was aborted')
+      if (error instanceof Error && (error.name === 'AbortError' || error.message === 'Request canceled')) {
+        // 静默处理取消请求，不显示任何消息
+        return
       } else {
         console.error('Polish request failed:', error)
       }
@@ -56,6 +57,16 @@ export default function Polish({editor, value}: {editor?: Vditor, value?: string
       editor?.enable()
     }
   }
+
+  useEffect(() => {
+    return () => {
+      // 组件卸载时终止正在进行的请求
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+        abortControllerRef.current = null
+      }
+    }
+  }, [])
 
   return (
     <TooltipButton disabled={loading || !primaryModel} icon={<Sparkles />} tooltipText={t('tooltip')} onClick={handler}>

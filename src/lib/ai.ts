@@ -59,8 +59,12 @@ async function validateAIService(baseURL: string | undefined): Promise<string | 
  * 处理AI请求错误
  */
 export function handleAIError(error: any, showToast = true): string | null {
-  console.error(error)
   const errorMessage = error instanceof Error ? error.message : '未知错误'
+  // 检查是否是取消请求的错误，如果是则静默处理
+  if (error.message === 'Request was aborted.') {
+    // 静默处理取消请求，不显示任何消息
+    return null
+  }
   
   if (showToast) {
     toast({

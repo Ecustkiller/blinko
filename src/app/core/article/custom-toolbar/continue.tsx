@@ -54,8 +54,9 @@ export default function Continue({editor}: {editor?: Vditor}) {
       }, currentController.signal)
     } catch (error) {
       // 如果是因为 abort 导致的错误，不需要处理
-      if (error instanceof Error && error.name === 'AbortError') {
-        console.log('Continue request was aborted')
+      if (error instanceof Error && (error.name === 'AbortError' || error.message === 'Request canceled')) {
+        // 静默处理取消请求，不显示任何消息
+        return
       } else {
         console.error('Continue request failed:', error)
       }

@@ -6,7 +6,7 @@ import { MessageCircleQuestion } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Vditor from "vditor";
 import useArticleStore from "@/stores/article";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 export default function Question({editor, value}: {editor?: Vditor, value?: string}) {
   const { primaryModel } = useSettingStore()
@@ -44,8 +44,9 @@ export default function Question({editor, value}: {editor?: Vditor, value?: stri
       }, currentController.signal)
     } catch (error) {
       // 如果是因为 abort 导致的错误，不需要处理
-      if (error instanceof Error && error.name === 'AbortError') {
-        console.log('Question request was aborted')
+      if (error instanceof Error && (error.name === 'AbortError' || error.message === 'Request canceled')) {
+        // 静默处理取消请求，不显示任何消息
+        return
       } else {
         console.error('Question request failed:', error)
       }
@@ -56,6 +57,16 @@ export default function Question({editor, value}: {editor?: Vditor, value?: stri
       editor?.enable()
     }
   }
+
+  useEffect(() => {
+    return () => {
+      // 组件卸载时终止正在进行的请求
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+        abortControllerRef.current = null
+      }
+    }
+  }, [])
 
   return (
     <TooltipButton disabled={!primaryModel} icon={<MessageCircleQuestion />} tooltipText={t('tooltip')} onClick={handleBlock}>

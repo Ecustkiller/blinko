@@ -3,7 +3,7 @@ import { fetchAiStreamToken } from "@/lib/ai";
 import { SquareCodeIcon } from "lucide-react";
 import Vditor from "vditor";
 import { useTranslations } from "next-intl";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 export default function Expansion({editor, value}: {editor?: Vditor, value?: string}) {
   const t = useTranslations('article.editor.toolbar.expansion')
@@ -38,8 +38,9 @@ export default function Expansion({editor, value}: {editor?: Vditor, value?: str
       }, currentController.signal)
     } catch (error) {
       // 如果是因为 abort 导致的错误，不需要处理
-      if (error instanceof Error && error.name === 'AbortError') {
-        console.log('Expansion request was aborted')
+      if (error instanceof Error && (error.name === 'AbortError' || error.message === 'Request canceled')) {
+        // 静默处理取消请求，不显示任何消息
+        return
       } else {
         console.error('Expansion request failed:', error)
       }
@@ -50,6 +51,16 @@ export default function Expansion({editor, value}: {editor?: Vditor, value?: str
       editor?.enable()
     }
   }
+
+  useEffect(() => {
+    return () => {
+      // 组件卸载时终止正在进行的请求
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+        abortControllerRef.current = null
+      }
+    }
+  }, [])
 
   return (
     <TooltipButton icon={<SquareCodeIcon />} tooltipText={t('tooltip')} onClick={handleBlock}>
