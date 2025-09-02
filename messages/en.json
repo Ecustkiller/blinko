@@ -22,7 +22,8 @@
     "selectPrompt": "Select Prompt",
     "prompt": "Prompt",
     "success": "Success",
-    "error": "Failed"
+    "error": "Failed",
+    "defaultFileName": "Untitled"
   },
   "settings": {
     "general": {

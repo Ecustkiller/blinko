@@ -20,7 +20,8 @@
     "sync": "同步",
     "language": "语言",
     "success": "成功",
-    "error": "失败"
+    "error": "失败",
+    "defaultFileName": "未命名文档"
   },
   "settings": {
     "general": {
