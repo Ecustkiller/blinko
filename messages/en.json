@@ -42,6 +42,11 @@
         "language": {
           "title": "Language",
           "desc": "Choose the application's display language"
+        },
+        "scale": {
+          "title": "Interface Scale",
+          "desc": "Adjust the overall scale of the application interface",
+          "placeholder": "Select scale ratio"
         }
       }
     },

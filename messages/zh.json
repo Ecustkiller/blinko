@@ -40,6 +40,11 @@
         "language": {
           "title": "语言",
           "desc": "选择应用的显示语言"
+        },
+        "scale": {
+          "title": "界面缩放",
+          "desc": "调整应用界面的整体缩放比例",
+          "placeholder": "选择缩放比例"
         }
       }
     },
