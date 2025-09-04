@@ -470,7 +470,6 @@ export async function fetchAiStreamToken(text: string, onUpdate: (content: strin
   try {
     // 获取AI设置
     const aiConfig = await getAISettings()
-    console.log(aiConfig);
     
     // 验证AI服务
     if (await validateAIService(aiConfig?.baseURL) === null) return ''
@@ -479,8 +478,6 @@ export async function fetchAiStreamToken(text: string, onUpdate: (content: strin
     const { messages } = await prepareMessages(text, true)
   
     const openai = await createOpenAIClient(aiConfig)
-    console.log(openai);
-    console.log(abortSignal);
 
     const stream = await openai.chat.completions.create({
       model: aiConfig?.model || '',
@@ -491,7 +488,6 @@ export async function fetchAiStreamToken(text: string, onUpdate: (content: strin
     }, {
       signal: abortSignal
     })
-    console.log(stream);
     
     for await (const chunk of stream) {
       if (abortSignal?.aborted) {
