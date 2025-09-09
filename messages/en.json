@@ -853,6 +853,14 @@
           "chat": "Chat Mode",
           "gen": "Organize Mode",
           "translate": "Translate Mode"
+        },
+        "fileLink": {
+          "tooltip": "Link File",
+          "selectFile": "Select File",
+          "linkedFile": "Linked File",
+          "searchPlaceholder": "Search files...",
+          "noFiles": "No files found",
+          "loading": "Loading..."
         }
       },
       "header": {

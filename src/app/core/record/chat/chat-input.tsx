@@ -21,6 +21,8 @@ import { TranslateSend } from "./translate-send"
 import ChatPlaceholder from "./chat-placeholder"
 import { ClipboardMonitor } from "./clipboard-monitor"
 import { RagSwitch } from "./rag-switch"
+import { FileLink, LinkedFileDisplay } from "./file-link"
+import { MarkdownFile } from "@/lib/files"
 import emitter from "@/lib/emitter"
 
 
@@ -35,6 +37,7 @@ export function ChatInput() {
   const [inputType, setInputType] = useLocalStorage('chat-input-type', 'chat')
   const [inputHistory, setInputHistory] = useLocalStorage<string[]>('chat-input-history', [])
   const [historyIndex, setHistoryIndex] = useState(-1)
+  const [linkedFile, setLinkedFile] = useState<MarkdownFile | null>(null)
   const markGenRef = useRef<any>(null)
   const chatSendRef = useRef<any>(null)
   const translateSendRef = useRef<any>(null)
@@ -74,6 +77,16 @@ export function ChatInput() {
     } else {
       setText(inputHistory[newIndex])
     }
+  }
+
+  // 处理文件选择
+  function handleFileSelect(file: MarkdownFile) {
+    setLinkedFile(file)
+  }
+
+  // 移除关联文件
+  function removeLinkedFile() {
+    setLinkedFile(null)
   }
 
   // 处理发送后的清理工作
@@ -216,12 +229,24 @@ export function ChatInput() {
           }, 0)}
         />
       </div>
+
+      <LinkedFileDisplay
+        linkedFile={linkedFile}
+        onFileRemove={removeLinkedFile}
+      />
+      
       <div className="flex justify-between items-center w-full">
         <div className="flex">
           <ModelSelect />
           <PromptSelect />
           <ChatLanguage />
           <ChatLink inputType={inputType} />
+          <FileLink
+            linkedFile={linkedFile}
+            onFileSelect={handleFileSelect}
+            onFileRemove={removeLinkedFile}
+            disabled={!primaryModel || loading}
+          />
           <RagSwitch />
           <ChatPlaceholder />
           <ClipboardMonitor />
@@ -234,7 +259,7 @@ export function ChatInput() {
             inputType === 'gen' ? (
               <MarkGen inputValue={text} ref={markGenRef} />
             ) : inputType === 'chat' ? (
-              <ChatSend inputValue={text} onSent={handleSent} ref={chatSendRef} />
+              <ChatSend inputValue={text} onSent={handleSent} linkedFile={linkedFile} ref={chatSendRef} />
             ) : inputType === 'translate' ? (
               <TranslateSend inputValue={text} onSent={handleSent} ref={translateSendRef} />
             ) : null

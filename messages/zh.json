@@ -833,6 +833,14 @@
           "chat": "对话模式",
           "gen": "整理模式",
           "translate": "翻译模式"
+        },
+        "fileLink": {
+          "tooltip": "关联文件",
+          "selectFile": "选择文件",
+          "linkedFile": "关联文件",
+          "searchPlaceholder": "搜索文件...",
+          "noFiles": "未找到文件",
+          "loading": "加载中..."
         }
       },
       "header": {
