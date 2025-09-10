@@ -119,7 +119,7 @@ Special thanks to our technology partners who make NoteGen better:
 **[SiliconFlow](https://cloud.siliconflow.cn/i/O2ciJeZw)** - Providing free AI model services, powering NoteGen's intelligent features with high-quality AI capabilities.
 
 <a href="https://cloud.siliconflow.cn/i/O2ciJeZw" target="_blank">
-  <img width="240" src="https://s2.loli.net/2025/09/09/GX1uFTIy9hgAD7M.png" />
+  <img width="240" src="https://s2.loli.net/2025/09/10/KWPOA5XhIGmYTV9.png" />
 </a>
 
 **[UpgradeLink](http://upgrade.toolsetlink.com/upgrade/example/tauri-example.html)** - Providing reliable installation and upgrade services, ensuring seamless software updates for users.

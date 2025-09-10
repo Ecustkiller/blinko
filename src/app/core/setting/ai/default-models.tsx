@@ -17,8 +17,8 @@ export default function DefaultModelsSection() {
   
   // SiliconFlow 图片URL
   const siliconFlowImageUrl = isDark 
-    ? 'https://s2.loli.net/2025/09/09/GX1uFTIy9hgAD7M.png'
-    : 'https://s2.loli.net/2025/09/09/iBVCsYHK2vcngz3.png';
+    ? 'https://s2.loli.net/2025/09/10/KWPOA5XhIGmYTV9.png'
+    : 'https://s2.loli.net/2025/09/10/gVhlriQ81PJabSY.png';
 
   const models = [
     {
