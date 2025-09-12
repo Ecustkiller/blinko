@@ -763,7 +763,15 @@
         "regenerateDesc": "説明を再生成",
         "viewFolder": "フォルダで表示",
         "viewFile": "元ファイルを表示",
-        "deleteForever": "完全に削除"
+        "deleteForever": "完全に削除",
+        "multiSelect": "複数選択",
+        "exitMultiSelect": "複数選択を終了",
+        "selectAll": "すべて選択",
+        "deselectAll": "すべて選択解除",
+        "selectedCount": "{count}項目を選択中",
+        "moveSelectedTags": "選択した{count}項目を移動",
+        "deleteSelected": "選択した{count}項目を削除",
+        "deleteSelectedForever": "選択した{count}項目を完全削除"
       }
     },
     "chat": {

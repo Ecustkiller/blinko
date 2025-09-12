@@ -778,7 +778,15 @@
         "regenerateDesc": "重新生成描述",
         "viewFolder": "查看目录",
         "viewFile": "查看原文件",
-        "deleteForever": "彻底删除"
+        "deleteForever": "彻底删除",
+        "multiSelect": "多选",
+        "exitMultiSelect": "退出多选",
+        "selectAll": "全选",
+        "deselectAll": "取消全选",
+        "selectedCount": "已选择 {count} 项",
+        "moveSelectedTags": "转移选中的 {count} 项",
+        "deleteSelected": "删除选中的 {count} 项",
+        "deleteSelectedForever": "彻底删除选中的 {count} 项"
       }
     },
     "chat": {
