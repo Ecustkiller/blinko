@@ -139,6 +139,12 @@ We also thank other partners for their service support
   <a href="https://share.302.ai/jfFrIP" target="_blank">
     <img src="https://s2.loli.net/2025/07/01/dPlkU1tejnDyV4S.png" />
   </a>
+  <a href="https://www.shengsuanyun.com/?from=CH_KAFLGC9O" target="_blank">
+    <img src="https://s2.loli.net/2025/09/15/CcVRbTUBtf7ZvNl.png" />
+  </a>
+  <a href="https://ai.gitee.com/" target="_blank">
+    <img src="https://s2.loli.net/2025/09/15/wmnBWfyACMz9pVc.png" />
+  </a>
 </div>
 
 ## Star History
