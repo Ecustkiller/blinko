@@ -1,3 +1,5 @@
+[![](https://s2.loli.net/2025/09/16/efymQrKu8obaswx.png)](https://skywork.ai/p/bY47ky)
+
 # NoteGen
 
 ![](https://img.shields.io/badge/free-pricing?logo=free&color=%20%23155EEF&label=pricing&labelColor=%20%23528bff)
