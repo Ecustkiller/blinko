@@ -147,6 +147,12 @@ We also thank other partners for their service support
   <a href="https://ai.gitee.com/" target="_blank">
     <img src="https://s2.loli.net/2025/09/15/wmnBWfyACMz9pVc.png" />
   </a>
+  <a href="https://www.netlify.com" target="_blank">
+    <img src="https://s2.loli.net/2025/09/16/yJ64xIlrhdABt9o.png" />
+  </a>
+  <a href="https://skywork.ai/p/bY47ky" target="_blank">
+    <img src="https://s2.loli.net/2025/09/16/mTzMCQ8tZLfJNk5.png" />
+  </a>
 </div>
 
 ## Star History
