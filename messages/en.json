@@ -935,7 +935,8 @@
       "header": {
         "configApiKey": "Configure API KEY",
         "clearChat": "Clear Chat",
-        "selectPrompt": "Select Prompt"
+        "selectPrompt": "Select Prompt",
+        "noModel": "AI model not selected"
       },
       "clipboard": {
         "image": {

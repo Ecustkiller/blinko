@@ -899,7 +899,8 @@
         "configApiKey": "API KEY の設定",
         "clearChat": "チャットをクリア",
         "configPrompt": "マスクの設定",
-        "selectPrompt": "マスクを選択"
+        "selectPrompt": "マスクを選択",
+        "noModel": "AI モデルが選択されていません"
       },
       "clipboard": {
         "image": {
