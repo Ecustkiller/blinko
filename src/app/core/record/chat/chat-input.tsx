@@ -236,22 +236,31 @@ export function ChatInput() {
       />
       
       <div className="flex justify-between items-center w-full">
-        <div className="flex">
-          <ModelSelect />
-          <PromptSelect />
-          <ChatLanguage />
-          <ChatLink inputType={inputType} />
-          <FileLink
-            linkedFile={linkedFile}
-            onFileSelect={handleFileSelect}
-            onFileRemove={removeLinkedFile}
-            disabled={!primaryModel || loading}
-          />
-          <RagSwitch />
-          <ChatPlaceholder />
-          <ClipboardMonitor />
-          <ClearContext />
-          <ClearChat />
+        <div className="relative flex-1 overflow-x-auto mr-6 px-2 -translate-x-2">
+          {/* 左侧渐变遮罩 */}
+          <div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none md:hidden" />
+          
+          {/* 右侧渐变遮罩 */}
+          <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none md:hidden" />
+          
+          {/* 可滑动的按钮容器 */}
+          <div className="flex overflow-x-auto scrollbar-hide md:overflow-visible">
+            <ModelSelect />
+            <PromptSelect />
+            <ChatLanguage />
+            <ChatLink inputType={inputType} />
+            <FileLink
+              linkedFile={linkedFile}
+              onFileSelect={handleFileSelect}
+              onFileRemove={removeLinkedFile}
+              disabled={!primaryModel || loading}
+            />
+            <RagSwitch />
+            <ChatPlaceholder />
+            <ClipboardMonitor />
+            <ClearContext />
+            <ClearChat />
+          </div>
         </div>
         <div className="flex items-center justify-end gap-2 pr-1">
           <InputModeSelect value={inputType || 'chat'} onChange={inputTypeChangeHandler} />
