@@ -22,6 +22,7 @@ import ChatPlaceholder from "./chat-placeholder"
 import { ClipboardMonitor } from "./clipboard-monitor"
 import { RagSwitch } from "./rag-switch"
 import { FileLink, LinkedFileDisplay } from "./file-link"
+import { FileSelector } from "./file-selector"
 import { MarkdownFile } from "@/lib/files"
 import emitter from "@/lib/emitter"
 
@@ -38,6 +39,7 @@ export function ChatInput() {
   const [inputHistory, setInputHistory] = useLocalStorage<string[]>('chat-input-history', [])
   const [historyIndex, setHistoryIndex] = useState(-1)
   const [linkedFile, setLinkedFile] = useState<MarkdownFile | null>(null)
+  const [showFileSelector, setShowFileSelector] = useState(false)
   const markGenRef = useRef<any>(null)
   const chatSendRef = useRef<any>(null)
   const translateSendRef = useRef<any>(null)
@@ -82,11 +84,17 @@ export function ChatInput() {
   // 处理文件选择
   function handleFileSelect(file: MarkdownFile) {
     setLinkedFile(file)
+    setShowFileSelector(false)
   }
 
   // 移除关联文件
   function removeLinkedFile() {
     setLinkedFile(null)
+  }
+
+  // 打开文件选择器
+  function openFileSelector() {
+    setShowFileSelector(true)
   }
 
   // 处理发送后的清理工作
@@ -250,9 +258,7 @@ export function ChatInput() {
             <ChatLanguage />
             <ChatLink inputType={inputType} />
             <FileLink
-              linkedFile={linkedFile}
-              onFileSelect={handleFileSelect}
-              onFileRemove={removeLinkedFile}
+              onFileLinkClick={openFileSelector}
               disabled={!primaryModel || loading}
             />
             <RagSwitch />
@@ -275,6 +281,13 @@ export function ChatInput() {
           }
         </div>
       </div>
+
+      {/* 文件选择器 - 独立于容器，避免 overflow 问题 */}
+      <FileSelector
+        isOpen={showFileSelector}
+        onFileSelect={handleFileSelect}
+        onClose={() => setShowFileSelector(false)}
+      />
     </footer>
   )
 }
