@@ -78,6 +78,7 @@ interface NoteState {
 
   // 向量计算相关
   vectorCalcTimer: NodeJS.Timeout | null
+  vectorCalcProgressInterval: NodeJS.Timeout | null
   vectorCalcProgress: number
   isVectorCalculating: boolean
   lastEditTime: number
@@ -771,6 +772,7 @@ const useArticleStore = create<NoteState>((set, get) => ({
 
   // 向量计算相关状态
   vectorCalcTimer: null as NodeJS.Timeout | null,
+  vectorCalcProgressInterval: null as NodeJS.Timeout | null,
   vectorCalcProgress: 0, // 0-100，表示距离自动计算的进度
   isVectorCalculating: false,
   lastEditTime: 0,
@@ -843,14 +845,16 @@ const useArticleStore = create<NoteState>((set, get) => ({
     }
   },
 
-  // 安排向量计算（防抖30秒）
+  // 安排向量计算（防抖5秒）
   scheduleVectorCalculation: (path: string, content: string) => {
     const state = get()
     
     // 清除之前的定时器
     if (state.vectorCalcTimer) {
       clearTimeout(state.vectorCalcTimer)
-      clearInterval(state.vectorCalcTimer as any)
+    }
+    if (state.vectorCalcProgressInterval) {
+      clearInterval(state.vectorCalcProgressInterval)
     }
     
     // 更新最后编辑时间和待处理内容
@@ -872,13 +876,16 @@ const useArticleStore = create<NoteState>((set, get) => ({
       }
     }, 100)
     
-    // 设置30秒后自动执行向量计算
+    // 设置5秒后自动执行向量计算
     const timer = setTimeout(() => {
       clearInterval(progressInterval)
       get().executeVectorCalculation()
     }, 5000)
     
-    set({ vectorCalcTimer: timer as any })
+    set({ 
+      vectorCalcTimer: timer as any,
+      vectorCalcProgressInterval: progressInterval as any
+    })
   },
 
   // 执行向量计算
@@ -905,10 +912,14 @@ const useArticleStore = create<NoteState>((set, get) => ({
       if (state.vectorCalcTimer) {
         clearTimeout(state.vectorCalcTimer)
       }
+      if (state.vectorCalcProgressInterval) {
+        clearInterval(state.vectorCalcProgressInterval)
+      }
       
       set({ 
         pendingVectorContent: null,
         vectorCalcTimer: null,
+        vectorCalcProgressInterval: null,
         vectorCalcProgress: 0
       })
     } catch (error) {
@@ -924,8 +935,12 @@ const useArticleStore = create<NoteState>((set, get) => ({
     if (state.vectorCalcTimer) {
       clearTimeout(state.vectorCalcTimer)
     }
+    if (state.vectorCalcProgressInterval) {
+      clearInterval(state.vectorCalcProgressInterval)
+    }
     set({ 
       vectorCalcTimer: null,
+      vectorCalcProgressInterval: null,
       vectorCalcProgress: 0,
       pendingVectorContent: null
     })
