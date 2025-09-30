@@ -1186,6 +1186,12 @@
         "committedAt": "提交于",
         "pull": "拉取",
         "quickSync": "快速同步"
+      },
+      "vectorCalc": {
+        "tooltip": "向量计算：编辑完成30秒后自动计算，或点击立即计算",
+        "calculating": "计算中",
+        "pending": "待计算 {progress}%",
+        "synced": "已同步"
       }
     }
   }

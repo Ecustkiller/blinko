@@ -1211,6 +1211,12 @@
         "committedAt": "committed at",
         "pull": "Pull",
         "quickSync": "Quick Sync"
+      },
+      "vectorCalc": {
+        "tooltip": "Vector Calculation: Auto-calculate 30s after editing, or click to calculate now",
+        "calculating": "Calculating",
+        "pending": "Pending {progress}%",
+        "synced": "Synced"
       }
     }
   }
