@@ -963,6 +963,9 @@
         "copy": "Copy",
         "copied": "Copied"
       },
+      "ragSources": {
+        "label": "Referenced Files"
+      },
       "preview": {
         "close": "Close",
         "copy": "Copy",

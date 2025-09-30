@@ -927,6 +927,9 @@
         "copy": "コピー",
         "copied": "コピーしました"
       },
+      "ragSources": {
+        "label": "参照ファイル"
+      },
       "preview": {
         "close": "关闭",
         "copy": "复制",
