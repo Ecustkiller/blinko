@@ -1048,7 +1048,12 @@
         "sort": "並べ替え",
         "processingVectors": "ベクトルデータ処理中",
         "calculateVectors": "知識庫計算（全量）",
-        "enableVectorDb": "ベクトルデータベースを有効化"
+        "enableVectorDb": "ベクトルデータベースを有効化",
+        "importMarkdown": "をインポート",
+        "importing": "インポート中...",
+        "importSuccess": "インポート成功",
+        "importSuccessDesc": "{count} 個のファイルをインポートしました",
+        "importError": "インポート失敗"
       },
       "context": {
         "viewDirectory": "ディレクトリを表示",
