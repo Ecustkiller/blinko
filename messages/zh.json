@@ -326,6 +326,23 @@
         "1m": "1 分钟",
         "5m": "5 分钟",
         "30m": "30 分钟"
+      },
+      "exclusions": {
+        "title": "同步排除配置",
+        "desc": "以下配置项不会在设备间同步，因为它们是设备特定的",
+        "workspacePath": "工作区路径",
+        "workspaceHistory": "工作区历史路径",
+        "assetsPath": "资源路径",
+        "uiScale": "界面缩放",
+        "contentTextScale": "正文文字缩放",
+        "reason": "这些配置在不同设备上可能不同，不进行同步可以避免路径错误等问题"
+      },
+      "settingsSync": {
+        "uploadSuccess": "配置上传成功",
+        "uploadFailed": "配置上传失败",
+        "downloadSuccess": "配置下载成功",
+        "downloadFailed": "配置下载失败",
+        "autoSync": "上传/下载时会自动同步配置（排除工作区路径等设备特定配置）"
       }
     },
     "imageHosting": {

@@ -321,6 +321,23 @@
         "1m": "1 minute",
         "5m": "5 minutes",
         "30m": "30 minutes"
+      },
+      "exclusions": {
+        "title": "Sync Exclusion Configuration",
+        "desc": "The following settings will not be synced across devices as they are device-specific",
+        "workspacePath": "Workspace Path",
+        "workspaceHistory": "Workspace History",
+        "assetsPath": "Assets Path",
+        "uiScale": "UI Scale",
+        "contentTextScale": "Content Text Scale",
+        "reason": "These settings may differ across devices, excluding them from sync prevents path errors and other issues"
+      },
+      "settingsSync": {
+        "uploadSuccess": "Settings uploaded successfully",
+        "uploadFailed": "Failed to upload settings",
+        "downloadSuccess": "Settings downloaded successfully",
+        "downloadFailed": "Failed to download settings",
+        "autoSync": "Settings will be automatically synced during upload/download (excluding device-specific settings like workspace path)"
       }
     },
     "imageHosting": {
