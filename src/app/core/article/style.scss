@@ -114,3 +114,7 @@
     @apply text-xs text-primary cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 outline-none;
   }
 }
+
+.vditor-panel{
+  @apply shadow h-8 p-1 -translate-y-4;
+}

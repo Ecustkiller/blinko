@@ -64,6 +64,9 @@ export function MdEditor() {
       theme: theme === 'dark' ? 'dark' : 'classic',
       toolbar: toolbarConfig,
       typewriterMode,
+      customWysiwygToolbar: (type: TWYSISYGToolbar, element: HTMLElement) => {
+        console.log(type, element)
+      },
       outline: {
         enable: enableOutline,
         position: outlinePosition,
