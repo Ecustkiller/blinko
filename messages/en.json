@@ -48,6 +48,10 @@
           "title": "Interface Scale",
           "desc": "Adjust the overall scale of the application interface",
           "placeholder": "Select scale ratio"
+        },
+        "contentTextScale": {
+          "title": "Content Scale",
+          "desc": "Adjust the text size in editor and chat Markdown content"
         }
       }
     },

@@ -46,6 +46,10 @@
           "title": "界面缩放",
           "desc": "调整应用界面的整体缩放比例",
           "placeholder": "选择缩放比例"
+        },
+        "contentTextScale": {
+          "title": "正文缩放",
+          "desc": "调整编辑器和对话中 Markdown 内容的文字大小"
         }
       }
     },
