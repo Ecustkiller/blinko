@@ -51,6 +51,16 @@
         "contentTextScale": {
           "title": "本文スケール",
           "desc": "エディターとチャットの Markdown コンテンツのテキストサイズを調整"
+        },
+        "customCss": {
+          "title": "カスタム CSS",
+          "desc": "カスタム CSS スタイルを追加してアプリケーションのデフォルトスタイルを上書き",
+          "button": "CSS を編集",
+          "dialogTitle": "カスタム CSS",
+          "dialogDesc": "以下にカスタム CSS コードを入力して、アプリケーションのデフォルトスタイルを上書きします。保存をクリックして変更を適用します。",
+          "placeholder": "ここにカスタム CSS コードを入力",
+          "save": "保存",
+          "cancel": "キャンセル"
         }
       }
     },

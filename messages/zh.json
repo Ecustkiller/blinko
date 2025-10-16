@@ -51,6 +51,16 @@
         "contentTextScale": {
           "title": "正文缩放",
           "desc": "调整编辑器和对话中 Markdown 内容的文字大小"
+        },
+        "customCss": {
+          "title": "自定义 CSS",
+          "desc": "添加自定义 CSS 样式来覆盖应用的默认样式",
+          "button": "编辑 CSS",
+          "dialogTitle": "自定义 CSS",
+          "dialogDesc": "在下方输入自定义 CSS 代码，可以覆盖应用的默认样式。修改后点击保存即可生效。",
+          "placeholder": "在此输入自定义 CSS 代码。",
+          "save": "保存",
+          "cancel": "取消"
         }
       }
     },
@@ -336,6 +346,7 @@
         "assetsPath": "资源路径",
         "uiScale": "界面缩放",
         "contentTextScale": "正文文字缩放",
+        "customCss": "自定义 CSS",
         "reason": "这些配置在不同设备上可能不同，不进行同步可以避免路径错误等问题"
       },
       "settingsSync": {
