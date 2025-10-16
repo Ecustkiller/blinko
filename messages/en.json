@@ -26,6 +26,7 @@
     "defaultFileName": "Untitled"
   },
   "settings": {
+    "others": "Advanced",
     "general": {
       "title": "General Settings",
       "desc": "Here, you can configure basic application settings, including interface theme, language and other options.",
@@ -509,6 +510,7 @@
     },
     "template": {
       "title": "Template",
+      "desc": "Here you can create and manage custom organization templates to help AI organize record content according to your needs.",
       "customTemplate": "Custom Template",
       "addTemplate": "Add Custom Template",
       "deleteConfirm": "Are you sure to delete this template?",
@@ -545,10 +547,25 @@
     },
     "dev": {
       "title": "Developer",
+      "desc": "Here you can configure developer options, including network proxy, data cleanup, and configuration file management.",
       "clearData": "Clear Data",
       "clearDataConfirm": "Are you sure to clear data?",
       "proxy": "Proxy, used to solve network problems, after configuration, it is recommended to restart the application.",
-      "proxyPlaceholder": "Enter proxy address"
+      "proxyPlaceholder": "Enter proxy address",
+      "proxyTitle": "Network Proxy",
+      "clearDataTitle": "Clear Data",
+      "clearDataDesc": "Clear data information, including system configuration and database (including records).",
+      "clearFileTitle": "Clear Files",
+      "clearFileDesc": "Clear files, including images and articles.",
+      "clearButton": "Clear",
+      "configFileTitle": "Config File Management",
+      "configFileDesc": "Import and export configuration files. Importing will overwrite current configuration and take effect after restart.",
+      "importConfigTitle": "Import Config File",
+      "exportConfigTitle": "Export Config File",
+      "importConfigSuccessMobile": "Config downloaded successfully, please restart the app manually",
+      "exportConfigSuccess": "Export successful",
+      "importButton": "Import",
+      "exportButton": "Export"
     },
     "ai": {
       "title": "Model Management",
